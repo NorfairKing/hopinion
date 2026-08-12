@@ -1,0 +1,18 @@
+[
+    {
+        "attachment": "export-list",
+        "span": {
+            "end": {
+                "col": 21,
+                "line": 2
+            },
+            "file": "test_resources/Comment/10-section-in-export-list.hs",
+            "start": {
+                "col": 5,
+                "line": 2
+            }
+        },
+        "style": "line",
+        "text": "* The section"
+    }
+]

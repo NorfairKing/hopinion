@@ -1,0 +1,31 @@
+[
+    {
+        "attachment": {
+            "decl": "resolveTarget",
+            "statement": {
+                "end": {
+                    "col": 15,
+                    "line": 7
+                },
+                "file": "test_resources/Comment/12-inside-where.hs",
+                "start": {
+                    "col": 1,
+                    "line": 6
+                }
+            }
+        },
+        "span": {
+            "end": {
+                "col": 33,
+                "line": 6
+            },
+            "file": "test_resources/Comment/12-inside-where.hs",
+            "start": {
+                "col": 5,
+                "line": 6
+            }
+        },
+        "style": "line",
+        "text": "The helper does the work."
+    }
+]

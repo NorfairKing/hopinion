@@ -1,0 +1,1 @@
+TestGenValidSpecPerGenValid	11:1-11:26 thing/src/Thing.hs	lib:Thing instance GenValid Visible	No genValidSpec @Visible anywhere in thing-gen's test suite.

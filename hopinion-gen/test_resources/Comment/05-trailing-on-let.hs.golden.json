@@ -1,0 +1,31 @@
+[
+    {
+        "attachment": {
+            "decl": "run",
+            "statement": {
+                "end": {
+                    "col": 37,
+                    "line": 5
+                },
+                "file": "test_resources/Comment/05-trailing-on-let.hs",
+                "start": {
+                    "col": 1,
+                    "line": 5
+                }
+            }
+        },
+        "span": {
+            "end": {
+                "col": 37,
+                "line": 5
+            },
+            "file": "test_resources/Comment/05-trailing-on-let.hs",
+            "start": {
+                "col": 13,
+                "line": 5
+            }
+        },
+        "style": "line",
+        "text": "The trailing comment."
+    }
+]

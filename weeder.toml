@@ -1,0 +1,17 @@
+# Deliberately no exceptions: hs/no-weeder-exceptions bans them, and hopinion is
+# its own first subject. The entries below are roots rather than exceptions.
+#
+# Type classes are roots, so an instance nothing reaches is not reported. That
+# is a gap in what haskell-style.md means by "remove every instance you do not
+# use", and it is one this repository cannot close: with them off, weeder
+# reports 193 instances here, and almost all of them are either written by
+# persistent's quasi-quoter, which nobody can delete, or reached only through
+# Generic by validity and the codecs, which weeder cannot see. Twelve instances
+# really were dead and are gone, and they were found by reading rather than by
+# this file.
+type-class-roots = true
+roots = [
+  "^Main.main$",
+  # Cabal generates this module and nothing in the source calls it.
+  "^Paths_.*",
+]

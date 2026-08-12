@@ -1,0 +1,38 @@
+[
+    {
+        "attachment": {
+            "decl": "resolveTarget"
+        },
+        "span": {
+            "end": {
+                "col": 38,
+                "line": 3
+            },
+            "file": "test_resources/Comment/02-between-signature-and-binding.hs",
+            "start": {
+                "col": 1,
+                "line": 3
+            }
+        },
+        "style": "haddock-next",
+        "text": "Documentation for the signature."
+    },
+    {
+        "attachment": {
+            "decl": "resolveTarget"
+        },
+        "span": {
+            "end": {
+                "col": 23,
+                "line": 5
+            },
+            "file": "test_resources/Comment/02-between-signature-and-binding.hs",
+            "start": {
+                "col": 1,
+                "line": 5
+            }
+        },
+        "style": "line",
+        "text": "The middle comment."
+    }
+]

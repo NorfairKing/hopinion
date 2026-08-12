@@ -1,0 +1,31 @@
+[
+    {
+        "attachment": {
+            "decl": "describeIt",
+            "statement": {
+                "end": {
+                    "col": 14,
+                    "line": 6
+                },
+                "file": "test_resources/Comment/04-above-case-alternative.hs",
+                "start": {
+                    "col": 1,
+                    "line": 5
+                }
+            }
+        },
+        "span": {
+            "end": {
+                "col": 22,
+                "line": 5
+            },
+            "file": "test_resources/Comment/04-above-case-alternative.hs",
+            "start": {
+                "col": 3,
+                "line": 5
+            }
+        },
+        "style": "line",
+        "text": "Zero is special."
+    }
+]

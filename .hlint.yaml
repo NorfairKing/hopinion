@@ -1,0 +1,153 @@
+# hopinion is its own first subject, so this file is what
+# `hs/hlint-bans-partial` will eventually assert against.
+#
+# Shaped after ~/src/nix-ci/.hlint.yaml, which is the same standards enforced by
+# hand in the repository this one exists to check. Two things are deliberately
+# not copied: that file's per-extension bans, because the allowlist below is the
+# stronger form of the same thing, and its `typeApplications: required` on
+# `show`, which needs a patched hlint this flake does not carry.
+
+- group: { name: future, enabled: true }
+- group: { name: use-th-quotes, enabled: true }
+
+# Every extension this repository is allowed to use, and nothing else. The
+# default is off, so a new one is a decision made here rather than in whichever
+# module first wanted it.
+#
+# The list grew when the persistent set moved out of `default-extensions` and
+# into the modules that need it. That is where it is visible: a table-owning
+# rule opens with fifteen pragmas, and hlint's unused-pragma hint is what keeps
+# any of them from going stale.
+- extensions:
+    - default: false
+    - name:
+        - ApplicativeDo
+        - DataKinds
+        - DeriveAnyClass
+        - DeriveGeneric
+        - DerivingStrategies
+        - DerivingVia
+        - FlexibleInstances
+        - GADTs
+        - GeneralizedNewtypeDeriving
+        - LambdaCase
+        - MultiParamTypeClasses
+        - OverloadedStrings
+        - QuasiQuotes
+        - RecordWildCards
+        - ScopedTypeVariables
+        - StandaloneDeriving
+        - TemplateHaskell
+        - TupleSections
+        - TypeApplications
+        - TypeFamilies
+        - TypeOperators
+        - UndecidableInstances
+
+# Partial functions are banned. Every one of these throws on an input the type
+# permits, which is the class of bug the standards exist to prevent, and each
+# has a total replacement that makes the missing case visible.
+- functions:
+    - name: head
+      message: "Partial. Use pattern matching, 'listToMaybe', or NonEmpty."
+      within: []
+    - name: tail
+      message: "Partial. Use pattern matching, or 'drop 1' if a shorter list is fine."
+      within: []
+    - name: init
+      message: "Partial. Use pattern matching or NonEmpty."
+      within: []
+    - name: last
+      message: "Partial. Use pattern matching or NonEmpty."
+      within: []
+    - name: "!!"
+      message: "Partial. Use a Map, or 'lookup' on the index."
+      within: []
+    - name: fromJust
+      message: "Partial. Case on the Maybe and say what the Nothing means."
+      within: []
+    - name: read
+      message: "Partial. Use 'readMaybe' and handle the failure."
+      within: []
+    - name: undefined
+      message: "Partial. The undefined trick belongs in a let binding that is never forced."
+      within: []
+    - name: error
+      message: "Partial. Return an Either or a Maybe, or throw an exception that says what happened."
+      within: []
+    - name: Data.Map.Strict.!
+      message: "Partial. Use 'Map.lookup' or 'Map.findWithDefault'."
+      within: []
+    - name: maximum
+      message: "Partial. Use 'maximumMay' or NonEmpty."
+      within: []
+    - name: minimum
+      message: "Partial. Use 'minimumMay' or NonEmpty."
+      within: []
+    - name: foldr1
+      message: "Partial. Use 'foldr' with an explicit base case, or NonEmpty."
+      within: []
+    - name: foldl1
+      message: "Partial. Use 'foldl'' with an explicit base case, or NonEmpty."
+      within: []
+
+# Total, and still wrong often enough to be worth stopping at.
+- functions:
+    - name: unsafePerformIO
+      message: "Unsafe. There is no use for it here."
+      within: []
+    - name: unsafeDupablePerformIO
+      message: "Unsafe. There is no use for it here."
+      within: []
+    - name: unsafeInterleaveIO
+      message: "Unsafe lazy IO. Read the file, or stream it with conduit."
+      within: []
+    - name: modifyIORef
+      message: "Lazy; builds thunks. Use 'modifyIORef'' instead."
+      within: []
+    # A right fold over a list this tool builds is a fold over a repository's
+    # worth of facts, and the lazy one is how that becomes a stack overflow at
+    # the size where it matters. 'annotationsOf' wants the accumulator built
+    # right to left and is over one module's comments, which is the exception
+    # rather than the rule.
+    - name: foldr
+      message: "Lazy in the accumulator. Use 'foldl'', or 'Data.Foldable.foldr'' for a genuine right fold."
+      within:
+        - Hopinion.Annotation.annotationsOf
+    - name: Test.QuickCheck.generate
+      message: "Use 'forAllValid': a property-test input, not a one-off random value in a test body."
+      within: []
+    - name: "==>"
+      message: "Do not filter iterations. Bake the precondition into the generator: 'forAll (genValid `suchThat` p)'."
+      within: []
+    - name: "==="
+      message: "Use 'shouldBe': an exact, readable assertion rather than QuickCheck's '==='."
+      within: []
+
+# Text and bytes are different things and the conversion between them is an
+# encoding, which is a decision. Char8 pretends otherwise.
+- modules:
+  - name: Data.ByteString.Char8
+    within: []
+    message: "Char8 truncates. Encode explicitly with Data.Text.Encoding."
+  - name: Data.ByteString.Lazy.Char8
+    within: []
+    message: "Char8 truncates. Encode explicitly with Data.Text.Encoding."
+
+# What a module may be called when it is qualified. Esqueleto is imported
+# unqualified, so that a query reads as the query it is rather than as a column
+# of E dots. Persistent is what esqueleto re-exports minus the operators the two
+# disagree about, so what is left to import from persistent directly is types and
+# writes, and those come in by explicit list. Either would need one of these
+# names to be qualified.
+- modules:
+  - name: Database.Persist
+    as: [DB]
+  - name: Database.Persist.Sql
+    as: [DB]
+  - name: Database.Esqueleto.Experimental
+    as: [E]
+
+# Rule ids are PascalCase because they are what a reader types into an
+# annotation, so the constructors that carry them are too.
+- ignore: { name: "Use camelCase" }

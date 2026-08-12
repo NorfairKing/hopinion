@@ -1,0 +1,1 @@
+HsNoCustomShowRead	5:1-6:32 test_resources/Rule/HsNoCustomShowRead/bad-read.hs	lib:test_resources/Rule/HsNoCustomShowRead/bad-read.hs instance Read Port	This Read instance is written out. Derive it instead.

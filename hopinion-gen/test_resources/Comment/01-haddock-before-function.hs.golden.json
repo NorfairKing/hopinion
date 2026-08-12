@@ -1,0 +1,20 @@
+[
+    {
+        "attachment": {
+            "decl": "resolveTarget"
+        },
+        "span": {
+            "end": {
+                "col": 37,
+                "line": 3
+            },
+            "file": "test_resources/Comment/01-haddock-before-function.hs",
+            "start": {
+                "col": 1,
+                "line": 3
+            }
+        },
+        "style": "haddock-next",
+        "text": "Documentation for the function."
+    }
+]

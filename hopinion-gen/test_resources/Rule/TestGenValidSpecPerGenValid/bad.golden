@@ -1,0 +1,8 @@
+TestGenValidSpecPerGenValid	11:1-11:28 thing/src/Thing/Spliced.hs	lib:Thing.Spliced instance GenValid Generated	No genValidSpec @Generated anywhere in thing-gen's test suite.
+TestGenValidSpecPerGenValid	13:1-13:38 thing/src/Thing.hs	lib:Thing instance GenValid Standalone	No genValidSpec @Standalone anywhere in thing-gen's test suite.
+TestGenValidSpecPerGenValid	16:1-17:28 thing/src/Thing.hs	lib:Thing Stocked	No genValidSpec @Stocked anywhere in thing-gen's test suite.
+TestGenValidSpecPerGenValid	19:1-20:30 thing/src/Thing.hs	lib:Thing Wrapped	No genValidSpec @Wrapped anywhere in thing-gen's test suite.
+TestGenValidSpecPerGenValid	22:1-23:31 thing/src/Thing.hs	lib:Thing AnyOf	No genValidSpec @AnyOf anywhere in thing-gen's test suite.
+TestGenValidSpecPerGenValid	26:1-27:49 thing/src/Thing.hs	lib:Thing ViaCodec	No genValidSpec @ViaCodec anywhere in thing-gen's test suite.
+TestGenValidSpecPerGenValid	32:1-32:30 thing/src/Thing.hs	lib:Thing instance GenValid Allowed	No genValidSpec @Allowed anywhere in thing-gen's test suite.
+TestGenValidSpecPerGenValid	5:1-5:25 lonely/src/Lonely.hs	lib:Lonely instance GenValid Orphan	No genValidSpec @Orphan anywhere, and there is no lonely-gen for it to be written in.

@@ -1,0 +1,31 @@
+name: hopinion-hie
+version: 0.0.0
+
+# The warnings this repository is held to. Here rather than in the Nix overlay,
+# so that a cabal build in the dev shell says what a Nix build would; the
+# overlay adds -Werror on top, which is what makes the difference between a
+# warning and a failure a property of how it is built rather than of what it is.
+ghc-options:
+- -Wall
+- -Wincomplete-uni-patterns
+- -Wincomplete-record-updates
+- -Wpartial-fields
+- -Widentities
+- -Wredundant-constraints
+- -Wcpp-undef
+- -Wunused-packages
+
+dependencies:
+- base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+  dependencies:
+  - containers
+  - ghc
+  - path
+  - text
+  - validity
+  - validity-containers
+  - validity-path
+  - validity-text

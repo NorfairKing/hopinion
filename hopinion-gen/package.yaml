@@ -1,0 +1,80 @@
+name: hopinion-gen
+version: 0.0.0
+
+extra-source-files:
+- test_resources/**/*
+
+# The warnings this repository is held to. Here rather than in the Nix overlay,
+# so that a cabal build in the dev shell says what a Nix build would; the
+# overlay adds -Werror on top, which is what makes the difference between a
+# warning and a failure a property of how it is built rather than of what it is.
+ghc-options:
+- -Wall
+- -Wincomplete-uni-patterns
+- -Wincomplete-record-updates
+- -Wpartial-fields
+- -Widentities
+- -Wredundant-constraints
+- -Wcpp-undef
+- -Wunused-packages
+
+dependencies:
+- base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+  dependencies:
+  - QuickCheck
+  - genvalidity
+  - genvalidity-containers
+  - genvalidity-aeson
+  - genvalidity-path
+  - genvalidity-text
+  - hopinion
+  - text
+
+executables:
+  # What a repository adding a rule of its own writes: an executable that
+  # depends on the library and hands it the rules it wants. The end to end
+  # tests point the check builders at this one, so the path a consuming
+  # repository would take is a path something here walks.
+  hopinion-example:
+    main: Main.hs
+    source-dirs: app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N8
+    dependencies:
+    - hopinion
+    - hopinion-gen
+
+tests:
+  hopinion-test:
+    main: Main.hs
+    source-dirs: test
+    build-tools:
+    - sydtest-discover
+    - ormolu
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - autodocodec-yaml
+    - containers
+    - filepath
+    - genvalidity-sydtest
+    - genvalidity-sydtest-aeson
+    - hopinion
+    - hopinion-hie
+    - hopinion-gen
+    - path
+    - path-io
+    - persistent
+    - process
+    - safe-coloured-text
+    - sydtest
+    - sydtest-aeson
+    - text
+    - yaml

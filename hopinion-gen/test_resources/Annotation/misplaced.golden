@@ -1,0 +1,26 @@
+[error BROKEN_SUPPRESSION]: This suppression is not attached to anything. Move it against the code it concerns.
+     ╭──▶ thing/src/AtTheEnd.hs@6:1-7:37
+     │
+   6 │ ╭┤ -- [allow:CommentBareTodo] Site-scoped, after the last declaration, where there
+   7 │ ├┤ -- is nothing below it to attach to.
+     • │ 
+     • ╰╸ this suppression
+─────╯
+
+[error BROKEN_SUPPRESSION]: This suppression is not attached to anything. Move it against the code it concerns.
+     ╭──▶ thing/src/InTheExportList.hs@3:5-4:36
+     │
+   3 │ ╭┤     -- [allow:CommentBareTodo] Site-scoped, inside the export list, which holds
+   4 │ ├┤     -- no declaration to attach to.
+     • │ 
+     • ╰╸ this suppression
+─────╯
+
+[error BROKEN_SUPPRESSION]: This suppression is not attached to anything. Move it against the code it concerns.
+     ╭──▶ thing/src/OverTheHeader.hs@1:1-2:39
+     │
+   1 │ ╭┤ -- [allow:CommentBareTodo] Site-scoped, above the module header, where there is
+   2 │ ├┤ -- no declaration for it to attach to.
+     • │ 
+     • ╰╸ this suppression
+─────╯

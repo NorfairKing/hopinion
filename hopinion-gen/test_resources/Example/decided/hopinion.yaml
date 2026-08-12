@@ -1,0 +1,3 @@
+# What this repository has decided about the rules it is held to.
+disabled-rules:
+  - CommentBareTodo

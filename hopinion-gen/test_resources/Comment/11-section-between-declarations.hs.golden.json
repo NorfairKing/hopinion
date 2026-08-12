@@ -1,0 +1,18 @@
+[
+    {
+        "attachment": "unattached",
+        "span": {
+            "end": {
+                "col": 31,
+                "line": 6
+            },
+            "file": "test_resources/Comment/11-section-between-declarations.hs",
+            "start": {
+                "col": 1,
+                "line": 6
+            }
+        },
+        "style": "line",
+        "text": "* A section header in code."
+    }
+]

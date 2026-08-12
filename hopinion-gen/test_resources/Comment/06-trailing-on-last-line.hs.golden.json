@@ -1,0 +1,20 @@
+[
+    {
+        "attachment": {
+            "decl": "resolveTarget"
+        },
+        "span": {
+            "end": {
+                "col": 43,
+                "line": 4
+            },
+            "file": "test_resources/Comment/06-trailing-on-last-line.hs",
+            "start": {
+                "col": 19,
+                "line": 4
+            }
+        },
+        "style": "line",
+        "text": "The trailing comment."
+    }
+]

@@ -1,0 +1,31 @@
+[
+    {
+        "attachment": {
+            "decl": "run",
+            "statement": {
+                "end": {
+                    "col": 12,
+                    "line": 8
+                },
+                "file": "test_resources/Comment/26-block-comment-above-a-statement.hs",
+                "start": {
+                    "col": 1,
+                    "line": 5
+                }
+            }
+        },
+        "span": {
+            "end": {
+                "col": 47,
+                "line": 7
+            },
+            "file": "test_resources/Comment/26-block-comment-above-a-statement.hs",
+            "start": {
+                "col": 3,
+                "line": 5
+            }
+        },
+        "style": "block",
+        "text": "The statement below is what this is about,\n     and this second line starts with neither dashes\n     nor a brace, which is the whole point."
+    }
+]

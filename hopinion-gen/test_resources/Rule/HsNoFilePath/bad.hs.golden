@@ -1,0 +1,2 @@
+HsNoFilePath	4:13-4:21 test_resources/Rule/HsNoFilePath/bad.hs	lib:test_resources/Rule/HsNoFilePath/bad.hs readFrom	The type FilePath. Say what the path is with Path from path.
+HsNoFilePath	8:18-8:26 test_resources/Rule/HsNoFilePath/bad.hs	lib:test_resources/Rule/HsNoFilePath/bad.hs resourceDirs	The type FilePath. Say what the path is with Path from path.

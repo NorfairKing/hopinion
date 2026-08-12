@@ -1,0 +1,10 @@
+packages: */*.cabal
+test-show-details: direct
+
+-- The same warnings the nix build turns into errors, so the development loop
+-- catches what CI would.
+package hopinion
+  ghc-options: -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates -Wpartial-fields -Widentities -Wredundant-constraints -Wcpp-undef
+
+package hopinion-gen
+  ghc-options: -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates -Wpartial-fields -Widentities -Wredundant-constraints -Wcpp-undef

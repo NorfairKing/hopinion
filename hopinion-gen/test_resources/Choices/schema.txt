@@ -1,0 +1,6 @@
+# Choices
+disabled-rules: # optional
+  # default: []
+  # the rules this repository has decided against, which no run of it makes
+  - def: RuleId
+    <string>

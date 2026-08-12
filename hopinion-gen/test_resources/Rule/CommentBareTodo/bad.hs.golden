@@ -1,0 +1,2 @@
+CommentBareTodo	3:1-3:30 test_resources/Rule/CommentBareTodo/bad.hs	lib:test_resources/Rule/CommentBareTodo/bad.hs first	A bare TODO. Reference an issue or a URL, or do it.
+CommentBareTodo	8:12-8:37 test_resources/Rule/CommentBareTodo/bad.hs	lib:test_resources/Rule/CommentBareTodo/bad.hs second	A bare TODO. Reference an issue or a URL, or do it.

@@ -1,0 +1,20 @@
+[
+    {
+        "attachment": {
+            "decl": "resolveTarget"
+        },
+        "span": {
+            "end": {
+                "col": 25,
+                "line": 5
+            },
+            "file": "test_resources/Comment/15-blank-comment-line-inside-block.hs",
+            "start": {
+                "col": 1,
+                "line": 3
+            }
+        },
+        "style": "line",
+        "text": "The first paragraph.\n\nThe second paragraph."
+    }
+]

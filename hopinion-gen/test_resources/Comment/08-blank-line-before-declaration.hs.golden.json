@@ -1,0 +1,18 @@
+[
+    {
+        "attachment": "unattached",
+        "span": {
+            "end": {
+                "col": 48,
+                "line": 3
+            },
+            "file": "test_resources/Comment/08-blank-line-before-declaration.hs",
+            "start": {
+                "col": 1,
+                "line": 3
+            }
+        },
+        "style": "line",
+        "text": "This comment is separated from what follows."
+    }
+]

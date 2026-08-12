@@ -1,0 +1,18 @@
+[
+    {
+        "attachment": "unattached",
+        "span": {
+            "end": {
+                "col": 35,
+                "line": 1
+            },
+            "file": "test_resources/Comment/18-language-pragma.hs",
+            "start": {
+                "col": 1,
+                "line": 1
+            }
+        },
+        "style": "pragma",
+        "text": "LANGUAGE OverloadedStrings"
+    }
+]

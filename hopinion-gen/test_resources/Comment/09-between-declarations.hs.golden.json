@@ -1,0 +1,18 @@
+[
+    {
+        "attachment": "unattached",
+        "span": {
+            "end": {
+                "col": 50,
+                "line": 6
+            },
+            "file": "test_resources/Comment/09-between-declarations.hs",
+            "start": {
+                "col": 1,
+                "line": 6
+            }
+        },
+        "style": "line",
+        "text": "A comment on its own between two declarations."
+    }
+]

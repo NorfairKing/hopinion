@@ -1,0 +1,1 @@
+HsGenValidInGenPackage	5:1-5:25 thing/src/Thing.hs	lib:Thing instance GenValid Widget	A GenValid instance outside a -gen package.

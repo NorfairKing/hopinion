@@ -1,0 +1,18 @@
+[
+    {
+        "attachment": "file",
+        "span": {
+            "end": {
+                "col": 44,
+                "line": 1
+            },
+            "file": "test_resources/Comment/19-top-of-file.hs",
+            "start": {
+                "col": 1,
+                "line": 1
+            }
+        },
+        "style": "line",
+        "text": "Copyright notice at the top of the file."
+    }
+]

@@ -1,0 +1,31 @@
+[
+    {
+        "attachment": {
+            "decl": "Config",
+            "statement": {
+                "end": {
+                    "col": 4,
+                    "line": 6
+                },
+                "file": "test_resources/Comment/14-postfix-on-record-field.hs",
+                "start": {
+                    "col": 1,
+                    "line": 5
+                }
+            }
+        },
+        "span": {
+            "end": {
+                "col": 26,
+                "line": 5
+            },
+            "file": "test_resources/Comment/14-postfix-on-record-field.hs",
+            "start": {
+                "col": 3,
+                "line": 5
+            }
+        },
+        "style": "haddock-prev",
+        "text": "What it is called."
+    }
+]

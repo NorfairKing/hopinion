@@ -1,0 +1,270 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.38.3.
+--
+-- see: https://github.com/sol/hpack
+
+name:           hopinion-gen
+version:        0.0.0
+build-type:     Simple
+extra-source-files:
+    test_resources/Annotation/misplaced.golden
+    test_resources/Annotation/misplaced/thing/src/AtTheEnd.hs
+    test_resources/Annotation/misplaced/thing/src/InTheExportList.hs
+    test_resources/Annotation/misplaced/thing/src/OverTheHeader.hs
+    test_resources/Annotation/misplaced/thing/thing.cabal
+    test_resources/Annotation/self-weeding.golden
+    test_resources/Annotation/self-weeding/thing/src/Orphan.hs
+    test_resources/Annotation/self-weeding/thing/src/Thing.hs
+    test_resources/Annotation/self-weeding/thing/thing.cabal
+    test_resources/Annotation/suppressed/thing-gen/src/Thing/Gen.hs
+    test_resources/Annotation/suppressed/thing-gen/test/Main.hs
+    test_resources/Annotation/suppressed/thing-gen/test/ThingChecks.hs
+    test_resources/Annotation/suppressed/thing-gen/thing-gen.cabal
+    test_resources/Annotation/suppressed/thing/src/Header.hs
+    test_resources/Annotation/suppressed/thing/src/Thing.hs
+    test_resources/Annotation/suppressed/thing/src/Trailing.hs
+    test_resources/Annotation/suppressed/thing/thing.cabal
+    test_resources/Choices/schema.txt
+    test_resources/Comment/01-haddock-before-function.hs
+    test_resources/Comment/01-haddock-before-function.hs.golden.json
+    test_resources/Comment/02-between-signature-and-binding.hs
+    test_resources/Comment/02-between-signature-and-binding.hs.golden.json
+    test_resources/Comment/03-above-let-in-do.hs
+    test_resources/Comment/03-above-let-in-do.hs.golden.json
+    test_resources/Comment/04-above-case-alternative.hs
+    test_resources/Comment/04-above-case-alternative.hs.golden.json
+    test_resources/Comment/05-trailing-on-let.hs
+    test_resources/Comment/05-trailing-on-let.hs.golden.json
+    test_resources/Comment/06-trailing-on-last-line.hs
+    test_resources/Comment/06-trailing-on-last-line.hs.golden.json
+    test_resources/Comment/07-end-of-do-block.hs
+    test_resources/Comment/07-end-of-do-block.hs.golden.json
+    test_resources/Comment/08-blank-line-before-declaration.hs
+    test_resources/Comment/08-blank-line-before-declaration.hs.golden.json
+    test_resources/Comment/09-between-declarations.hs
+    test_resources/Comment/09-between-declarations.hs.golden.json
+    test_resources/Comment/10-section-in-export-list.hs
+    test_resources/Comment/10-section-in-export-list.hs.golden.json
+    test_resources/Comment/11-section-between-declarations.hs
+    test_resources/Comment/11-section-between-declarations.hs.golden.json
+    test_resources/Comment/12-inside-where.hs
+    test_resources/Comment/12-inside-where.hs.golden.json
+    test_resources/Comment/13-block-comment-before-declaration.hs
+    test_resources/Comment/13-block-comment-before-declaration.hs.golden.json
+    test_resources/Comment/14-postfix-on-record-field.hs
+    test_resources/Comment/14-postfix-on-record-field.hs.golden.json
+    test_resources/Comment/15-blank-comment-line-inside-block.hs
+    test_resources/Comment/15-blank-comment-line-inside-block.hs.golden.json
+    test_resources/Comment/16-haddock-style-change.hs
+    test_resources/Comment/16-haddock-style-change.hs.golden.json
+    test_resources/Comment/17-comment-inside-string.hs
+    test_resources/Comment/17-comment-inside-string.hs.golden.json
+    test_resources/Comment/18-language-pragma.hs
+    test_resources/Comment/18-language-pragma.hs.golden.json
+    test_resources/Comment/19-top-of-file.hs
+    test_resources/Comment/19-top-of-file.hs.golden.json
+    test_resources/Comment/20-end-of-file.hs
+    test_resources/Comment/20-end-of-file.hs.golden.json
+    test_resources/Comment/21-suppression-reason-runs-to-end-of-comment.hs
+    test_resources/Comment/21-suppression-reason-runs-to-end-of-comment.hs.golden.json
+    test_resources/Comment/22-suppression-reason-ended-by-empty-line.hs
+    test_resources/Comment/22-suppression-reason-ended-by-empty-line.hs.golden.json
+    test_resources/Comment/23-suppression-reason-then-more-comment.hs
+    test_resources/Comment/23-suppression-reason-then-more-comment.hs.golden.json
+    test_resources/Comment/24-above-a-multiline-block-comment.hs
+    test_resources/Comment/24-above-a-multiline-block-comment.hs.golden.json
+    test_resources/Comment/25-section-on-its-own-line-in-export-list.hs
+    test_resources/Comment/25-section-on-its-own-line-in-export-list.hs.golden.json
+    test_resources/Comment/26-block-comment-above-a-statement.hs
+    test_resources/Comment/26-block-comment-above-a-statement.hs.golden.json
+    test_resources/Example/clean/lonely/lonely.cabal
+    test_resources/Example/clean/lonely/src/Lonely.hs
+    test_resources/Example/clean/thing-gen/src/Thing/Gen.hs
+    test_resources/Example/clean/thing-gen/test/Main.hs
+    test_resources/Example/clean/thing-gen/test/ThingChecks.hs
+    test_resources/Example/clean/thing-gen/thing-gen.cabal
+    test_resources/Example/clean/thing/src/Thing.hs
+    test_resources/Example/clean/thing/thing.cabal
+    test_resources/Example/decided/hopinion.yaml
+    test_resources/Example/decided/thing/src/Thing.hs
+    test_resources/Example/decided/thing/thing.cabal
+    test_resources/Example/dirty.golden
+    test_resources/Example/dirty/lonely/lonely.cabal
+    test_resources/Example/dirty/lonely/src/Lonely.hs
+    test_resources/Example/dirty/thing-gen/src/Thing/Gen.hs
+    test_resources/Example/dirty/thing-gen/test/Main.hs
+    test_resources/Example/dirty/thing-gen/test/ThingChecks.hs
+    test_resources/Example/dirty/thing-gen/thing-gen.cabal
+    test_resources/Example/dirty/thing/src/Thing.hs
+    test_resources/Example/dirty/thing/thing.cabal
+    test_resources/Project/absent-module/thing/src/Thing.hs
+    test_resources/Project/absent-module/thing/thing.cabal
+    test_resources/Project/absent-source-dir/thing/src/Thing.hs
+    test_resources/Project/absent-source-dir/thing/thing.cabal
+    test_resources/Project/duplicate-package/first/src/Thing.hs
+    test_resources/Project/duplicate-package/first/thing.cabal
+    test_resources/Project/duplicate-package/second/src/Thing.hs
+    test_resources/Project/duplicate-package/second/thing.cabal
+    test_resources/Project/name-lookalike/results/thing/src/Thing.hs
+    test_resources/Project/name-lookalike/results/thing/thing.cabal
+    test_resources/Report/every-kind.golden
+    test_resources/Report/failure.golden
+    test_resources/Report/repo/thing/src/Stray.hs
+    test_resources/Report/repo/thing/src/Thing.hs
+    test_resources/Report/repo/thing/thing.cabal
+    test_resources/Rule/CommentBareTodo/bad-block-comment.hs
+    test_resources/Rule/CommentBareTodo/bad-block-comment.hs.golden
+    test_resources/Rule/CommentBareTodo/bad.hs
+    test_resources/Rule/CommentBareTodo/bad.hs.golden
+    test_resources/Rule/CommentBareTodo/good.hs
+    test_resources/Rule/CommentBareTodo/good.hs.golden
+    test_resources/Rule/HsGenValidInGenPackage/bad.golden
+    test_resources/Rule/HsGenValidInGenPackage/bad/thing-gen/src/Thing/Gen.hs
+    test_resources/Rule/HsGenValidInGenPackage/bad/thing-gen/thing-gen.cabal
+    test_resources/Rule/HsGenValidInGenPackage/bad/thing/src/Thing.hs
+    test_resources/Rule/HsGenValidInGenPackage/bad/thing/thing.cabal
+    test_resources/Rule/HsGenValidInGenPackage/good.golden
+    test_resources/Rule/HsGenValidInGenPackage/good/thing-gen/src/Thing/Gen.hs
+    test_resources/Rule/HsGenValidInGenPackage/good/thing-gen/thing-gen.cabal
+    test_resources/Rule/HsGenValidInGenPackage/good/thing/src/Thing.hs
+    test_resources/Rule/HsGenValidInGenPackage/good/thing/thing.cabal
+    test_resources/Rule/HsNoCustomShowRead/bad-read.hs
+    test_resources/Rule/HsNoCustomShowRead/bad-read.hs.golden
+    test_resources/Rule/HsNoCustomShowRead/bad-show.hs
+    test_resources/Rule/HsNoCustomShowRead/bad-show.hs.golden
+    test_resources/Rule/HsNoCustomShowRead/good.hs
+    test_resources/Rule/HsNoCustomShowRead/good.hs.golden
+    test_resources/Rule/HsNoFilePath/bad.hs
+    test_resources/Rule/HsNoFilePath/bad.hs.golden
+    test_resources/Rule/HsNoFilePath/good.hs
+    test_resources/Rule/HsNoFilePath/good.hs.golden
+    test_resources/Rule/TestGenValidSpecPerGenValid/bad.golden
+    test_resources/Rule/TestGenValidSpecPerGenValid/bad/lonely/lonely.cabal
+    test_resources/Rule/TestGenValidSpecPerGenValid/bad/lonely/src/Lonely.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/bad/thing-gen/src/Thing/Gen.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/bad/thing-gen/test/Main.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/bad/thing-gen/test/ThingChecks.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/bad/thing-gen/thing-gen.cabal
+    test_resources/Rule/TestGenValidSpecPerGenValid/bad/thing/src/Thing.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/bad/thing/src/Thing/Spliced.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/bad/thing/thing.cabal
+    test_resources/Rule/TestGenValidSpecPerGenValid/badQuasiQuotingTestSuite.golden
+    test_resources/Rule/TestGenValidSpecPerGenValid/badQuasiQuotingTestSuite/thing-gen/src/Thing/Gen.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/badQuasiQuotingTestSuite/thing-gen/test/Main.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/badQuasiQuotingTestSuite/thing-gen/test/ThingChecks.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/badQuasiQuotingTestSuite/thing-gen/thing-gen.cabal
+    test_resources/Rule/TestGenValidSpecPerGenValid/badQuasiQuotingTestSuite/thing/src/Thing.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/badQuasiQuotingTestSuite/thing/thing.cabal
+    test_resources/Rule/TestGenValidSpecPerGenValid/badSplicingLib.golden
+    test_resources/Rule/TestGenValidSpecPerGenValid/badSplicingLib/thing-gen/src/Thing/Gen.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/badSplicingLib/thing-gen/test/Main.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/badSplicingLib/thing-gen/test/ThingChecks.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/badSplicingLib/thing-gen/thing-gen.cabal
+    test_resources/Rule/TestGenValidSpecPerGenValid/badSplicingLib/thing/src/Thing.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/badSplicingLib/thing/thing.cabal
+    test_resources/Rule/TestGenValidSpecPerGenValid/good.golden
+    test_resources/Rule/TestGenValidSpecPerGenValid/good/lonely/lonely.cabal
+    test_resources/Rule/TestGenValidSpecPerGenValid/good/lonely/src/Lonely.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/good/thing-gen/src/Thing/Gen.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/good/thing-gen/test/Main.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/good/thing-gen/test/ThingChecks.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/good/thing-gen/thing-gen.cabal
+    test_resources/Rule/TestGenValidSpecPerGenValid/good/thing/src/Thing.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/good/thing/src/Thing/Spliced.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/good/thing/thing.cabal
+    test_resources/Rule/TestGenValidSpecPerGenValid/goodSplicingTestSuite.golden
+    test_resources/Rule/TestGenValidSpecPerGenValid/goodSplicingTestSuite/thing-gen/src/Thing/Gen.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/goodSplicingTestSuite/thing-gen/test/Main.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/goodSplicingTestSuite/thing-gen/test/ThingChecks.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/goodSplicingTestSuite/thing-gen/thing-gen.cabal
+    test_resources/Rule/TestGenValidSpecPerGenValid/goodSplicingTestSuite/thing/src/Thing.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/goodSplicingTestSuite/thing/thing.cabal
+    test_resources/Rule/TestGenValidSpecPerGenValid/goodTwoTestSuites.golden
+    test_resources/Rule/TestGenValidSpecPerGenValid/goodTwoTestSuites/thing-gen/src/Thing/Gen.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/goodTwoTestSuites/thing-gen/testa/Main.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/goodTwoTestSuites/thing-gen/testb/Main.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/goodTwoTestSuites/thing-gen/thing-gen.cabal
+    test_resources/Rule/TestGenValidSpecPerGenValid/goodTwoTestSuites/thing/src/Thing.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/goodTwoTestSuites/thing/thing.cabal
+    test_resources/Run/runs.golden
+    test_resources/Run/turned-off.golden
+
+library
+  exposed-modules:
+      Hopinion.Facts.Gen
+      Hopinion.Rule.Gen
+  other-modules:
+      Paths_hopinion_gen
+  hs-source-dirs:
+      src
+  ghc-options: -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates -Wpartial-fields -Widentities -Wredundant-constraints -Wcpp-undef -Wunused-packages
+  build-depends:
+      QuickCheck
+    , base >=4.7 && <5
+    , genvalidity
+    , genvalidity-aeson
+    , genvalidity-containers
+    , genvalidity-path
+    , genvalidity-text
+    , hopinion
+    , text
+  default-language: Haskell2010
+
+executable hopinion-example
+  main-is: Main.hs
+  other-modules:
+      Paths_hopinion_gen
+  hs-source-dirs:
+      app
+  ghc-options: -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates -Wpartial-fields -Widentities -Wredundant-constraints -Wcpp-undef -Wunused-packages -threaded -rtsopts -with-rtsopts=-N8
+  build-depends:
+      base >=4.7 && <5
+    , hopinion
+    , hopinion-gen
+  default-language: Haskell2010
+
+test-suite hopinion-test
+  type: exitcode-stdio-1.0
+  main-is: Main.hs
+  other-modules:
+      Hopinion.AnnotationSpec
+      Hopinion.ChoicesSpec
+      Hopinion.CommentSpec
+      Hopinion.CompiledSpec
+      Hopinion.ExampleSpec
+      Hopinion.FactsSpec
+      Hopinion.HieSpec
+      Hopinion.ProjectSpec
+      Hopinion.ReportSpec
+      Hopinion.RuleSpec
+      Hopinion.RunSpec
+      Hopinion.StoreSpec
+      Hopinion.TestResourcesSpec
+      Paths_hopinion_gen
+  hs-source-dirs:
+      test
+  ghc-options: -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates -Wpartial-fields -Widentities -Wredundant-constraints -Wcpp-undef -Wunused-packages -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:
+      ormolu:ormolu
+    , sydtest-discover:sydtest-discover
+  build-depends:
+      autodocodec-yaml
+    , base >=4.7 && <5
+    , containers
+    , filepath
+    , genvalidity-sydtest
+    , genvalidity-sydtest-aeson
+    , hopinion
+    , hopinion-gen
+    , hopinion-hie
+    , path
+    , path-io
+    , persistent
+    , process
+    , safe-coloured-text
+    , sydtest
+    , sydtest-aeson
+    , text
+    , yaml
+  default-language: Haskell2010

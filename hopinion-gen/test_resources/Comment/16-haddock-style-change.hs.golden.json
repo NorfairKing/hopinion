@@ -1,0 +1,38 @@
+[
+    {
+        "attachment": {
+            "decl": "resolveTarget"
+        },
+        "span": {
+            "end": {
+                "col": 26,
+                "line": 3
+            },
+            "file": "test_resources/Comment/16-haddock-style-change.hs",
+            "start": {
+                "col": 1,
+                "line": 3
+            }
+        },
+        "style": "haddock-next",
+        "text": "The documented part."
+    },
+    {
+        "attachment": {
+            "decl": "resolveTarget"
+        },
+        "span": {
+            "end": {
+                "col": 26,
+                "line": 4
+            },
+            "file": "test_resources/Comment/16-haddock-style-change.hs",
+            "start": {
+                "col": 1,
+                "line": 4
+            }
+        },
+        "style": "line",
+        "text": "The undocumented part."
+    }
+]

@@ -1,0 +1,18 @@
+[
+    {
+        "attachment": "unattached",
+        "span": {
+            "end": {
+                "col": 36,
+                "line": 6
+            },
+            "file": "test_resources/Comment/20-end-of-file.hs",
+            "start": {
+                "col": 1,
+                "line": 6
+            }
+        },
+        "style": "line",
+        "text": "The very last thing in the file."
+    }
+]

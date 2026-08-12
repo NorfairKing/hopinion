@@ -1,0 +1,54 @@
+[error HsGenValidInGenPackage]: A GenValid instance outside a -gen package.
+     ╭──▶ lonely/src/Lonely.hs@8:1-8:25
+     │
+   8 │ instance GenValid Orphan
+     • ┬───────────────────────
+     • ╰╸ A GenValid instance in a package's own library gets compiled into the executable. Move it to the matching -gen package.
+     •
+     │ Note: A generator is test code, and an instance in the library is linked into everything that depends on the library, so the shipped executable carries QuickCheck and the generators with it. The -gen package exists so that dependency stops at the test suite, which is also what keeps a generator free to be as slow or as elaborate as the property needs.
+     │ Hint: To suppress, write this directly above line 8 of lonely/src/Lonely.hs, and say why: -- [allow:HsGenValidInGenPackage] <reason>
+─────╯
+
+[error TestGenValidSpecPerGenValid]: No genValidSpec @Orphan anywhere, and there is no lonely-gen for it to be written in.
+     ╭──▶ lonely/src/Lonely.hs@8:1-8:25
+     │
+   8 │ instance GenValid Orphan
+     • ┬───────────────────────
+     • ╰╸ A GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.
+     •
+     │ Note: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.
+     │ Hint: To suppress, write this directly above line 8 of lonely/src/Lonely.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>
+─────╯
+
+[error CommentBareTodo]: A bare TODO. Reference an issue or a URL, or do it.
+     ╭──▶ thing/src/Thing.hs@3:1-3:58
+     │
+   3 │ -- TODO a bare marker, which is the module-level finding.
+     • ┬────────────────────────────────────────────────────────
+     • ╰╸ A TODO needs an issue reference or a URL saying where the follow-up is tracked.
+     •
+     │ Note: A TODO nothing points at is a note nobody is holding. It reads like a plan, so the next reader assumes it is one, and it goes stale in place because nothing brings it back up. A reference makes it findable from wherever the work is actually tracked; doing it makes the note unnecessary. If it is neither tracked nor worth doing, the honest version is a comment that says what is missing and what would make it worth doing.
+     │ Hint: To suppress, write this directly above line 4 of thing/src/Thing.hs, and say why: -- [allow:CommentBareTodo] <reason>
+─────╯
+
+[error HsGenValidInGenPackage]: A GenValid instance outside a -gen package.
+     ╭──▶ thing/src/Thing.hs@9:1-9:25
+     │
+   9 │ instance GenValid Widget
+     • ┬───────────────────────
+     • ╰╸ A GenValid instance in a package's own library gets compiled into the executable. Move it to the matching -gen package.
+     •
+     │ Note: A generator is test code, and an instance in the library is linked into everything that depends on the library, so the shipped executable carries QuickCheck and the generators with it. The -gen package exists so that dependency stops at the test suite, which is also what keeps a generator free to be as slow or as elaborate as the property needs.
+     │ Hint: To suppress, write this directly above line 9 of thing/src/Thing.hs, and say why: -- [allow:HsGenValidInGenPackage] <reason>
+─────╯
+
+[error TestGenValidSpecPerGenValid]: No genValidSpec @Widget anywhere in thing-gen's test suite.
+     ╭──▶ thing/src/Thing.hs@9:1-9:25
+     │
+   9 │ instance GenValid Widget
+     • ┬───────────────────────
+     • ╰╸ A GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.
+     •
+     │ Note: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.
+     │ Hint: To suppress, write this directly above line 9 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>
+─────╯

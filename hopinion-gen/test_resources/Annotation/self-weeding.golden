@@ -1,0 +1,51 @@
+[error BROKEN_SUPPRESSION]: This file is in no cabal component, so no suppression in it is ever judged. Add the module to its component, or delete the file.
+     ╭──▶ thing/src/Orphan.hs@1:1-1:20
+     │
+   1 │ module Orphan where
+     • ┬──────────────────
+     • ╰╸ this suppression
+─────╯
+
+[error BROKEN_SUPPRESSION]: Unknown rule id: NoSuchRule
+     ╭──▶ thing/src/Thing.hs@13:1-13:56
+     │
+  13 │ -- [allow:NoSuchRule] Names a rule that does not exist.
+     • ┬──────────────────────────────────────────────────────
+     • ╰╸ this suppression
+─────╯
+
+[error BROKEN_SUPPRESSION]: A suppression with no reason is a config exception with extra steps.
+     ╭──▶ thing/src/Thing.hs@17:1-17:27
+     │
+  17 │ -- [allow:CommentBareTodo]
+     • ┬─────────────────────────
+     • ╰╸ this suppression
+─────╯
+
+[error BROKEN_SUPPRESSION]: A bare [allow] would silently absorb rules added later. Name the rule.
+     ╭──▶ thing/src/Thing.hs@21:1-21:40
+     │
+  21 │ -- [allow] Does not name a rule at all.
+     • ┬──────────────────────────────────────
+     • ╰╸ this suppression
+─────╯
+
+[error UNUSED_SUPPRESSION]: [allow:CommentBareTodo] suppresses nothing.
+     ╭──▶ thing/src/Thing.hs@5:1-5:75
+     │
+   5 │ -- [allow:CommentBareTodo] Redundant, and reported as suppressing nothing.
+     • ┬─────────────────────────────────────────────────────────────────────────
+     • ╰╸ nothing here is reported
+     •
+     │ Hint: Remove it. A suppression that has outlived its reason is worse than no suppression.
+─────╯
+
+[error UNUSED_SUPPRESSION]: [allow:CommentBareTodo] suppresses nothing.
+     ╭──▶ thing/src/Thing.hs@9:1-9:62
+     │
+   9 │ -- [allow:CommentBareTodo] There is nothing here to suppress.
+     • ┬────────────────────────────────────────────────────────────
+     • ╰╸ nothing here is reported
+     •
+     │ Hint: Remove it. A suppression that has outlived its reason is worse than no suppression.
+─────╯

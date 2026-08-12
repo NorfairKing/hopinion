@@ -1,0 +1,38 @@
+[
+    {
+        "attachment": {
+            "decl": "target"
+        },
+        "span": {
+            "end": {
+                "col": 33,
+                "line": 3
+            },
+            "file": "test_resources/Comment/24-above-a-multiline-block-comment.hs",
+            "start": {
+                "col": 1,
+                "line": 3
+            }
+        },
+        "style": "line",
+        "text": "This comment is about target."
+    },
+    {
+        "attachment": {
+            "decl": "target"
+        },
+        "span": {
+            "end": {
+                "col": 37,
+                "line": 5
+            },
+            "file": "test_resources/Comment/24-above-a-multiline-block-comment.hs",
+            "start": {
+                "col": 1,
+                "line": 4
+            }
+        },
+        "style": "block",
+        "text": "A block comment\n   whose second line is not code."
+    }
+]

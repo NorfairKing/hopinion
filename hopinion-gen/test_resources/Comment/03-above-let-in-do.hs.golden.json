@@ -1,0 +1,31 @@
+[
+    {
+        "attachment": {
+            "decl": "run",
+            "statement": {
+                "end": {
+                    "col": 12,
+                    "line": 6
+                },
+                "file": "test_resources/Comment/03-above-let-in-do.hs",
+                "start": {
+                    "col": 1,
+                    "line": 5
+                }
+            }
+        },
+        "span": {
+            "end": {
+                "col": 33,
+                "line": 5
+            },
+            "file": "test_resources/Comment/03-above-let-in-do.hs",
+            "start": {
+                "col": 3,
+                "line": 5
+            }
+        },
+        "style": "line",
+        "text": "The let is about to happen."
+    }
+]

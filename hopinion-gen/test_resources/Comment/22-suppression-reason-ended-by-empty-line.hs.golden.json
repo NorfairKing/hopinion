@@ -1,0 +1,20 @@
+[
+    {
+        "attachment": {
+            "decl": "second"
+        },
+        "span": {
+            "end": {
+                "col": 3,
+                "line": 5
+            },
+            "file": "test_resources/Comment/22-suppression-reason-ended-by-empty-line.hs",
+            "start": {
+                "col": 1,
+                "line": 3
+            }
+        },
+        "style": "line",
+        "text": "[allow:CommentBareTodo] reason\nends here\n"
+    }
+]

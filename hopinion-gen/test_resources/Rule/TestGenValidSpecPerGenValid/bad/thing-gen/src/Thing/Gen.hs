@@ -1,0 +1,1 @@
+module Thing.Gen () where

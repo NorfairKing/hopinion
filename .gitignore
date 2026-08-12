@@ -1,0 +1,9 @@
+dist-newstyle/
+.stack-work/
+result
+result-*
+
+# The global ignore has result*, which hides a test resource directory called
+# results as well as the build outputs it means. That directory is the case for
+# the discovery walk not asking about a name by prefix, so it has to be here.
+!hopinion-gen/test_resources/Project/name-lookalike/results/

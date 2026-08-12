@@ -1,0 +1,31 @@
+[
+    {
+        "attachment": {
+            "decl": "run",
+            "statement": {
+                "end": {
+                    "col": 19,
+                    "line": 5
+                },
+                "file": "test_resources/Comment/07-end-of-do-block.hs",
+                "start": {
+                    "col": 1,
+                    "line": 5
+                }
+            }
+        },
+        "span": {
+            "end": {
+                "col": 27,
+                "line": 6
+            },
+            "file": "test_resources/Comment/07-end-of-do-block.hs",
+            "start": {
+                "col": 3,
+                "line": 6
+            }
+        },
+        "style": "line",
+        "text": "Nothing follows this."
+    }
+]
