@@ -29,7 +29,16 @@ import GHC.Types.SrcLoc (GenLocated (..), unLoc)
 import qualified GHC.Types.SrcLoc as SrcLoc
 import Hopinion.Annotation (annotationsOf)
 import Hopinion.Comment
-import Hopinion.Facts
+import Hopinion.Facts.Component
+import Hopinion.Facts.Concat
+import Hopinion.Facts.Decl
+import Hopinion.Facts.Instance
+import Hopinion.Facts.Module
+import Hopinion.Facts.Name
+import Hopinion.Facts.Occurrence
+import Hopinion.Facts.Outcome
+import Hopinion.Facts.Place
+import Hopinion.Facts.TemplateHaskell
 import Hopinion.Parse
 import Hopinion.Rule (RuleSet)
 import Path (File, Path, Rel)

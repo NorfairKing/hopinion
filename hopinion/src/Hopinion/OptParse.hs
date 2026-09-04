@@ -16,7 +16,7 @@ where
 import Data.List.NonEmpty (NonEmpty (..))
 import Data.Text (Text)
 import qualified Data.Text as T
-import Hopinion.Facts (ComponentKind (..), componentKindText, parseComponentKind)
+import Hopinion.Facts.Component (ComponentKind (..), componentKindText, parseComponentKind)
 import Hopinion.Rule.Id (RuleId, parseRuleId)
 import OptEnvConf
 import Path (Dir, File, Path, Rel, SomeBase (..), parseRelDir, parseRelFile, parseSomeDir, parseSomeFile, reldir)

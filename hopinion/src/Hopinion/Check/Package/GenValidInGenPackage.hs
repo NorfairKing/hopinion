@@ -20,7 +20,12 @@ module Hopinion.Check.Package.GenValidInGenPackage (rule, GeneratorFact (..)) wh
 import Database.Esqueleto.Experimental
 import Database.Persist.TH
 import Hopinion.Compiled (CompiledModules)
-import Hopinion.Facts
+import Hopinion.Facts.Component
+import Hopinion.Facts.Instance
+import Hopinion.Facts.Module
+import Hopinion.Facts.Name
+import Hopinion.Facts.Package
+import Hopinion.Facts.Place
 import Hopinion.Rule
 import Hopinion.Rule.Id
 import Hopinion.Store

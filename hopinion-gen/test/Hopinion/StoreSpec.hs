@@ -8,7 +8,12 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import Database.Persist (get, insertKey)
 import Database.Persist.Sql (rawExecute)
-import Hopinion.Facts
+import Hopinion.Facts.Name
+import Hopinion.Facts.Outcome
+import Hopinion.Facts.Package
+import Hopinion.Facts.Place
+import Hopinion.Facts.Suppression
+import Hopinion.Facts.Version
 import Hopinion.Rule.Id (RuleId (..))
 import Hopinion.Store
 import Path (File, Path, Rel, relfile, toFilePath, (</>))

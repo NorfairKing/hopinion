@@ -29,8 +29,8 @@ import Data.Maybe (isJust)
 import qualified Data.Set as S
 import Data.Text (Text)
 import qualified Data.Text as T
-import Hopinion.Facts
-import Hopinion.Hie (readCompiledModule, readDeclaredInstances, renderArtifactUnreadable)
+import Hopinion.Facts.Name
+import Hopinion.Hie (CompiledModule (..), DeclaredInstance (..), readCompiledModule, readDeclaredInstances, renderArtifactUnreadable)
 import Path (Abs, Dir, File, Path, Rel, parseRelFile, toFilePath, (</>))
 import Path.IO (forgivingAbsence, getModificationTime)
 import qualified System.FilePath as FP

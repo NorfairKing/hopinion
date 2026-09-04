@@ -4,7 +4,8 @@
 module Hopinion.ProjectSpec (spec) where
 
 import Data.List (sort)
-import Hopinion.Facts (ComponentName (..), ModuleKey (..), ModuleRef (..), PackageName (..))
+import Hopinion.Facts.Name (ComponentName (..), ModuleKey (..), PackageName (..))
+import Hopinion.Facts.Place (ModuleRef (..))
 import Hopinion.Project
 import Hopinion.Report
 import Hopinion.Rule.Gen (shippedRules)

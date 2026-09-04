@@ -14,7 +14,9 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import Hopinion.Choices (ChoicesFileError, choicesDisabled, noChoices, readChoicesFrom, renderChoicesFileError)
 import Hopinion.Comment
-import Hopinion.Facts
+import Hopinion.Facts.Module
+import Hopinion.Facts.Name
+import Hopinion.Facts.Place
 import Hopinion.OptParse
 import Hopinion.Project (SourceRoot (..))
 import Hopinion.Report

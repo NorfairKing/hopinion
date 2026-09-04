@@ -10,8 +10,10 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import Hopinion.Comment
-import Hopinion.Facts
+import Hopinion.Facts.Component
 import Hopinion.Facts.Gen ()
+import Hopinion.Facts.Module
+import Hopinion.Facts.Name
 import Hopinion.Rule.Gen (shippedRules)
 import Hopinion.Run (factsForFile, factsForSource)
 import Path (Dir, File, Path, Rel, addExtension, fileExtension, filename, parent, parseRelFile, reldir, relfile, toFilePath, (</>))

@@ -5,8 +5,8 @@
 , path, path-io, path-pieces, persistent, persistent-sqlite
 , prettyprinter, prettyprinter-ansi-terminal, resourcet
 , safe-coloured-text, safe-coloured-text-terminfo, syb, text
-, unliftio, unordered-containers, validity, validity-aeson
-, validity-containers, validity-path, validity-text, yaml
+, unliftio, unordered-containers, validity, validity-containers
+, validity-path, validity-text, yaml
 }:
 mkDerivation {
   pname = "hopinion";
@@ -21,8 +21,8 @@ mkDerivation {
     opt-env-conf path path-io path-pieces persistent persistent-sqlite
     prettyprinter prettyprinter-ansi-terminal resourcet
     safe-coloured-text safe-coloured-text-terminfo syb text unliftio
-    unordered-containers validity validity-aeson validity-containers
-    validity-path validity-text yaml
+    unordered-containers validity validity-containers validity-path
+    validity-text yaml
   ];
   executableHaskellDepends = [ base ];
   license = "unknown";

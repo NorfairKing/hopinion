@@ -34,7 +34,9 @@ import Data.Validity.Containers ()
 import qualified Error.Diagnose as D
 import GHC.Generics (Generic)
 import Hopinion.Annotation (OverBroad (..), Unused (..), suppressionFor, suppressionIsFileScoped)
-import Hopinion.Facts
+import Hopinion.Facts.Name
+import Hopinion.Facts.Place
+import Hopinion.Facts.Suppression
 import Hopinion.Project (SourceRoot, readSource, sourceFileIn)
 import Hopinion.Report
 import Hopinion.Rule

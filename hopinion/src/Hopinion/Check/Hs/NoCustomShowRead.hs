@@ -3,7 +3,8 @@
 module Hopinion.Check.Hs.NoCustomShowRead (rule) where
 
 import qualified Data.Text as T
-import Hopinion.Facts
+import Hopinion.Facts.Instance
+import Hopinion.Facts.Module
 import Hopinion.Rule
 import Hopinion.Rule.Id
 

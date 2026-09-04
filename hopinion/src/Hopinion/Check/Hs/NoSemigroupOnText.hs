@@ -2,7 +2,8 @@
 
 module Hopinion.Check.Hs.NoSemigroupOnText (rule) where
 
-import Hopinion.Facts
+import Hopinion.Facts.Concat
+import Hopinion.Facts.Module
 import Hopinion.Rule
 import Hopinion.Rule.Id
 

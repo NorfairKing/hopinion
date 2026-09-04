@@ -31,7 +31,15 @@ import qualified Data.Text as T
 import Database.Esqueleto.Experimental
 import Database.Persist.TH
 import Hopinion.Compiled (CompiledModules, couldGenerateUseOf, declaredInstancesOf)
-import Hopinion.Facts
+import Hopinion.Facts.Component
+import Hopinion.Facts.Instance
+import Hopinion.Facts.Module
+import Hopinion.Facts.Name
+import Hopinion.Facts.Package
+import Hopinion.Facts.Place
+import Hopinion.Facts.TemplateHaskell
+import Hopinion.Facts.TypeApp
+import Hopinion.Hie (DeclaredInstance (..))
 import Hopinion.Rule
 import Hopinion.Rule.Id
 import Hopinion.Store

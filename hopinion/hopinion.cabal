@@ -22,12 +22,21 @@ library
       Hopinion.Comment
       Hopinion.Compiled
       Hopinion.Extract
-      Hopinion.Facts
+      Hopinion.Facts.Component
+      Hopinion.Facts.Concat
       Hopinion.Facts.Decl
+      Hopinion.Facts.Instance
+      Hopinion.Facts.Module
       Hopinion.Facts.Name
+      Hopinion.Facts.Occurrence
+      Hopinion.Facts.Outcome
+      Hopinion.Facts.Package
       Hopinion.Facts.Persist
       Hopinion.Facts.Place
       Hopinion.Facts.Suppression
+      Hopinion.Facts.TemplateHaskell
+      Hopinion.Facts.TypeApp
+      Hopinion.Facts.Version
       Hopinion.OptParse
       Hopinion.Parse
       Hopinion.Project
@@ -77,7 +86,6 @@ library
     , unliftio
     , unordered-containers
     , validity
-    , validity-aeson
     , validity-containers
     , validity-path
     , validity-text

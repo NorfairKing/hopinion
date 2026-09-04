@@ -7,7 +7,7 @@ import Data.Char (isAlphaNum, isDigit, isUpper)
 import Data.Text (Text)
 import qualified Data.Text as T
 import Hopinion.Comment
-import Hopinion.Facts
+import Hopinion.Facts.Module
 import Hopinion.Rule
 import Hopinion.Rule.Id
 
