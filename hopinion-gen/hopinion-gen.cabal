@@ -148,6 +148,12 @@ extra-source-files:
     test_resources/Rule/HsNoFilePath/bad.hs.golden
     test_resources/Rule/HsNoFilePath/good.hs
     test_resources/Rule/HsNoFilePath/good.hs.golden
+    test_resources/Rule/HsNoSemigroupOnText/bad.hs
+    test_resources/Rule/HsNoSemigroupOnText/bad.hs.golden
+    test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs
+    test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs.golden
+    test_resources/Rule/HsNoSemigroupOnText/good.hs
+    test_resources/Rule/HsNoSemigroupOnText/good.hs.golden
     test_resources/Rule/TestGenValidSpecPerGenValid/bad.golden
     test_resources/Rule/TestGenValidSpecPerGenValid/bad/lonely/lonely.cabal
     test_resources/Rule/TestGenValidSpecPerGenValid/bad/lonely/src/Lonely.hs

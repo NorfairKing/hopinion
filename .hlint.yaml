@@ -151,3 +151,9 @@
 # Rule ids are PascalCase because they are what a reader types into an
 # annotation, so the constructors that carry them are too.
 - ignore: { name: "Use camelCase" }
+
+# The standards say to put the pieces of a concatenation in a list and call
+# concat, unwords or unlines, and HsNoSemigroupOnText enforces it. This hint
+# rewrites exactly that back into the operator, so the two cannot both be
+# satisfied and the standard is the one that wins here.
+- ignore: { name: "Use ++" }

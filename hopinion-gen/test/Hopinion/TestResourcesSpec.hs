@@ -32,8 +32,8 @@ spec = do
 
 ownedSpec :: [Path Rel File] -> Path Rel Dir -> Spec
 ownedSpec specs entry =
-  it (unwords [name, "belongs to Hopinion." ++ name ++ "Spec"]) $ do
-    expected <- parseRelFile (name ++ "Spec.hs")
+  it (unwords [name, concat ["belongs to Hopinion.", name, "Spec"]]) $ do
+    expected <- parseRelFile (concat [name, "Spec.hs"])
     if expected `elem` specs
       then pure ()
       else

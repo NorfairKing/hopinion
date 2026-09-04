@@ -4,8 +4,8 @@
 , hopinion-hie, http-api-data, lib, monad-logger, mtl, opt-env-conf
 , path, path-io, path-pieces, persistent, persistent-sqlite
 , prettyprinter, prettyprinter-ansi-terminal, resourcet
-, safe-coloured-text, safe-coloured-text-terminfo, text, unliftio
-, unordered-containers, validity, validity-aeson
+, safe-coloured-text, safe-coloured-text-terminfo, syb, text
+, unliftio, unordered-containers, validity, validity-aeson
 , validity-containers, validity-path, validity-text, yaml
 }:
 mkDerivation {
@@ -20,7 +20,7 @@ mkDerivation {
     ghc-lib-parser-ex hopinion-hie http-api-data monad-logger mtl
     opt-env-conf path path-io path-pieces persistent persistent-sqlite
     prettyprinter prettyprinter-ansi-terminal resourcet
-    safe-coloured-text safe-coloured-text-terminfo text unliftio
+    safe-coloured-text safe-coloured-text-terminfo syb text unliftio
     unordered-containers validity validity-aeson validity-containers
     validity-path validity-text yaml
   ];

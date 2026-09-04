@@ -3,8 +3,9 @@
 Every rule this tool could enforce that it does not enforce yet, sorted by how
 it can be enforced. A rule that ships leaves this file: what is here is work.
 
-The five that ship are `CommentBareTodo`, `HsNoCustomShowRead`, `HsNoFilePath`,
-`HsGenValidInGenPackage` and `TestGenValidSpecPerGenValid`.
+The six that ship are `CommentBareTodo`, `HsNoCustomShowRead`, `HsNoFilePath`,
+`HsNoSemigroupOnText`, `HsGenValidInGenPackage` and
+`TestGenValidSpecPerGenValid`.
 
 ## How to read this
 
@@ -99,7 +100,6 @@ Rule ids are stable. They are what a check module cites and what an
 | `HsNoLenses` | Do not use lenses if you can help it | B | layout | warn | lens in build-depends, or a `Control.Lens` import |
 | `HsFewExtensions` | Use few language extensions | B | config | error | Extension outside the project allowlist. The allowlist is a config parameter; a one-off extension is annotated at its pragma |
 | `HsPreferText` | Prefer `Text`; `String` for errors and interop only | C | types | ratchet | Per-occurrence, annotated at the `String` it concerns. High volume at adoption |
-| `HsNoSemigroupOnText` | Do not use `<>` to concatenate strings or text | B | types | error | Needs the instantiated type at the use site. hlint structurally cannot do this |
 | `HsTextViaPack` | Build `Text` with `unwords` on `String`s, then pack | B | syntax | warn | Flag `Data.Text.unwords` / `Data.Text.unlines` uses |
 | `HsStrictFields` | Strict fields by default; document any lazy one | B | comment | error | Lazy field with no attached comment. Nice interplay with the comment tier |
 | `HsExplicitImports` | Explicit import lists or qualified imports | A | | | GHC `-Wmissing-import-lists`, hlint |
@@ -212,12 +212,12 @@ combinator.
 `CommentSectionLabelInFunction`, `HsNoSectionHeadersInCode`,
 `HsStrictFields`
 
-**F5 DeclPredicate** (17). A predicate on one declaration. The largest family, so
+**F5 DeclPredicate** (16). A predicate on one declaration. The largest family, so
 its combinator matters most.
 `HsNewtypeNotSynonym`, `HsMultilineRecord`,
 `HsRecordFieldPrefix`, `HsLambdaCase`, `HsLetOverWhere`,
 `HsOneLetPerBinding`, `HsLocalTypeSignatures`, `HsWhereHoldingLogic`,
-`HsNoDomainBool`, `HsTextViaPack`, `HsNoSemigroupOnText`,
+`HsNoDomainBool`, `HsTextViaPack`,
 `HsAppOnlyMain`, `HsTestOneSpecPerFile`, `TestExactAssertions`,
 `TestAssertWholeValues`, `TestNoTestHelpers`, `TestTestableTopLevel`
 

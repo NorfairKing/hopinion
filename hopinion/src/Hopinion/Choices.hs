@@ -130,7 +130,7 @@ renderChoicesFileError = \case
     T.pack
       ( unwords
           [ "There is no file at",
-            toFilePath path ++ ", and it was named as this repository's",
+            concat [toFilePath path, ", and it was named as this repository's"],
             toFilePath choicesFile
           ]
       )
@@ -142,7 +142,7 @@ renderChoicesFileError = \case
       SettingsNobodyKnows unknown ->
         unwords
           [ "sets",
-            T.unpack (T.intercalate ", " (NE.toList unknown)) ++ ",",
+            concat [T.unpack (T.intercalate ", " (NE.toList unknown)), ","],
             "which mean nothing here. A setting this file does not know is a decision",
             "nothing acts on, so it is refused rather than ignored. It knows:",
             T.unpack (T.intercalate ", " knownKeys)

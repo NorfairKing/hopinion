@@ -360,10 +360,10 @@ findingFor home m =
           ( unwords
               ( [ "No",
                   T.unpack obligationCombinator,
-                  "@" ++ T.unpack (typeHeadText (obligationMadeTypeHead m))
+                  concat ["@", T.unpack (typeHeadText (obligationMadeTypeHead m))]
                 ]
                   ++ case home of
-                    GenPackage gen -> ["anywhere in", T.unpack (packageNameText gen) ++ "'s test suite."]
+                    GenPackage gen -> ["anywhere in", concat [T.unpack (packageNameText gen), "'s test suite."]]
                     NoGenPackage gen ->
                       [ "anywhere, and there is no",
                         T.unpack (packageNameText gen),

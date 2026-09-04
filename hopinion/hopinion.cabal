@@ -15,6 +15,7 @@ library
       Hopinion.Check.Comment.BareTodo
       Hopinion.Check.Hs.NoCustomShowRead
       Hopinion.Check.Hs.NoFilePath
+      Hopinion.Check.Hs.NoSemigroupOnText
       Hopinion.Check.Package.GenValidInGenPackage
       Hopinion.Check.Project.GenValidSpecPerGenValid
       Hopinion.Choices
@@ -71,6 +72,7 @@ library
     , resourcet
     , safe-coloured-text
     , safe-coloured-text-terminfo
+    , syb
     , text
     , unliftio
     , unordered-containers
