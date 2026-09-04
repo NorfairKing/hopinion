@@ -14,8 +14,11 @@ extra-source-files:
     test_resources/Annotation/misplaced/thing/src/OverTheHeader.hs
     test_resources/Annotation/misplaced/thing/thing.cabal
     test_resources/Annotation/self-weeding.golden
+    test_resources/Annotation/self-weeding/thing/src/Bare.hs
+    test_resources/Annotation/self-weeding/thing/src/Generated.hsc
     test_resources/Annotation/self-weeding/thing/src/Orphan.hs
     test_resources/Annotation/self-weeding/thing/src/Thing.hs
+    test_resources/Annotation/self-weeding/thing/src/Unclaimed.hsc
     test_resources/Annotation/self-weeding/thing/thing.cabal
     test_resources/Annotation/suppressed/thing-gen/src/Thing/Gen.hs
     test_resources/Annotation/suppressed/thing-gen/test/Main.hs

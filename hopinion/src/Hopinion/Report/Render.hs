@@ -33,7 +33,7 @@ import qualified Data.Text.IO as TIO
 import Data.Validity.Containers ()
 import qualified Error.Diagnose as D
 import GHC.Generics (Generic)
-import Hopinion.Annotation (OverBroad (..), suppressionFor, suppressionIsFileScoped)
+import Hopinion.Annotation (OverBroad (..), Unused (..), suppressionFor, suppressionIsFileScoped)
 import Hopinion.Facts
 import Hopinion.Project (SourceRoot, readSource, sourceFileIn)
 import Hopinion.Report
@@ -61,7 +61,7 @@ reportFiles report =
 complaintSpan :: Complaint -> Maybe Span
 complaintSpan = \case
   ComplaintFinding f -> Just (findingSpan f)
-  ComplaintUnused a -> Just (annotationFactSpan a)
+  ComplaintUnused u -> Just (unusedSpan u)
   ComplaintOverBroad o -> Just (annotationFactSpan (overBroadAnnotation o))
   ComplaintProblem p -> Just (annotationProblemSpan p)
   ComplaintFailure _ -> Nothing
@@ -144,7 +144,7 @@ complaintReport rs sources = \case
   ComplaintFailure f -> failureReport (renderFailure f)
   ComplaintProblem p -> problemReport sources p
   ComplaintFinding f -> findingReport rs sources f
-  ComplaintUnused a -> unusedReport sources a
+  ComplaintUnused u -> unusedReport sources u
   ComplaintOverBroad o -> overBroadReport sources o
 
 -- | No marker, for the reason 'Hopinion.Report.Complaint' gives: there is no
@@ -241,12 +241,12 @@ suppressionLineIn src sp = go (positionLine (spanStart sp))
       let s = T.strip line
        in T.isPrefixOf "--" s || T.isPrefixOf "{-" s
 
-unusedReport :: SourceMap -> AnnotationFact -> D.Report String
-unusedReport sources a =
+unusedReport :: SourceMap -> Unused -> D.Report String
+unusedReport sources u =
   D.Err
     (Just "UNUSED_SUPPRESSION")
-    (concat ["[allow:", T.unpack (ruleIdText (annotationFactRule a)), "] suppresses nothing."])
-    [(positionOf sources (annotationFactSpan a), D.This "nothing here is reported")]
+    (concat ["[allow:", T.unpack (ruleIdText (unusedRule u)), "] suppresses nothing."])
+    [(positionOf sources (unusedSpan u), D.This "nothing here is reported")]
     [D.Hint "Remove it. A suppression that has outlived its reason is worse than no suppression."]
 
 overBroadReport :: SourceMap -> OverBroad -> D.Report String

@@ -36,6 +36,22 @@ one finding at once, or it is written somewhere it cannot attach. Remove any of
 those three and suppressions start accumulating silently, which is the failure
 mode every ratchet has.
 
+The first has two ways of being true and one complaint. A rule can run over a
+file and report nothing the suppression could answer for, and a rule can be one
+that is never run over that file at all: a file under a source directory no
+component claims, or a preprocessor's input, whose Haskell only exists at build
+time. The second is the quieter, since nothing there is parsed and so nothing
+there is judged, but the verdict is the same one and the report does not
+distinguish them. Which file it happened to be written in is the tool's problem;
+what the reader is owed is which suppression suppresses nothing.
+
+Reaching that verdict without a parser is a scan, and every step the scan can
+share with the parser it shares: what announces a suppression, how the rule is
+read out of it, and whether this run makes that rule. One the scan finds and
+cannot name a rule for fails the way it would in a file that is read. A file
+under no source directory at all is outside what a package run reads and is
+therefore not covered.
+
 **A suppression the report offers must be one the parser accepts.** The report
 tells a reader what to write and where; if the parser then rejects it, the tool
 has lied. `suppressionIsFileScoped` is the one place that decides, and both the

@@ -447,17 +447,21 @@ extensionText = \case
   CabalExt.DisableExtension k -> T.pack ("No" ++ show k)
   CabalExt.UnknownExtension s -> T.pack s
 
--- | Haskell files under a package's source directories that no component
+-- | Module source files under a package's source directories that no component
 -- claims.
 --
--- These are invisible to every layer, so a suppression written in one can
--- neither be used nor reported unused, which is the silent accumulation the
--- annotation mechanism exists to prevent.
+-- These are invisible to every layer, so a suppression written in one would go
+-- unreported by all of them, which is the silent accumulation the annotation
+-- mechanism exists to prevent.
+--
+-- A preprocessor's input counts, spelling and all. Which extension a file has
+-- decides whether hopinion reads it, never whether somebody could write a
+-- suppression in it.
 unclaimedSourceFiles :: PackageModel -> IO [Path Abs File]
 unclaimedSourceFiles pm = do
   let claimed = S.fromList [moduleModelFile m | c <- packageModelComponents pm, m <- componentModelModules c]
   let dirs = S.toList (S.fromList (concatMap componentModelSourceDirs (packageModelComponents pm)))
-  present <- concat <$> traverse (haskellFilesUnder (packageModelDataPaths pm)) dirs
+  present <- concat <$> traverse (moduleSourceFilesUnder (packageModelDataPaths pm)) dirs
   pure (S.toAscList (S.difference (S.fromList present) claimed))
 
 -- | Lenient decoding, because an undecodable byte sequence is not the same
@@ -478,8 +482,8 @@ isDataPath dataPaths dir = any (\d -> d == dir || isProperPrefixOf d dir) dataPa
 -- Two kinds of directory are somebody else's: one holding a cabal file is its
 -- own package, and one the cabal file declares as data holds data. A declared
 -- source directory need not exist, so absence is a normal answer.
-haskellFilesUnder :: [Path Abs Dir] -> Path Abs Dir -> IO [Path Abs File]
-haskellFilesUnder dataPaths dir
+moduleSourceFilesUnder :: [Path Abs Dir] -> Path Abs Dir -> IO [Path Abs File]
+moduleSourceFilesUnder dataPaths dir
   | isDataPath dataPaths dir = pure []
   | otherwise = do
       listed <- forgivingAbsence (listDir dir)
@@ -488,10 +492,10 @@ haskellFilesUnder dataPaths dir
         Just (subs, files)
           | any (\f -> fileExtension f == Just ".cabal") files -> pure []
           | otherwise -> do
-              deeper <- traverse (haskellFilesUnder dataPaths) subs
-              pure (filter isHaskellSource files ++ concat deeper)
+              deeper <- traverse (moduleSourceFilesUnder dataPaths) subs
+              pure (filter isModuleSource files ++ concat deeper)
   where
-    isHaskellSource f = fileExtension f `elem` map Just haskellExtensions
+    isModuleSource f = fileExtension f `elem` map Just (haskellExtensions ++ preprocessorExtensions)
 
 -- | Each @extra-source-files@ entry, up to its first glob, and only the
 -- directory part of it. A package that declares something as extra source

@@ -49,7 +49,7 @@ import qualified Data.Text.Encoding as TE
 import Data.Validity
 import Data.Validity.Containers ()
 import GHC.Generics (Generic)
-import Hopinion.Annotation (OverBroad (..))
+import Hopinion.Annotation (OverBroad (..), Unused (..))
 import Hopinion.Facts
 import Hopinion.Rule
 import Hopinion.Rule.Id
@@ -262,7 +262,7 @@ renderFailure = \case
 -- because there is no code to point at.
 data Complaint
   = ComplaintFinding !Finding
-  | ComplaintUnused !AnnotationFact
+  | ComplaintUnused !Unused
   | ComplaintOverBroad !OverBroad
   | ComplaintProblem !AnnotationProblem
   | ComplaintFailure !Failure

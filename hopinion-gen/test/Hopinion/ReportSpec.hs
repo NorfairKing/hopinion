@@ -12,7 +12,7 @@ module Hopinion.ReportSpec (spec) where
 import Data.List (sort)
 import qualified Data.Map.Strict as M
 import qualified Data.Text as T
-import Hopinion.Annotation (OverBroad)
+import Hopinion.Annotation (OverBroad, Unused)
 import Hopinion.Facts (PackageName (..))
 import Hopinion.Facts.Gen ()
 import Hopinion.Project (SourceRoot (..))
@@ -37,6 +37,9 @@ spec = do
   describe "Finding" $ do
     genValidSpec @Finding
     jsonSpec @Finding
+  describe "Unused" $ do
+    genValidSpec @Unused
+    jsonSpec @Unused
   describe "OverBroad" $ do
     genValidSpec @OverBroad
     jsonSpec @OverBroad

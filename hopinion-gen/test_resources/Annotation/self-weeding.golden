@@ -1,9 +1,9 @@
-[error BROKEN_SUPPRESSION]: This file is in no cabal component, so no suppression in it is ever judged. Add the module to its component, or delete the file.
-     ╭──▶ thing/src/Orphan.hs@1:1-1:20
+[error BROKEN_SUPPRESSION]: A bare [allow] would silently absorb rules added later. Name the rule.
+     ╭──▶ thing/src/Bare.hs@3:4-3:61
      │
-   1 │ module Orphan where
-     • ┬──────────────────
-     • ╰╸ this suppression
+   3 │ -- [allow] In no cabal component, and naming no rule either.
+     •    ┬────────────────────────────────────────────────────────
+     •    ╰╸ this suppression
 ─────╯
 
 [error BROKEN_SUPPRESSION]: Unknown rule id: NoSuchRule
@@ -31,6 +31,36 @@
 ─────╯
 
 [error UNUSED_SUPPRESSION]: [allow:CommentBareTodo] suppresses nothing.
+     ╭──▶ thing/src/Generated.hsc@3:4-3:95
+     │
+   3 │ -- [allow:CommentBareTodo] In a preprocessor input, which holds no Haskell to run a rule over.
+     •    ┬──────────────────────────────────────────────────────────────────────────────────────────
+     •    ╰╸ nothing here is reported
+     •
+     │ Hint: Remove it. A suppression that has outlived its reason is worse than no suppression.
+─────╯
+
+[error UNUSED_SUPPRESSION]: [allow:CommentBareTodo] suppresses nothing.
+     ╭──▶ thing/src/Generated.hsc@7:4-7:102
+     │
+   7 │ -- [allow:CommentBareTodo] A second one, reported on its own line rather than swallowed by the first.
+     •    ┬─────────────────────────────────────────────────────────────────────────────────────────────────
+     •    ╰╸ nothing here is reported
+     •
+     │ Hint: Remove it. A suppression that has outlived its reason is worse than no suppression.
+─────╯
+
+[error UNUSED_SUPPRESSION]: [allow:CommentBareTodo] suppresses nothing.
+     ╭──▶ thing/src/Orphan.hs@3:4-3:74
+     │
+   3 │ -- [allow:CommentBareTodo] Written in a module no cabal component claims.
+     •    ┬─────────────────────────────────────────────────────────────────────
+     •    ╰╸ nothing here is reported
+     •
+     │ Hint: Remove it. A suppression that has outlived its reason is worse than no suppression.
+─────╯
+
+[error UNUSED_SUPPRESSION]: [allow:CommentBareTodo] suppresses nothing.
      ╭──▶ thing/src/Thing.hs@5:1-5:75
      │
    5 │ -- [allow:CommentBareTodo] Redundant, and reported as suppressing nothing.
@@ -46,6 +76,16 @@
    9 │ -- [allow:CommentBareTodo] There is nothing here to suppress.
      • ┬────────────────────────────────────────────────────────────
      • ╰╸ nothing here is reported
+     •
+     │ Hint: Remove it. A suppression that has outlived its reason is worse than no suppression.
+─────╯
+
+[error UNUSED_SUPPRESSION]: [allow:CommentBareTodo] suppresses nothing.
+     ╭──▶ thing/src/Unclaimed.hsc@3:4-3:78
+     │
+   3 │ -- [allow:CommentBareTodo] A preprocessor input in no cabal component either.
+     •    ┬─────────────────────────────────────────────────────────────────────────
+     •    ╰╸ nothing here is reported
      •
      │ Hint: Remove it. A suppression that has outlived its reason is worse than no suppression.
 ─────╯

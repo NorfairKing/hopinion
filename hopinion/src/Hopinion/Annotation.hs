@@ -14,7 +14,9 @@ module Hopinion.Annotation
     AnnotationError (..),
     renderAnnotationError,
     parseAnnotation,
+    unreadSuppressionsIn,
     suppresses,
+    Unused (..),
     OverBroad (..),
     Suppression (..),
     applySuppression,
@@ -25,6 +27,7 @@ where
 
 import Autodocodec
 import Data.Aeson (FromJSON, ToJSON)
+import Data.Either (partitionEithers)
 import Data.List (sortOn)
 import qualified Data.Map.Strict as M
 import Data.Text (Text)
@@ -35,6 +38,7 @@ import Hopinion.Comment
 import Hopinion.Facts
 import Hopinion.Rule
 import Hopinion.Rule.Id
+import Path (File, Path, Rel)
 
 -- | Every comment that starts with the marker, whether it parses or not. A
 -- comment that meant to be a suppression and failed is reported rather than
@@ -48,17 +52,87 @@ annotationsOf rs mk = foldr step ([], [])
           Right f -> (f : facts, problems)
           Left err -> (facts, AnnotationProblem {annotationProblemSpan = commentFactSpan cf, annotationProblemMessage = renderAnnotationError err} : problems)
 
+-- | Every suppression in a file no rule is run over, judged.
+--
+-- A rule that is never run over a file reports nothing in it, so a suppression
+-- written in one answers for nothing and always will. That is the same verdict
+-- as a suppression whose rule ran and found nothing to answer for, so it is the
+-- same complaint, and the file it happens to be in is not part of it.
+--
+-- Found by scanning rather than by parsing, since these are the files nothing
+-- parses. Every step the scan can take, it takes the way 'parseAnnotation'
+-- would: 'meansToBeOne' decides what is a suppression, 'splitAnnotation' reads
+-- the rule out of it, and 'namedRule' decides whether this run makes that rule.
+-- What is left over is a suppression that names a rule and answers for nothing.
+--
+-- What the scan cannot ask is where a comment ends, so a suppression is a line:
+-- one written over several lines announces itself on exactly one of them, and
+-- two on one line are one comment, which the parser would read as one
+-- annotation too.
+unreadSuppressionsIn :: RuleSet -> Path Rel File -> Text -> ([Unused], [AnnotationProblem])
+unreadSuppressionsIn rs rp t =
+  partitionEithers
+    [ verdict (spanOfLine line col l) (T.drop (fromIntegral col - 1) l)
+    | (line, l) <- zip [1 ..] (T.lines t),
+      Just col <- [markerColumn 0 l]
+    ]
+  where
+    -- Unused on the left, broken on the right, which is the order the two are
+    -- answered in.
+    verdict :: Span -> Text -> Either Unused AnnotationProblem
+    verdict sp fromMarker = case ruleOf fromMarker of
+      Right rid -> Left Unused {unusedRule = rid, unusedSpan = sp}
+      Left err ->
+        Right
+          AnnotationProblem
+            { annotationProblemSpan = sp,
+              annotationProblemMessage = renderAnnotationError err
+            }
+
+    -- From the marker to the end of the line, which is as much of the
+    -- suppression as a scan can see: the reason runs on to wherever the comment
+    -- ends, and where that is takes a parser.
+    spanOfLine :: Word -> Word -> Text -> Span
+    spanOfLine line col l =
+      Span
+        { spanFile = rp,
+          spanStart = Position {positionLine = line, positionCol = col},
+          spanEnd = Position {positionLine = line, positionCol = fromIntegral (T.length l) + 1}
+        }
+
+    ruleOf :: Text -> Either AnnotationError RuleId
+    ruleOf fromMarker = do
+      (_, ruleText', _) <- splitAnnotation fromMarker
+      namedRule rs ruleText'
+
+    -- One-based column of the first thing on this line that means to be a
+    -- suppression, which is not the first thing that starts like one: a line
+    -- mentioning an allowlist can go on to write a real suppression.
+    markerColumn :: Word -> Text -> Maybe Word
+    markerColumn offset l = case T.breakOn marker l of
+      (_, rest) | T.null rest -> Nothing
+      (before, rest) ->
+        let at = offset + fromIntegral (T.length before)
+         in if meansToBeOne rest
+              then Just (at + 1)
+              else markerColumn (at + fromIntegral (T.length marker)) (T.drop (T.length marker) rest)
+
 -- | Whether a comment means to be a suppression, which is what decides between
 -- reporting it as a broken one and leaving it alone.
+meansToBeOne :: Text -> Bool
+meansToBeOne t = any (`T.isPrefixOf` t) markers
+
+-- | The two ways of announcing a suppression: the marker closed, or the marker
+-- followed by the rule it names.
 --
--- The marker has to be closed or followed by a colon. On the prefix alone,
--- @[allowlist]@ and @[allowance]@ are comments a run would fail over, and a
--- comment nobody meant as a suppression is the one thing this must not refuse.
+-- On the marker alone, @[allowlist]@ and @[allowance]@ are comments a run would
+-- fail over, and a comment nobody meant as a suppression is the one thing this
+-- must not refuse.
 --
 -- A bare @[allow]@ does mean to be one, and is refused further in for naming no
 -- rule.
-meansToBeOne :: Text -> Bool
-meansToBeOne t = any (`T.isPrefixOf` t) [T.snoc marker ']', T.snoc marker ':']
+markers :: [Text]
+markers = [T.snoc marker ']', T.snoc marker ':']
 
 marker :: Text
 marker = "[allow"
@@ -103,7 +177,7 @@ parseAnnotation :: RuleSet -> ModuleRef -> CommentFact -> Either AnnotationError
 parseAnnotation rs mk cf = do
   assertNotHaddock
   (fileScoped, ruleText', reason) <- splitAnnotation (T.stripStart (commentFactText cf))
-  ruleId' <- namedRule ruleText'
+  ruleId' <- namedRule rs ruleText'
   reason' <-
     maybe
       (Left NoReason)
@@ -125,24 +199,27 @@ parseAnnotation rs mk cf = do
         then Left InHaddock
         else Right ()
 
-    -- Three answers rather than two, since the rule set is a repository's to
-    -- choose. A name nothing answers to is a typo, and the rule the writer meant
-    -- is still running. A name this run knows and does not run is a suppression
-    -- left behind by turning that rule off, reported for the same reason one
-    -- that has outlived its finding is: it answers for nothing.
-    namedRule t = do
-      rid <- maybe (Left (UnknownRuleId t)) Right (parseRuleId t)
-      case useOf rs rid of
-        Just RuleRuns -> Right rid
-        Nothing -> Left (UnknownRuleId t)
-        Just RuleTurnedOff -> Left (RuleIsTurnedOff rid)
-
     placement fileScoped = case (fileScoped, commentFactAttachment cf) of
       (FileScoped, _) -> Right (ScopeOfFile mk, PrecisionFile)
       (SiteScoped, AttachedToDecl d) -> Right (ScopeOfDecl mk d, PrecisionDecl)
       (SiteScoped, AttachedToStatement d sp) -> Right (ScopeOfDecl mk d, PrecisionStatement sp)
       (SiteScoped, _) ->
         Left AttachedToNothing
+
+-- | The rule a suppression names, if this run makes it.
+--
+-- Three answers rather than two, since the rule set is a repository's to
+-- choose. A name nothing answers to is a typo, and the rule the writer meant is
+-- still running. A name this run knows and does not run is a suppression left
+-- behind by turning that rule off, reported for the same reason one that has
+-- outlived its finding is: it answers for nothing.
+namedRule :: RuleSet -> Text -> Either AnnotationError RuleId
+namedRule rs t = do
+  rid <- maybe (Left (UnknownRuleId t)) Right (parseRuleId t)
+  case useOf rs rid of
+    Just RuleRuns -> Right rid
+    Nothing -> Left (UnknownRuleId t)
+    Just RuleTurnedOff -> Left (RuleIsTurnedOff rid)
 
 data AnnotationReach
   = FileScoped
@@ -179,6 +256,30 @@ suppresses a f =
       PrecisionDecl -> annotationFactScope a == findingScope f
       PrecisionStatement sp -> spanContains sp (findingSpan f)
 
+-- | A suppression that answers for nothing: the rule it names, and where it is
+-- written.
+--
+-- The whole annotation is not carried, because the two ways of finding one have
+-- nothing more in common. A rule can run over a file and report nothing in it,
+-- and a rule can be one that is never run over that file at all; the first
+-- knows a scope and a reason and the second cannot, and neither is what a
+-- reader is owed. What they are owed is which suppression to remove.
+data Unused = Unused
+  { unusedRule :: !RuleId,
+    unusedSpan :: !Span
+  }
+  deriving stock (Show, Eq, Generic)
+  deriving (FromJSON, ToJSON) via (Autodocodec Unused)
+
+instance Validity Unused
+
+instance HasCodec Unused where
+  codec =
+    object "Unused" $
+      Unused
+        <$> requiredField "rule" "the rule it suppresses" .= unusedRule
+        <*> requiredField "span" "where the suppression is" .= unusedSpan
+
 -- | A suppression answering for more than one finding, and for how many.
 --
 -- A record rather than a pair, so that neither end can be read for the other
@@ -202,7 +303,7 @@ instance HasCodec OverBroad where
 data Suppression = Suppression
   { suppressionRemaining :: ![Finding],
     -- | Reported and failing, exactly like a violation.
-    suppressionUnused :: ![AnnotationFact],
+    suppressionUnused :: ![Unused],
     -- | A coarse annotation absorbing several findings is not an error, but it
     -- is the mechanism by which annotations quietly swallow new violations, so
     -- it is reported.
@@ -222,7 +323,11 @@ applySuppression :: [AnnotationFact] -> [Finding] -> Suppression
 applySuppression annotations findings =
   Suppression
     { suppressionRemaining = [f | (f, Nothing) <- answered],
-      suppressionUnused = [a | (i, a) <- indexed, answersFor i == 0],
+      suppressionUnused =
+        [ Unused {unusedRule = annotationFactRule a, unusedSpan = annotationFactSpan a}
+        | (i, a) <- indexed,
+          answersFor i == 0
+        ],
       suppressionOverBroad =
         [ OverBroad {overBroadAnnotation = a, overBroadCount = answersFor i}
         | (i, a) <- indexed,

@@ -10,7 +10,7 @@ import Data.GenValidity.Containers ()
 import Data.GenValidity.Path ()
 import Data.GenValidity.Text ()
 import qualified Data.Text as T
-import Hopinion.Annotation (OverBroad)
+import Hopinion.Annotation (OverBroad, Unused)
 import Hopinion.Choices (Choices)
 import Hopinion.Comment (Attachment, CommentFact, CommentStyle, RawComment)
 import Hopinion.Facts
@@ -114,6 +114,8 @@ instance GenValid PackageRole
 instance GenValid FormatVersion
 
 instance GenValid GenPackage
+
+instance GenValid Unused
 
 instance GenValid OverBroad
 

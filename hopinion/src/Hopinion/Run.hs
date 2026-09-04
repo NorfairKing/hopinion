@@ -341,7 +341,7 @@ writePackage rs hieDirs root pm = do
             ParsedOk <- [moduleContextOutcome ctx]
           ]
       )
-  stray <- liftIO (strayAnnotationsIn root pm)
+  unread <- liftIO (unreadSuppressionsOf rs root pm)
   writePackageEnvelope
     pkg
     (packageModelRole pm)
@@ -352,7 +352,7 @@ writePackage rs hieDirs root pm = do
     ]
   mapM_ writeContext contexts
   pure
-    ( mconcat (map (runModuleLayer rs) contexts) <> complaintsOf (map ComplaintProblem stray),
+    ( mconcat (map (runModuleLayer rs) contexts) <> unread,
       compiled
     )
   where
@@ -546,21 +546,35 @@ annotationsAtLevel :: RuleSet -> Level -> [AnnotationFact] -> [AnnotationFact]
 annotationsAtLevel rs l =
   filter ((== Just l) . fmap ruleLevel . ruleFor rs . annotationFactRule)
 
--- | A suppression in a file no component claims is watched by nobody, so it is
--- reported as something the tool could not judge rather than left to rot.
-strayAnnotationsIn :: SourceRoot -> PackageModel -> IO [AnnotationProblem]
-strayAnnotationsIn root pm = do
-  files <- unclaimedSourceFiles pm
-  concat <$> traverse problemIn [(rp, f) | f <- files, Just rp <- [relPathIn root f]]
+-- | Every suppression this package writes in a file no rule is run over.
+--
+-- Two kinds of file and one consequence. A file under a source directory that
+-- no component claims is read by nothing, and a preprocessor's input holds no
+-- Haskell until a build makes some. A rule that is never run over a file
+-- reports nothing in it, so a suppression written in one answers for nothing
+-- and always will. That is the verdict 'applySuppression' reaches for a
+-- suppression whose rule ran and found nothing, and it is reported as the same
+-- complaint.
+--
+-- No layer can reach these, because a layer judges the annotations of the
+-- modules it read and neither kind of file is one of those. Both kinds are
+-- judged here rather than one here and one wherever it happened to be noticed,
+-- since what they have in common is the whole of what there is to say.
+unreadSuppressionsOf :: RuleSet -> SourceRoot -> PackageModel -> IO Complaints
+unreadSuppressionsOf rs root pm = do
+  unclaimed <- unclaimedSourceFiles pm
+  mconcat <$> traverse judged [(rp, f) | f <- unclaimed ++ preprocessed, Just rp <- [relPathIn root f]]
   where
-    problemIn (rp, file) = do
+    preprocessed :: [Path Abs File]
+    preprocessed =
+      [ moduleModelFile mm
+      | c <- packageModelComponents pm,
+        mm <- componentModelModules c,
+        PreprocessedSource <- [moduleModelSource mm]
+      ]
+
+    judged :: (Path Rel File, Path Abs File) -> IO Complaints
+    judged (rp, file) = do
       contents <- readSource file
-      pure
-        [ AnnotationProblem
-            { annotationProblemSpan = wholeFileSpan rp,
-              annotationProblemMessage =
-                "This file is in no cabal component, so no suppression in it is ever judged. \
-                \Add the module to its component, or delete the file."
-            }
-        | T.isInfixOf "[allow:" contents
-        ]
+      let (unused, problems) = unreadSuppressionsIn rs rp contents
+      pure (complaintsOf (map ComplaintUnused unused ++ map ComplaintProblem problems))

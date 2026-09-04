@@ -99,6 +99,41 @@ spec = do
               annotationFactSpan = spanAt 1
             }
 
+  -- A rule that is never run over a file reports nothing in it, so every
+  -- suppression written in one answers for nothing. The verdict is the same one
+  -- 'applySuppression' reaches, and these assert that it is reached by the same
+  -- steps: what counts as a suppression, and what counts as naming a rule.
+  describe "unreadSuppressionsIn" $ do
+    it "reports a suppression naming a rule as unused, from its marker to the end of the line" $
+      unreadSuppressionsIn shippedRules exampleFile "module Thing where\n\n-- [allow:CommentBareTodo] because\n"
+        `shouldBe` ( [ Unused
+                         { unusedRule = RuleId "CommentBareTodo",
+                           unusedSpan =
+                             Span
+                               { spanFile = exampleFile,
+                                 spanStart = Position {positionLine = 3, positionCol = 4},
+                                 spanEnd = Position {positionLine = 3, positionCol = 35}
+                               }
+                         }
+                     ],
+                     []
+                   )
+    it "reports each of two suppressions rather than the file holding them" $
+      map (positionLine . spanStart . unusedSpan) (fst (unreadSuppressionsIn shippedRules exampleFile "-- [allow:CommentBareTodo] one\nx = 1\n-- [allow:HsNoFilePath] two\n"))
+        `shouldBe` [1, 3]
+    it "reports one that names no rule as broken, exactly as a file that is read would" $
+      map annotationProblemMessage (snd (unreadSuppressionsIn shippedRules exampleFile "-- [allow] because\n"))
+        `shouldBe` [renderAnnotationError NoRuleNamed]
+    it "reports one that names a rule nothing answers to as broken" $
+      map annotationProblemMessage (snd (unreadSuppressionsIn shippedRules exampleFile "-- [allow:NoSuchRule] because\n"))
+        `shouldBe` [renderAnnotationError (UnknownRuleId "NoSuchRule")]
+    it "leaves a file that merely mentions a word starting the same way alone" $
+      unreadSuppressionsIn shippedRules exampleFile "module Thing where\n\n-- the [allowlist] of hosts we permit\n"
+        `shouldBe` ([], [])
+    it "passes over such a word to the suppression written after it" $
+      map (positionCol . spanStart . unusedSpan) (fst (unreadSuppressionsIn shippedRules exampleFile "-- the [allowlist], and [allow:CommentBareTodo] because\n"))
+        `shouldBe` [25]
+
   -- The text the report offers a reader comes from here, so a suppression this
   -- suggests and 'parseAnnotation' then rejects would be worse than no
   -- suggestion at all.
@@ -130,7 +165,7 @@ spec = do
         applySuppression [a] []
           `shouldBe` Suppression
             { suppressionRemaining = [],
-              suppressionUnused = [a],
+              suppressionUnused = [Unused {unusedRule = RuleId "CommentBareTodo", unusedSpan = annotationFactSpan a}],
               suppressionOverBroad = []
             }
     it "reports an annotation that suppresses more than one finding" $
@@ -219,6 +254,11 @@ spec = do
   -- a suppression cannot outlive its reason, so every way one can stop being
   -- relevant has to fail the run. The golden is the list of ways, and the one
   -- suppression in that module which does answer for a finding is absent.
+  --
+  -- A file no rule is ever run over is one of those ways and the quietest of
+  -- them, since nothing there is parsed and so nothing there is judged. Both
+  -- kinds are in the repository: a file no component claims, and a preprocessor
+  -- input whose Haskell only exists at build time.
   describe "self-weeding" $ do
     -- What kind of complaint it is lives in the golden below; here it is only
     -- that there is one, which is what a wrapper deciding whether to fail asks.
