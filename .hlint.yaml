@@ -47,19 +47,32 @@
 # Partial functions are banned. Every one of these throws on an input the type
 # permits, which is the class of bug the standards exist to prevent, and each
 # has a total replacement that makes the missing case visible.
+#
+# The four that name NonEmpty as the replacement have to say so twice. A bare
+# name matches every function of that name whatever module it came from, so the
+# ban reached Data.List.NonEmpty's own head, tail, init and last, which are
+# total and are the thing the message asks for. hlint concatenates the
+# allowances of every rule matching a use, and a rule with no allowance list at
+# all allows everything, so the module-qualified entry beside each ban lifts it
+# for exactly that module. Data.List.NonEmpty.!! is deliberately not among
+# them: indexing a NonEmpty is as partial as indexing a list.
 - functions:
     - name: head
       message: "Partial. Use pattern matching, 'listToMaybe', or NonEmpty."
       within: []
+    - name: Data.List.NonEmpty.head
     - name: tail
       message: "Partial. Use pattern matching, or 'drop 1' if a shorter list is fine."
       within: []
+    - name: Data.List.NonEmpty.tail
     - name: init
       message: "Partial. Use pattern matching or NonEmpty."
       within: []
+    - name: Data.List.NonEmpty.init
     - name: last
       message: "Partial. Use pattern matching or NonEmpty."
       within: []
+    - name: Data.List.NonEmpty.last
     - name: "!!"
       message: "Partial. Use a Map, or 'lookup' on the index."
       within: []

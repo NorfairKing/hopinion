@@ -149,15 +149,10 @@ concatChainsOf rp ref decls ds =
 
 -- | From the start of a run's first operand to the end of its last, which is
 -- the concatenation rather than whatever else the spine it sits in holds.
---
--- Folded rather than indexed: the end moves to each operand in turn, so what is
--- left is the last one's and nothing here reaches into the list.
 spanOfRun :: Path Rel File -> NonEmpty (LHsExpr GhcPs) -> Span
-spanOfRun rp (firstOperand :| rest) =
-  foldl'
-    (\sofar operand -> sofar {spanEnd = spanEnd (spanOfSrcSpan rp (getLocA operand))})
-    (spanOfSrcSpan rp (getLocA firstOperand))
-    rest
+spanOfRun rp run =
+  let spans = fmap (spanOfSrcSpan rp . getLocA) run
+   in (NE.head spans) {spanEnd = spanEnd (NE.last spans)}
 
 -- | The operands of one infix application, whatever its operator.
 infixOperands :: LHsExpr GhcPs -> Maybe (LHsExpr GhcPs, LHsExpr GhcPs)

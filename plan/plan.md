@@ -188,12 +188,34 @@ findings changes this milestone's shape. The first task is to implement the
 cheapest of them and count. `HsRecordFieldPrefix` and `HsStrictFields` are the
 two most likely to be large.
 
+**One walk, not one per fact.** `HsNoSemigroupOnText` brought the first
+expression-level fact, and with it a `listify` over the whole module: a generic
+traversal of every node, annotations and spans included, to find one kind of
+expression. A second such fact is a second traversal, and this milestone is
+sixteen rules that want declarations and expressions. So the walking gets
+centralised before the second one arrives: one pass that visits each node once
+and hands it to whichever collectors asked for that shape of node, rather than a
+traversal per fact.
+
+Three things that rule had to work out belong to that pass rather than to it,
+because every rule about an expression needs them and each is a way to be
+quietly wrong:
+
+- Which node of a nest is the one to report, so a chain is one finding rather
+  than one per operator.
+- Parentheses and type signatures peeled, since neither changes what an
+  expression is.
+- Source order rather than the tree's shape. `GhcPs` carries no resolved
+  fixity and nests every infix application to the left whatever the real
+  associativity is, so a rule reading operands off the tree is reading a
+  grouping the compiler will not use.
+
 `HsOrderEntrypointFirst` is deliberately **not** here. It needs a partial order
 over the call graph, it is the one check tempted into auto-fix, and it should
 wait until the rest of the structure tier is settled.
 
-**Done when:** `nix flake check` passes and every rule in the set has a finding
-count recorded.
+**Done when:** `nix flake check` passes, every rule in the set has a finding
+count recorded, and no rule in it walks the module itself.
 
 ## M6: The obligation engine
 
