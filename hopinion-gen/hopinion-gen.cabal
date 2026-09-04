@@ -129,10 +129,16 @@ extra-source-files:
     test_resources/Rule/HsGenValidInGenPackage/good/thing-gen/thing-gen.cabal
     test_resources/Rule/HsGenValidInGenPackage/good/thing/src/Thing.hs
     test_resources/Rule/HsGenValidInGenPackage/good/thing/thing.cabal
+    test_resources/Rule/HsNoCustomShowRead/bad-empty.hs
+    test_resources/Rule/HsNoCustomShowRead/bad-empty.hs.golden
+    test_resources/Rule/HsNoCustomShowRead/bad-partly-hidden.hs
+    test_resources/Rule/HsNoCustomShowRead/bad-partly-hidden.hs.golden
     test_resources/Rule/HsNoCustomShowRead/bad-read.hs
     test_resources/Rule/HsNoCustomShowRead/bad-read.hs.golden
     test_resources/Rule/HsNoCustomShowRead/bad-show.hs
     test_resources/Rule/HsNoCustomShowRead/bad-show.hs.golden
+    test_resources/Rule/HsNoCustomShowRead/good-hidden.hs
+    test_resources/Rule/HsNoCustomShowRead/good-hidden.hs.golden
     test_resources/Rule/HsNoCustomShowRead/good.hs
     test_resources/Rule/HsNoCustomShowRead/good.hs.golden
     test_resources/Rule/HsNoFilePath/bad.hs

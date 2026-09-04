@@ -73,6 +73,8 @@ instance GenValid DeclKind
 
 instance GenValid DeclFact
 
+instance GenValid InstanceMethods
+
 instance GenValid InstanceOrigin
 
 instance GenValid InstanceFact

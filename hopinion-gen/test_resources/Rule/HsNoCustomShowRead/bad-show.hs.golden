@@ -1,1 +1,1 @@
-HsNoCustomShowRead	5:1-6:21 test_resources/Rule/HsNoCustomShowRead/bad-show.hs	lib:test_resources/Rule/HsNoCustomShowRead/bad-show.hs instance Show Token	This Show instance is written out. Derive it instead.
+HsNoCustomShowRead	5:1-6:40 test_resources/Rule/HsNoCustomShowRead/bad-show.hs	lib:test_resources/Rule/HsNoCustomShowRead/bad-show.hs instance Show Token	This Show instance is written out. Derive it instead, or discard what it is given if the point is to hide the value.

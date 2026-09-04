@@ -203,7 +203,7 @@ instanceFactsOf rp ref ldecl =
             [ InstanceFact
                 { instanceFactClass = cls,
                   instanceFactType = th,
-                  instanceFactOrigin = OriginInstanceDecl,
+                  instanceFactOrigin = OriginInstanceDecl (instanceMethodsOf ci),
                   instanceFactSpan = sp,
                   instanceFactScope = ScopeOfDecl ref (instanceDeclName cls th)
                 }
@@ -237,6 +237,39 @@ instanceFactsOf rp ref ldecl =
               | (cls, origin) <- derivedClasses defn
               ]
         _ -> []
+
+-- | Whether every method in an instance body discards all of its arguments.
+--
+-- A wildcard rather than an unused name, because a name is only unused after
+-- reading the body it is in scope over, and the two say the same thing to a
+-- reader.
+instanceMethodsOf :: ClsInstDecl GhcPs -> InstanceMethods
+instanceMethodsOf ci =
+  let binds = cid_binds ci
+   in if not (null binds) && all (bindIgnoresArguments . unLoc) binds
+        then MethodsIgnoreArguments
+        else MethodsUseArguments
+
+bindIgnoresArguments :: HsBind GhcPs -> Bool
+bindIgnoresArguments = \case
+  FunBind {fun_matches = mg} ->
+    let alts = unLoc (mg_alts mg)
+     in not (null alts) && all (matchIgnoresArguments . unLoc) alts
+  PatBind {} -> False
+  VarBind {} -> False
+  PatSynBind {} -> False
+
+-- | A match with no patterns at all binds the method to something rather than
+-- taking the value apart, and what that something does with it is not here.
+matchIgnoresArguments :: Match GhcPs (LHsExpr GhcPs) -> Bool
+matchIgnoresArguments m =
+  let pats = unLoc (m_pats m)
+   in not (null pats) && all (isWildPat . unLoc) pats
+
+isWildPat :: Pat GhcPs -> Bool
+isWildPat = \case
+  WildPat _ -> True
+  _ -> False
 
 standaloneOrigin :: Maybe (LDerivStrategy GhcPs) -> InstanceOrigin
 standaloneOrigin = \case

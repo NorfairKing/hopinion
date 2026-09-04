@@ -23,6 +23,7 @@ module Hopinion.Facts
     module Hopinion.Facts.Suppression,
     ComponentKind (..),
     ParseOutcome (..),
+    InstanceMethods (..),
     InstanceOrigin (..),
     InstanceFact (..),
     NameFact (..),
@@ -111,6 +112,22 @@ instance HasCodec ParseOutcome where
         NotHaskellSource -> Left NotHaskellSource
         ParseFailed l m -> Right (l, m)
 
+-- | What the methods an instance declaration writes out do with what they are
+-- handed.
+--
+-- Carried by the origin rather than beside it, because a derived instance has
+-- no body and a field answering for one would be answering about nothing.
+data InstanceMethods
+  = MethodsUseArguments
+  | -- | Every method the instance writes out discards all of its arguments, so
+    -- what it produces cannot depend on the value it was given. An instance
+    -- that writes out no methods at all is not this: what its class defaults do
+    -- with the value is not in the file.
+    MethodsIgnoreArguments
+  deriving stock (Show, Eq, Ord, Generic)
+
+instance Validity InstanceMethods
+
 -- | A closed sum on purpose: a further form forces every site to be
 -- reconsidered rather than falling into a catch-all, and a missed form is a
 -- silently unsatisfied obligation.
@@ -119,7 +136,7 @@ instance HasCodec ParseOutcome where
 -- GHC picks depends on the extensions in force, so recording it as stock would
 -- be a guess.
 data InstanceOrigin
-  = OriginInstanceDecl
+  = OriginInstanceDecl !InstanceMethods
   | OriginStandaloneDeriving
   | OriginDerivingStock
   | OriginDerivingNewtype

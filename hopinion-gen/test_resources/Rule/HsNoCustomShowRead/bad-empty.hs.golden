@@ -1,0 +1,1 @@
+HsNoCustomShowRead	5:1-5:20 test_resources/Rule/HsNoCustomShowRead/bad-empty.hs	lib:test_resources/Rule/HsNoCustomShowRead/bad-empty.hs instance Show Token	This Show instance is written out. Derive it instead, or discard what it is given if the point is to hide the value.

@@ -99,6 +99,8 @@ spec = do
     genValidSpec @DeclKind
   describe "DeclFact" $ do
     genValidSpec @DeclFact
+  describe "InstanceMethods" $ do
+    genValidSpec @InstanceMethods
   describe "InstanceOrigin" $ do
     genValidSpec @InstanceOrigin
   describe "InstanceFact" $ do
