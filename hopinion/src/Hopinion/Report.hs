@@ -347,7 +347,7 @@ data ReportDirError = ReportDirError !(Path Abs Dir) !ReportError
 
 renderReportDirError :: ReportDirError -> Text
 renderReportDirError (ReportDirError dir err) =
-  T.pack (unwords [toFilePath dir ++ ":", T.unpack (said err)])
+  T.pack (unwords [concat [toFilePath dir, ":"], T.unpack (said err)])
   where
     said = \case
       ReportIsNotJson t -> t

@@ -203,7 +203,7 @@ answerFor rp cm which = case M.lookup rp (compiledModulesByFile cm) of
       (Answered answer, _) -> pure (Just answer)
       (_, HieDirectories []) -> pure Nothing
       (NothingThere, HieDirectories dirs) ->
-        promisedButAbsent (moduleArtifactsKey artifacts) rp ["nothing at " ++ toFilePath d | d <- dirs]
+        promisedButAbsent (moduleArtifactsKey artifacts) rp [concat ["nothing at ", toFilePath d] | d <- dirs]
       (Unusable whys, HieDirectories _) ->
         promisedButAbsent (moduleArtifactsKey artifacts) rp (map T.unpack whys)
 

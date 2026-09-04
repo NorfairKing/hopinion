@@ -5,17 +5,17 @@ catalogue of rules not yet written; this is the order to write them in.
 
 ## What exists
 
-Five rules, one at each of the three levels and then some: `CommentBareTodo`,
-`HsNoCustomShowRead` and `HsNoFilePath` at the module level,
-`HsGenValidInGenPackage` at the package level, `TestGenValidSpecPerGenValid` at
-the project level.
+Six rules, one at each of the three levels and then some: `CommentBareTodo`,
+`HsNoCustomShowRead`, `HsNoFilePath` and `HsNoSemigroupOnText` at the module
+level, `HsGenValidInGenPackage` at the package level,
+`TestGenValidSpecPerGenValid` at the project level.
 
 Under them: extension resolution and two parser passes, comment attachment,
-declaration and instance extraction, a fact store per package in SQLite, a
-project layer that answers from those stores alone, suppression parsing and
-matching, a report that draws findings against the source they point at, and Nix
-builders that turn all of it into one derivation per package plus one for the
-repository.
+declaration, instance and expression extraction, a fact store per package in
+SQLite, a project layer that answers from those stores alone, suppression
+parsing and matching, a report that draws findings against the source they point
+at, and Nix builders that turn all of it into one derivation per package plus
+one for the repository.
 
 `.hie` and `.hi` artifacts are read, but only for what a splice generated. The
 types tier is not built.
@@ -220,9 +220,10 @@ findings are reconciled against a hand count with every difference explained.
 `HsNoSemigroupOnText`, `HsNoCatchAllOwnSum`, `HsMonomorphicOverConstraints`,
 `HsPreferText`, through the type information in `.hie` files.
 
-The cheap literal-operand approximation of `HsNoSemigroupOnText` finds a great
-deal with no types at all, so it belongs in M5 as a syntactic check and M7 only
-widens it.
+What `HsNoSemigroupOnText` still wants from types is the concatenations with no
+literal in them, which is where `T.pack x <> y` and `show x <> y` live, and
+telling a `Builder` from a `Text` so it stops asking at the one place `<>` is
+the right operator.
 
 **Done when:** `nix flake check` passes with the types tier active, and the tool
 run without artifacts states which rules it skipped.
@@ -280,10 +281,10 @@ combinator yet, or it needs a fact that extraction does not produce. Both are
 real costs, and both are paid once on behalf of every later rule of the same
 shape.
 
-The current ratio is against the budget: 6,577 lines of infrastructure carrying
-659 lines of rules over five rules, where the design predicted roughly 1,300
-carrying 55. The two cheapest rules are 42 and 44 lines, which is the budget
-holding once the facts a rule needs are already extracted; the average is
+The current ratio is against the budget: 6,856 lines of infrastructure carrying
+689 lines of rules over six rules, where the design predicted roughly 1,300
+carrying 55. The three cheapest rules are 29, 42 and 46 lines, which is the
+budget holding once the facts a rule needs are already extracted; the average is
 carried by the obligation rule at 375, which was deliberately the hardest thing
 in the design. Whether the families are optimistic by an order is a question the
 next few rules settle.
@@ -309,10 +310,6 @@ it fails silently when wrong.
 
 **M5 is unsized.** Several of its rules have no count. It could be twice the
 size it looks.
-
-**`HsNoSemigroupOnText` is either an aspiration or a refactoring project.** The
-volume in a real codebase is large and every sampled violation is genuine, which
-makes shipping it a decision about a refactor rather than about a check.
 
 **`HsInstancesLawAbiding` has no target yet.** The law-test combinators it would
 look for are called nowhere, so the rule cannot ship until what a law test looks

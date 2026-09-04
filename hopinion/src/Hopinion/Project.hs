@@ -444,7 +444,7 @@ preprocessorExtensions = [".x", ".y", ".hsc", ".chs"]
 extensionText :: CabalExt.Extension -> Text
 extensionText = \case
   CabalExt.EnableExtension k -> T.pack (show k)
-  CabalExt.DisableExtension k -> T.pack ("No" ++ show k)
+  CabalExt.DisableExtension k -> T.pack (concat ["No", show k])
   CabalExt.UnknownExtension s -> T.pack s
 
 -- | Module source files under a package's source directories that no component

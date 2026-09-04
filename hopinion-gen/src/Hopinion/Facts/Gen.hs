@@ -30,7 +30,7 @@ instance GenValid RawComment
 instance GenValid RuleId where
   genValid = do
     initial <- elements ['A' .. 'Z']
-    rest <- genListOf (elements (['A' .. 'Z'] ++ ['a' .. 'z'] ++ ['0' .. '9'] ++ "_"))
+    rest <- genListOf (elements (concat [['A' .. 'Z'], ['a' .. 'z'], ['0' .. '9'], "_"]))
     pure (RuleId (T.pack (initial : rest)))
   shrinkValid (RuleId t) = [RuleId (T.take n t) | n <- [1 .. T.length t - 1]]
 
@@ -106,6 +106,10 @@ instance GenValid AnnotationFact
 instance GenValid AnnotationProblem
 
 instance GenValid TypeAppFact
+
+instance GenValid ConcatOperand
+
+instance GenValid ConcatChain
 
 instance GenValid TemplateHaskellUse
 

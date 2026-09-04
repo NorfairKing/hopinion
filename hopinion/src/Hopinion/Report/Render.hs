@@ -176,7 +176,7 @@ findingReport rs sources f =
             (Just rid)
             (T.unpack (findingMessage f))
             [(positionOf sources (findingSpan f), D.This "reported here")]
-            [D.Note (unwords ["This run has no rule called", rid ++ ", so what it asks for cannot be shown."])]
+            [D.Note (unwords ["This run has no rule called", concat [rid, ", so what it asks for cannot be shown."]])]
         Just rule ->
           D.Err
             (Just rid)
@@ -201,7 +201,7 @@ suppressionHint :: SourceMap -> Finding -> String
 suppressionHint (SourceMap srcs) f =
   unwords
     [ "To suppress, write this",
-      place ++ ", and say why:",
+      concat [place, ", and say why:"],
       T.unpack (suppressionFor f "<reason>")
     ]
   where

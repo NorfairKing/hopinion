@@ -128,6 +128,10 @@ spec = do
     jsonSpec @AnnotationProblem
   describe "TypeAppFact" $ do
     genValidSpec @TypeAppFact
+  describe "ConcatOperand" $ do
+    genValidSpec @ConcatOperand
+  describe "ConcatChain" $ do
+    genValidSpec @ConcatChain
   describe "TemplateHaskellUse" $ do
     genValidSpec @TemplateHaskellUse
     it "roundtrips through the text a row stores it as" $

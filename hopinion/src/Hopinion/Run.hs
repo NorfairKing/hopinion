@@ -179,9 +179,9 @@ unreadableFormats dirs = do
             [ "The facts in",
               toFilePath dir,
               "were written in format",
-              maybe "no format at all" show stamp ++ ",",
+              concat [maybe "no format at all" show stamp, ","],
               "and this build of hopinion reads format",
-              show (formatVersionNumber currentFormatVersion) ++ ".",
+              concat [show (formatVersionNumber currentFormatVersion), "."],
               "Build the package outputs and the project with one hopinion."
             ]
         )

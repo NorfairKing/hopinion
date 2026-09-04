@@ -1,0 +1,2 @@
+HsNoSemigroupOnText	11:28-11:44 test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs	lib:test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs shouted	A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
+HsNoSemigroupOnText	15:26-15:51 test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs	lib:test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs report	A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
