@@ -1,13 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | [check:ref BareTodo]
-module Hopinion.Check.Comment.BareTodo (rule) where
+module Hopinion.Check.Comment.BareTodo.Rule (rule) where
 
 import Data.Char (isAlphaNum, isDigit, isUpper)
 import Data.Text (Text)
 import qualified Data.Text as T
 import Hopinion.Comment
-import Hopinion.Facts
+import Hopinion.Facts.Module
 import Hopinion.Rule
 import Hopinion.Rule.Id
 

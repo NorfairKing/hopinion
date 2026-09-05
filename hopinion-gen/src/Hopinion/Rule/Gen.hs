@@ -15,7 +15,7 @@ where
 import Data.Either (fromRight)
 import qualified Data.Text as T
 import Hopinion.Comment
-import Hopinion.Facts
+import Hopinion.Facts.Module
 import Hopinion.Rule
 import Hopinion.Rule.Id
 import Hopinion.Rule.Registry (builtinRules)

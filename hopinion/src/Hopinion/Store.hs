@@ -72,7 +72,12 @@ import qualified Data.Text as T
 import Database.Esqueleto.Experimental
 import Database.Persist.Sqlite (SqliteConnectionInfo, mkSqliteConnectionInfo, walEnabled, withSqliteConnInfo)
 import Database.Persist.TH
-import Hopinion.Facts
+import Hopinion.Facts.Name
+import Hopinion.Facts.Outcome
+import Hopinion.Facts.Package
+import Hopinion.Facts.Place
+import Hopinion.Facts.Suppression
+import Hopinion.Facts.Version
 import Path (Abs, File, Path, Rel, parseRelFile, toFilePath)
 
 -- | Writing to the store, and reading from it. Named so that a rule's signature

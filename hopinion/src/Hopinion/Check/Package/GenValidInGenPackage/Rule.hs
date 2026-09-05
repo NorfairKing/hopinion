@@ -15,12 +15,17 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 -- | [check:ref GenValidInGenPackage]
-module Hopinion.Check.Package.GenValidInGenPackage (rule, GeneratorFact (..)) where
+module Hopinion.Check.Package.GenValidInGenPackage.Rule (rule, GeneratorFact (..)) where
 
 import Database.Esqueleto.Experimental
 import Database.Persist.TH
 import Hopinion.Compiled (CompiledModules)
-import Hopinion.Facts
+import Hopinion.Facts.Component
+import Hopinion.Facts.Instance
+import Hopinion.Facts.Module
+import Hopinion.Facts.Name
+import Hopinion.Facts.Package
+import Hopinion.Facts.Place
 import Hopinion.Rule
 import Hopinion.Rule.Id
 import Hopinion.Store

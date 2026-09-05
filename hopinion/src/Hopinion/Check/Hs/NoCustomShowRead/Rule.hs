@@ -1,9 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Hopinion.Check.Hs.NoCustomShowRead (rule) where
+module Hopinion.Check.Hs.NoCustomShowRead.Rule (rule) where
 
 import qualified Data.Text as T
-import Hopinion.Facts
+import Hopinion.Facts.Instance
+import Hopinion.Facts.Module
 import Hopinion.Rule
 import Hopinion.Rule.Id
 

@@ -51,7 +51,9 @@ import Distribution.Types.Library (Library (..))
 import Distribution.Types.LibraryName (LibraryName (..))
 import Distribution.Types.UnqualComponentName (unUnqualComponentName)
 import Distribution.Utils.Path (getSymbolicPath)
-import Hopinion.Facts
+import Hopinion.Facts.Component
+import Hopinion.Facts.Name
+import Hopinion.Facts.Package
 import qualified Language.Haskell.Extension as CabalExt
 import Path
   ( Abs,

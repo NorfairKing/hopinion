@@ -50,7 +50,9 @@ import Data.Validity
 import Data.Validity.Containers ()
 import GHC.Generics (Generic)
 import Hopinion.Annotation (OverBroad (..), Unused (..))
-import Hopinion.Facts
+import Hopinion.Facts.Name
+import Hopinion.Facts.Place
+import Hopinion.Facts.Suppression
 import Hopinion.Rule
 import Hopinion.Rule.Id
 import Path (Abs, Dir, File, Path, Rel, relfile, toFilePath, (</>))

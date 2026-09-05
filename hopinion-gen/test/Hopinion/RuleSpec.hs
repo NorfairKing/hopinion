@@ -13,7 +13,9 @@ import Data.List (isPrefixOf, nub, sort, sortOn)
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
-import Hopinion.Facts
+import Hopinion.Facts.Component
+import Hopinion.Facts.Name
+import Hopinion.Facts.Place
 import Hopinion.Project
 import Hopinion.Report
 import Hopinion.Report.Render

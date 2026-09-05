@@ -6,12 +6,12 @@
 -- cannot act on.
 module Hopinion.Rule.Registry (builtinRules) where
 
-import qualified Hopinion.Check.Comment.BareTodo as BareTodo
-import qualified Hopinion.Check.Hs.NoCustomShowRead as NoCustomShowRead
-import qualified Hopinion.Check.Hs.NoFilePath as NoFilePath
-import qualified Hopinion.Check.Hs.NoSemigroupOnText as NoSemigroupOnText
-import qualified Hopinion.Check.Package.GenValidInGenPackage as GenValidInGenPackage
-import qualified Hopinion.Check.Project.GenValidSpecPerGenValid as GenValidSpecPerGenValid
+import qualified Hopinion.Check.Comment.BareTodo.Rule as BareTodo
+import qualified Hopinion.Check.Hs.NoCustomShowRead.Rule as NoCustomShowRead
+import qualified Hopinion.Check.Hs.NoFilePath.Rule as NoFilePath
+import qualified Hopinion.Check.Hs.NoSemigroupOnText.Rule as NoSemigroupOnText
+import qualified Hopinion.Check.Package.GenValidInGenPackage.Rule as GenValidInGenPackage
+import qualified Hopinion.Check.Project.GenValidSpecPerGenValid.Rule as GenValidSpecPerGenValid
 import Hopinion.Rule (Rule)
 
 builtinRules :: [Rule]
