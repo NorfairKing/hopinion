@@ -11,9 +11,20 @@ import Data.GenValidity.Path ()
 import Data.GenValidity.Text ()
 import qualified Data.Text as T
 import Hopinion.Annotation (OverBroad, Unused)
+import Hopinion.Check.Hs.NoSemigroupOnText.Fact
 import Hopinion.Choices (Choices)
 import Hopinion.Comment (Attachment, CommentFact, CommentStyle, RawComment)
-import Hopinion.Facts
+import Hopinion.Facts.Component
+import Hopinion.Facts.Decl
+import Hopinion.Facts.Instance
+import Hopinion.Facts.Name
+import Hopinion.Facts.Outcome
+import Hopinion.Facts.Package
+import Hopinion.Facts.Place
+import Hopinion.Facts.Suppression
+import Hopinion.Facts.TemplateHaskell
+import Hopinion.Facts.TypeApp
+import Hopinion.Facts.Version
 import Hopinion.Report (Complaint, Complaints, Failure, ParseFailure, StoreProblem)
 import Hopinion.Rule (Finding)
 import Hopinion.Rule.Id

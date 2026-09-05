@@ -1,8 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Hopinion.Check.Hs.NoSemigroupOnText (rule) where
+module Hopinion.Check.Hs.NoSemigroupOnText.Rule (rule) where
 
-import Hopinion.Facts
+import Hopinion.Check.Hs.NoSemigroupOnText.Fact
+import Hopinion.Facts.Module
 import Hopinion.Rule
 import Hopinion.Rule.Id
 

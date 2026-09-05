@@ -35,7 +35,8 @@ import qualified Data.Text as T
 import Data.Validity
 import GHC.Generics (Generic)
 import Hopinion.Comment
-import Hopinion.Facts
+import Hopinion.Facts.Place
+import Hopinion.Facts.Suppression
 import Hopinion.Rule
 import Hopinion.Rule.Id
 import Path (File, Path, Rel)

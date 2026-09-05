@@ -16,20 +16,24 @@ module Hopinion.Extract
   )
 where
 
-import Data.Generics (listify)
-import Data.List.NonEmpty (NonEmpty (..))
-import qualified Data.List.NonEmpty as NE
-import Data.Maybe (isJust, mapMaybe)
+import Data.Maybe (mapMaybe)
 import Data.Text (Text)
 import qualified Data.Text as T
 import GHC.Hs
-import qualified GHC.Types.Name.Occurrence as Occ
-import qualified GHC.Types.Name.Reader as Rdr
 import GHC.Types.SrcLoc (GenLocated (..), unLoc)
-import qualified GHC.Types.SrcLoc as SrcLoc
 import Hopinion.Annotation (annotationsOf)
+import Hopinion.Check.Hs.NoSemigroupOnText.Extract (concatChainsOf)
 import Hopinion.Comment
-import Hopinion.Facts
+import Hopinion.Extract.Ghc
+import Hopinion.Facts.Component
+import Hopinion.Facts.Decl
+import Hopinion.Facts.Instance
+import Hopinion.Facts.Module
+import Hopinion.Facts.Name
+import Hopinion.Facts.Occurrence
+import Hopinion.Facts.Outcome
+import Hopinion.Facts.Place
+import Hopinion.Facts.TemplateHaskell
 import Hopinion.Parse
 import Hopinion.Rule (RuleSet)
 import Path (File, Path, Rel)
@@ -111,152 +115,6 @@ nameFactOf ref decls occ =
       nameFactSpan = nameOccurrenceSpan occ,
       nameFactScope = declScopeOf ref decls (nameOccurrenceSpan occ)
     }
-
--- | Every run of concatenation the module writes, one fact per run.
---
--- From the parse tree rather than from the tokens, because a token before an
--- operator is not an operand of it: @text "a" <> b@ has a string literal beside
--- the @<>@ and concatenates whatever @text@ returns.
---
--- Only the outermost infix expression of a spine is flattened, since an inner
--- one is part of that spine rather than a spine of its own.
-concatChainsOf :: Path Rel File -> ModuleRef -> [DeclFact] -> [LHsDecl GhcPs] -> [ConcatChain]
-concatChainsOf rp ref decls ds =
-  [ ConcatChain
-      { concatChainOperands = map operandOf (NE.toList run),
-        concatChainSpan = sp,
-        concatChainScope = declScopeOf ref decls sp
-      }
-  | spine <- outermostInfixes,
-    run <- concatRuns spine,
-    let sp = spanOfRun rp run
-  ]
-  where
-    infixes :: [LHsExpr GhcPs]
-    infixes = listify (isJust . infixOperands) ds
-
-    nested :: [SrcLoc.SrcSpan]
-    nested =
-      [ getLocA operand
-      | e <- infixes,
-        Just (l, r) <- [infixOperands e],
-        operand <- map peelExpr [l, r],
-        isJust (infixOperands operand)
-      ]
-
-    outermostInfixes :: [LHsExpr GhcPs]
-    outermostInfixes = [e | e <- infixes, getLocA e `notElem` nested]
-
--- | From the start of a run's first operand to the end of its last, which is
--- the concatenation rather than whatever else the spine it sits in holds.
-spanOfRun :: Path Rel File -> NonEmpty (LHsExpr GhcPs) -> Span
-spanOfRun rp run =
-  let spans = fmap (spanOfSrcSpan rp . getLocA) run
-   in (NE.head spans) {spanEnd = spanEnd (NE.last spans)}
-
--- | The operands of one infix application, whatever its operator.
-infixOperands :: LHsExpr GhcPs -> Maybe (LHsExpr GhcPs, LHsExpr GhcPs)
-infixOperands le = case unLoc le of
-  OpApp _ l _ r -> Just (l, r)
-  _ -> Nothing
-
--- | Whether an operator concatenates.
---
--- Qualified or not: the occurrence name of @Data.Semigroup.<>@ is the operator
--- itself, so both spellings answer here.
-isConcatOperator :: LHsExpr GhcPs -> Bool
-isConcatOperator le = case unLoc le of
-  HsVar _ n -> rdrText (unLoc n) `elem` ["<>", "++"]
-  _ -> False
-
--- | An infix spine in source order: its leftmost operand, then each operator
--- with the operand to its right.
---
--- Flattened with no regard for fixity, because the parser has resolved none of
--- it. GhcPs nests every infix application to the left whatever the real
--- associativity is, so @f $ "a" <> b@ arrives as @(f $ "a") <> b@ and the tree
--- says the literal is an operand of the @$@. Source order is what survives
--- fixity resolution, so source order is what this reads.
-spineOf :: LHsExpr GhcPs -> (LHsExpr GhcPs, [(LHsExpr GhcPs, LHsExpr GhcPs)])
-spineOf le = case unLoc (peelExpr le) of
-  OpApp _ l op r ->
-    let (leftmost, leftRest) = spineOf l
-        (rightFirst, rightRest) = spineOf r
-     in (leftmost, leftRest ++ ((op, rightFirst) : rightRest))
-  _ -> (peelExpr le, [])
-
--- | The operands of each maximal run of concatenation in a spine.
---
--- A run rather than the whole spine, because one spine can hold two
--- concatenations that have nothing to do with each other, as
--- @f $ "a" <> b == "c" <> d@ does.
-concatRuns :: LHsExpr GhcPs -> [NonEmpty (LHsExpr GhcPs)]
-concatRuns le =
-  let (leftmost, joins) = spineOf le
-   in outside leftmost joins
-  where
-    -- Two functions rather than a flag: whether a run is open is which of them
-    -- is running.
-    outside :: LHsExpr GhcPs -> [(LHsExpr GhcPs, LHsExpr GhcPs)] -> [NonEmpty (LHsExpr GhcPs)]
-    outside _ [] = []
-    outside previous ((op, next) : more)
-      | isConcatOperator op = inside (next :| [previous]) more
-      | otherwise = outside next more
-
-    -- The run so far, backwards, so that a further operand is a cons.
-    inside :: NonEmpty (LHsExpr GhcPs) -> [(LHsExpr GhcPs, LHsExpr GhcPs)] -> [NonEmpty (LHsExpr GhcPs)]
-    inside sofar [] = [NE.reverse sofar]
-    inside sofar ((op, next) : more)
-      | isConcatOperator op = inside (NE.cons next sofar) more
-      | otherwise = NE.reverse sofar : outside next more
-
--- | Neither parentheses nor a type signature change what an expression is.
-peelExpr :: LHsExpr GhcPs -> LHsExpr GhcPs
-peelExpr le = case unLoc le of
-  HsPar _ e -> peelExpr e
-  ExprWithTySig _ e _ -> peelExpr e
-  _ -> le
-
-operandOf :: LHsExpr GhcPs -> ConcatOperand
-operandOf le = case unLoc (peelExpr le) of
-  HsLit _ HsString {} -> OperandStringLiteral
-  HsLit _ HsMultilineString {} -> OperandStringLiteral
-  _ -> OperandSomethingElse
-
--- | The declaration a span falls inside, which is where an annotation about
--- something written there has to go.
---
--- Whole lines rather than columns, because a suppression is written above a
--- line and a declaration is what a reader would put it above.
-declScopeOf :: ModuleRef -> [DeclFact] -> Span -> ScopeKey
-declScopeOf ref decls sp =
-  case [d | d <- decls, spansLine d] of
-    (d : _) -> ScopeOfDecl ref (declFactName d)
-    [] -> ScopeOfFile ref
-  where
-    line :: Word
-    line = positionLine (spanStart sp)
-
-    spansLine :: DeclFact -> Bool
-    spansLine d =
-      positionLine (spanStart (declFactSpan d)) <= line
-        && line <= positionLine (spanEnd (declFactSpan d))
-
-spanOfLocated :: Path Rel File -> LHsDecl GhcPs -> Span
-spanOfLocated rp ldecl = spanOfSrcSpan rp (getLocA ldecl)
-
-spanOfSrcSpan :: Path Rel File -> SrcLoc.SrcSpan -> Span
-spanOfSrcSpan rp s = case s of
-  SrcLoc.RealSrcSpan rss _ ->
-    Span
-      { spanFile = rp,
-        spanStart = positionFromGhc (SrcLoc.srcSpanStartLine rss) (SrcLoc.srcSpanStartCol rss),
-        spanEnd = positionFromGhc (SrcLoc.srcSpanEndLine rss) (SrcLoc.srcSpanEndCol rss)
-      }
-  SrcLoc.UnhelpfulSpan _ -> wholeFileSpan rp
-
-rdrText :: Rdr.RdrName -> Text
-rdrText = T.pack . Occ.occNameString . Rdr.rdrNameOcc
 
 -- | The name an instance declaration is known by, shared by the declaration
 -- list and by every instance fact, so that a comment above an instance and a

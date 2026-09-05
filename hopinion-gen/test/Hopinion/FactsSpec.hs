@@ -6,9 +6,20 @@ module Hopinion.FactsSpec (spec) where
 import Data.Char (isAlphaNum, isUpper)
 import Data.Text (Text)
 import qualified Data.Text as T
+import Hopinion.Check.Hs.NoSemigroupOnText.Fact
 import Hopinion.Comment
-import Hopinion.Facts
+import Hopinion.Facts.Component
+import Hopinion.Facts.Decl
 import Hopinion.Facts.Gen ()
+import Hopinion.Facts.Instance
+import Hopinion.Facts.Name
+import Hopinion.Facts.Outcome
+import Hopinion.Facts.Package
+import Hopinion.Facts.Place
+import Hopinion.Facts.Suppression
+import Hopinion.Facts.TemplateHaskell
+import Hopinion.Facts.TypeApp
+import Hopinion.Facts.Version
 import Hopinion.Rule.Id
 import Test.Syd
 import Test.Syd.Validity

@@ -46,7 +46,13 @@ import Hopinion.Annotation
 import Hopinion.Choices (choicesDisabled, readChoicesIn, renderChoicesFileError)
 import Hopinion.Compiled
 import Hopinion.Extract
-import Hopinion.Facts
+import Hopinion.Facts.Component
+import Hopinion.Facts.Module
+import Hopinion.Facts.Name
+import Hopinion.Facts.Outcome
+import Hopinion.Facts.Place
+import Hopinion.Facts.Suppression
+import Hopinion.Facts.Version
 import Hopinion.Parse
 import Hopinion.Project
 import Hopinion.Report

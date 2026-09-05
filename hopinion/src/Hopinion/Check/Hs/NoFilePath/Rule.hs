@@ -1,8 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Hopinion.Check.Hs.NoFilePath (rule) where
+module Hopinion.Check.Hs.NoFilePath.Rule (rule) where
 
-import Hopinion.Facts
+import Hopinion.Facts.Module
+import Hopinion.Facts.Occurrence
 import Hopinion.Rule
 import Hopinion.Rule.Id
 

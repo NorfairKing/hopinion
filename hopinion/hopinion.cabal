@@ -12,22 +12,33 @@ library
   exposed-modules:
       Hopinion
       Hopinion.Annotation
-      Hopinion.Check.Comment.BareTodo
-      Hopinion.Check.Hs.NoCustomShowRead
-      Hopinion.Check.Hs.NoFilePath
-      Hopinion.Check.Hs.NoSemigroupOnText
-      Hopinion.Check.Package.GenValidInGenPackage
-      Hopinion.Check.Project.GenValidSpecPerGenValid
+      Hopinion.Check.Comment.BareTodo.Rule
+      Hopinion.Check.Hs.NoCustomShowRead.Rule
+      Hopinion.Check.Hs.NoFilePath.Rule
+      Hopinion.Check.Hs.NoSemigroupOnText.Extract
+      Hopinion.Check.Hs.NoSemigroupOnText.Fact
+      Hopinion.Check.Hs.NoSemigroupOnText.Rule
+      Hopinion.Check.Package.GenValidInGenPackage.Rule
+      Hopinion.Check.Project.GenValidSpecPerGenValid.Rule
       Hopinion.Choices
       Hopinion.Comment
       Hopinion.Compiled
       Hopinion.Extract
-      Hopinion.Facts
+      Hopinion.Extract.Ghc
+      Hopinion.Facts.Component
       Hopinion.Facts.Decl
+      Hopinion.Facts.Instance
+      Hopinion.Facts.Module
       Hopinion.Facts.Name
+      Hopinion.Facts.Occurrence
+      Hopinion.Facts.Outcome
+      Hopinion.Facts.Package
       Hopinion.Facts.Persist
       Hopinion.Facts.Place
       Hopinion.Facts.Suppression
+      Hopinion.Facts.TemplateHaskell
+      Hopinion.Facts.TypeApp
+      Hopinion.Facts.Version
       Hopinion.OptParse
       Hopinion.Parse
       Hopinion.Project
@@ -77,7 +88,6 @@ library
     , unliftio
     , unordered-containers
     , validity
-    , validity-aeson
     , validity-containers
     , validity-path
     , validity-text

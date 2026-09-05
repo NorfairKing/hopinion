@@ -53,7 +53,9 @@ import Database.Persist.Sql (Migration)
 import GHC.Generics (Generic)
 import Hopinion.Comment
 import Hopinion.Compiled (CompiledModules)
-import Hopinion.Facts
+import Hopinion.Facts.Module
+import Hopinion.Facts.Name
+import Hopinion.Facts.Place
 import Hopinion.Rule.Id
 import Hopinion.Store (Carry, Query)
 import Text.Colour (Chunk, chunk, fore, red)

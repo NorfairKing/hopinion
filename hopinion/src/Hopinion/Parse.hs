@@ -50,7 +50,10 @@ import GHC.Types.SrcLoc
   )
 import qualified GHC.Types.SrcLoc as SrcLoc
 import Hopinion.Comment (RawComment (..))
-import Hopinion.Facts
+import Hopinion.Facts.Name
+import Hopinion.Facts.Place
+import Hopinion.Facts.TemplateHaskell
+import Hopinion.Facts.TypeApp
 import qualified Language.Haskell.GhclibParserEx.GHC.Driver.Session as ExSession
 import qualified Language.Haskell.GhclibParserEx.GHC.Parser as ExParser
 import Language.Haskell.GhclibParserEx.GHC.Settings.Config (fakeSettings)

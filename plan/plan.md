@@ -77,6 +77,18 @@ that needs source. Keep them apart.
 and the query it answers with. The envelope never learns what is in that table,
 which is why adding a rule adds no case to anything central.
 
+**A type belongs to whatever gives it meaning.** A rule's own fact is in that
+rule's directory; what more than one rule reads is under `Hopinion.Facts`, one
+type per module, and no module re-exports another. That is what makes a
+module's imports a statement of what it is about, and what makes a dependency
+nobody meant to take show up as a line nobody meant to write.
+
+**An enum-shaped fact goes to the database as the spelling it already has**,
+rather than through `Show` and `Read`, so a stored row stays readable and a
+renamed constructor cannot silently change what was written. The text and its
+parser are one table rather than two, which is why the spellings a person can
+type at `--component` are the spellings the store uses.
+
 **The rule set is a value, and rule ids are open.** A repository runs these
 rules, plus rules of its own, minus the ones it has decided against, so no
 module can hold the list and no enum can hold the names. `ruleSet` refuses two
@@ -268,8 +280,11 @@ Deliberately, with the reason:
 
 For a rule in a family that already has a combinator:
 
-1. Write `Hopinion/Check/<Area>/<Name>.hs`, exporting only `rule`, with its id
-   written as a literal in it.
+1. Write `Hopinion/Check/<Area>/<Name>/Rule.hs`, exporting only `rule`, with its
+   id written as a literal in it. A rule is a directory, so anything else only
+   that rule needs goes beside it: `Fact.hs` for a fact nothing else reads,
+   `Extract.hs` for the reading of the parse tree that produces it. A rule that
+   needs neither is the one module.
 2. Add one line to `builtinRules`.
 3. Add `test_resources/Rule/<RuleId>/good.hs` and `bad.hs`. A `scenarioDir` runs
    one test per file, so a further case is a further file named `good*` or
@@ -280,10 +295,10 @@ For a rule in a family that already has a combinator:
 5. Run the tool over a corpus and record the finding count, which is what decides
    the shipping class.
 
-Step 2 is the only edit outside the rule's own module and its resources. Adding
-the module and not the line leaves a rule nothing runs, which the resource
-listing test catches in both directions. Step 5 is the only step that needs
-judgement.
+Step 2 is the only edit outside the rule's own directory and its resources,
+unless the fact it brings is one ModuleContext has to carry. Adding the module
+and not the line leaves a rule nothing runs, which the resource listing test
+catches in both directions. Step 5 is the only step that needs judgement.
 
 A rule a repository writes for itself takes the same steps minus the second: it
 goes in that repository's own executable, which calls `hopinionWith`.
@@ -303,13 +318,18 @@ combinator yet, or it needs a fact that extraction does not produce. Both are
 real costs, and both are paid once on behalf of every later rule of the same
 shape.
 
-The current ratio is against the budget: 6,856 lines of infrastructure carrying
-689 lines of rules over six rules, where the design predicted roughly 1,300
-carrying 55. The three cheapest rules are 29, 42 and 46 lines, which is the
-budget holding once the facts a rule needs are already extracted; the average is
-carried by the obligation rule at 375, which was deliberately the hardest thing
+The current ratio is against the budget: 6,875 lines of infrastructure carrying
+853 lines of rules over six rules, where the design predicted roughly 1,300
+carrying 55. The two cheapest rules are 43 and 47 lines, which is the budget
+holding once the facts a rule needs are already extracted; the average is
+carried by the obligation rule at 382, which was deliberately the hardest thing
 in the design. Whether the families are optimistic by an order is a question the
 next few rules settle.
+
+A rule's cost is now its whole directory rather than one module, which is what
+makes it comparable. `HsNoSemigroupOnText` is 178 lines: 30 of rule, 44 of fact,
+104 of reading the parse tree for that fact. The reading is the part a later
+rule about expressions should not have to pay again.
 
 ## Anti-goals
 

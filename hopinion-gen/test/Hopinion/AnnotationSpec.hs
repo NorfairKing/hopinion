@@ -10,7 +10,9 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import Hopinion.Annotation
 import Hopinion.Comment
-import Hopinion.Facts
+import Hopinion.Facts.Name
+import Hopinion.Facts.Place
+import Hopinion.Facts.Suppression
 import Hopinion.Project
 import Hopinion.Report
 import Hopinion.Report.Render

@@ -13,8 +13,8 @@ import Data.List (sort)
 import qualified Data.Map.Strict as M
 import qualified Data.Text as T
 import Hopinion.Annotation (OverBroad, Unused)
-import Hopinion.Facts (PackageName (..))
 import Hopinion.Facts.Gen ()
+import Hopinion.Facts.Name (PackageName (..))
 import Hopinion.Project (SourceRoot (..))
 import Hopinion.Report
 import Hopinion.Report.Render

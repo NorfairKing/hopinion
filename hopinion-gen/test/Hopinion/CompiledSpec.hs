@@ -10,7 +10,7 @@
 module Hopinion.CompiledSpec (spec) where
 
 import Hopinion.Compiled
-import Hopinion.Facts
+import Hopinion.Facts.Name
 import Path (parseRelFile, reldir, relfile, toFilePath, (</>))
 import Path.IO (ensureDir, withSystemTempDir)
 import Test.Syd
