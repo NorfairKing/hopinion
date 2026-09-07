@@ -1,1 +1,11 @@
-HsNoCustomEq	8:1-9:36 test_resources/Rule/HsNoCustomEq/bad.hs	lib:test_resources/Rule/HsNoCustomEq/bad.hs instance Eq User	This Eq instance is written out. Derive it instead, so that what it compares is the fields of the type.
+[error HsNoCustomEq]: This Eq instance is written out. Derive it instead, so that what it compares is the fields of the type.
+     ╭──▶ test_resources/Rule/HsNoCustomEq/bad.hs@8:1-9:36
+     │
+   8 │ ╭┤ instance Eq User where
+   9 │ ├┤   a == b = userName a == userName b
+     • │ 
+     • ╰╸ Eq is derived.
+     •
+     │ Note: If you need a custom equality operation, use a separate function, not the Eq instance.
+     │ Hint: To suppress, write this directly above line 8 of test_resources/Rule/HsNoCustomEq/bad.hs, and say why: -- [allow:HsNoCustomEq] <reason>
+─────╯

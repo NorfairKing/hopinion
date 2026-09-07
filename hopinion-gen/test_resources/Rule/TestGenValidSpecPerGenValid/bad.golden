@@ -1,8 +1,91 @@
-TestGenValidSpecPerGenValid	11:1-11:28 thing/src/Thing/Spliced.hs	lib:Thing.Spliced instance GenValid Generated	No genValidSpec @Generated anywhere in thing-gen's test suite.
-TestGenValidSpecPerGenValid	13:1-13:38 thing/src/Thing.hs	lib:Thing instance GenValid Standalone	No genValidSpec @Standalone anywhere in thing-gen's test suite.
-TestGenValidSpecPerGenValid	16:1-17:28 thing/src/Thing.hs	lib:Thing Stocked	No genValidSpec @Stocked anywhere in thing-gen's test suite.
-TestGenValidSpecPerGenValid	19:1-20:30 thing/src/Thing.hs	lib:Thing Wrapped	No genValidSpec @Wrapped anywhere in thing-gen's test suite.
-TestGenValidSpecPerGenValid	22:1-23:31 thing/src/Thing.hs	lib:Thing AnyOf	No genValidSpec @AnyOf anywhere in thing-gen's test suite.
-TestGenValidSpecPerGenValid	26:1-27:49 thing/src/Thing.hs	lib:Thing ViaCodec	No genValidSpec @ViaCodec anywhere in thing-gen's test suite.
-TestGenValidSpecPerGenValid	32:1-32:30 thing/src/Thing.hs	lib:Thing instance GenValid Allowed	No genValidSpec @Allowed anywhere in thing-gen's test suite.
-TestGenValidSpecPerGenValid	5:1-5:25 lonely/src/Lonely.hs	lib:Lonely instance GenValid Orphan	No genValidSpec @Orphan anywhere, and there is no lonely-gen for it to be written in.
+[error TestGenValidSpecPerGenValid]: No genValidSpec @Orphan anywhere, and there is no lonely-gen for it to be written in.
+     ╭──▶ lonely/src/Lonely.hs@5:1-5:25
+     │
+   5 │ instance GenValid Orphan
+     • ┬───────────────────────
+     • ╰╸ A GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.
+     •
+     │ Note: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.
+     │ Hint: To suppress, write this directly above line 5 of lonely/src/Lonely.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>
+─────╯
+
+[error TestGenValidSpecPerGenValid]: No genValidSpec @Standalone anywhere in thing-gen's test suite.
+     ╭──▶ thing/src/Thing.hs@13:1-13:38
+     │
+  13 │ deriving instance GenValid Standalone
+     • ┬────────────────────────────────────
+     • ╰╸ A GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.
+     •
+     │ Note: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.
+     │ Hint: To suppress, write this directly above line 13 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>
+─────╯
+
+[error TestGenValidSpecPerGenValid]: No genValidSpec @Stocked anywhere in thing-gen's test suite.
+     ╭──▶ thing/src/Thing.hs@16:1-17:28
+     │
+  16 │ ╭┤ data Stocked = Stocked
+  17 │ ├┤   deriving stock (GenValid)
+     • │ 
+     • ╰╸ A GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.
+     •
+     │ Note: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.
+     │ Hint: To suppress, write this directly above line 16 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>
+─────╯
+
+[error TestGenValidSpecPerGenValid]: No genValidSpec @Wrapped anywhere in thing-gen's test suite.
+     ╭──▶ thing/src/Thing.hs@19:1-20:30
+     │
+  19 │ ╭┤ newtype Wrapped = Wrapped Int
+  20 │ ├┤   deriving newtype (GenValid)
+     • │ 
+     • ╰╸ A GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.
+     •
+     │ Note: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.
+     │ Hint: To suppress, write this directly above line 19 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>
+─────╯
+
+[error TestGenValidSpecPerGenValid]: No genValidSpec @AnyOf anywhere in thing-gen's test suite.
+     ╭──▶ thing/src/Thing.hs@22:1-23:31
+     │
+  22 │ ╭┤ data AnyOf = AnyOf
+  23 │ ├┤   deriving anyclass (GenValid)
+     • │ 
+     • ╰╸ A GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.
+     •
+     │ Note: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.
+     │ Hint: To suppress, write this directly above line 22 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>
+─────╯
+
+[error TestGenValidSpecPerGenValid]: No genValidSpec @ViaCodec anywhere in thing-gen's test suite.
+     ╭──▶ thing/src/Thing.hs@26:1-27:49
+     │
+  26 │ ╭┤ data ViaCodec = ViaCodec
+  27 │ ├┤   deriving (GenValid) via (Autodocodec ViaCodec)
+     • │ 
+     • ╰╸ A GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.
+     •
+     │ Note: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.
+     │ Hint: To suppress, write this directly above line 26 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>
+─────╯
+
+[error TestGenValidSpecPerGenValid]: No genValidSpec @Allowed anywhere in thing-gen's test suite.
+     ╭──▶ thing/src/Thing.hs@32:1-32:30
+     │
+  32 │ instance GenValid (Allowed a)
+     • ┬────────────────────────────
+     • ╰╸ A GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.
+     •
+     │ Note: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.
+     │ Hint: To suppress, write this directly above line 32 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>
+─────╯
+
+[error TestGenValidSpecPerGenValid]: No genValidSpec @Generated anywhere in thing-gen's test suite.
+     ╭──▶ thing/src/Thing/Spliced.hs@11:1-11:28
+     │
+  11 │ instance GenValid Generated
+     • ┬──────────────────────────
+     • ╰╸ A GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.
+     •
+     │ Note: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.
+     │ Hint: To suppress, write this directly above line 11 of thing/src/Thing/Spliced.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>
+─────╯

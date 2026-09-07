@@ -1,2 +1,21 @@
-HsNoSemigroupOnText	11:28-11:44 test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs	lib:test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs shouted	A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
-HsNoSemigroupOnText	15:26-15:51 test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs	lib:test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs report	A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
+[error HsNoSemigroupOnText]: A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
+     ╭──▶ test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs@11:28-11:44
+     │
+  11 │ shouted name = T.toUpper $ "hello " <> name
+     •                            ┬───────────────
+     •                            ╰╸ Do not use <> or ++ to concatenate strings or text. Put the pieces in a list.
+     •
+     │ Note: <> does not format well, literal lists do.
+     │ Hint: To suppress, write this directly above line 11 of test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>
+─────╯
+
+[error HsNoSemigroupOnText]: A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
+     ╭──▶ test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs@15:26-15:51
+     │
+  15 │ report what = putStrLn $ "no such thing: " ++ what
+     •                          ┬────────────────────────
+     •                          ╰╸ Do not use <> or ++ to concatenate strings or text. Put the pieces in a list.
+     •
+     │ Note: <> does not format well, literal lists do.
+     │ Hint: To suppress, write this directly above line 15 of test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>
+─────╯

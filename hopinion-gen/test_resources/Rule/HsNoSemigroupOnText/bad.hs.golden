@@ -1,7 +1,76 @@
-HsNoSemigroupOnText	13:17-13:28 test_resources/Rule/HsNoSemigroupOnText/bad.hs	lib:test_resources/Rule/HsNoSemigroupOnText/bad.hs sentence	A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
-HsNoSemigroupOnText	17:24-17:56 test_resources/Rule/HsNoSemigroupOnText/bad.hs	lib:test_resources/Rule/HsNoSemigroupOnText/bad.hs located	A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
-HsNoSemigroupOnText	21:12-21:28 test_resources/Rule/HsNoSemigroupOnText/bad.hs	lib:test_resources/Rule/HsNoSemigroupOnText/bad.hs label	A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
-HsNoSemigroupOnText	26:10-26:21 test_resources/Rule/HsNoSemigroupOnText/bad.hs	lib:test_resources/Rule/HsNoSemigroupOnText/bad.hs marker	A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
-HsNoSemigroupOnText	30:12-30:29 test_resources/Rule/HsNoSemigroupOnText/bad.hs	lib:test_resources/Rule/HsNoSemigroupOnText/bad.hs quoted	A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
-HsNoSemigroupOnText	34:11-34:28 test_resources/Rule/HsNoSemigroupOnText/bad.hs	lib:test_resources/Rule/HsNoSemigroupOnText/bad.hs mixed	A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
-HsNoSemigroupOnText	9:17-9:34 test_resources/Rule/HsNoSemigroupOnText/bad.hs	lib:test_resources/Rule/HsNoSemigroupOnText/bad.hs greeting	A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
+[error HsNoSemigroupOnText]: A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
+     ╭──▶ test_resources/Rule/HsNoSemigroupOnText/bad.hs@9:17-9:34
+     │
+   9 │ greeting name = "Hello, " <> name
+     •                 ┬────────────────
+     •                 ╰╸ Do not use <> or ++ to concatenate strings or text. Put the pieces in a list.
+     •
+     │ Note: <> does not format well, literal lists do.
+     │ Hint: To suppress, write this directly above line 9 of test_resources/Rule/HsNoSemigroupOnText/bad.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>
+─────╯
+
+[error HsNoSemigroupOnText]: A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
+     ╭──▶ test_resources/Rule/HsNoSemigroupOnText/bad.hs@13:17-13:28
+     │
+  13 │ sentence body = body <> "."
+     •                 ┬──────────
+     •                 ╰╸ Do not use <> or ++ to concatenate strings or text. Put the pieces in a list.
+     •
+     │ Note: <> does not format well, literal lists do.
+     │ Hint: To suppress, write this directly above line 13 of test_resources/Rule/HsNoSemigroupOnText/bad.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>
+─────╯
+
+[error HsNoSemigroupOnText]: A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
+     ╭──▶ test_resources/Rule/HsNoSemigroupOnText/bad.hs@17:24-17:56
+     │
+  17 │ located path message = "at " <> path <> ": " <> message
+     •                        ┬───────────────────────────────
+     •                        ╰╸ Do not use <> or ++ to concatenate strings or text. Put the pieces in a list.
+     •
+     │ Note: <> does not format well, literal lists do.
+     │ Hint: To suppress, write this directly above line 17 of test_resources/Rule/HsNoSemigroupOnText/bad.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>
+─────╯
+
+[error HsNoSemigroupOnText]: A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
+     ╭──▶ test_resources/Rule/HsNoSemigroupOnText/bad.hs@21:12-21:28
+     │
+  21 │ label t = ("[" <> t) <> "]"
+     •            ┬───────────────
+     •            ╰╸ Do not use <> or ++ to concatenate strings or text. Put the pieces in a list.
+     •
+     │ Note: <> does not format well, literal lists do.
+     │ Hint: To suppress, write this directly above line 21 of test_resources/Rule/HsNoSemigroupOnText/bad.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>
+─────╯
+
+[error HsNoSemigroupOnText]: A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
+     ╭──▶ test_resources/Rule/HsNoSemigroupOnText/bad.hs@26:10-26:21
+     │
+  26 │ marker = "--" <> ">"
+     •          ┬──────────
+     •          ╰╸ Do not use <> or ++ to concatenate strings or text. Put the pieces in a list.
+     •
+     │ Note: <> does not format well, literal lists do.
+     │ Hint: To suppress, write this directly above line 26 of test_resources/Rule/HsNoSemigroupOnText/bad.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>
+─────╯
+
+[error HsNoSemigroupOnText]: A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
+     ╭──▶ test_resources/Rule/HsNoSemigroupOnText/bad.hs@30:12-30:29
+     │
+  30 │ quoted s = "\"" ++ s ++ "\""
+     •            ┬────────────────
+     •            ╰╸ Do not use <> or ++ to concatenate strings or text. Put the pieces in a list.
+     •
+     │ Note: <> does not format well, literal lists do.
+     │ Hint: To suppress, write this directly above line 30 of test_resources/Rule/HsNoSemigroupOnText/bad.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>
+─────╯
+
+[error HsNoSemigroupOnText]: A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
+     ╭──▶ test_resources/Rule/HsNoSemigroupOnText/bad.hs@34:11-34:28
+     │
+  34 │ mixed s = "at " ++ s <> "."
+     •           ┬────────────────
+     •           ╰╸ Do not use <> or ++ to concatenate strings or text. Put the pieces in a list.
+     •
+     │ Note: <> does not format well, literal lists do.
+     │ Hint: To suppress, write this directly above line 34 of test_resources/Rule/HsNoSemigroupOnText/bad.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>
+─────╯
