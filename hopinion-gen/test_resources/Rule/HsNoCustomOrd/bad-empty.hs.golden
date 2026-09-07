@@ -1,0 +1,1 @@
+HsNoCustomOrd	6:1-6:20 test_resources/Rule/HsNoCustomOrd/bad-empty.hs	lib:test_resources/Rule/HsNoCustomOrd/bad-empty.hs instance Ord Colour	This Ord instance is written out. Derive it instead, so that what it orders by is the fields of the type.

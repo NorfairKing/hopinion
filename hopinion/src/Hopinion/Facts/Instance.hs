@@ -1,9 +1,11 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE LambdaCase #-}
 
 module Hopinion.Facts.Instance
   ( InstanceMethods (..),
     InstanceOrigin (..),
+    originIsWrittenOut,
     InstanceFact (..),
   )
 where
@@ -49,6 +51,23 @@ data InstanceOrigin
   deriving stock (Show, Eq, Ord, Generic)
 
 instance Validity InstanceOrigin
+
+-- | Whether the body of the instance is one somebody typed out, rather than
+-- one the compiler wrote against the fields of the type.
+--
+-- Enumerated rather than matched with a catch-all, so a further origin has to
+-- be answered for here rather than falling in on the deriving side of the
+-- question by default.
+originIsWrittenOut :: InstanceOrigin -> Bool
+originIsWrittenOut = \case
+  OriginInstanceDecl MethodsUseArguments -> True
+  OriginInstanceDecl MethodsIgnoreArguments -> True
+  OriginStandaloneDeriving -> False
+  OriginDerivingStock -> False
+  OriginDerivingNewtype -> False
+  OriginDerivingAnyclass -> False
+  OriginDerivingVia _ -> False
+  OriginDerivingUnspecified -> False
 
 data InstanceFact = InstanceFact
   { instanceFactClass :: !Text,

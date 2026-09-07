@@ -1,0 +1,1 @@
+HsNoCustomEq	5:1-5:19 test_resources/Rule/HsNoCustomEq/bad-empty.hs	lib:test_resources/Rule/HsNoCustomEq/bad-empty.hs instance Eq Colour	This Eq instance is written out. Derive it instead, so that what it compares is the fields of the type.

@@ -1,0 +1,1 @@
+HsNoCustomOrd	9:1-10:58 test_resources/Rule/HsNoCustomOrd/bad.hs	lib:test_resources/Rule/HsNoCustomOrd/bad.hs instance Ord Task	This Ord instance is written out. Derive it instead, so that what it orders by is the fields of the type.

@@ -3,9 +3,9 @@
 Every rule this tool could enforce that it does not enforce yet, sorted by how
 it can be enforced. A rule that ships leaves this file: what is here is work.
 
-The six that ship are `CommentBareTodo`, `HsNoCustomShowRead`, `HsNoFilePath`,
-`HsNoSemigroupOnText`, `HsGenValidInGenPackage` and
-`TestGenValidSpecPerGenValid`.
+The eight that ship are `CommentBareTodo`, `HsNoCustomEq`, `HsNoCustomOrd`,
+`HsNoCustomShowRead`, `HsNoFilePath`, `HsNoSemigroupOnText`,
+`HsGenValidInGenPackage` and `TestGenValidSpecPerGenValid`.
 
 ## How to read this
 
