@@ -7,6 +7,8 @@
 module Hopinion.Rule.Registry (builtinRules) where
 
 import qualified Hopinion.Check.Comment.BareTodo.Rule as BareTodo
+import qualified Hopinion.Check.Hs.NoCustomEq.Rule as NoCustomEq
+import qualified Hopinion.Check.Hs.NoCustomOrd.Rule as NoCustomOrd
 import qualified Hopinion.Check.Hs.NoCustomShowRead.Rule as NoCustomShowRead
 import qualified Hopinion.Check.Hs.NoFilePath.Rule as NoFilePath
 import qualified Hopinion.Check.Hs.NoSemigroupOnText.Rule as NoSemigroupOnText
@@ -19,6 +21,8 @@ builtinRules =
   [ BareTodo.rule,
     GenValidInGenPackage.rule,
     GenValidSpecPerGenValid.rule,
+    NoCustomEq.rule,
+    NoCustomOrd.rule,
     NoCustomShowRead.rule,
     NoFilePath.rule,
     NoSemigroupOnText.rule

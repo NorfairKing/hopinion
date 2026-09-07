@@ -13,6 +13,8 @@ library
       Hopinion
       Hopinion.Annotation
       Hopinion.Check.Comment.BareTodo.Rule
+      Hopinion.Check.Hs.NoCustomEq.Rule
+      Hopinion.Check.Hs.NoCustomOrd.Rule
       Hopinion.Check.Hs.NoCustomShowRead.Rule
       Hopinion.Check.Hs.NoFilePath.Rule
       Hopinion.Check.Hs.NoSemigroupOnText.Extract

@@ -132,6 +132,20 @@ extra-source-files:
     test_resources/Rule/HsGenValidInGenPackage/good/thing-gen/thing-gen.cabal
     test_resources/Rule/HsGenValidInGenPackage/good/thing/src/Thing.hs
     test_resources/Rule/HsGenValidInGenPackage/good/thing/thing.cabal
+    test_resources/Rule/HsNoCustomEq/bad-empty.hs
+    test_resources/Rule/HsNoCustomEq/bad-empty.hs.golden
+    test_resources/Rule/HsNoCustomEq/bad-ignoring-arguments.hs
+    test_resources/Rule/HsNoCustomEq/bad-ignoring-arguments.hs.golden
+    test_resources/Rule/HsNoCustomEq/bad.hs
+    test_resources/Rule/HsNoCustomEq/bad.hs.golden
+    test_resources/Rule/HsNoCustomEq/good.hs
+    test_resources/Rule/HsNoCustomEq/good.hs.golden
+    test_resources/Rule/HsNoCustomOrd/bad-empty.hs
+    test_resources/Rule/HsNoCustomOrd/bad-empty.hs.golden
+    test_resources/Rule/HsNoCustomOrd/bad.hs
+    test_resources/Rule/HsNoCustomOrd/bad.hs.golden
+    test_resources/Rule/HsNoCustomOrd/good.hs
+    test_resources/Rule/HsNoCustomOrd/good.hs.golden
     test_resources/Rule/HsNoCustomShowRead/bad-empty.hs
     test_resources/Rule/HsNoCustomShowRead/bad-empty.hs.golden
     test_resources/Rule/HsNoCustomShowRead/bad-partly-hidden.hs
