@@ -28,14 +28,14 @@ spec = describe "explainRule" $ do
     sort files `shouldBe` [[relfile|runs.golden|], [relfile|turned-off.golden|]]
 
   -- What a reader is shown is external output, so it is goldened rather than
-  -- restated here out of the same fields the code assembles it from. The words
-  -- are goldened without the colour, which is what a reader reviews and what a
-  -- caller capturing the output gets; that any colour is asked for at all is
-  -- asserted separately below.
+  -- restated here out of the same fields the code assembles it from. Goldened
+  -- with the colour, because the colour is part of what is shown: which words
+  -- are picked out and which are not is a decision, and one nothing else
+  -- reviews. Read these with something that interprets the escapes.
   it "explains a rule this run makes" $
     goldenTextFile (toFilePath (resourceDir </> [relfile|runs.golden|])) $
       pure $
-        renderChunksText WithoutColours $ case explainRule shippedRules (RuleId "CommentBareTodo") of
+        renderChunksText With8BitColours $ case explainRule shippedRules (RuleId "CommentBareTodo") of
           Explained cs -> cs
           NoRuleCalled cs -> cs
 
@@ -59,7 +59,7 @@ spec = describe "explainRule" $ do
       case withoutRules [RuleId "CommentBareTodo"] shippedRules of
         Left err -> fail (T.unpack (renderChunksText WithoutColours (renderRuleSetError err)))
         Right rs ->
-          pure $ renderChunksText WithoutColours $ case explainRule rs (RuleId "CommentBareTodo") of
+          pure $ renderChunksText With8BitColours $ case explainRule rs (RuleId "CommentBareTodo") of
             Explained cs -> cs
             NoRuleCalled cs -> cs
 

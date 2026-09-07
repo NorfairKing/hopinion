@@ -1,26 +1,26 @@
-[error BROKEN_SUPPRESSION]: This suppression is not attached to anything. Move it against the code it concerns.
-     ╭──▶ thing/src/AtTheEnd.hs@6:1-7:37
-     │
-   6 │ ╭┤ -- [allow:CommentBareTodo] Site-scoped, after the last declaration, where there
-   7 │ ├┤ -- is nothing below it to attach to.
-     • │ 
-     • ╰╸ this suppression
-─────╯
+[0;91;1m[error BROKEN_SUPPRESSION][0m: This suppression is not attached to anything. Move it against the code it concerns.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/AtTheEnd.hs@6:1-7:37[0m
+     [0;90;1m│[0m
+[0;90;1m   6 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1m-[0m[0;91;1m-[0m[0;91;1m [0m[0;91;1m[[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1ml[0m[0;91;1mo[0m[0;91;1mw[0m[0;91;1m:[0m[0;91;1mC[0m[0;91;1mo[0m[0;91;1mm[0m[0;91;1mm[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1mB[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1mT[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1mo[0m[0;91;1m][0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m-[0m[0;91;1ms[0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1md[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1mf[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1m [0m[0;91;1ml[0m[0;91;1ma[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1ml[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1mi[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mw[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1me[0m
+[0;90;1m   7 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m-[0m[0;91;1m-[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1m [0m[0;91;1mn[0m[0;91;1mo[0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1mb[0m[0;91;1me[0m[0;91;1ml[0m[0;91;1mo[0m[0;91;1mw[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mc[0m[0;91;1mh[0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1m.[0m
+     [0;90;1m•[0m [0;91m│ [0m
+     [0;90;1m•[0m [0;91m╰╸ this suppression[0m
+[0;90;1m─────╯[0m
 
-[error BROKEN_SUPPRESSION]: This suppression is not attached to anything. Move it against the code it concerns.
-     ╭──▶ thing/src/InTheExportList.hs@3:5-4:36
-     │
-   3 │ ╭┤     -- [allow:CommentBareTodo] Site-scoped, inside the export list, which holds
-   4 │ ├┤     -- no declaration to attach to.
-     • │ 
-     • ╰╸ this suppression
-─────╯
+[0;91;1m[error BROKEN_SUPPRESSION][0m: This suppression is not attached to anything. Move it against the code it concerns.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/InTheExportList.hs@3:5-4:36[0m
+     [0;90;1m│[0m
+[0;90;1m   3 │[0m [0;91m╭[0m[0;91m┤[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;91;1m-[0m[0;91;1m-[0m[0;91;1m [0m[0;91;1m[[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1ml[0m[0;91;1mo[0m[0;91;1mw[0m[0;91;1m:[0m[0;91;1mC[0m[0;91;1mo[0m[0;91;1mm[0m[0;91;1mm[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1mB[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1mT[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1mo[0m[0;91;1m][0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m-[0m[0;91;1ms[0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1md[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1m [0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mp[0m[0;91;1mo[0m[0;91;1mr[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mw[0m[0;91;1mh[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1mh[0m[0;91;1m [0m[0;91;1mh[0m[0;91;1mo[0m[0;91;1ml[0m[0;91;1md[0m[0;91;1ms[0m
+[0;90;1m   4 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m-[0m[0;91;1m-[0m[0;91;1m [0m[0;91;1mn[0m[0;91;1mo[0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1ml[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1mi[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mc[0m[0;91;1mh[0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1m.[0m
+     [0;90;1m•[0m [0;91m│ [0m
+     [0;90;1m•[0m [0;91m╰╸ this suppression[0m
+[0;90;1m─────╯[0m
 
-[error BROKEN_SUPPRESSION]: This suppression is not attached to anything. Move it against the code it concerns.
-     ╭──▶ thing/src/OverTheHeader.hs@1:1-2:39
-     │
-   1 │ ╭┤ -- [allow:CommentBareTodo] Site-scoped, above the module header, where there is
-   2 │ ├┤ -- no declaration for it to attach to.
-     • │ 
-     • ╰╸ this suppression
-─────╯
+[0;91;1m[error BROKEN_SUPPRESSION][0m: This suppression is not attached to anything. Move it against the code it concerns.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/OverTheHeader.hs@1:1-2:39[0m
+     [0;90;1m│[0m
+[0;90;1m   1 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1m-[0m[0;91;1m-[0m[0;91;1m [0m[0;91;1m[[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1ml[0m[0;91;1mo[0m[0;91;1mw[0m[0;91;1m:[0m[0;91;1mC[0m[0;91;1mo[0m[0;91;1mm[0m[0;91;1mm[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1mB[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1mT[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1mo[0m[0;91;1m][0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m-[0m[0;91;1ms[0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1md[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1mb[0m[0;91;1mo[0m[0;91;1mv[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mm[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1mu[0m[0;91;1ml[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mh[0m[0;91;1me[0m[0;91;1ma[0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mw[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1ms[0m
+[0;90;1m   2 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m-[0m[0;91;1m-[0m[0;91;1m [0m[0;91;1mn[0m[0;91;1mo[0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1ml[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1mi[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1m [0m[0;91;1mf[0m[0;91;1mo[0m[0;91;1mr[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mc[0m[0;91;1mh[0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1m.[0m
+     [0;90;1m•[0m [0;91m│ [0m
+     [0;90;1m•[0m [0;91m╰╸ this suppression[0m
+[0;90;1m─────╯[0m

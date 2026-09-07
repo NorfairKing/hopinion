@@ -1,11 +1,11 @@
-[error HsNoCustomOrd]: This Ord instance is written out. Derive it instead, so that what it orders by is the fields of the type.
-     ╭──▶ test_resources/Rule/HsNoCustomOrd/bad.hs@9:1-10:58
-     │
-   9 │ ╭┤ instance Ord Task where
-  10 │ ├┤   compare a b = compare (taskPriority a) (taskPriority b)
-     • │ 
-     • ╰╸ Ord is derived.
-     •
-     │ Note: If you need a custom ordering operation, use a separate function, not the Ord instance.
-     │ Hint: To suppress, write this directly above line 9 of test_resources/Rule/HsNoCustomOrd/bad.hs, and say why: -- [allow:HsNoCustomOrd] <reason>
-─────╯
+[0;91;1m[error HsNoCustomOrd][0m: This Ord instance is written out. Derive it instead, so that what it orders by is the fields of the type.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoCustomOrd/bad.hs@9:1-10:58[0m
+     [0;90;1m│[0m
+[0;90;1m   9 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mO[0m[0;91;1mr[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1ma[0m[0;91;1ms[0m[0;91;1mk[0m[0;91;1m [0m[0;91;1mw[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1me[0m
+[0;90;1m  10 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1mm[0m[0;91;1mp[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1m [0m[0;91;1mb[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1mm[0m[0;91;1mp[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1ms[0m[0;91;1mk[0m[0;91;1mP[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mo[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1m)[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1ms[0m[0;91;1mk[0m[0;91;1mP[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mo[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1m [0m[0;91;1mb[0m[0;91;1m)[0m
+     [0;90;1m•[0m [0;91m│ [0m
+     [0;90;1m•[0m [0;91m╰╸ Ord is derived.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: If you need a custom ordering operation, use a separate function, not the Ord instance.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 9 of test_resources/Rule/HsNoCustomOrd/bad.hs, and say why: -- [allow:HsNoCustomOrd] <reason>[0m
+[0;90;1m─────╯[0m

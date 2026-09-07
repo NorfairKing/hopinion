@@ -1,12 +1,12 @@
-[error HsNoCustomShowRead]: This Show instance is written out. Derive it instead, or discard what it is given if the point is to hide the value.
-     ╭──▶ test_resources/Rule/HsNoCustomShowRead/bad-partly-hidden.hs@6:1-8:39
-     │
-   6 │ ╭┤ instance Show Token where
-   7 │ │    show (Token s) = s
-   8 │ ├┤   showsPrec _ _ = showString "<token>"
-     • │ 
-     • ╰╸ Show and Read are derived, unless every method discards what it is given.
-     •
-     │ Note: A written Show is a second, undeclared serialisation of the type, and the one every debugger, test failure and log line goes through. It drifts from the type it prints without anything noticing, and a Read written to match it drifts separately, so the pair stops round tripping while still compiling. Derive them and the compiler keeps them honest. An instance whose methods discard their arguments is none of that: what it produces cannot depend on the value, so there is nothing for it to drift from, and keeping a secret out of every log line is a good reason to write one.
-     │ Hint: To suppress, write this directly above line 6 of test_resources/Rule/HsNoCustomShowRead/bad-partly-hidden.hs, and say why: -- [allow:HsNoCustomShowRead] <reason>
-─────╯
+[0;91;1m[error HsNoCustomShowRead][0m: This Show instance is written out. Derive it instead, or discard what it is given if the point is to hide the value.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoCustomShowRead/bad-partly-hidden.hs@6:1-8:39[0m
+     [0;90;1m│[0m
+[0;90;1m   6 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mh[0m[0;91;1mo[0m[0;91;1mw[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1mo[0m[0;91;1mk[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1m [0m[0;91;1mw[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1me[0m
+[0;90;1m   7 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1ms[0m[0;91;1mh[0m[0;91;1mo[0m[0;91;1mw[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mT[0m[0;91;1mo[0m[0;91;1mk[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1m [0m[0;91;1ms[0m[0;91;1m)[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1ms[0m
+[0;90;1m   8 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1ms[0m[0;91;1mh[0m[0;91;1mo[0m[0;91;1mw[0m[0;91;1ms[0m[0;91;1mP[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1m [0m[0;91;1m_[0m[0;91;1m [0m[0;91;1m_[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1ms[0m[0;91;1mh[0m[0;91;1mo[0m[0;91;1mw[0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1m"[0m[0;91;1m<[0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1mk[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1m>[0m[0;91;1m"[0m
+     [0;90;1m•[0m [0;91m│ [0m
+     [0;90;1m•[0m [0;91m╰╸ Show and Read are derived, unless every method discards what it is given.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A written Show is a second, undeclared serialisation of the type, and the one every debugger, test failure and log line goes through. It drifts from the type it prints without anything noticing, and a Read written to match it drifts separately, so the pair stops round tripping while still compiling. Derive them and the compiler keeps them honest. An instance whose methods discard their arguments is none of that: what it produces cannot depend on the value, so there is nothing for it to drift from, and keeping a secret out of every log line is a good reason to write one.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 6 of test_resources/Rule/HsNoCustomShowRead/bad-partly-hidden.hs, and say why: -- [allow:HsNoCustomShowRead] <reason>[0m
+[0;90;1m─────╯[0m
