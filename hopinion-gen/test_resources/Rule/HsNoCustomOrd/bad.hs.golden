@@ -1,1 +1,11 @@
-HsNoCustomOrd	9:1-10:58 test_resources/Rule/HsNoCustomOrd/bad.hs	lib:test_resources/Rule/HsNoCustomOrd/bad.hs instance Ord Task	This Ord instance is written out. Derive it instead, so that what it orders by is the fields of the type.
+[error HsNoCustomOrd]: This Ord instance is written out. Derive it instead, so that what it orders by is the fields of the type.
+     ╭──▶ test_resources/Rule/HsNoCustomOrd/bad.hs@9:1-10:58
+     │
+   9 │ ╭┤ instance Ord Task where
+  10 │ ├┤   compare a b = compare (taskPriority a) (taskPriority b)
+     • │ 
+     • ╰╸ Ord is derived.
+     •
+     │ Note: If you need a custom ordering operation, use a separate function, not the Ord instance.
+     │ Hint: To suppress, write this directly above line 9 of test_resources/Rule/HsNoCustomOrd/bad.hs, and say why: -- [allow:HsNoCustomOrd] <reason>
+─────╯

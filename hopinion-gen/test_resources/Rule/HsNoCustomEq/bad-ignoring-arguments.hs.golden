@@ -1,1 +1,11 @@
-HsNoCustomEq	7:1-8:16 test_resources/Rule/HsNoCustomEq/bad-ignoring-arguments.hs	lib:test_resources/Rule/HsNoCustomEq/bad-ignoring-arguments.hs instance Eq Handle	This Eq instance is written out. Derive it instead, so that what it compares is the fields of the type.
+[error HsNoCustomEq]: This Eq instance is written out. Derive it instead, so that what it compares is the fields of the type.
+     ╭──▶ test_resources/Rule/HsNoCustomEq/bad-ignoring-arguments.hs@7:1-8:16
+     │
+   7 │ ╭┤ instance Eq Handle where
+   8 │ ├┤   _ == _ = True
+     • │ 
+     • ╰╸ Eq is derived.
+     •
+     │ Note: If you need a custom equality operation, use a separate function, not the Eq instance.
+     │ Hint: To suppress, write this directly above line 7 of test_resources/Rule/HsNoCustomEq/bad-ignoring-arguments.hs, and say why: -- [allow:HsNoCustomEq] <reason>
+─────╯

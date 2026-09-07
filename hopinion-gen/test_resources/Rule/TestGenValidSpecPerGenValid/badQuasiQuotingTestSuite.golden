@@ -1,1 +1,10 @@
-TestGenValidSpecPerGenValid	8:1-8:26 thing/src/Thing.hs	lib:Thing instance GenValid Visible	No genValidSpec @Visible anywhere in thing-gen's test suite.
+[error TestGenValidSpecPerGenValid]: No genValidSpec @Visible anywhere in thing-gen's test suite.
+     ╭──▶ thing/src/Thing.hs@8:1-8:26
+     │
+   8 │ instance GenValid Visible
+     • ┬────────────────────────
+     • ╰╸ A GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.
+     •
+     │ Note: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.
+     │ Hint: To suppress, write this directly above line 8 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>
+─────╯

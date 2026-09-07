@@ -15,7 +15,6 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import Hopinion.Facts.Component
 import Hopinion.Facts.Name
-import Hopinion.Facts.Place
 import Hopinion.Project
 import Hopinion.Report
 import Hopinion.Report.Render
@@ -41,7 +40,7 @@ import Path
     toFilePath,
     (</>),
   )
-import Path.IO (ensureDir, forgivingAbsence, listDirRel, makeAbsolute, withSystemTempDir)
+import Path.IO (ensureDir, forgivingAbsence, getCurrentDir, listDirRel, makeAbsolute, withSystemTempDir)
 import System.FilePath (dropTrailingPathSeparator)
 import System.Process (readProcess)
 import Test.Syd
@@ -151,7 +150,7 @@ moduleScenario rid file
       golden <- runIO (addExtension ".golden" file)
 
       it "reports what the golden says" $
-        goldenTextFile (toFilePath golden) (renderFindings <$> findingsInModule rid file)
+        goldenTextFile (toFilePath golden) (renderedFindingsInModule rid file)
 
       case caseOf (filename file) of
         Just CleanCase ->
@@ -204,7 +203,7 @@ projectScenario rid splitCheck project =
     golden <- runIO (goldenBeside project)
 
     it "reports what the golden says" $
-      goldenTextFile (toFilePath golden) (renderFindings <$> findingsInProject rid project)
+      goldenTextFile (toFilePath golden) (renderedFindingsInProject rid project)
 
     case caseOf (dirname project) of
       Just CleanCase ->
@@ -253,42 +252,51 @@ goldenBeside project = do
   name <- parseRelFile (dropTrailingPathSeparator (toFilePath (dirname project)))
   addExtension ".golden" (parent project </> name)
 
--- | Every finding as one line: which rule, where, what it is about, and what it
--- says.
+-- | The findings drawn against the code they point at, which is the rendering
+-- a person is shown at the end of a run.
 --
--- The scope is in there because it is what a suppression is matched on, so a
--- rule that points at the right line and names the wrong declaration is a rule
--- whose suppression cannot be written. Sorted, because the order findings
--- arrive in is the order a query returned them.
-renderFindings :: [Finding] -> Text
-renderFindings fs =
-  T.unlines
-    ( sort
-        [ T.intercalate
-            "\t"
-            [ ruleIdText (findingRule f),
-              spanText (findingSpan f),
-              scopeText (findingScope f),
-              findingMessage f
-            ]
-        | f <- fs
-        ]
-    )
-  where
-    scopeText sk = case sk of
-      ScopeOfFile m -> moduleRefText m
-      ScopeOfDecl m d -> T.concat [moduleRefText m, " ", declNameText d]
+-- Spans and messages alone did not review: reading @8:1-9:36@ off a golden and
+-- resolving it against the resource by hand is work nobody does, so a rule
+-- underlining half of the instance it named read the same as one underlining
+-- all of it. Drawn, the wrong span is the wrong code with a line under it.
+--
+-- What this no longer pins is the scope key, which is what a suppression is
+-- matched on and which the rendering does not show. The hint under each
+-- finding names the place a suppression has to go, which is the half of that a
+-- reader can act on.
+--
+-- Sorted by span, because the order findings arrive in is the order a query
+-- returned them.
+renderedFindings :: SourceRoot -> [Finding] -> IO Text
+renderedFindings root fs = do
+  let report = complaintsOf (map ComplaintFinding (sortOn findingSpan fs))
+  (sources, missing) <- sourcesForReport [root] report
+  pure (renderReport shippedRules sources (report <> missing))
 
 findingsInModule :: RuleId -> Path Rel File -> IO [Finding]
 findingsInModule rid file = do
   report <- runModuleCommand shippedRules file [] ComponentLib
   pure [f | f <- complaintsFindings report, findingRule f == rid]
 
+-- | A module case names its resource the way the suite was invoked, relative to
+-- the package directory, so that directory is the root its findings are read
+-- against.
+renderedFindingsInModule :: RuleId -> Path Rel File -> IO Text
+renderedFindingsInModule rid file = do
+  here <- getCurrentDir
+  let root = SourceRoot {sourceRootDir = here, sourceRootPrefix = Nothing}
+  renderedFindings root =<< findingsInModule rid file
+
 findingsInProject :: RuleId -> Path Rel Dir -> IO [Finding]
 findingsInProject rid dir = do
   report <- runCheck shippedRules noHieDirectories =<< rootAt dir
   [t | ComplaintFailure t <- complaintList report] `shouldBe` []
   pure [f | f <- complaintsFindings report, findingRule f == rid]
+
+renderedFindingsInProject :: RuleId -> Path Rel Dir -> IO Text
+renderedFindingsInProject rid dir = do
+  root <- rootAt dir
+  renderedFindings root =<< findingsInProject rid dir
 
 -- | The property that keeps the split honest: running a project rule through
 -- fact files on disk must find exactly what running it in one process finds.

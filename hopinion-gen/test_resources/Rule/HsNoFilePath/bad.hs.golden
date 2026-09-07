@@ -1,2 +1,21 @@
-HsNoFilePath	4:13-4:21 test_resources/Rule/HsNoFilePath/bad.hs	lib:test_resources/Rule/HsNoFilePath/bad.hs readFrom	The type FilePath. Say what the path is with Path from path.
-HsNoFilePath	8:18-8:26 test_resources/Rule/HsNoFilePath/bad.hs	lib:test_resources/Rule/HsNoFilePath/bad.hs resourceDirs	The type FilePath. Say what the path is with Path from path.
+[error HsNoFilePath]: The type FilePath. Say what the path is with Path from path.
+     ╭──▶ test_resources/Rule/HsNoFilePath/bad.hs@4:13-4:21
+     │
+   4 │ readFrom :: FilePath -> IO String
+     •             ┬─────── 
+     •             ╰╸ Say what a path is with path's Path, rather than with FilePath.
+     •
+     │ Note: A FilePath is a String, so it says nothing about what it holds: not whether it is a file or a directory, not whether it is absolute or relative, not whether it is a path at all. Every function taking one has to document what it accepts and then trust its callers, and what that invites goes wrong quietly: a directory passed where a file was meant, a relative path resolved against a working directory nobody checked, two paths joined into something that is neither. Path carries all of it in the type and path-io is the same operations over it, so the mistakes stop compiling. Converting at the edge is not what this reports: a library that demands a String wants toFilePath at the call, and that is correct. What it reports is the type in your own signatures, where it could have said what the path is.
+     │ Hint: To suppress, write this directly above line 4 of test_resources/Rule/HsNoFilePath/bad.hs, and say why: -- [allow:HsNoFilePath] <reason>
+─────╯
+
+[error HsNoFilePath]: The type FilePath. Say what the path is with Path from path.
+     ╭──▶ test_resources/Rule/HsNoFilePath/bad.hs@8:18-8:26
+     │
+   8 │ resourceDirs :: [FilePath]
+     •                  ┬─────── 
+     •                  ╰╸ Say what a path is with path's Path, rather than with FilePath.
+     •
+     │ Note: A FilePath is a String, so it says nothing about what it holds: not whether it is a file or a directory, not whether it is absolute or relative, not whether it is a path at all. Every function taking one has to document what it accepts and then trust its callers, and what that invites goes wrong quietly: a directory passed where a file was meant, a relative path resolved against a working directory nobody checked, two paths joined into something that is neither. Path carries all of it in the type and path-io is the same operations over it, so the mistakes stop compiling. Converting at the edge is not what this reports: a library that demands a String wants toFilePath at the call, and that is correct. What it reports is the type in your own signatures, where it could have said what the path is.
+     │ Hint: To suppress, write this directly above line 8 of test_resources/Rule/HsNoFilePath/bad.hs, and say why: -- [allow:HsNoFilePath] <reason>
+─────╯

@@ -1,1 +1,10 @@
-HsGenValidInGenPackage	5:1-5:25 thing/src/Thing.hs	lib:Thing instance GenValid Widget	A GenValid instance outside a -gen package.
+[error HsGenValidInGenPackage]: A GenValid instance outside a -gen package.
+     ╭──▶ thing/src/Thing.hs@5:1-5:25
+     │
+   5 │ instance GenValid Widget
+     • ┬───────────────────────
+     • ╰╸ A GenValid instance in a package's own library gets compiled into the executable. Move it to the matching -gen package.
+     •
+     │ Note: A generator is test code, and an instance in the library is linked into everything that depends on the library, so the shipped executable carries QuickCheck and the generators with it. The -gen package exists so that dependency stops at the test suite, which is also what keeps a generator free to be as slow or as elaborate as the property needs.
+     │ Hint: To suppress, write this directly above line 5 of thing/src/Thing.hs, and say why: -- [allow:HsGenValidInGenPackage] <reason>
+─────╯
