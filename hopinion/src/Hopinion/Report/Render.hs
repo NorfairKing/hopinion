@@ -68,17 +68,16 @@ complaintSpan = \case
   ComplaintProblem p -> Just (annotationProblemSpan p)
   ComplaintFailure _ -> Nothing
 
--- | Deterministic and free of escape sequences, which is both what a test can
--- assert on and what belongs in a build log.
+-- | Deterministic and free of escape sequences, which is what belongs in a
+-- build log.
 renderReport :: RuleSet -> SourceMap -> Complaints -> Text
 renderReport = renderedWith Plain.renderStrict unAnnotate
 
 -- | The same report with diagnose's own colours, which is what a person at a
--- terminal is shown.
+-- terminal is shown and therefore what the goldens are of.
 --
 -- Text rather than a write to a handle, so that the coloured rendering is a
--- value a test can look at. Nothing else asserts that this path is coloured,
--- and a run in a terminal is the only place the difference shows.
+-- value a test can look at.
 renderReportColoured :: RuleSet -> SourceMap -> Complaints -> Text
 renderReportColoured = renderedWith Ansi.renderStrict (reAnnotate D.defaultStyle)
 

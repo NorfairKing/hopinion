@@ -271,7 +271,7 @@ renderedFindings :: SourceRoot -> [Finding] -> IO Text
 renderedFindings root fs = do
   let report = complaintsOf (map ComplaintFinding (sortOn findingSpan fs))
   (sources, missing) <- sourcesForReport [root] report
-  pure (renderReport shippedRules sources (report <> missing))
+  pure (renderReportColoured shippedRules sources (report <> missing))
 
 findingsInModule :: RuleId -> Path Rel File -> IO [Finding]
 findingsInModule rid file = do

@@ -95,7 +95,7 @@ renderedReportFor dir = do
   root <- rootAt dir
   report <- runCheck shippedRules noHieDirectories root
   (sources, missing) <- sourcesForReport [root] report
-  pure (renderReport shippedRules sources (report <> missing))
+  pure (renderReportColoured shippedRules sources (report <> missing))
 
 -- | A source root over a directory, resolved against the working directory the
 -- suite runs in, which is the package directory.

@@ -76,12 +76,11 @@ spec = do
       root <- rootAt (resourceDir </> [reldir|repo|])
       report <- runCheck shippedRules noHieDirectories root
       (sources, missing) <- sourcesForReport [root] report
-      pure (renderReport shippedRules sources (report <> missing))
+      pure (renderReportColoured shippedRules sources (report <> missing))
 
-  -- Every golden here is the plain rendering, because a golden full of escape
-  -- sequences is not one a person can review. So this is what says the other
-  -- rendering exists and is the one a terminal gets: without it, 'printReport'
-  -- could hand a terminal the plain text and every golden would still match.
+  -- The goldens are the coloured rendering, so the plain one is the direction
+  -- nothing else covers: without this, 'printReport' could hand a pipe the
+  -- escape sequences and every golden would still match.
   it "colours the report for a terminal and not for a pipe" $ do
     root <- rootAt (resourceDir </> [reldir|repo|])
     complaints <- runCheck shippedRules noHieDirectories root
@@ -94,7 +93,7 @@ spec = do
   -- code, so it has no position and nothing to show underneath.
   it "shows a failure with no code under it" $
     pureGoldenTextFile (toFilePath (resourceDir </> [relfile|failure.golden|])) $
-      renderReport
+      renderReportColoured
         shippedRules
         (SourceMap M.empty)
         (failureComplaints [FactsIncomplete (NoFactsForPackage (PackageName "lonely"))])

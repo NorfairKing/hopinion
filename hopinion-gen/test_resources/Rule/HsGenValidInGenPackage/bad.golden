@@ -1,10 +1,10 @@
-[error HsGenValidInGenPackage]: A GenValid instance outside a -gen package.
-     ╭──▶ thing/src/Thing.hs@5:1-5:25
-     │
-   5 │ instance GenValid Widget
-     • ┬───────────────────────
-     • ╰╸ A GenValid instance in a package's own library gets compiled into the executable. Move it to the matching -gen package.
-     •
-     │ Note: A generator is test code, and an instance in the library is linked into everything that depends on the library, so the shipped executable carries QuickCheck and the generators with it. The -gen package exists so that dependency stops at the test suite, which is also what keeps a generator free to be as slow or as elaborate as the property needs.
-     │ Hint: To suppress, write this directly above line 5 of thing/src/Thing.hs, and say why: -- [allow:HsGenValidInGenPackage] <reason>
-─────╯
+[0;91;1m[error HsGenValidInGenPackage][0m: A GenValid instance outside a -gen package.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@5:1-5:25[0m
+     [0;90;1m│[0m
+[0;90;1m   5 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mW[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1mg[0m[0;91;1me[0m[0;91;1mt[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance in a package's own library gets compiled into the executable. Move it to the matching -gen package.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A generator is test code, and an instance in the library is linked into everything that depends on the library, so the shipped executable carries QuickCheck and the generators with it. The -gen package exists so that dependency stops at the test suite, which is also what keeps a generator free to be as slow or as elaborate as the property needs.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 5 of thing/src/Thing.hs, and say why: -- [allow:HsGenValidInGenPackage] <reason>[0m
+[0;90;1m─────╯[0m

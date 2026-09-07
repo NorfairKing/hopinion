@@ -1,10 +1,10 @@
-[error HsNoCustomEq]: This Eq instance is written out. Derive it instead, so that what it compares is the fields of the type.
-     ╭──▶ test_resources/Rule/HsNoCustomEq/bad-empty.hs@5:1-5:19
-     │
-   5 │ instance Eq Colour
-     • ┬─────────────────
-     • ╰╸ Eq is derived.
-     •
-     │ Note: If you need a custom equality operation, use a separate function, not the Eq instance.
-     │ Hint: To suppress, write this directly above line 5 of test_resources/Rule/HsNoCustomEq/bad-empty.hs, and say why: -- [allow:HsNoCustomEq] <reason>
-─────╯
+[0;91;1m[error HsNoCustomEq][0m: This Eq instance is written out. Derive it instead, so that what it compares is the fields of the type.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoCustomEq/bad-empty.hs@5:1-5:19[0m
+     [0;90;1m│[0m
+[0;90;1m   5 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mE[0m[0;91;1mq[0m[0;91;1m [0m[0;91;1mC[0m[0;91;1mo[0m[0;91;1ml[0m[0;91;1mo[0m[0;91;1mu[0m[0;91;1mr[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mEq is derived.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: If you need a custom equality operation, use a separate function, not the Eq instance.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 5 of test_resources/Rule/HsNoCustomEq/bad-empty.hs, and say why: -- [allow:HsNoCustomEq] <reason>[0m
+[0;90;1m─────╯[0m
