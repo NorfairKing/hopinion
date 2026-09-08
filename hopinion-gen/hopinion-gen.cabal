@@ -122,6 +122,18 @@ extra-source-files:
     test_resources/Rule/CommentBareTodo/bad.hs.golden
     test_resources/Rule/CommentBareTodo/good.hs
     test_resources/Rule/CommentBareTodo/good.hs.golden
+    test_resources/Rule/HsAppOnlyMain/bad-a-declaration-beside-main.golden
+    test_resources/Rule/HsAppOnlyMain/bad-a-declaration-beside-main/thing/app/Main.hs
+    test_resources/Rule/HsAppOnlyMain/bad-a-declaration-beside-main/thing/src/Thing.hs
+    test_resources/Rule/HsAppOnlyMain/bad-a-declaration-beside-main/thing/thing.cabal
+    test_resources/Rule/HsAppOnlyMain/bad-main-does-the-work.golden
+    test_resources/Rule/HsAppOnlyMain/bad-main-does-the-work/thing/app/Main.hs
+    test_resources/Rule/HsAppOnlyMain/bad-main-does-the-work/thing/src/Thing.hs
+    test_resources/Rule/HsAppOnlyMain/bad-main-does-the-work/thing/thing.cabal
+    test_resources/Rule/HsAppOnlyMain/good.golden
+    test_resources/Rule/HsAppOnlyMain/good/thing/app/Main.hs
+    test_resources/Rule/HsAppOnlyMain/good/thing/src/Thing.hs
+    test_resources/Rule/HsAppOnlyMain/good/thing/thing.cabal
     test_resources/Rule/HsGenValidInGenPackage/bad.golden
     test_resources/Rule/HsGenValidInGenPackage/bad/thing-gen/src/Thing/Gen.hs
     test_resources/Rule/HsGenValidInGenPackage/bad/thing-gen/thing-gen.cabal

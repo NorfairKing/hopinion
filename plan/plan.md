@@ -5,11 +5,11 @@ catalogue of rules not yet written; this is the order to write them in.
 
 ## What exists
 
-Nine rules, one at each of the three levels and then some: `CommentBareTodo`,
+Ten rules, one at each of the three levels and then some: `CommentBareTodo`,
 `HsLambdaCase`, `HsNoCustomEq`, `HsNoCustomOrd`, `HsNoCustomShowRead`,
-`HsNoFilePath` and `HsNoSemigroupOnText` at the module level,
-`HsGenValidInGenPackage` at the package level, `TestGenValidSpecPerGenValid` at
-the project level.
+`HsNoFilePath` and `HsNoSemigroupOnText` at the module level, `HsAppOnlyMain`
+and `HsGenValidInGenPackage` at the package level,
+`TestGenValidSpecPerGenValid` at the project level.
 
 Under them: extension resolution and two parser passes, comment attachment,
 declaration, instance and expression extraction, a fact store per package in
@@ -156,7 +156,7 @@ No new machinery, so this is cheap, and it is where the standards are most
 mechanically true.
 
 `HsStackYamlAtRoot`, `HsPackageDirMatchesName`, `HsSrcAndTestDirs`,
-`HsAppOnlyMain`, `HsTestSuiteNaming`, `HsSpecFilePerModule`,
+`HsTestSuiteNaming`, `HsSpecFilePerModule`,
 `HsHlintBansPartial`, `HsNoWeederExceptions`, `HsFewExtensions`, `HsNoLenses`,
 `LoopsDocumentedPerProject`, `NixUseFlakes`.
 

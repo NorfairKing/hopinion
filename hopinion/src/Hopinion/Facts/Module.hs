@@ -10,6 +10,7 @@ where
 import GHC.Generics (Generic)
 import Hopinion.Check.Hs.LambdaCase.Fact
 import Hopinion.Check.Hs.NoSemigroupOnText.Fact
+import Hopinion.Check.Package.AppOnlyMain.Fact
 import Hopinion.Comment (CommentFact (..))
 import Hopinion.Facts.Component
 import Hopinion.Facts.Instance
@@ -42,6 +43,7 @@ data ModuleContext = ModuleContext
     moduleContextTypeApps :: ![TypeAppFact],
     moduleContextConcatChains :: ![ConcatChain],
     moduleContextCasedArguments :: ![CasedArgument],
+    moduleContextStrayAppDecls :: ![StrayAppDecl],
     moduleContextTemplateHaskell :: !TemplateHaskellUse,
     moduleContextOutcome :: !ParseOutcome
   }

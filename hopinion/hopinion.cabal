@@ -23,6 +23,9 @@ library
       Hopinion.Check.Hs.NoSemigroupOnText.Extract
       Hopinion.Check.Hs.NoSemigroupOnText.Fact
       Hopinion.Check.Hs.NoSemigroupOnText.Rule
+      Hopinion.Check.Package.AppOnlyMain.Extract
+      Hopinion.Check.Package.AppOnlyMain.Fact
+      Hopinion.Check.Package.AppOnlyMain.Rule
       Hopinion.Check.Package.GenValidInGenPackage.Rule
       Hopinion.Check.Project.GenValidSpecPerGenValid.Rule
       Hopinion.Choices

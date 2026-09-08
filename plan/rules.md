@@ -3,9 +3,9 @@
 Every rule this tool could enforce that it does not enforce yet, sorted by how
 it can be enforced. A rule that ships leaves this file: what is here is work.
 
-The nine that ship are `CommentBareTodo`, `HsLambdaCase`, `HsNoCustomEq`,
+The ten that ship are `CommentBareTodo`, `HsLambdaCase`, `HsNoCustomEq`,
 `HsNoCustomOrd`, `HsNoCustomShowRead`, `HsNoFilePath`, `HsNoSemigroupOnText`,
-`HsGenValidInGenPackage` and `TestGenValidSpecPerGenValid`.
+`HsAppOnlyMain`, `HsGenValidInGenPackage` and `TestGenValidSpecPerGenValid`.
 
 ## How to read this
 
@@ -128,7 +128,6 @@ Rule ids are stable. They are what a check module cites and what an
 | `HsStackYamlAtRoot` | `stack.yaml` at the repository root | B | layout | error | |
 | `HsPackageDirMatchesName` | Each package in a directory matching its name, at the root | B | layout | error | |
 | `HsSrcAndTestDirs` | Library code in `src/`, tests in `test/` | B | layout | error | |
-| `HsAppOnlyMain` | `app/` contains only `main = specificMainHere` | B | syntax | error | Nothing in `app/` can be imported or tested |
 | `HsTestSuiteNaming` | Test suite `<package>-test`, in `<package>-gen` | B | layout | error | Cabal metadata only |
 | `HsSpecFilePerModule` | `src/Foo/Bar.hs` is tested in `test/Foo/BarSpec.hs` | C | layout | ratchet | Both directions. An untested module carries a file-scope annotation. High volume at adoption |
 | `HsNoSectionHeadersInCode` | No `-- * section header` outside the export list | B | comment | error | |
@@ -211,13 +210,13 @@ combinator.
 `CommentSectionLabelInFunction`, `HsNoSectionHeadersInCode`,
 `HsStrictFields`
 
-**F5 DeclPredicate** (15). A predicate on one declaration. The largest family, so
+**F5 DeclPredicate** (14). A predicate on one declaration. The largest family, so
 its combinator matters most.
 `HsNewtypeNotSynonym`, `HsMultilineRecord`,
 `HsRecordFieldPrefix`, `HsLetOverWhere`,
 `HsOneLetPerBinding`, `HsLocalTypeSignatures`, `HsWhereHoldingLogic`,
 `HsNoDomainBool`, `HsTextViaPack`,
-`HsAppOnlyMain`, `HsTestOneSpecPerFile`, `TestExactAssertions`,
+`HsTestOneSpecPerFile`, `TestExactAssertions`,
 `TestAssertWholeValues`, `TestNoTestHelpers`, `TestTestableTopLevel`
 
 **F6 DeclOrder** (5). A relation over positions in the declaration list. One

@@ -24,6 +24,7 @@ import GHC.Types.SrcLoc (GenLocated (..), unLoc)
 import Hopinion.Annotation (annotationsOf)
 import Hopinion.Check.Hs.LambdaCase.Extract (casedArgumentsOf)
 import Hopinion.Check.Hs.NoSemigroupOnText.Extract (concatChainsOf)
+import Hopinion.Check.Package.AppOnlyMain.Extract (strayAppDeclsOf)
 import Hopinion.Comment
 import Hopinion.Extract.Ghc
 import Hopinion.Facts.Component
@@ -78,6 +79,7 @@ extractModuleContext input parsed =
           moduleContextTypeApps = parsedModuleTypeApps parsed,
           moduleContextConcatChains = concatChainsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextCasedArguments = casedArgumentsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
+          moduleContextStrayAppDecls = strayAppDeclsOf rp decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextTemplateHaskell = parsedModuleTemplateHaskell parsed,
           moduleContextOutcome = ParsedOk
         }
@@ -107,6 +109,7 @@ emptyModuleContext input =
       moduleContextTypeApps = [],
       moduleContextConcatChains = [],
       moduleContextCasedArguments = [],
+      moduleContextStrayAppDecls = [],
       moduleContextTemplateHaskell = NoTemplateHaskell,
       moduleContextOutcome = ParsedOk
     }

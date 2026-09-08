@@ -13,6 +13,7 @@ import qualified Data.Text as T
 import Hopinion.Annotation (OverBroad, Unused)
 import Hopinion.Check.Hs.LambdaCase.Fact
 import Hopinion.Check.Hs.NoSemigroupOnText.Fact
+import Hopinion.Check.Package.AppOnlyMain.Fact
 import Hopinion.Choices (Choices)
 import Hopinion.Comment (Attachment, CommentFact, CommentStyle, RawComment)
 import Hopinion.Facts.Component
@@ -122,6 +123,8 @@ instance GenValid TypeAppFact
 instance GenValid ArgumentShape
 
 instance GenValid CasedArgument
+
+instance GenValid StrayAppDecl
 
 instance GenValid ConcatOperand
 
