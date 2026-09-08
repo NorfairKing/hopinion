@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE TypeApplications #-}
@@ -99,7 +100,7 @@ subjects :: ModuleContext -> [Text]
 subjects mf = map (subjectOf . commentFactAttachment) (moduleContextComments mf)
 
 subjectOf :: Attachment -> Text
-subjectOf a = case a of
+subjectOf = \case
   AttachedToDecl d -> T.concat ["decl ", declNameText d]
   AttachedToStatement d _ -> T.concat ["statement in ", declNameText d]
   AttachedToFile -> "file"

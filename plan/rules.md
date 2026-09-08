@@ -3,8 +3,8 @@
 Every rule this tool could enforce that it does not enforce yet, sorted by how
 it can be enforced. A rule that ships leaves this file: what is here is work.
 
-The eight that ship are `CommentBareTodo`, `HsNoCustomEq`, `HsNoCustomOrd`,
-`HsNoCustomShowRead`, `HsNoFilePath`, `HsNoSemigroupOnText`,
+The nine that ship are `CommentBareTodo`, `HsLambdaCase`, `HsNoCustomEq`,
+`HsNoCustomOrd`, `HsNoCustomShowRead`, `HsNoFilePath`, `HsNoSemigroupOnText`,
 `HsGenValidInGenPackage` and `TestGenValidSpecPerGenValid`.
 
 ## How to read this
@@ -105,7 +105,6 @@ Rule ids are stable. They are what a check module cites and what an
 | `HsExplicitImports` | Explicit import lists or qualified imports | A | | | GHC `-Wmissing-import-lists`, hlint |
 | `HsMonomorphicOverConstraints` | Monomorphic functions over type-class constraints | B | types | warn | Constraint instantiated at exactly one type across all call sites |
 | `HsPolymorphicWithoutConstraints` | Polymorphic functions if you do not need constraints | A | | | GHC `-Wredundant-constraints` covers the unused case |
-| `HsLambdaCase` | `LambdaCase` over naming an argument to case on it | B | syntax | error | Both `f x = case x of` and the multi-equation form. Check first whether hlint already covers these two: if it does, the rule is bucket `A` |
 | `HsMultilineRecord` | Multi-line record values with multiple fields | B | syntax | error | ormolu preserves the author's choice, so this is unenforced today |
 | `HsLetOverWhere` | Prefer let-bindings over where bindings | B | syntax | warn | Exceptions for guards and multi-equation functions |
 | `HsWhereHoldingLogic` | A where-bound helper with real logic becomes top-level | B | syntax | warn | Size and control-flow heuristic |
@@ -212,10 +211,10 @@ combinator.
 `CommentSectionLabelInFunction`, `HsNoSectionHeadersInCode`,
 `HsStrictFields`
 
-**F5 DeclPredicate** (16). A predicate on one declaration. The largest family, so
+**F5 DeclPredicate** (15). A predicate on one declaration. The largest family, so
 its combinator matters most.
 `HsNewtypeNotSynonym`, `HsMultilineRecord`,
-`HsRecordFieldPrefix`, `HsLambdaCase`, `HsLetOverWhere`,
+`HsRecordFieldPrefix`, `HsLetOverWhere`,
 `HsOneLetPerBinding`, `HsLocalTypeSignatures`, `HsWhereHoldingLogic`,
 `HsNoDomainBool`, `HsTextViaPack`,
 `HsAppOnlyMain`, `HsTestOneSpecPerFile`, `TestExactAssertions`,

@@ -8,6 +8,7 @@ module Hopinion.Facts.Module
 where
 
 import GHC.Generics (Generic)
+import Hopinion.Check.Hs.LambdaCase.Fact
 import Hopinion.Check.Hs.NoSemigroupOnText.Fact
 import Hopinion.Comment (CommentFact (..))
 import Hopinion.Facts.Component
@@ -40,6 +41,7 @@ data ModuleContext = ModuleContext
     moduleContextAnnotationProblems :: ![AnnotationProblem],
     moduleContextTypeApps :: ![TypeAppFact],
     moduleContextConcatChains :: ![ConcatChain],
+    moduleContextCasedArguments :: ![CasedArgument],
     moduleContextTemplateHaskell :: !TemplateHaskellUse,
     moduleContextOutcome :: !ParseOutcome
   }

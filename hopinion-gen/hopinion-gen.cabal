@@ -132,6 +132,16 @@ extra-source-files:
     test_resources/Rule/HsGenValidInGenPackage/good/thing-gen/thing-gen.cabal
     test_resources/Rule/HsGenValidInGenPackage/good/thing/src/Thing.hs
     test_resources/Rule/HsGenValidInGenPackage/good/thing/thing.cabal
+    test_resources/Rule/HsLambdaCase/bad-equations.hs
+    test_resources/Rule/HsLambdaCase/bad-equations.hs.golden
+    test_resources/Rule/HsLambdaCase/bad-in-a-where-clause.hs
+    test_resources/Rule/HsLambdaCase/bad-in-a-where-clause.hs.golden
+    test_resources/Rule/HsLambdaCase/bad-keeping-an-earlier-argument.hs
+    test_resources/Rule/HsLambdaCase/bad-keeping-an-earlier-argument.hs.golden
+    test_resources/Rule/HsLambdaCase/bad.hs
+    test_resources/Rule/HsLambdaCase/bad.hs.golden
+    test_resources/Rule/HsLambdaCase/good.hs
+    test_resources/Rule/HsLambdaCase/good.hs.golden
     test_resources/Rule/HsNoCustomEq/bad-empty.hs
     test_resources/Rule/HsNoCustomEq/bad-empty.hs.golden
     test_resources/Rule/HsNoCustomEq/bad-ignoring-arguments.hs

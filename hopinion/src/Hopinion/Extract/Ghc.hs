@@ -1,3 +1,5 @@
+{-# LANGUAGE LambdaCase #-}
+
 -- | Reading the parse tree, for whoever is reading it.
 --
 -- What is here is the part of that reading no rule owns. A rule's own
@@ -26,7 +28,7 @@ import Hopinion.Facts.Place
 import Path (File, Path, Rel)
 
 spanOfSrcSpan :: Path Rel File -> SrcLoc.SrcSpan -> Span
-spanOfSrcSpan rp s = case s of
+spanOfSrcSpan rp = \case
   SrcLoc.RealSrcSpan rss _ ->
     Span
       { spanFile = rp,

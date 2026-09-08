@@ -11,6 +11,7 @@ import Data.GenValidity.Path ()
 import Data.GenValidity.Text ()
 import qualified Data.Text as T
 import Hopinion.Annotation (OverBroad, Unused)
+import Hopinion.Check.Hs.LambdaCase.Fact
 import Hopinion.Check.Hs.NoSemigroupOnText.Fact
 import Hopinion.Choices (Choices)
 import Hopinion.Comment (Attachment, CommentFact, CommentStyle, RawComment)
@@ -117,6 +118,10 @@ instance GenValid AnnotationFact
 instance GenValid AnnotationProblem
 
 instance GenValid TypeAppFact
+
+instance GenValid ArgumentShape
+
+instance GenValid CasedArgument
 
 instance GenValid ConcatOperand
 

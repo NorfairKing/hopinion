@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
@@ -90,10 +91,11 @@ concatRuns le =
 
     -- The run so far, backwards, so that a further operand is a cons.
     inside :: NonEmpty (LHsExpr GhcPs) -> [(LHsExpr GhcPs, LHsExpr GhcPs)] -> [NonEmpty (LHsExpr GhcPs)]
-    inside sofar [] = [NE.reverse sofar]
-    inside sofar ((op, next) : more)
-      | isConcatOperator op = inside (NE.cons next sofar) more
-      | otherwise = NE.reverse sofar : outside next more
+    inside sofar = \case
+      [] -> [NE.reverse sofar]
+      ((op, next) : more)
+        | isConcatOperator op -> inside (NE.cons next sofar) more
+        | otherwise -> NE.reverse sofar : outside next more
 
 operandOf :: LHsExpr GhcPs -> ConcatOperand
 operandOf le = case unLoc (peelExpr le) of

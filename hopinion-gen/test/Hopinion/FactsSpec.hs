@@ -6,6 +6,7 @@ module Hopinion.FactsSpec (spec) where
 import Data.Char (isAlphaNum, isUpper)
 import Data.Text (Text)
 import qualified Data.Text as T
+import Hopinion.Check.Hs.LambdaCase.Fact
 import Hopinion.Check.Hs.NoSemigroupOnText.Fact
 import Hopinion.Comment
 import Hopinion.Facts.Component
@@ -139,6 +140,10 @@ spec = do
     jsonSpec @AnnotationProblem
   describe "TypeAppFact" $ do
     genValidSpec @TypeAppFact
+  describe "ArgumentShape" $ do
+    genValidSpec @ArgumentShape
+  describe "CasedArgument" $ do
+    genValidSpec @CasedArgument
   describe "ConcatOperand" $ do
     genValidSpec @ConcatOperand
   describe "ConcatChain" $ do

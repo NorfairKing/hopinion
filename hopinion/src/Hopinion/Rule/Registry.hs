@@ -7,6 +7,7 @@
 module Hopinion.Rule.Registry (builtinRules) where
 
 import qualified Hopinion.Check.Comment.BareTodo.Rule as BareTodo
+import qualified Hopinion.Check.Hs.LambdaCase.Rule as LambdaCase
 import qualified Hopinion.Check.Hs.NoCustomEq.Rule as NoCustomEq
 import qualified Hopinion.Check.Hs.NoCustomOrd.Rule as NoCustomOrd
 import qualified Hopinion.Check.Hs.NoCustomShowRead.Rule as NoCustomShowRead
@@ -21,6 +22,7 @@ builtinRules =
   [ BareTodo.rule,
     GenValidInGenPackage.rule,
     GenValidSpecPerGenValid.rule,
+    LambdaCase.rule,
     NoCustomEq.rule,
     NoCustomOrd.rule,
     NoCustomShowRead.rule,

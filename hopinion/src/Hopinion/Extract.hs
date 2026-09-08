@@ -22,6 +22,7 @@ import qualified Data.Text as T
 import GHC.Hs
 import GHC.Types.SrcLoc (GenLocated (..), unLoc)
 import Hopinion.Annotation (annotationsOf)
+import Hopinion.Check.Hs.LambdaCase.Extract (casedArgumentsOf)
 import Hopinion.Check.Hs.NoSemigroupOnText.Extract (concatChainsOf)
 import Hopinion.Comment
 import Hopinion.Extract.Ghc
@@ -76,6 +77,7 @@ extractModuleContext input parsed =
           moduleContextAnnotationProblems = annotationProblems,
           moduleContextTypeApps = parsedModuleTypeApps parsed,
           moduleContextConcatChains = concatChainsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
+          moduleContextCasedArguments = casedArgumentsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextTemplateHaskell = parsedModuleTemplateHaskell parsed,
           moduleContextOutcome = ParsedOk
         }
@@ -104,6 +106,7 @@ emptyModuleContext input =
       moduleContextAnnotationProblems = [],
       moduleContextTypeApps = [],
       moduleContextConcatChains = [],
+      moduleContextCasedArguments = [],
       moduleContextTemplateHaskell = NoTemplateHaskell,
       moduleContextOutcome = ParsedOk
     }

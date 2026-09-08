@@ -291,8 +291,9 @@ ruleSet rules off = do
         [] -> Right ()
         missing -> Left (TurnedOffRulesDoNotExist (NE.fromList missing))
 
-    groupSame [] = []
-    groupSame (x : xs) = let (same, rest) = span (== x) xs in (x : same) : groupSame rest
+    groupSame = \case
+      [] -> []
+      (x : xs) -> let (same, rest) = span (== x) xs in (x : same) : groupSame rest
 
 -- | No rules at all, which is what a caller with nowhere to report a refused set
 -- falls back to. Building the shipped set cannot fail, and this is what says so

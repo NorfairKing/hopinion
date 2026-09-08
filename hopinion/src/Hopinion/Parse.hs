@@ -166,12 +166,13 @@ baseDynFlags = foldl apply (defaultDynFlags fakeSettings)
 blankCppDirectives :: String -> String
 blankCppDirectives = unlines . go . lines
   where
-    go [] = []
-    go (l : ls)
-      | isDirective l =
-          let (continuation, rest) = spanContinuation l ls
-           in map (const "") (l : continuation) ++ go rest
-      | otherwise = l : go ls
+    go = \case
+      [] -> []
+      (l : ls)
+        | isDirective l ->
+            let (continuation, rest) = spanContinuation l ls
+             in map (const "") (l : continuation) ++ go rest
+        | otherwise -> l : go ls
 
     spanContinuation :: String -> [String] -> ([String], [String])
     spanContinuation prev ls
@@ -199,7 +200,7 @@ lexerPosition pst =
    in positionFromGhc (SrcLoc.srcLocLine rsl) (SrcLoc.srcLocCol rsl)
 
 toSpan :: Path Rel File -> SrcLoc.SrcSpan -> Maybe Span
-toSpan rp s = case s of
+toSpan rp = \case
   SrcLoc.RealSrcSpan rss _ -> Just (realToSpan rp rss)
   SrcLoc.UnhelpfulSpan _ -> Nothing
 
@@ -263,21 +264,23 @@ templateHaskellOf toks
 typeAppsOf :: [(Token, Span)] -> [TypeAppFact]
 typeAppsOf = go
   where
-    go ((fnTok, fnSpan) : (ITtypeApp, _) : rest)
-      | Just fn <- varName fnTok,
-        Just headName <- headTypeOf rest =
-          TypeAppFact
-            { typeAppFactFunction = fn,
-              typeAppFactHead = TypeHead headName,
-              typeAppFactSpan = fnSpan
-            }
-            : go rest
-    go (_ : rest) = go rest
-    go [] = []
+    go = \case
+      ((fnTok, fnSpan) : (ITtypeApp, _) : rest)
+        | Just fn <- varName fnTok,
+          Just headName <- headTypeOf rest ->
+            TypeAppFact
+              { typeAppFactFunction = fn,
+                typeAppFactHead = TypeHead headName,
+                typeAppFactSpan = fnSpan
+              }
+              : go rest
+      (_ : rest) -> go rest
+      [] -> []
 
-    headTypeOf ((IToparen, _) : rest) = headTypeOf rest
-    headTypeOf ((t, _) : _) = conName t
-    headTypeOf [] = Nothing
+    headTypeOf = \case
+      ((IToparen, _) : rest) -> headTypeOf rest
+      ((t, _) : _) -> conName t
+      [] -> Nothing
 
 varName :: Token -> Maybe Text
 varName = \case

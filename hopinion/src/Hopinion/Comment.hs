@@ -270,15 +270,17 @@ commentBlocks ctx = map toBlock . group . map withTrailing
     -- A block is non-empty by construction, which is what lets its span and its
     -- style be read off without a partial function or a made-up fallback.
     group :: [(RawComment, Trailing)] -> [NonEmpty (RawComment, Trailing)]
-    group [] = []
-    group (x : xs) = go x [] xs
+    group = \case
+      [] -> []
+      (x : xs) -> go x [] xs
       where
-        go first acc [] = [first :| reverse acc]
-        go first acc (y : ys)
-          | continues first (latest first acc) y = go first (y : acc) ys
-          | otherwise = (first :| reverse acc) : go y [] ys
+        go first acc = \case
+          [] -> [first :| reverse acc]
+          (y : ys)
+            | continues first (latest first acc) y -> go first (y : acc) ys
+            | otherwise -> (first :| reverse acc) : go y [] ys
 
-        latest first acc = case acc of
+        latest first = \case
           (a : _) -> a
           [] -> first
 

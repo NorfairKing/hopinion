@@ -159,7 +159,7 @@ carry pkg ctx = do
             obligationMetTypeHead = th
           }
 
-    declOf sk = case sk of
+    declOf = \case
       ScopeOfDecl _ d -> d
       ScopeOfFile _ -> DeclName ""
 

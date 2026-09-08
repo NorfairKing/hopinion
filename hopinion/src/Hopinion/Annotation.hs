@@ -377,7 +377,7 @@ applySuppression annotations findings =
        in if x > y then x - y else y - x
 
     specificity :: AnnotationPrecision -> Word
-    specificity p = case p of
+    specificity = \case
       PrecisionStatement _ -> 0
       PrecisionDecl -> 1
       PrecisionFile -> 2

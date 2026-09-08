@@ -5,10 +5,11 @@ catalogue of rules not yet written; this is the order to write them in.
 
 ## What exists
 
-Eight rules, one at each of the three levels and then some: `CommentBareTodo`,
-`HsNoCustomEq`, `HsNoCustomOrd`, `HsNoCustomShowRead`, `HsNoFilePath` and
-`HsNoSemigroupOnText` at the module level, `HsGenValidInGenPackage` at the
-package level, `TestGenValidSpecPerGenValid` at the project level.
+Nine rules, one at each of the three levels and then some: `CommentBareTodo`,
+`HsLambdaCase`, `HsNoCustomEq`, `HsNoCustomOrd`, `HsNoCustomShowRead`,
+`HsNoFilePath` and `HsNoSemigroupOnText` at the module level,
+`HsGenValidInGenPackage` at the package level, `TestGenValidSpecPerGenValid` at
+the project level.
 
 Under them: extension resolution and two parser passes, comment attachment,
 declaration, instance and expression extraction, a fact store per package in
@@ -111,7 +112,7 @@ Not cleanup, regression prevention. This milestone delivers real enforcement at
 essentially zero adoption cost, which is why it goes first.
 
 `ProcNoMocking`, `HsNewtypeNotSynonym`, `CommentDanglingHaddockRef`,
-`HsPreferredLibraries`, `HsLambdaCase`, `CommentChangelogNarrative`,
+`HsPreferredLibraries`, `CommentChangelogNarrative`,
 `CommentUncheckedClaim`, `CommentDecorativeBanner`, `ProseNoVerifyWord`,
 `ProseNoEmdash`.
 

@@ -4,6 +4,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
@@ -84,7 +85,7 @@ carry pkg ctx =
             generatorFactDecl = declOf (instanceFactScope i)
           }
   where
-    declOf sk = case sk of
+    declOf = \case
       ScopeOfDecl _ d -> d
       ScopeOfFile _ -> DeclName ""
 

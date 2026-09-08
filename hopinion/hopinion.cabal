@@ -13,6 +13,9 @@ library
       Hopinion
       Hopinion.Annotation
       Hopinion.Check.Comment.BareTodo.Rule
+      Hopinion.Check.Hs.LambdaCase.Extract
+      Hopinion.Check.Hs.LambdaCase.Fact
+      Hopinion.Check.Hs.LambdaCase.Rule
       Hopinion.Check.Hs.NoCustomEq.Rule
       Hopinion.Check.Hs.NoCustomOrd.Rule
       Hopinion.Check.Hs.NoCustomShowRead.Rule
