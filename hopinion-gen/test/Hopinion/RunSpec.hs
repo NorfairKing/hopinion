@@ -14,11 +14,11 @@ import Path.IO (listDirRel)
 import Test.Syd
 import Text.Colour (TerminalCapabilities (..), renderChunksText)
 
-resourceDir :: Path Rel Dir
-resourceDir = [reldir|test_resources/Run|]
-
 spec :: Spec
 spec = describe "explainRule" $ do
+  let resourceDir :: Path Rel Dir
+      resourceDir = [reldir|test_resources/Run|]
+
   -- The two a reader is shown prose for. The third thing a name can turn out to
   -- be is a name nothing answers to, whose whole text this module owns and is
   -- asserted exactly below.

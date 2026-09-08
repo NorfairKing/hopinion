@@ -17,11 +17,11 @@ import Test.Syd
 import Test.Syd.Validity
 import Test.Syd.Validity.Aeson
 
-resourceDir :: Path Rel Dir
-resourceDir = [reldir|test_resources/Choices|]
-
 spec :: Spec
 spec = do
+  let resourceDir :: Path Rel Dir
+      resourceDir = [reldir|test_resources/Choices|]
+
   it "has the goldens it reads and no others" $ do
     (dirs, files) <- listDirRel resourceDir
     dirs `shouldBe` []

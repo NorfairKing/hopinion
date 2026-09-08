@@ -31,6 +31,7 @@ library
       Hopinion.Check.Package.GenValidInGenPackage.Rule
       Hopinion.Check.Project.GenValidSpecPerGenValid.Rule
       Hopinion.Check.Project.JsonSpecPerJsonType.Rule
+      Hopinion.Check.Test.NoTestHelpers.Rule
       Hopinion.Choices
       Hopinion.Comment
       Hopinion.Compiled

@@ -3,10 +3,11 @@
 Every rule this tool could enforce that it does not enforce yet, sorted by how
 it can be enforced. A rule that ships leaves this file: what is here is work.
 
-The twelve that ship are `CommentBareTodo`, `HsLambdaCase`, `HsNoCustomEq`,
+The thirteen that ship are `CommentBareTodo`, `HsLambdaCase`, `HsNoCustomEq`,
 `HsNoCustomOrd`, `HsNoCustomShowRead`, `HsNoFilePath`, `HsNoSemigroupOnText`,
 `HsTestOneSpecPerFile`, `HsAppOnlyMain`, `HsGenValidInGenPackage`,
-`TestGenValidSpecPerGenValid` and `TestJsonSpecPerJsonType`.
+`TestGenValidSpecPerGenValid`, `TestJsonSpecPerJsonType` and
+`TestNoTestHelpers`.
 
 ## How to read this
 
@@ -147,7 +148,6 @@ Rule ids are stable. They are what a check module cites and what an
 | `TestTestLaws` | If code has laws, test them | C | project | error | Same engine as `HsInstancesLawAbiding` |
 | `TestExactAssertions` | `shouldBe` over `shouldSatisfy` | B | syntax | warn | |
 | `TestAssertWholeValues` | Assert whole values, not picked-out fields | B | syntax | warn | Two or more `shouldBe` on field selectors of the same expression in one do-block |
-| `TestNoTestHelpers` | Avoid helper functions in test modules | B | syntax | error | Overlaps `HsTestOneSpecPerFile` |
 
 ## Nix
 
@@ -209,14 +209,14 @@ combinator.
 `CommentSectionLabelInFunction`, `HsNoSectionHeadersInCode`,
 `HsStrictFields`
 
-**F5 DeclPredicate** (13). A predicate on one declaration. The largest family, so
+**F5 DeclPredicate** (12). A predicate on one declaration. The largest family, so
 its combinator matters most.
 `HsNewtypeNotSynonym`, `HsMultilineRecord`,
 `HsRecordFieldPrefix`, `HsLetOverWhere`,
 `HsOneLetPerBinding`, `HsLocalTypeSignatures`, `HsWhereHoldingLogic`,
 `HsNoDomainBool`, `HsTextViaPack`,
 `TestExactAssertions`,
-`TestAssertWholeValues`, `TestNoTestHelpers`, `TestTestableTopLevel`
+`TestAssertWholeValues`, `TestTestableTopLevel`
 
 **F6 DeclOrder** (5). A relation over positions in the declaration list. One
 combinator taking a comparator covers all of them.

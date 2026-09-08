@@ -27,11 +27,18 @@ import Test.Syd
 import Test.Syd.Validity
 import Test.Syd.Validity.Aeson
 
-resourceDir :: Path Rel Dir
-resourceDir = [reldir|test_resources/Report|]
-
 spec :: Spec
 spec = do
+  let resourceDir :: Path Rel Dir
+      resourceDir = [reldir|test_resources/Report|]
+
+  -- A source root over a directory, resolved against the working directory the
+  -- suite runs in, which is the package directory.
+  let rootAt :: Path Rel Dir -> IO SourceRoot
+      rootAt dir = do
+        absDir <- makeAbsolute dir
+        pure SourceRoot {sourceRootDir = absDir, sourceRootPrefix = Nothing}
+
   -- A report crosses a process boundary the same way facts do, so it is held to
   -- the same standard.
   describe "Finding" $ do
@@ -97,10 +104,3 @@ spec = do
         shippedRules
         (SourceMap M.empty)
         (failureComplaints [FactsIncomplete (NoFactsForPackage (PackageName "lonely"))])
-
--- | A source root over a directory, resolved against the working directory the
--- suite runs in, which is the package directory.
-rootAt :: Path Rel Dir -> IO SourceRoot
-rootAt dir = do
-  absDir <- makeAbsolute dir
-  pure SourceRoot {sourceRootDir = absDir, sourceRootPrefix = Nothing}

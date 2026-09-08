@@ -25,6 +25,88 @@ import Test.Syd
 
 spec :: Spec
 spec = do
+  -- What the splice is made of. Defined here rather than in the module that
+  -- splices it, because a quotation is resolved where it is written and a
+  -- splice cannot run code from its own module.
+  let generator :: String
+      generator =
+        unlines
+          [ "{-# LANGUAGE TemplateHaskell #-}",
+            "module Generator (Widget (..), Gennable, probe, spliceInstance, spliceCall) where",
+            "",
+            "import Language.Haskell.TH (Dec, Exp, Q)",
+            "",
+            "data Widget = Widget",
+            "",
+            "class Gennable a",
+            "",
+            "probe :: Widget -> ()",
+            "probe _ = ()",
+            "",
+            "spliceInstance :: Q [Dec]",
+            "spliceInstance = [d| instance Gennable Widget |]",
+            "",
+            "spliceCall :: Q Exp",
+            "spliceCall = [| probe Widget |]"
+          ]
+
+  -- Nothing here names @Gennable@, and nothing here names @probe@ at a
+  -- @Widget@. Both are in the compiled module all the same, which is the whole
+  -- reason these files are read.
+  let fixture :: String
+      fixture =
+        unlines
+          [ "{-# LANGUAGE TemplateHaskell #-}",
+            "module Fixture where",
+            "",
+            "import Generator",
+            "",
+            "data Written = Written",
+            "  deriving (Show)",
+            "",
+            "written :: Written",
+            "written = Written",
+            "",
+            "$(spliceInstance)",
+            "",
+            "called :: ()",
+            "called = $(spliceCall)"
+          ]
+
+  -- Compiled by the @ghc@ on the path, which is the one that built this suite,
+  -- so the files under test are ones these readers are supposed to be able to
+  -- read.
+  --
+  -- Compiled from inside the directory, and so named relatively, because a
+  -- @.hie@ file records the path the compiler was handed and cabal hands
+  -- relative ones. Compiling from outside would record an absolute path, which
+  -- is a build whose modules 'compiledModuleFile' can tell apart from nothing.
+  let withCompiled :: (Path Abs Dir -> IO ()) -> IO ()
+      withCompiled act = withSystemTempDir "hopinion-hie" $ \tmp -> do
+        writeFile (toFilePath (tmp </> [relfile|Generator.hs|])) generator
+        writeFile (toFilePath (tmp </> [relfile|Fixture.hs|])) fixture
+        _ <-
+          readCreateProcess
+            (proc "ghc" ["-v0", "-fwrite-ide-info", "-outputdir", ".", "-hiedir", ".", "-i.", "Fixture.hs"])
+              { cwd = Just (toFilePath tmp)
+              }
+            ""
+        act tmp
+
+  let readingCompiled :: Path Abs File -> IO CompiledModule
+      readingCompiled path = do
+        result <- readCompiledModule path
+        case result of
+          Left err -> fail (T.unpack (renderArtifactUnreadable err))
+          Right compiled -> pure compiled
+
+  let readingInstances :: Path Abs File -> IO [DeclaredInstance]
+      readingInstances path = do
+        result <- readDeclaredInstances path
+        case result of
+          Left err -> fail (T.unpack (renderArtifactUnreadable err))
+          Right instances -> pure instances
+
   describe "readCompiledModule" $ do
     -- The met side of an obligation rests on exactly this: two names that
     -- arrived together in one expansion. A module-wide name set would say only
@@ -85,85 +167,3 @@ spec = do
         case result of
           Left _ -> pure ()
           Right instances -> expectationFailure (unwords ["Read instances out of nothing:", show instances])
-
--- | What the splice is made of. Defined here rather than in the module that
--- splices it, because a quotation is resolved where it is written and a splice
--- cannot run code from its own module.
-generator :: String
-generator =
-  unlines
-    [ "{-# LANGUAGE TemplateHaskell #-}",
-      "module Generator (Widget (..), Gennable, probe, spliceInstance, spliceCall) where",
-      "",
-      "import Language.Haskell.TH (Dec, Exp, Q)",
-      "",
-      "data Widget = Widget",
-      "",
-      "class Gennable a",
-      "",
-      "probe :: Widget -> ()",
-      "probe _ = ()",
-      "",
-      "spliceInstance :: Q [Dec]",
-      "spliceInstance = [d| instance Gennable Widget |]",
-      "",
-      "spliceCall :: Q Exp",
-      "spliceCall = [| probe Widget |]"
-    ]
-
--- | Nothing here names @Gennable@, and nothing here names @probe@ at a
--- @Widget@. Both are in the compiled module all the same, which is the whole
--- reason these files are read.
-fixture :: String
-fixture =
-  unlines
-    [ "{-# LANGUAGE TemplateHaskell #-}",
-      "module Fixture where",
-      "",
-      "import Generator",
-      "",
-      "data Written = Written",
-      "  deriving (Show)",
-      "",
-      "written :: Written",
-      "written = Written",
-      "",
-      "$(spliceInstance)",
-      "",
-      "called :: ()",
-      "called = $(spliceCall)"
-    ]
-
--- | Compiled by the @ghc@ on the path, which is the one that built this suite,
--- so the files under test are ones these readers are supposed to be able to
--- read.
---
--- Compiled from inside the directory, and so named relatively, because a @.hie@
--- file records the path the compiler was handed and cabal hands relative ones.
--- Compiling from outside would record an absolute path, which is a build whose
--- modules 'compiledModuleFile' can tell apart from nothing.
-withCompiled :: (Path Abs Dir -> IO ()) -> IO ()
-withCompiled act = withSystemTempDir "hopinion-hie" $ \tmp -> do
-  writeFile (toFilePath (tmp </> [relfile|Generator.hs|])) generator
-  writeFile (toFilePath (tmp </> [relfile|Fixture.hs|])) fixture
-  _ <-
-    readCreateProcess
-      (proc "ghc" ["-v0", "-fwrite-ide-info", "-outputdir", ".", "-hiedir", ".", "-i.", "Fixture.hs"])
-        { cwd = Just (toFilePath tmp)
-        }
-      ""
-  act tmp
-
-readingCompiled :: Path Abs File -> IO CompiledModule
-readingCompiled path = do
-  result <- readCompiledModule path
-  case result of
-    Left err -> fail (T.unpack (renderArtifactUnreadable err))
-    Right compiled -> pure compiled
-
-readingInstances :: Path Abs File -> IO [DeclaredInstance]
-readingInstances path = do
-  result <- readDeclaredInstances path
-  case result of
-    Left err -> fail (T.unpack (renderArtifactUnreadable err))
-    Right instances -> pure instances

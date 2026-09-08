@@ -5,10 +5,11 @@ catalogue of rules not yet written; this is the order to write them in.
 
 ## What exists
 
-Twelve rules, one at each of the three levels and then some: `CommentBareTodo`,
+Thirteen rules, one at each of the three levels and then some: `CommentBareTodo`,
 `HsLambdaCase`, `HsNoCustomEq`, `HsNoCustomOrd`, `HsNoCustomShowRead`,
-`HsNoFilePath`, `HsNoSemigroupOnText` and `HsTestOneSpecPerFile` at the module
-level, `HsAppOnlyMain` and `HsGenValidInGenPackage` at the package level,
+`HsNoFilePath`, `HsNoSemigroupOnText`, `HsTestOneSpecPerFile` and
+`TestNoTestHelpers` at the module level, `HsAppOnlyMain`
+and `HsGenValidInGenPackage` at the package level,
 `TestGenValidSpecPerGenValid` and `TestJsonSpecPerJsonType` at the project
 level.
 
@@ -199,15 +200,19 @@ Everything that needs the module-local declaration list and call graph.
 `HsTypesAboveUses`, `HsInstanceAdjacentToType`, `HsInstancePriorityOrder`,
 `HsOneLetPerBinding`, `HsMultilineRecord`, `HsLetOverWhere`,
 `HsLocalTypeSignatures`, `HsRecordFieldPrefix`,
-`HsTestSpecTopmost`, `TestNoTestHelpers`, `TestExactAssertions`,
+`HsTestSpecTopmost`, `TestExactAssertions`,
 `TestAssertWholeValues`, `HsWhereHoldingLogic`, `HsTextViaPack`,
 `HsNoDomainBool`.
 
-`HsTestOneSpecPerFile` shipped ahead of the rest of this milestone, because what
-it needs is a fact rather than a walk: the export list, beside the declaration
-list that comment attachment already read. It reports nothing against this
-repository, which is what a rule about a convention every test file here already
-keeps should say.
+`HsTestOneSpecPerFile` and `TestNoTestHelpers` shipped ahead of the rest of this
+milestone. Both read the top-level declaration list and neither walks the module
+itself, so they cost the two facts the context now carries, the declarations and
+the export list, and nothing more. Their measurement is recorded: zero findings
+for the export rule against this repository, and sixty-one for the helper rule,
+every one of them in this repository's own test suite and every one of them
+fixed rather than suppressed: the helpers that hid what a test asserts became
+let-bindings in the spec that uses them, and the ones that build a Spec became
+functions in `Hopinion.TestUtils`, which is the fix the rule names.
 
 **Blocked on a measurement first.** Several of these were not surveyable by
 regular expression, so their volume is unknown, and a rule with four thousand
@@ -341,8 +346,8 @@ combinator yet, or it needs a fact that extraction does not produce. Both are
 real costs, and both are paid once on behalf of every later rule of the same
 shape.
 
-The current ratio is against the budget: 7,255 lines of infrastructure carrying
-1,106 lines of rules over twelve rules, where the design predicted roughly
+The current ratio is against the budget: 7,258 lines of infrastructure carrying
+1,162 lines of rules over thirteen rules, where the design predicted roughly
 1,300 carrying 55. What the spread says is that the budget holds exactly where
 a family has a combinator and nowhere else. The two obligation rules are 30 and
 33 lines, which is the row the family predicted, and they are the cheapest
@@ -357,6 +362,13 @@ A rule's cost is now its whole directory rather than one module, which is what
 makes it comparable. `HsNoSemigroupOnText` is 178 lines: 30 of rule, 44 of fact,
 104 of reading the parse tree for that fact. The reading is the part a later
 rule about expressions should not have to pay again.
+
+The two test-file rules are the other end of that: 67 and 56 lines, both of them
+rule and neither of them extraction, because the declaration list was already
+read for comment attachment and the export list is twenty-five lines of fact and
+thirty of reading, paid once. Most of what is left in each is the sentence a
+reader is owed, which the budget never counted and which is the part worth
+spending on.
 
 ## Anti-goals
 

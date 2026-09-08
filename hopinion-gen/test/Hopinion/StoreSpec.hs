@@ -22,6 +22,36 @@ import Test.Syd
 
 spec :: Spec
 spec = do
+  -- What an exception says, which is as much as these tests look at: the
+  -- wording is SQLite's and persistent's rather than this tool's.
+  let renderedOf :: Either SomeException a -> Text
+      renderedOf = either (T.pack . show) (const "")
+
+  -- A module of a component, which is what a stored row is keyed on.
+  let refIn :: Text -> Text -> ModuleRef
+      refIn component m =
+        ModuleRef {moduleRefComponent = ComponentName component, moduleRefModule = ModuleKey m}
+
+  -- One line of a file, which is as much of a span as these tests need.
+  let spanOfLine :: Path Rel File -> Word -> Span
+      spanOfLine file line =
+        Span
+          { spanFile = file,
+            spanStart = Position {positionLine = line, positionCol = 1},
+            spanEnd = Position {positionLine = line, positionCol = 2}
+          }
+
+  -- A suppression naming a rule, which is all these tests look at.
+  let suppressionOf :: Text -> AnnotationFact
+      suppressionOf rule =
+        AnnotationFact
+          { annotationFactRule = RuleId rule,
+            annotationFactScope = ScopeOfFile (refIn "lib" "Thing"),
+            annotationFactPrecision = PrecisionFile,
+            annotationFactReason = ReasonAdoption,
+            annotationFactSpan = spanOfLine [relfile|thing/src/Thing.hs|] 1
+          }
+
   -- A rule brings its own table, so a store written where a rule existed and
   -- merged where it does not is a merge with nowhere to put a row. Left to
   -- SQLite it dies saying `no such table`, which is a sentence about a name
@@ -193,33 +223,3 @@ spec = do
               annotationsOfPackage (PackageName "thing")
           )
       renderedOf thrown `shouldSatisfy` T.isInfixOf "not a fact"
-
--- | What an exception says, which is as much as these tests look at: the
--- wording is SQLite's and persistent's rather than this tool's.
-renderedOf :: Either SomeException a -> Text
-renderedOf = either (T.pack . show) (const "")
-
--- | A module of a component, which is what a stored row is keyed on.
-refIn :: Text -> Text -> ModuleRef
-refIn component m =
-  ModuleRef {moduleRefComponent = ComponentName component, moduleRefModule = ModuleKey m}
-
--- | A suppression naming a rule, which is all these tests look at.
-suppressionOf :: Text -> AnnotationFact
-suppressionOf rule =
-  AnnotationFact
-    { annotationFactRule = RuleId rule,
-      annotationFactScope = ScopeOfFile (refIn "lib" "Thing"),
-      annotationFactPrecision = PrecisionFile,
-      annotationFactReason = ReasonAdoption,
-      annotationFactSpan = spanOfLine [relfile|thing/src/Thing.hs|] 1
-    }
-
--- | One line of a file, which is as much of a span as these tests need.
-spanOfLine :: Path Rel File -> Word -> Span
-spanOfLine file line =
-  Span
-    { spanFile = file,
-      spanStart = Position {positionLine = line, positionCol = 1},
-      spanEnd = Position {positionLine = line, positionCol = 2}
-    }

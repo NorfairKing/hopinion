@@ -26,14 +26,102 @@ import Path.IO (ensureDir, listDirRel, makeAbsolute, withSystemTempDir)
 import Test.Syd
 import Text.Colour (TerminalCapabilities (..), renderChunksText)
 
--- | One miniature repository per thing a suppression can be doing: answering
--- for a finding, no longer relevant, or written somewhere it cannot attach.
--- Each one beside the golden of what the tool makes of it.
-resourceDir :: Path Rel Dir
-resourceDir = [reldir|test_resources/Annotation|]
-
 spec :: Spec
 spec = do
+  -- One miniature repository per thing a suppression can be doing: answering
+  -- for a finding, no longer relevant, or written somewhere it cannot attach.
+  -- Each one beside the golden of what the tool makes of it.
+  let resourceDir :: Path Rel Dir
+      resourceDir = [reldir|test_resources/Annotation|]
+
+  let selfWeeding :: Path Rel Dir
+      selfWeeding = resourceDir </> [reldir|self-weeding|]
+
+  let misplaced :: Path Rel Dir
+      misplaced = resourceDir </> [reldir|misplaced|]
+
+  -- A source root over a directory, resolved against the working directory the
+  -- suite runs in, which is the package directory.
+  let rootAt :: Path Rel Dir -> IO SourceRoot
+      rootAt dir = do
+        absDir <- makeAbsolute dir
+        pure SourceRoot {sourceRootDir = absDir, sourceRootPrefix = Nothing}
+
+  -- What a person would see, which is what the goldens are of.
+  let renderedReportFor :: Path Rel Dir -> IO Text
+      renderedReportFor dir = do
+        root <- rootAt dir
+        report <- runCheck shippedRules noHieDirectories root
+        (sources, missing) <- sourcesForReport [root] report
+        pure (renderReportColoured shippedRules sources (report <> missing))
+
+  -- A path spelled out here rather than parsed, so that a spec asserting on a
+  -- span is not also asserting that the parser works.
+  let exampleFile :: Path Rel File
+      exampleFile = $(mkRelFile "thing/src/Thing.hs")
+
+  let exampleModule :: ModuleRef
+      exampleModule = ModuleRef {moduleRefComponent = ComponentName "lib", moduleRefModule = ModuleKey "Thing"}
+
+  -- A span of a whole line, which is the shape a real one has: GHC gives an
+  -- extent, and a span that starts and ends in one place is the encoding of a
+  -- whole file rather than of anything in one. See 'isWholeFileSpan'.
+  let spanAt :: Word -> Span
+      spanAt line =
+        Span
+          { spanFile = exampleFile,
+            spanStart = Position {positionLine = line, positionCol = 1},
+            spanEnd = Position {positionLine = line, positionCol = 40}
+          }
+
+  -- A line comment carrying this text, attached to a declaration.
+  let commentSaying :: Text -> CommentFact
+      commentSaying text =
+        CommentFact
+          { commentFactSpan = spanAt 3,
+            commentFactStyle = StyleLine,
+            commentFactText = text,
+            commentFactAttachment = AttachedToDecl (DeclName "loose")
+          }
+
+  let todoFinding :: Finding
+      todoFinding =
+        Finding
+          { findingRule = RuleId "CommentBareTodo",
+            findingScope = ScopeOfDecl exampleModule (DeclName "loose"),
+            findingSpan = spanAt 3,
+            findingMessage = "a bare marker"
+          }
+
+  -- The reasons here are written as literals, so a failure is a test that
+  -- spells an empty one rather than anything about the tool.
+  let givenReason :: Text -> IO NonEmptyText
+      givenReason t =
+        maybe (expectationFailure (unwords ["Empty reason in this spec:", T.unpack t])) pure (nonEmptyText t)
+
+  let parsedWith :: Attachment -> CommentStyle -> Text -> Either AnnotationError AnnotationFact
+      parsedWith attachment style text =
+        parseAnnotation
+          shippedRules
+          exampleModule
+          CommentFact
+            { commentFactSpan = spanAt 1,
+              commentFactStyle = style,
+              commentFactText = text,
+              commentFactAttachment = attachment
+            }
+
+  let parsedIn :: CommentStyle -> Text -> Either AnnotationError AnnotationFact
+      parsedIn = parsedWith (AttachedToDecl (DeclName "loose"))
+
+  let parsed :: Text -> Either AnnotationError AnnotationFact
+      parsed = parsedIn StyleLine
+
+  let withParsed :: Text -> (AnnotationFact -> IO ()) -> IO ()
+      withParsed text act = case parsed text of
+        Left err -> expectationFailure (T.unpack (renderAnnotationError err))
+        Right a -> act a
+
   it "has a project for each of the three states a suppression can be in" $ do
     (dirs, files) <- listDirRel resourceDir
     sort dirs
@@ -287,91 +375,3 @@ spec = do
       goldenTextFile
         (toFilePath (resourceDir </> [relfile|misplaced.golden|]))
         (renderedReportFor misplaced)
-
-selfWeeding :: Path Rel Dir
-selfWeeding = resourceDir </> [reldir|self-weeding|]
-
-misplaced :: Path Rel Dir
-misplaced = resourceDir </> [reldir|misplaced|]
-
--- | What a person would see, which is what the goldens are of.
-renderedReportFor :: Path Rel Dir -> IO Text
-renderedReportFor dir = do
-  root <- rootAt dir
-  report <- runCheck shippedRules noHieDirectories root
-  (sources, missing) <- sourcesForReport [root] report
-  pure (renderReportColoured shippedRules sources (report <> missing))
-
--- | A source root over a directory, resolved against the working directory the
--- suite runs in, which is the package directory.
-rootAt :: Path Rel Dir -> IO SourceRoot
-rootAt dir = do
-  absDir <- makeAbsolute dir
-  pure SourceRoot {sourceRootDir = absDir, sourceRootPrefix = Nothing}
-
-todoFinding :: Finding
-todoFinding =
-  Finding
-    { findingRule = RuleId "CommentBareTodo",
-      findingScope = ScopeOfDecl exampleModule (DeclName "loose"),
-      findingSpan = spanAt 3,
-      findingMessage = "a bare marker"
-    }
-
-exampleModule :: ModuleRef
-exampleModule = ModuleRef {moduleRefComponent = ComponentName "lib", moduleRefModule = ModuleKey "Thing"}
-
--- | A span of a whole line, which is the shape a real one has: GHC gives an
--- extent, and a span that starts and ends in one place is the encoding of a
--- whole file rather than of anything in one. See 'isWholeFileSpan'.
-spanAt :: Word -> Span
-spanAt line =
-  Span
-    { spanFile = exampleFile,
-      spanStart = Position {positionLine = line, positionCol = 1},
-      spanEnd = Position {positionLine = line, positionCol = 40}
-    }
-
--- | A line comment carrying this text, attached to a declaration.
-commentSaying :: Text -> CommentFact
-commentSaying text =
-  CommentFact
-    { commentFactSpan = spanAt 3,
-      commentFactStyle = StyleLine,
-      commentFactText = text,
-      commentFactAttachment = AttachedToDecl (DeclName "loose")
-    }
-
--- | A path spelled out here rather than parsed, so that a spec asserting on a
--- span is not also asserting that the parser works.
-exampleFile :: Path Rel File
-exampleFile = $(mkRelFile "thing/src/Thing.hs")
-
--- | The reasons here are written as literals, so a failure is a test that
--- spells an empty one rather than anything about the tool.
-givenReason :: Text -> IO NonEmptyText
-givenReason t =
-  maybe (expectationFailure (unwords ["Empty reason in this spec:", T.unpack t])) pure (nonEmptyText t)
-
-parsed :: Text -> Either AnnotationError AnnotationFact
-parsed = parsedIn StyleLine
-
-parsedIn :: CommentStyle -> Text -> Either AnnotationError AnnotationFact
-parsedIn = parsedWith (AttachedToDecl (DeclName "loose"))
-
-parsedWith :: Attachment -> CommentStyle -> Text -> Either AnnotationError AnnotationFact
-parsedWith attachment style text =
-  parseAnnotation
-    shippedRules
-    exampleModule
-    CommentFact
-      { commentFactSpan = spanAt 1,
-        commentFactStyle = style,
-        commentFactText = text,
-        commentFactAttachment = attachment
-      }
-
-withParsed :: Text -> (AnnotationFact -> IO ()) -> IO ()
-withParsed text act = case parsed text of
-  Left err -> expectationFailure (T.unpack (renderAnnotationError err))
-  Right a -> act a

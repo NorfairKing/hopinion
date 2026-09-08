@@ -41,7 +41,11 @@ spec = do
     -- possible while no rule id contains a colon of its own.
     it "is PascalCase, so a rule id can never be mistaken for anything else" $
       forAllValid $ \r ->
-        ruleIdText r `shouldSatisfy` isPascalCase
+        let isPascalCase :: Text -> Bool
+            isPascalCase t = case T.uncons t of
+              Nothing -> False
+              Just (c, rest) -> isUpper c && T.all (\x -> isAlphaNum x || x == '_') rest
+         in ruleIdText r `shouldSatisfy` isPascalCase
     it "contains no colon, leaving the second colon free for later" $
       forAllValid $ \r ->
         ruleIdText r `shouldSatisfy` not . T.isInfixOf ":"
@@ -167,8 +171,3 @@ spec = do
   describe "FormatVersion" $ do
     genValidSpec @FormatVersion
   describe "GenPackage" $ genValidSpec @GenPackage
-
-isPascalCase :: Text -> Bool
-isPascalCase t = case T.uncons t of
-  Nothing -> False
-  Just (c, rest) -> isUpper c && T.all (\x -> isAlphaNum x || x == '_') rest

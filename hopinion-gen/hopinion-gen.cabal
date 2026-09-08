@@ -264,6 +264,14 @@ extra-source-files:
     test_resources/Rule/TestJsonSpecPerJsonType/good/thing-gen/thing-gen.cabal
     test_resources/Rule/TestJsonSpecPerJsonType/good/thing/src/Thing.hs
     test_resources/Rule/TestJsonSpecPerJsonType/good/thing/thing.cabal
+    test_resources/Rule/TestNoTestHelpers/badSpec.hs
+    test_resources/Rule/TestNoTestHelpers/badSpec.hs.golden
+    test_resources/Rule/TestNoTestHelpers/goodATypeInATestFileSpec.hs
+    test_resources/Rule/TestNoTestHelpers/goodATypeInATestFileSpec.hs.golden
+    test_resources/Rule/TestNoTestHelpers/goodNotATestFile.hs
+    test_resources/Rule/TestNoTestHelpers/goodNotATestFile.hs.golden
+    test_resources/Rule/TestNoTestHelpers/goodSpec.hs
+    test_resources/Rule/TestNoTestHelpers/goodSpec.hs.golden
     test_resources/Run/runs.golden
     test_resources/Run/turned-off.golden
 
@@ -318,6 +326,7 @@ test-suite hopinion-test
       Hopinion.RunSpec
       Hopinion.StoreSpec
       Hopinion.TestResourcesSpec
+      Hopinion.TestUtils
       Paths_hopinion_gen
   hs-source-dirs:
       test

@@ -14,11 +14,18 @@ import Path (Dir, Path, Rel, reldir, relfile, toFilePath, (</>))
 import Path.IO (createDirIfMissing, createDirLink, listDirRel, makeAbsolute, withSystemTempDir)
 import Test.Syd
 
-resourceDir :: Path Rel Dir
-resourceDir = [reldir|test_resources/Project|]
-
 spec :: Spec
 spec = do
+  let resourceDir :: Path Rel Dir
+      resourceDir = [reldir|test_resources/Project|]
+
+  -- A source root over a directory, resolved against the working directory the
+  -- suite runs in, which is the package directory.
+  let rootAt :: Path Rel Dir -> IO SourceRoot
+      rootAt dir = do
+        absDir <- makeAbsolute dir
+        pure SourceRoot {sourceRootDir = absDir, sourceRootPrefix = Nothing}
+
   it "has a project for each way discovery can be given something it cannot read" $ do
     (dirs, files) <- listDirRel resourceDir
     files `shouldBe` []
@@ -70,6 +77,15 @@ spec = do
   -- anybody actually has in a working tree, holds no cabal file to find.
   it "finds a package a repository links in" $
     withSystemTempDir "hopinion-symlink" $ \tmp -> do
+      -- The least a cabal file can say and still name a package.
+      let minimalCabal :: String
+          minimalCabal =
+            unlines
+              [ "cabal-version: 1.12",
+                "name:          thing",
+                "version:       0.0.0",
+                "build-type:    Simple"
+              ]
       let elsewhere = tmp </> [reldir|elsewhere|]
       createDirIfMissing True (elsewhere </> [reldir|thing|])
       writeFile (toFilePath (elsewhere </> [reldir|thing|] </> [relfile|thing.cabal|])) minimalCabal
@@ -133,20 +149,3 @@ spec = do
       `shouldBe` [ "Two packages are called thing and one name is all the facts of either \
                    \can be filed under: first/thing.cabal second/thing.cabal"
                  ]
-
--- | A source root over a directory, resolved against the working directory the
--- suite runs in, which is the package directory.
-rootAt :: Path Rel Dir -> IO SourceRoot
-rootAt dir = do
-  absDir <- makeAbsolute dir
-  pure SourceRoot {sourceRootDir = absDir, sourceRootPrefix = Nothing}
-
--- | The least a cabal file can say and still name a package.
-minimalCabal :: String
-minimalCabal =
-  unlines
-    [ "cabal-version: 1.12",
-      "name:          thing",
-      "version:       0.0.0",
-      "build-type:    Simple"
-    ]

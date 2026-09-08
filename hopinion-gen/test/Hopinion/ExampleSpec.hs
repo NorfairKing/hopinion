@@ -27,11 +27,25 @@ import Path (Dir, Path, Rel, reldir, relfile, toFilePath, (</>))
 import Path.IO (listDirRel, makeAbsolute)
 import Test.Syd
 
-resourceDir :: Path Rel Dir
-resourceDir = [reldir|test_resources/Example|]
-
 spec :: Spec
 spec = do
+  let resourceDir :: Path Rel Dir
+      resourceDir = [reldir|test_resources/Example|]
+
+  -- A source root over a directory, resolved against the working directory the
+  -- suite runs in, which is the package directory.
+  let rootAt :: Path Rel Dir -> IO SourceRoot
+      rootAt dir = do
+        absDir <- makeAbsolute dir
+        pure SourceRoot {sourceRootDir = absDir, sourceRootPrefix = Nothing}
+
+  let renderedReportFor :: Path Rel Dir -> IO Text
+      renderedReportFor dir = do
+        root <- rootAt dir
+        report <- runCheck shippedRules noHieDirectories root
+        (sources, missing) <- sourcesForReport [root] report
+        pure (renderReportColoured shippedRules sources (report <> missing))
+
   it "has the three examples nix/e2e.nix names, and the golden of the dirty one" $ do
     (dirs, files) <- listDirRel resourceDir
     sort dirs `shouldBe` [[reldir|clean|], [reldir|decided|], [reldir|dirty|]]
@@ -89,17 +103,3 @@ spec = do
       goldenTextFile
         (toFilePath (resourceDir </> [relfile|dirty.golden|]))
         (renderedReportFor (resourceDir </> [reldir|dirty|]))
-
-renderedReportFor :: Path Rel Dir -> IO Text
-renderedReportFor dir = do
-  root <- rootAt dir
-  report <- runCheck shippedRules noHieDirectories root
-  (sources, missing) <- sourcesForReport [root] report
-  pure (renderReportColoured shippedRules sources (report <> missing))
-
--- | A source root over a directory, resolved against the working directory the
--- suite runs in, which is the package directory.
-rootAt :: Path Rel Dir -> IO SourceRoot
-rootAt dir = do
-  absDir <- makeAbsolute dir
-  pure SourceRoot {sourceRootDir = absDir, sourceRootPrefix = Nothing}

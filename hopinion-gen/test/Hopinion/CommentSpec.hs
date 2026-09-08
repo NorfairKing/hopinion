@@ -24,13 +24,35 @@ import Test.Syd
 import Test.Syd.Aeson
 import Test.Syd.Validity
 
--- | One module per attachment case, each beside the golden of what hopinion
--- makes of it.
-resourceDir :: Path Rel Dir
-resourceDir = [reldir|test_resources/Comment|]
-
 spec :: Spec
 spec = do
+  -- One module per attachment case, each beside the golden of what hopinion
+  -- makes of it.
+  let resourceDir :: Path Rel Dir
+      resourceDir = [reldir|test_resources/Comment|]
+
+  -- ormolu does not preserve what these comments are about, so hopinion cannot
+  -- either, and asserting that it does would be asserting something false.
+  --
+  -- A comment at the end of a @do@ block is moved to column zero with a blank
+  -- line above it, which is exactly the shape that means "attached to nothing".
+  -- The reformatting changes the meaning, so the attachment changing with it is
+  -- correct.
+  let formatSensitive :: [Path Rel File]
+      formatSensitive = [[relfile|07-end-of-do-block.hs|]]
+
+  let subjectOf :: Attachment -> Text
+      subjectOf = \case
+        AttachedToDecl d -> T.concat ["decl ", declNameText d]
+        AttachedToStatement d _ -> T.concat ["statement in ", declNameText d]
+        AttachedToFile -> "file"
+        AttachedToExportList -> "export list"
+        Unattached -> "unattached"
+
+  -- What each comment is about, in order, with the positions left out.
+  let subjects :: ModuleContext -> [Text]
+      subjects mf = map (subjectOf . commentFactAttachment) (moduleContextComments mf)
+
   describe "RawComment" $ genValidSpec @RawComment
 
   describe "commentBlocks" $
@@ -84,25 +106,3 @@ spec = do
               moduleFile <- (parent path </>) <$> parseRelFile (T.unpack moduleName)
               present <- forgivingAbsence (getModificationTime moduleFile)
               isJust present `shouldBe` True
-
--- | ormolu does not preserve what these comments are about, so hopinion cannot
--- either, and asserting that it does would be asserting something false.
---
--- A comment at the end of a @do@ block is moved to column zero with a blank
--- line above it, which is exactly the shape that means "attached to nothing".
--- The reformatting changes the meaning, so the attachment changing with it is
--- correct.
-formatSensitive :: [Path Rel File]
-formatSensitive = [[relfile|07-end-of-do-block.hs|]]
-
--- | What each comment is about, in order, with the positions left out.
-subjects :: ModuleContext -> [Text]
-subjects mf = map (subjectOf . commentFactAttachment) (moduleContextComments mf)
-
-subjectOf :: Attachment -> Text
-subjectOf = \case
-  AttachedToDecl d -> T.concat ["decl ", declNameText d]
-  AttachedToStatement d _ -> T.concat ["statement in ", declNameText d]
-  AttachedToFile -> "file"
-  AttachedToExportList -> "export list"
-  Unattached -> "unattached"
