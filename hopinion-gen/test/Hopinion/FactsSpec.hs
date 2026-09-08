@@ -12,6 +12,7 @@ import Hopinion.Check.Package.AppOnlyMain.Fact
 import Hopinion.Comment
 import Hopinion.Facts.Component
 import Hopinion.Facts.Decl
+import Hopinion.Facts.Export
 import Hopinion.Facts.Gen ()
 import Hopinion.Facts.Instance
 import Hopinion.Facts.Name
@@ -112,6 +113,8 @@ spec = do
     genValidSpec @DeclKind
   describe "DeclFact" $ do
     genValidSpec @DeclFact
+  describe "ExportList" $ do
+    genValidSpec @ExportList
   describe "InstanceMethods" $ do
     genValidSpec @InstanceMethods
   describe "InstanceOrigin" $ do

@@ -23,6 +23,7 @@ library
       Hopinion.Check.Hs.NoSemigroupOnText.Extract
       Hopinion.Check.Hs.NoSemigroupOnText.Fact
       Hopinion.Check.Hs.NoSemigroupOnText.Rule
+      Hopinion.Check.Hs.TestOneSpecPerFile.Rule
       Hopinion.Check.Obligation
       Hopinion.Check.Package.AppOnlyMain.Extract
       Hopinion.Check.Package.AppOnlyMain.Fact
@@ -37,6 +38,7 @@ library
       Hopinion.Extract.Ghc
       Hopinion.Facts.Component
       Hopinion.Facts.Decl
+      Hopinion.Facts.Export
       Hopinion.Facts.Instance
       Hopinion.Facts.Module
       Hopinion.Facts.Name

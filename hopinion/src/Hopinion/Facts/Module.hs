@@ -1,18 +1,23 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Hopinion.Facts.Module
   ( ModuleContext (..),
     moduleContextRef,
+    moduleContextIsSpecFile,
   )
 where
 
+import qualified Data.Text as T
 import GHC.Generics (Generic)
 import Hopinion.Check.Hs.LambdaCase.Fact
 import Hopinion.Check.Hs.NoSemigroupOnText.Fact
 import Hopinion.Check.Package.AppOnlyMain.Fact
 import Hopinion.Comment (CommentFact (..))
 import Hopinion.Facts.Component
+import Hopinion.Facts.Decl
+import Hopinion.Facts.Export
 import Hopinion.Facts.Instance
 import Hopinion.Facts.Name
 import Hopinion.Facts.Occurrence
@@ -35,6 +40,9 @@ data ModuleContext = ModuleContext
     -- | Which component, by name, so that two modules GHC both calls Main are
     -- two modules here as well.
     moduleContextComponentName :: !ComponentName,
+    -- | Every top-level declaration, in source order.
+    moduleContextDecls :: ![DeclFact],
+    moduleContextExports :: !ExportList,
     moduleContextInstances :: ![InstanceFact],
     moduleContextNames :: ![NameFact],
     moduleContextComments :: ![CommentFact],
@@ -56,3 +64,13 @@ moduleContextRef ctx =
     { moduleRefComponent = moduleContextComponentName ctx,
       moduleRefModule = moduleContextModule ctx
     }
+
+-- | Whether this module is a test file, which is what the rules about test
+-- files are asking about.
+--
+-- The file name is the whole of it, and it is the convention sydtest and every
+-- discovery mechanism over it already run on: the tests for a module are in a
+-- file named after that module with @Spec@ on the end. Read here rather than in
+-- each rule, so that what a test file is has one answer.
+moduleContextIsSpecFile :: ModuleContext -> Bool
+moduleContextIsSpecFile ctx = T.isSuffixOf "Spec.hs" (relPathText (moduleContextPath ctx))

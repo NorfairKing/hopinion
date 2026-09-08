@@ -5,10 +5,10 @@ catalogue of rules not yet written; this is the order to write them in.
 
 ## What exists
 
-Eleven rules, one at each of the three levels and then some: `CommentBareTodo`,
+Twelve rules, one at each of the three levels and then some: `CommentBareTodo`,
 `HsLambdaCase`, `HsNoCustomEq`, `HsNoCustomOrd`, `HsNoCustomShowRead`,
-`HsNoFilePath` and `HsNoSemigroupOnText` at the module level, `HsAppOnlyMain`
-and `HsGenValidInGenPackage` at the package level,
+`HsNoFilePath`, `HsNoSemigroupOnText` and `HsTestOneSpecPerFile` at the module
+level, `HsAppOnlyMain` and `HsGenValidInGenPackage` at the package level,
 `TestGenValidSpecPerGenValid` and `TestJsonSpecPerJsonType` at the project
 level.
 
@@ -198,10 +198,16 @@ Everything that needs the module-local declaration list and call graph.
 
 `HsTypesAboveUses`, `HsInstanceAdjacentToType`, `HsInstancePriorityOrder`,
 `HsOneLetPerBinding`, `HsMultilineRecord`, `HsLetOverWhere`,
-`HsLocalTypeSignatures`, `HsRecordFieldPrefix`, `HsTestOneSpecPerFile`,
+`HsLocalTypeSignatures`, `HsRecordFieldPrefix`,
 `HsTestSpecTopmost`, `TestNoTestHelpers`, `TestExactAssertions`,
 `TestAssertWholeValues`, `HsWhereHoldingLogic`, `HsTextViaPack`,
 `HsNoDomainBool`.
+
+`HsTestOneSpecPerFile` shipped ahead of the rest of this milestone, because what
+it needs is a fact rather than a walk: the export list, beside the declaration
+list that comment attachment already read. It reports nothing against this
+repository, which is what a rule about a convention every test file here already
+keeps should say.
 
 **Blocked on a measurement first.** Several of these were not surveyable by
 regular expression, so their volume is unknown, and a rule with four thousand
@@ -335,8 +341,8 @@ combinator yet, or it needs a fact that extraction does not produce. Both are
 real costs, and both are paid once on behalf of every later rule of the same
 shape.
 
-The current ratio is against the budget: 6,950 lines of infrastructure carrying
-1,039 lines of rules over eleven rules, where the design predicted roughly
+The current ratio is against the budget: 7,255 lines of infrastructure carrying
+1,106 lines of rules over twelve rules, where the design predicted roughly
 1,300 carrying 55. What the spread says is that the budget holds exactly where
 a family has a combinator and nowhere else. The two obligation rules are 30 and
 33 lines, which is the row the family predicted, and they are the cheapest

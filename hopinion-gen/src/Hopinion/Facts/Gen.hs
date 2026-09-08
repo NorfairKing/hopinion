@@ -18,6 +18,7 @@ import Hopinion.Choices (Choices)
 import Hopinion.Comment (Attachment, CommentFact, CommentStyle, RawComment)
 import Hopinion.Facts.Component
 import Hopinion.Facts.Decl
+import Hopinion.Facts.Export
 import Hopinion.Facts.Instance
 import Hopinion.Facts.Name
 import Hopinion.Facts.Outcome
@@ -85,6 +86,8 @@ instance GenValid ParseOutcome
 instance GenValid DeclKind
 
 instance GenValid DeclFact
+
+instance GenValid ExportList
 
 instance GenValid InstanceMethods
 

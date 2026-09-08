@@ -3,10 +3,10 @@
 Every rule this tool could enforce that it does not enforce yet, sorted by how
 it can be enforced. A rule that ships leaves this file: what is here is work.
 
-The eleven that ship are `CommentBareTodo`, `HsLambdaCase`, `HsNoCustomEq`,
+The twelve that ship are `CommentBareTodo`, `HsLambdaCase`, `HsNoCustomEq`,
 `HsNoCustomOrd`, `HsNoCustomShowRead`, `HsNoFilePath`, `HsNoSemigroupOnText`,
-`HsAppOnlyMain`, `HsGenValidInGenPackage`, `TestGenValidSpecPerGenValid` and
-`TestJsonSpecPerJsonType`.
+`HsTestOneSpecPerFile`, `HsAppOnlyMain`, `HsGenValidInGenPackage`,
+`TestGenValidSpecPerGenValid` and `TestJsonSpecPerJsonType`.
 
 ## How to read this
 
@@ -114,7 +114,6 @@ Rule ids are stable. They are what a check module cites and what an
 | `HsTypesAboveUses` | Define types above the functions that use them | B | syntax | error | |
 | `HsInstanceAdjacentToType` | Instances immediately after the type they are for | B | syntax | error | Subsumes the Validity-close-to-the-type rule |
 | `HsInstancePriorityOrder` | `Validity` first, `NFData` next, the rest after | B | syntax | error | Config-driven priority list |
-| `HsTestOneSpecPerFile` | One `spec :: Spec` per file, only `spec` exported | B | syntax | error | |
 | `HsTestSpecTopmost` | `spec` is the top-most function in a test file | B | syntax | error | |
 | `HsTestOrderGranularFirst` | Order tests granular to less granular | D | | | |
 | `HsTestDescribeOrder` | `describe` groups follow definition-module order | B | project | warn | Resolve `describe` string literals against the source module's decl order |
@@ -210,13 +209,13 @@ combinator.
 `CommentSectionLabelInFunction`, `HsNoSectionHeadersInCode`,
 `HsStrictFields`
 
-**F5 DeclPredicate** (14). A predicate on one declaration. The largest family, so
+**F5 DeclPredicate** (13). A predicate on one declaration. The largest family, so
 its combinator matters most.
 `HsNewtypeNotSynonym`, `HsMultilineRecord`,
 `HsRecordFieldPrefix`, `HsLetOverWhere`,
 `HsOneLetPerBinding`, `HsLocalTypeSignatures`, `HsWhereHoldingLogic`,
 `HsNoDomainBool`, `HsTextViaPack`,
-`HsTestOneSpecPerFile`, `TestExactAssertions`,
+`TestExactAssertions`,
 `TestAssertWholeValues`, `TestNoTestHelpers`, `TestTestableTopLevel`
 
 **F6 DeclOrder** (5). A relation over positions in the declaration list. One
