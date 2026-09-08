@@ -3,9 +3,10 @@
 Every rule this tool could enforce that it does not enforce yet, sorted by how
 it can be enforced. A rule that ships leaves this file: what is here is work.
 
-The ten that ship are `CommentBareTodo`, `HsLambdaCase`, `HsNoCustomEq`,
+The eleven that ship are `CommentBareTodo`, `HsLambdaCase`, `HsNoCustomEq`,
 `HsNoCustomOrd`, `HsNoCustomShowRead`, `HsNoFilePath`, `HsNoSemigroupOnText`,
-`HsAppOnlyMain`, `HsGenValidInGenPackage` and `TestGenValidSpecPerGenValid`.
+`HsAppOnlyMain`, `HsGenValidInGenPackage`, `TestGenValidSpecPerGenValid` and
+`TestJsonSpecPerJsonType`.
 
 ## How to read this
 
@@ -144,7 +145,6 @@ Rule ids are stable. They are what a check module cites and what an
 | `TestPreferPropertyTesting` | Prefer property testing in general | D | | | |
 | `TestTestableTopLevel` | A helper with real logic becomes an exported top-level function | B | syntax | warn | Same check as `HsWhereHoldingLogic` |
 | `TestParallelNoPollution` | All tests run in parallel, avoid test pollution | D | | | Not statically decidable |
-| `TestJsonSpecPerJsonType` | `jsonSpec @T` for every `ToJSON` plus `FromJSON` type | C | project | error | Obligation |
 | `TestTestLaws` | If code has laws, test them | C | project | error | Same engine as `HsInstancesLawAbiding` |
 | `TestExactAssertions` | `shouldBe` over `shouldSatisfy` | B | syntax | warn | |
 | `TestAssertWholeValues` | Assert whole values, not picked-out fields | B | syntax | warn | Two or more `shouldBe` on field selectors of the same expression in one do-block |
@@ -225,8 +225,7 @@ combinator taking a comparator covers all of them.
 `HsInstancePriorityOrder`, `HsTestSpecTopmost`,
 `HsOrderEntrypointFirst`
 
-**F7 Obligation** (6). A table row, and close to no code of its own beyond it.
-`TestJsonSpecPerJsonType`,
+**F7 Obligation** (5). A table row, and close to no code of its own beyond it.
 `TestRoundtripForSerialisation`, `TestGoldenForExternalOutput`,
 `TestTestLaws`, `HsInstancesLawAbiding`, `HsSpecFilePerModule`
 

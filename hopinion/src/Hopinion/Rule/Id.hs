@@ -21,6 +21,8 @@ import qualified Data.Text as T
 import Data.Validity
 import Data.Validity.Containers ()
 import Data.Validity.Text ()
+import Database.Persist (PersistField (..))
+import Database.Persist.Sql (PersistFieldSql (..), SqlType (..))
 import GHC.Generics (Generic)
 
 -- | What a rule is called.
@@ -55,6 +57,18 @@ instance Validity RuleId where
 -- where it is asked.
 parseRuleId :: Text -> Maybe RuleId
 parseRuleId t = let rid = RuleId t in if isValid rid then Just rid else Nothing
+
+-- | A row names the rule it belongs to as the text a suppression would name it
+-- with, so a stored row stays readable and a renamed rule cannot silently
+-- change what was written.
+instance PersistField RuleId where
+  toPersistValue = toPersistValue . ruleIdText
+  fromPersistValue v = do
+    t <- fromPersistValue v
+    maybe (Left "not a rule id") Right (parseRuleId t)
+
+instance PersistFieldSql RuleId where
+  sqlType _ = SqlString
 
 instance HasCodec RuleId where
   codec =

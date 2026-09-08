@@ -23,11 +23,13 @@ library
       Hopinion.Check.Hs.NoSemigroupOnText.Extract
       Hopinion.Check.Hs.NoSemigroupOnText.Fact
       Hopinion.Check.Hs.NoSemigroupOnText.Rule
+      Hopinion.Check.Obligation
       Hopinion.Check.Package.AppOnlyMain.Extract
       Hopinion.Check.Package.AppOnlyMain.Fact
       Hopinion.Check.Package.AppOnlyMain.Rule
       Hopinion.Check.Package.GenValidInGenPackage.Rule
       Hopinion.Check.Project.GenValidSpecPerGenValid.Rule
+      Hopinion.Check.Project.JsonSpecPerJsonType.Rule
       Hopinion.Choices
       Hopinion.Comment
       Hopinion.Compiled

@@ -5,11 +5,12 @@ catalogue of rules not yet written; this is the order to write them in.
 
 ## What exists
 
-Ten rules, one at each of the three levels and then some: `CommentBareTodo`,
+Eleven rules, one at each of the three levels and then some: `CommentBareTodo`,
 `HsLambdaCase`, `HsNoCustomEq`, `HsNoCustomOrd`, `HsNoCustomShowRead`,
 `HsNoFilePath` and `HsNoSemigroupOnText` at the module level, `HsAppOnlyMain`
 and `HsGenValidInGenPackage` at the package level,
-`TestGenValidSpecPerGenValid` at the project level.
+`TestGenValidSpecPerGenValid` and `TestJsonSpecPerJsonType` at the project
+level.
 
 Under them: extension resolution and two parser passes, comment attachment,
 declaration, instance and expression extraction, a fact store per package in
@@ -77,6 +78,13 @@ that needs source. Keep them apart.
 **A rule owns its own table.** The migration, what it writes out of one module,
 and the query it answers with. The envelope never learns what is in that table,
 which is why adding a rule adds no case to anything central.
+
+The obligation family is the one exception, and it is a family rather than a
+rule: one set of tables with the rule id as a column, so a row still belongs to
+exactly one rule and no rule can read another's. What each rule would
+otherwise own privately is the same three columns, the same join and the same
+two questions put to the compiler, and restating all of that per rule would be
+four hundred lines of agreement waiting to drift.
 
 **A type belongs to whatever gives it meaning.** A rule's own fact is in that
 rule's directory; what more than one rule reads is under `Hopinion.Facts`, one
@@ -240,8 +248,11 @@ is late rather than early despite the value.
   codebase that uses generic deriving arrive through `deriving ... via`, so an
   engine that only understands `instance C T where` would miss most of the JSON
   instances it exists to check.
-- `TestJsonSpecPerJsonType`, `TestRoundtripForSerialisation`,
-  `TestGoldenForExternalOutput`, `HsInstancesLawAbiding`, `TestTestLaws`.
+- `TestRoundtripForSerialisation`, `TestGoldenForExternalOutput`,
+  `HsInstancesLawAbiding`, `TestTestLaws`. The engine they share is written and
+  carries two rules already, so what is left per rule is the row.
+- Instance discovery through `.hie` for the classes those rules name, which is
+  the half of the engine that abstains rather than concludes today.
 - Then the remaining project-tier rules: `HsTestDescribeOrder`,
   `CommentCopyPastedTwin`, `HsClassesOnlyForPolymorphism`,
   `HsRecordSyntaxForProducts`.
@@ -301,6 +312,11 @@ unless the fact it brings is one ModuleContext has to carry. Adding the module
 and not the line leaves a rule nothing runs, which the resource listing test
 catches in both directions. Step 5 is the only step that needs judgement.
 
+A rule in the obligation family stops at step one being a value rather than a
+module of code: `obligationRule` takes the classes and the combinator and
+returns the rule, and the resources are a repository per case rather than a
+module, since the level is project.
+
 A rule a repository writes for itself takes the same steps minus the second: it
 goes in that repository's own executable, which calls `hopinionWith`.
 
@@ -319,13 +335,17 @@ combinator yet, or it needs a fact that extraction does not produce. Both are
 real costs, and both are paid once on behalf of every later rule of the same
 shape.
 
-The current ratio is against the budget: 6,875 lines of infrastructure carrying
-853 lines of rules over six rules, where the design predicted roughly 1,300
-carrying 55. The two cheapest rules are 43 and 47 lines, which is the budget
-holding once the facts a rule needs are already extracted; the average is
-carried by the obligation rule at 382, which was deliberately the hardest thing
-in the design. Whether the families are optimistic by an order is a question the
-next few rules settle.
+The current ratio is against the budget: 6,950 lines of infrastructure carrying
+1,039 lines of rules over eleven rules, where the design predicted roughly
+1,300 carrying 55. What the spread says is that the budget holds exactly where
+a family has a combinator and nowhere else. The two obligation rules are 30 and
+33 lines, which is the row the family predicted, and they are the cheapest
+things here because the engine under them is counted as infrastructure. The two
+cheapest rules that walk the parse tree are 35 lines each, which is the budget
+holding once the facts they need are already extracted. The dear ones are the
+rules that brought their own reading of the parse tree, at 178, 209 and 225,
+and that reading is what the centralised walk in M5 exists to stop paying for
+twice.
 
 A rule's cost is now its whole directory rather than one module, which is what
 makes it comparable. `HsNoSemigroupOnText` is 178 lines: 30 of rule, 44 of fact,

@@ -16,6 +16,7 @@ import qualified Hopinion.Check.Hs.NoSemigroupOnText.Rule as NoSemigroupOnText
 import qualified Hopinion.Check.Package.AppOnlyMain.Rule as AppOnlyMain
 import qualified Hopinion.Check.Package.GenValidInGenPackage.Rule as GenValidInGenPackage
 import qualified Hopinion.Check.Project.GenValidSpecPerGenValid.Rule as GenValidSpecPerGenValid
+import qualified Hopinion.Check.Project.JsonSpecPerJsonType.Rule as JsonSpecPerJsonType
 import Hopinion.Rule (Rule)
 
 builtinRules :: [Rule]
@@ -24,6 +25,7 @@ builtinRules =
     BareTodo.rule,
     GenValidInGenPackage.rule,
     GenValidSpecPerGenValid.rule,
+    JsonSpecPerJsonType.rule,
     LambdaCase.rule,
     NoCustomEq.rule,
     NoCustomOrd.rule,
