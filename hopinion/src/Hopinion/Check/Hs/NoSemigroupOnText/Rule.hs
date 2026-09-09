@@ -11,7 +11,7 @@ rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "HsNoSemigroupOnText",
-      ruleText = "Do not use <> or ++ to concatenate strings or text. Put the pieces in a list.",
+      ruleText = "Concatenate strings and text with a list, not with <> or ++.",
       ruleWhy = "<> does not format well, literal lists do.",
       ruleImpl = ModuleRule (FromSource check)
     }
@@ -23,7 +23,7 @@ check mf =
         { findingRule = ruleId rule,
           findingScope = concatChainScope cc,
           findingSpan = concatChainSpan cc,
-          findingMessage = "A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines."
+          findingMessage = "A string literal concatenated with <> or ++."
         }
     | cc <- moduleContextConcatChains mf,
       OperandStringLiteral `elem` concatChainOperands cc

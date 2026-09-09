@@ -1,10 +1,10 @@
-[0;91;1m[error HsTestOneSpecPerFile][0m: This test file exports nothing, so nothing can run the tests in it.
+[0;91;1m[error HsTestOneSpecPerFile][0m: This test file exports nothing.
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsTestOneSpecPerFile/badExportsNothingSpec.hs@1:30-1:32[0m
      [0;90;1m│[0m
 [0;90;1m   1 │[0m [0;97mm[0m[0;97mo[0m[0;97md[0m[0;97mu[0m[0;97ml[0m[0;97me[0m[0;97m [0m[0;97mB[0m[0;97ma[0m[0;97md[0m[0;97mE[0m[0;97mx[0m[0;97mp[0m[0;97mo[0m[0;97mr[0m[0;97mt[0m[0;97ms[0m[0;97mN[0m[0;97mo[0m[0;97mt[0m[0;97mh[0m[0;97mi[0m[0;97mn[0m[0;97mg[0m[0;97mS[0m[0;97mp[0m[0;97me[0m[0;97mc[0m[0;97m [0m[0;91;1m([0m[0;91;1m)[0m[0;97m [0m[0;97mw[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97me[0m
      [0;90;1m•[0m                              [0;91m┬[0m[0;91m─[0m 
      [0;90;1m•[0m                              [0;91m╰╸[0m [0;91mA test file exports exactly (spec).[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Nothing reads a test file but the Main that gathers the specs, and it asks for spec alone, so any other export is a name no caller wants and no export list at all exports whatever gets defined there next.[0m
+     [0;90;1m│[0m [0;96mNote: Nothing reads a test file but the Main that gathers the specs, and it asks for spec alone.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this anywhere in the file, and say why: -- [allow:file:HsTestOneSpecPerFile] <reason>[0m
 [0;90;1m─────╯[0m

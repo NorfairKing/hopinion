@@ -1,10 +1,10 @@
-[0;91;1m[error HsAppOnlyMain][0m: A declaration in an executable's own source, beside main. Nothing here can be imported or tested, so move it into the library.
+[0;91;1m[error HsAppOnlyMain][0m: A declaration beside main: twice.
      [0;90;1m╭──▶[0m [0;32;1mthing/app/Main.hs@6:1-6:23[0m
      [0;90;1m│[0m
 [0;90;1m   6 │[0m [0;91;1mt[0m[0;91;1mw[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1mc[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1mc[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m>[0m[0;91;1m>[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1mc[0m[0;91;1mt[0m
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mAn executable's own source holds main = theRealMain, and nothing else.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Nothing in an executable's source directory can be imported, so nothing in it can be tested either: a test suite cannot depend on an executable. Whatever is written there is therefore code no property runs, no golden file pins and no other executable can reuse, and it is the code that decides what the program does. One line naming a function in the library moves all of that somewhere a test can reach it, and costs nothing.[0m
+     [0;90;1m│[0m [0;96mNote: Nothing in an executable's source directory can be imported, so nothing in it can be tested. One line naming a function in the library moves the code somewhere a test can reach.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 6 of thing/app/Main.hs, and say why: -- [allow:HsAppOnlyMain] <reason>[0m
 [0;90;1m─────╯[0m

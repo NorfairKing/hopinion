@@ -1,91 +1,91 @@
-[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Orphan anywhere, and there is no lonely-gen for it to be written in.
+[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Orphan anywhere, and no lonely-gen.
      [0;90;1m╭──▶[0m [0;32;1mlonely/src/Lonely.hs@5:1-5:25[0m
      [0;90;1m│[0m
 [0;90;1m   5 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mO[0m[0;91;1mr[0m[0;91;1mp[0m[0;91;1mh[0m[0;91;1ma[0m[0;91;1mn[0m
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
-     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.[0m
+     [0;90;1m│[0m [0;96mNote: A generator nothing runs is one nobody has checked: genValid can produce values the type's own Validity rejects, and every property built on it inherits that. The spec belongs to the package that declares the instance.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 5 of lonely/src/Lonely.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Standalone anywhere in thing-gen's test suite.
+[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Standalone in thing-gen's test suite.
      [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@13:1-13:38[0m
      [0;90;1m│[0m
 [0;90;1m  13 │[0m [0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1me[0m
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
-     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.[0m
+     [0;90;1m│[0m [0;96mNote: A generator nothing runs is one nobody has checked: genValid can produce values the type's own Validity rejects, and every property built on it inherits that. The spec belongs to the package that declares the instance.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 13 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Stocked anywhere in thing-gen's test suite.
+[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Stocked in thing-gen's test suite.
      [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@16:1-17:28[0m
      [0;90;1m│[0m
 [0;90;1m  16 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1mc[0m[0;91;1mk[0m[0;91;1me[0m[0;91;1md[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1mc[0m[0;91;1mk[0m[0;91;1me[0m[0;91;1md[0m
 [0;90;1m  17 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1mc[0m[0;91;1mk[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m)[0m
      [0;90;1m•[0m [0;91m│ [0m
-     [0;90;1m•[0m [0;91m╰╸ A GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.[0m
+     [0;90;1m•[0m [0;91m╰╸ A GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.[0m
+     [0;90;1m│[0m [0;96mNote: A generator nothing runs is one nobody has checked: genValid can produce values the type's own Validity rejects, and every property built on it inherits that. The spec belongs to the package that declares the instance.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 16 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Wrapped anywhere in thing-gen's test suite.
+[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Wrapped in thing-gen's test suite.
      [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@19:1-20:30[0m
      [0;90;1m│[0m
 [0;90;1m  19 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1mn[0m[0;91;1me[0m[0;91;1mw[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mW[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mp[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1md[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mW[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mp[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m
 [0;90;1m  20 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mw[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m)[0m
      [0;90;1m•[0m [0;91m│ [0m
-     [0;90;1m•[0m [0;91m╰╸ A GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.[0m
+     [0;90;1m•[0m [0;91m╰╸ A GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.[0m
+     [0;90;1m│[0m [0;96mNote: A generator nothing runs is one nobody has checked: genValid can produce values the type's own Validity rejects, and every property built on it inherits that. The spec belongs to the package that declares the instance.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 19 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @AnyOf anywhere in thing-gen's test suite.
+[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @AnyOf in thing-gen's test suite.
      [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@22:1-23:31[0m
      [0;90;1m│[0m
 [0;90;1m  22 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1m [0m[0;91;1mA[0m[0;91;1mn[0m[0;91;1my[0m[0;91;1mO[0m[0;91;1mf[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mA[0m[0;91;1mn[0m[0;91;1my[0m[0;91;1mO[0m[0;91;1mf[0m
 [0;90;1m  23 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1my[0m[0;91;1mc[0m[0;91;1ml[0m[0;91;1ma[0m[0;91;1ms[0m[0;91;1ms[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m)[0m
      [0;90;1m•[0m [0;91m│ [0m
-     [0;90;1m•[0m [0;91m╰╸ A GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.[0m
+     [0;90;1m•[0m [0;91m╰╸ A GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.[0m
+     [0;90;1m│[0m [0;96mNote: A generator nothing runs is one nobody has checked: genValid can produce values the type's own Validity rejects, and every property built on it inherits that. The spec belongs to the package that declares the instance.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 22 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @ViaCodec anywhere in thing-gen's test suite.
+[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @ViaCodec in thing-gen's test suite.
      [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@26:1-27:49[0m
      [0;90;1m│[0m
 [0;90;1m  26 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1m [0m[0;91;1mV[0m[0;91;1mi[0m[0;91;1ma[0m[0;91;1mC[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mV[0m[0;91;1mi[0m[0;91;1ma[0m[0;91;1mC[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m
 [0;90;1m  27 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m)[0m[0;91;1m [0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1ma[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mA[0m[0;91;1mu[0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1mo[0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1m [0m[0;91;1mV[0m[0;91;1mi[0m[0;91;1ma[0m[0;91;1mC[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1m)[0m
      [0;90;1m•[0m [0;91m│ [0m
-     [0;90;1m•[0m [0;91m╰╸ A GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.[0m
+     [0;90;1m•[0m [0;91m╰╸ A GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.[0m
+     [0;90;1m│[0m [0;96mNote: A generator nothing runs is one nobody has checked: genValid can produce values the type's own Validity rejects, and every property built on it inherits that. The spec belongs to the package that declares the instance.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 26 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Allowed anywhere in thing-gen's test suite.
+[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Allowed in thing-gen's test suite.
      [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@32:1-32:30[0m
      [0;90;1m│[0m
 [0;90;1m  32 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mA[0m[0;91;1ml[0m[0;91;1ml[0m[0;91;1mo[0m[0;91;1mw[0m[0;91;1me[0m[0;91;1md[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1m)[0m
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
-     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.[0m
+     [0;90;1m│[0m [0;96mNote: A generator nothing runs is one nobody has checked: genValid can produce values the type's own Validity rejects, and every property built on it inherits that. The spec belongs to the package that declares the instance.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 32 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Generated anywhere in thing-gen's test suite.
+[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Generated in thing-gen's test suite.
      [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing/Spliced.hs@11:1-11:28[0m
      [0;90;1m│[0m
 [0;90;1m  11 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1md[0m
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
-     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.[0m
+     [0;90;1m│[0m [0;96mNote: A generator nothing runs is one nobody has checked: genValid can produce values the type's own Validity rejects, and every property built on it inherits that. The spec belongs to the package that declares the instance.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 11 of thing/src/Thing/Spliced.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m

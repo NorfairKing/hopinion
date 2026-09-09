@@ -5,6 +5,7 @@ module Hopinion.Check.Hs.NoCustomShowRead.Rule (rule) where
 import qualified Data.Text as T
 import Hopinion.Facts.Instance
 import Hopinion.Facts.Module
+import Hopinion.Facts.Name
 import Hopinion.Rule
 import Hopinion.Rule.Id
 
@@ -12,17 +13,12 @@ rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "HsNoCustomShowRead",
-      ruleText = "Show and Read are derived, unless every method discards what it is given.",
+      ruleText = "Show and Read are derived, unless the methods ignore the value.",
       ruleWhy =
-        "A written Show is a second, undeclared serialisation of the type, and\
-        \ the one every debugger, test failure and log line goes through. It\
-        \ drifts from the type it prints without anything noticing, and a Read\
-        \ written to match it drifts separately, so the pair stops round\
-        \ tripping while still compiling. Derive them and the compiler keeps\
-        \ them honest. An instance whose methods discard their arguments is\
-        \ none of that: what it produces cannot depend on the value, so there\
-        \ is nothing for it to drift from, and keeping a secret out of every\
-        \ log line is a good reason to write one.",
+        "A written Show is an undeclared second serialisation, and nothing keeps\
+        \ it, or a Read written to match it, in step with the type. An instance\
+        \ that ignores the value has nothing to drift from, which is how a\
+        \ secret stays out of the logs.",
       ruleImpl = ModuleRule (FromSource check)
     }
 
@@ -35,10 +31,10 @@ check mf =
           findingSpan = instanceFactSpan inst,
           findingMessage =
             T.concat
-              [ "This ",
-                instanceFactClass inst,
-                " instance is written out. Derive it instead, or discard what\
-                \ it is given if the point is to hide the value."
+              [ instanceFactClass inst,
+                " ",
+                typeHeadText (instanceFactType inst),
+                " is written out, and uses the value."
               ]
         }
     | inst <- moduleContextInstances mf,

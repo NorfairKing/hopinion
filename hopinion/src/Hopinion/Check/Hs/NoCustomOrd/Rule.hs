@@ -2,8 +2,10 @@
 
 module Hopinion.Check.Hs.NoCustomOrd.Rule (rule) where
 
+import qualified Data.Text as T
 import Hopinion.Facts.Instance
 import Hopinion.Facts.Module
+import Hopinion.Facts.Name
 import Hopinion.Rule
 import Hopinion.Rule.Id
 
@@ -13,8 +15,8 @@ rule =
     { ruleId = RuleId "HsNoCustomOrd",
       ruleText = "Ord is derived.",
       ruleWhy =
-        "If you need a custom ordering operation, use a separate function, not\
-        \ the Ord instance.",
+        "Custom ordering belongs in a function, not in the instance that every\
+        \ sort, Map and Set goes through.",
       ruleImpl = ModuleRule (FromSource check)
     }
 
@@ -26,8 +28,7 @@ check mf =
           findingScope = instanceFactScope inst,
           findingSpan = instanceFactSpan inst,
           findingMessage =
-            "This Ord instance is written out. Derive it instead, so that what\
-            \ it orders by is the fields of the type."
+            T.concat ["Ord ", typeHeadText (instanceFactType inst), " is written out."]
         }
     | inst <- moduleContextInstances mf,
       originIsWrittenOut (instanceFactOrigin inst),

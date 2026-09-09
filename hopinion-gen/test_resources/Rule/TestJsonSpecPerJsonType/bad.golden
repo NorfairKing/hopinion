@@ -1,11 +1,11 @@
-[0;91;1m[error TestJsonSpecPerJsonType][0m: No jsonSpec @Both anywhere in thing-gen's test suite.
+[0;91;1m[error TestJsonSpecPerJsonType][0m: No jsonSpec @Both in thing-gen's test suite.
      [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@5:1-6:53[0m
      [0;90;1m│[0m
 [0;90;1m   5 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1m [0m[0;91;1mB[0m[0;91;1mo[0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mB[0m[0;91;1mo[0m[0;91;1mt[0m[0;91;1mh[0m
 [0;90;1m   6 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mF[0m[0;91;1mr[0m[0;91;1mo[0m[0;91;1mm[0m[0;91;1mJ[0m[0;91;1mS[0m[0;91;1mO[0m[0;91;1mN[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1mo[0m[0;91;1mJ[0m[0;91;1mS[0m[0;91;1mO[0m[0;91;1mN[0m[0;91;1m)[0m[0;91;1m [0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1ma[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mA[0m[0;91;1mu[0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1mo[0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1m [0m[0;91;1mB[0m[0;91;1mo[0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1m)[0m
      [0;90;1m•[0m [0;91m│ [0m
-     [0;90;1m•[0m [0;91m╰╸ A type with both a ToJSON and a FromJSON instance creates an obligation: jsonSpec @T must be called in the test suite of that package's gen package.[0m
+     [0;90;1m•[0m [0;91m╰╸ ToJSON and FromJSON oblige jsonSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A type with both instances is a type something outside this program reads or writes, and the two halves are what has to agree. Nothing in the types makes them: a field renamed on one side, a constructor spelled differently, an optional field that decodes to a different default than it encoded from, and the type still compiles while the data stops roundtripping. jsonSpec asserts that a value survives being written and read back, over generated values rather than the two or three anybody would think to write down, and it is one line. It belongs to the package that declares the instances, because a test written next door disappears the day that other package stops mentioning the type.[0m
+     [0;90;1m│[0m [0;96mNote: Both instances mean something outside this program reads the type, and nothing in the types makes the two halves agree. jsonSpec asserts the roundtrip over generated values. The spec belongs to the package that declares the instances.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 5 of thing/src/Thing.hs, and say why: -- [allow:TestJsonSpecPerJsonType] <reason>[0m
 [0;90;1m─────╯[0m

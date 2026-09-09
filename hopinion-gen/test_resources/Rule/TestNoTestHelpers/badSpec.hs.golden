@@ -1,21 +1,21 @@
-[0;91;1m[error TestNoTestHelpers][0m: A top-level binding in a test file, beside spec.
+[0;91;1m[error TestNoTestHelpers][0m: A top-level binding beside spec: resourceDir.
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoTestHelpers/badSpec.hs@11:1-11:31[0m
      [0;90;1m│[0m
 [0;90;1m  11 │[0m [0;91;1mr[0m[0;91;1me[0m[0;91;1ms[0m[0;91;1mo[0m[0;91;1mu[0m[0;91;1mr[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1mD[0m[0;91;1mi[0m[0;91;1mr[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1m"[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1m_[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1ms[0m[0;91;1mo[0m[0;91;1mu[0m[0;91;1mr[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1ms[0m[0;91;1m"[0m
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA test file binds nothing at the top level but spec.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A helper in a test file is untested code nothing else can import, so a test that calls it asserts whatever the helper happens to mean today: duplicate it into the tests that use it, move it to the library if it holds real logic, or put it in a TestUtils module if it builds a Spec.[0m
+     [0;90;1m│[0m [0;96mNote: A helper in a test file is untested code nothing else can import, so a test that calls it asserts whatever the helper happens to mean today.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 11 of test_resources/Rule/TestNoTestHelpers/badSpec.hs, and say why: -- [allow:TestNoTestHelpers] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestNoTestHelpers][0m: A top-level binding in a test file, beside spec.
+[0;91;1m[error TestNoTestHelpers][0m: A top-level binding beside spec: twice.
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoTestHelpers/badSpec.hs@14:1-14:16[0m
      [0;90;1m│[0m
 [0;90;1m  14 │[0m [0;91;1mt[0m[0;91;1mw[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mn[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mn[0m[0;91;1m [0m[0;91;1m+[0m[0;91;1m [0m[0;91;1mn[0m
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA test file binds nothing at the top level but spec.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A helper in a test file is untested code nothing else can import, so a test that calls it asserts whatever the helper happens to mean today: duplicate it into the tests that use it, move it to the library if it holds real logic, or put it in a TestUtils module if it builds a Spec.[0m
+     [0;90;1m│[0m [0;96mNote: A helper in a test file is untested code nothing else can import, so a test that calls it asserts whatever the helper happens to mean today.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 14 of test_resources/Rule/TestNoTestHelpers/badSpec.hs, and say why: -- [allow:TestNoTestHelpers] <reason>[0m
 [0;90;1m─────╯[0m
