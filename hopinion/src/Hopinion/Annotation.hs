@@ -172,7 +172,7 @@ renderAnnotationError = \case
         ", which this repository has turned off, so it suppresses nothing. Remove it."
       ]
   NoReason -> "A suppression with no reason is a config exception with extra steps."
-  AttachedToNothing -> "This suppression is not attached to anything. Move it against the code it concerns."
+  AttachedToNothing -> "This suppression sits on its own. Move it against the code it concerns."
 
 parseAnnotation :: RuleSet -> ModuleRef -> CommentFact -> Either AnnotationError AnnotationFact
 parseAnnotation rs mk cf = do

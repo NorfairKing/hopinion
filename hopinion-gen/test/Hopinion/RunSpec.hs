@@ -71,4 +71,4 @@ spec = describe "explainRule" $ do
       NoRuleCalled cs ->
         renderChunksText WithoutColours cs
           `shouldBe` "There is no rule called NoSuchRule in this build of hopinion.\n\
-                     \Run list-rules to see the ones there are.\n"
+                     \Run list-rules to see the rules this build has.\n"

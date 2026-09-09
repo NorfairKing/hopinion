@@ -1,10 +1,10 @@
-[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Visible anywhere in thing-gen's test suite.
+[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Visible in thing-gen's test suite.
      [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@8:1-8:26[0m
      [0;90;1m│[0m
 [0;90;1m   8 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mV[0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1mi[0m[0;91;1mb[0m[0;91;1ml[0m[0;91;1me[0m
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
-     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance creates an obligation: genValidSpec @T must be called in the test suite of that package's gen package.[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A generator nothing runs is a generator nobody has checked. genValid can produce values the type's own Validity instance rejects, and shrinkValid can shrink to them, and every property built on it inherits that quietly: the failures it reports are about values the code was never meant to see. genValidSpec asserts exactly the two things the instance promises, and it is one line. The spec belongs to the package that declares the instance, because a spec written next door disappears the day that other package stops mentioning the type.[0m
+     [0;90;1m│[0m [0;96mNote: genValidSpec is what checks the generator: genValid can produce values the type's own Validity rejects, and every property built on it inherits that. The spec belongs to the package that declares the instance.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 8 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m

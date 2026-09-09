@@ -435,11 +435,11 @@ findingFor o home m =
                   concat ["@", T.unpack (typeHeadText (obligationMadeTypeHead m))]
                 ]
                   ++ case home of
-                    GenPackage gen -> ["anywhere in", concat [T.unpack (packageNameText gen), "'s test suite."]]
+                    GenPackage gen -> ["in", concat [T.unpack (packageNameText gen), "'s test suite."]]
                     NoGenPackage gen ->
-                      [ "anywhere, and there is no",
+                      [ "anywhere, and no",
                         T.unpack (packageNameText gen),
-                        "for it to be written in."
+                        "package to write it in."
                       ]
               )
           )

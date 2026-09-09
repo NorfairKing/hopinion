@@ -18,6 +18,7 @@
 -- | [check:ref GenValidInGenPackage]
 module Hopinion.Check.Package.GenValidInGenPackage.Rule (rule, GeneratorFact (..)) where
 
+import qualified Data.Text as T
 import Database.Esqueleto.Experimental
 import Database.Persist.TH
 import Hopinion.Compiled (CompiledModules)
@@ -53,15 +54,11 @@ rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "HsGenValidInGenPackage",
-      ruleText =
-        "A GenValid instance in a package's own library gets compiled into the\
-        \ executable. Move it to the matching -gen package.",
+      ruleText = "A GenValid instance lives in the matching -gen package.",
       ruleWhy =
-        "A generator is test code, and an instance in the library is linked into\
-        \ everything that depends on the library, so the shipped executable\
-        \ carries QuickCheck and the generators with it. The -gen package exists\
-        \ so that dependency stops at the test suite, which is also what keeps a\
-        \ generator free to be as slow or as elaborate as the property needs.",
+        "An instance in the library is linked into everything that depends on\
+        \ it, so the shipped executable carries QuickCheck and the generators.\
+        \ The -gen package stops that at the test suite.",
       ruleImpl =
         PackageRule
           PackageCheck
@@ -122,5 +119,10 @@ findingFor g =
       findingScope =
         ScopeOfDecl (generatorFactModuleRef g) (generatorFactDecl g),
       findingSpan = generatorFactSpan g,
-      findingMessage = "A GenValid instance outside a -gen package."
+      findingMessage =
+        T.concat
+          [ "A GenValid instance in ",
+            packageNameText (generatorFactPackage g),
+            "'s library."
+          ]
     }

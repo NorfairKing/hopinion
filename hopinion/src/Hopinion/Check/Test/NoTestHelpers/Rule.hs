@@ -2,6 +2,7 @@
 
 module Hopinion.Check.Test.NoTestHelpers.Rule (rule) where
 
+import qualified Data.Text as T
 import Hopinion.Facts.Decl
 import Hopinion.Facts.Module
 import Hopinion.Facts.Name
@@ -13,12 +14,10 @@ rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "TestNoTestHelpers",
-      ruleText = "A test file binds nothing at the top level but spec.",
+      ruleText = "A test file binds only spec at the top level.",
       ruleWhy =
-        "A helper in a test file is untested code nothing else can import, so a\
-        \ test that calls it asserts whatever the helper happens to mean today:\
-        \ duplicate it into the tests that use it, move it to the library if it\
-        \ holds real logic, or put it in a TestUtils module if it builds a Spec.",
+        "A helper in a test file is untested code, private to that file, so a\
+        \ test that calls it asserts whatever the helper happens to mean today.",
       ruleImpl = ModuleRule (FromSource check)
     }
 
@@ -39,7 +38,11 @@ check ctx
               findingScope = ScopeOfDecl (moduleContextRef ctx) (declFactName d),
               findingSpan = declFactSpan d,
               findingMessage =
-                "A top-level binding in a test file, beside spec."
+                T.concat
+                  [ "A top-level binding beside spec: ",
+                    declNameText (declFactName d),
+                    "."
+                  ]
             }
         | d <- moduleContextDecls ctx,
           declFactKind d == DeclValue,

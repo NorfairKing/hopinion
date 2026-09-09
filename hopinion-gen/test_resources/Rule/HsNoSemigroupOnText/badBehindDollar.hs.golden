@@ -1,21 +1,21 @@
-[0;91;1m[error HsNoSemigroupOnText][0m: A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
+[0;91;1m[error HsNoSemigroupOnText][0m: A string literal concatenated with <> or ++.
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs@11:28-11:44[0m
      [0;90;1m│[0m
 [0;90;1m  11 │[0m [0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97mt[0m[0;97me[0m[0;97md[0m[0;97m [0m[0;97mn[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mT[0m[0;97m.[0m[0;97mt[0m[0;97mo[0m[0;97mU[0m[0;97mp[0m[0;97mp[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m$[0m[0;97m [0m[0;91;1m"[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1ml[0m[0;91;1ml[0m[0;91;1mo[0m[0;91;1m [0m[0;91;1m"[0m[0;91;1m [0m[0;91;1m<[0m[0;91;1m>[0m[0;91;1m [0m[0;91;1mn[0m[0;91;1ma[0m[0;91;1mm[0m[0;91;1me[0m
      [0;90;1m•[0m                            [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
-     [0;90;1m•[0m                            [0;91m╰╸[0m [0;91mDo not use <> or ++ to concatenate strings or text. Put the pieces in a list.[0m
+     [0;90;1m•[0m                            [0;91m╰╸[0m [0;91mConcatenate strings and text with a list, not with <> or ++.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: <> does not format well, literal lists do.[0m
+     [0;90;1m│[0m [0;96mNote: A literal list of the pieces formats better than a <> chain.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 11 of test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error HsNoSemigroupOnText][0m: A string literal concatenated with <> or ++. Put the pieces in a list and use concat, unwords or unlines.
+[0;91;1m[error HsNoSemigroupOnText][0m: A string literal concatenated with <> or ++.
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs@15:26-15:51[0m
      [0;90;1m│[0m
 [0;90;1m  15 │[0m [0;97mr[0m[0;97me[0m[0;97mp[0m[0;97mo[0m[0;97mr[0m[0;97mt[0m[0;97m [0m[0;97mw[0m[0;97mh[0m[0;97ma[0m[0;97mt[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mp[0m[0;97mu[0m[0;97mt[0m[0;97mS[0m[0;97mt[0m[0;97mr[0m[0;97mL[0m[0;97mn[0m[0;97m [0m[0;97m$[0m[0;97m [0m[0;91;1m"[0m[0;91;1mn[0m[0;91;1mo[0m[0;91;1m [0m[0;91;1ms[0m[0;91;1mu[0m[0;91;1mc[0m[0;91;1mh[0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m:[0m[0;91;1m [0m[0;91;1m"[0m[0;91;1m [0m[0;91;1m+[0m[0;91;1m+[0m[0;91;1m [0m[0;91;1mw[0m[0;91;1mh[0m[0;91;1ma[0m[0;91;1mt[0m
      [0;90;1m•[0m                          [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
-     [0;90;1m•[0m                          [0;91m╰╸[0m [0;91mDo not use <> or ++ to concatenate strings or text. Put the pieces in a list.[0m
+     [0;90;1m•[0m                          [0;91m╰╸[0m [0;91mConcatenate strings and text with a list, not with <> or ++.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: <> does not format well, literal lists do.[0m
+     [0;90;1m│[0m [0;96mNote: A literal list of the pieces formats better than a <> chain.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 15 of test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>[0m
 [0;90;1m─────╯[0m

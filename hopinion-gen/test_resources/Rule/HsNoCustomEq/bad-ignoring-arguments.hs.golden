@@ -1,4 +1,4 @@
-[0;91;1m[error HsNoCustomEq][0m: This Eq instance is written out. Derive it instead, so that what it compares is the fields of the type.
+[0;91;1m[error HsNoCustomEq][0m: Eq Handle is written out.
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoCustomEq/bad-ignoring-arguments.hs@7:1-8:16[0m
      [0;90;1m│[0m
 [0;90;1m   7 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mE[0m[0;91;1mq[0m[0;91;1m [0m[0;91;1mH[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1md[0m[0;91;1ml[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mw[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1me[0m
@@ -6,6 +6,6 @@
      [0;90;1m•[0m [0;91m│ [0m
      [0;90;1m•[0m [0;91m╰╸ Eq is derived.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: If you need a custom equality operation, use a separate function, not the Eq instance.[0m
+     [0;90;1m│[0m [0;96mNote: Custom equality belongs in a function, not in the instance that every == goes through.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 7 of test_resources/Rule/HsNoCustomEq/bad-ignoring-arguments.hs, and say why: -- [allow:HsNoCustomEq] <reason>[0m
 [0;90;1m─────╯[0m

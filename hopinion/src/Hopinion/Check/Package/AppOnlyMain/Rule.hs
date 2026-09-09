@@ -16,6 +16,7 @@
 
 module Hopinion.Check.Package.AppOnlyMain.Rule (rule, StrayAppDeclFact (..)) where
 
+import qualified Data.Text as T
 import Database.Esqueleto.Experimental
 import Database.Persist.TH
 import Hopinion.Check.Package.AppOnlyMain.Fact
@@ -52,15 +53,11 @@ rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "HsAppOnlyMain",
-      ruleText = "An executable's own source holds main = theRealMain, and nothing else.",
+      ruleText = "An executable's own source holds only main = theRealMain.",
       ruleWhy =
-        "Nothing in an executable's source directory can be imported, so nothing\
-        \ in it can be tested either: a test suite cannot depend on an\
-        \ executable. Whatever is written there is therefore code no property\
-        \ runs, no golden file pins and no other executable can reuse, and it is\
-        \ the code that decides what the program does. One line naming a\
-        \ function in the library moves all of that somewhere a test can reach\
-        \ it, and costs nothing.",
+        "An executable's modules are private to it, so a test suite can reach\
+        \ only the library it calls into. One line naming a function in the\
+        \ library moves the code where a test can reach it.",
       ruleImpl =
         PackageRule
           PackageCheck
@@ -112,10 +109,11 @@ findingFor s =
       findingSpan = strayAppDeclFactSpan s,
       findingMessage =
         if strayAppDeclFactDecl s == DeclName "main"
-          then
-            "This main does the work itself. Move the work into the library and\
-            \ leave main naming the function that does it."
+          then "This main does the work itself."
           else
-            "A declaration in an executable's own source, beside main. Nothing\
-            \ here can be imported or tested, so move it into the library."
+            T.concat
+              [ "A declaration beside main: ",
+                declNameText (strayAppDeclFactDecl s),
+                "."
+              ]
     }

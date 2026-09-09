@@ -14,17 +14,13 @@ rule =
     Obligation
       { obligationId = RuleId "TestGenValidSpecPerGenValid",
         obligationText =
-          "A GenValid instance creates an obligation: genValidSpec @T must be called\
-          \ in the test suite of that package's gen package.",
+          "A GenValid instance obliges genValidSpec @T in the gen package's test\
+          \ suite.",
         obligationWhy =
-          "A generator nothing runs is a generator nobody has checked. genValid can\
-          \ produce values the type's own Validity instance rejects, and\
-          \ shrinkValid can shrink to them, and every property built on it inherits\
-          \ that quietly: the failures it reports are about values the code was\
-          \ never meant to see. genValidSpec asserts exactly the two things the\
-          \ instance promises, and it is one line. The spec belongs to the package\
-          \ that declares the instance, because a spec written next door disappears\
-          \ the day that other package stops mentioning the type.",
+          "genValidSpec is what checks the generator: genValid can produce values\
+          \ the type's own Validity rejects, and every property built on it\
+          \ inherits that. The spec belongs to the package that declares the\
+          \ instance.",
         obligationClasses = "GenValid" :| [],
         obligationCombinator = "genValidSpec"
       }

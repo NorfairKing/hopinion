@@ -2,8 +2,10 @@
 
 module Hopinion.Check.Hs.NoCustomEq.Rule (rule) where
 
+import qualified Data.Text as T
 import Hopinion.Facts.Instance
 import Hopinion.Facts.Module
+import Hopinion.Facts.Name
 import Hopinion.Rule
 import Hopinion.Rule.Id
 
@@ -13,8 +15,8 @@ rule =
     { ruleId = RuleId "HsNoCustomEq",
       ruleText = "Eq is derived.",
       ruleWhy =
-        "If you need a custom equality operation, use a separate function, not\
-        \ the Eq instance.",
+        "Custom equality belongs in a function, not in the instance that every\
+        \ == goes through.",
       ruleImpl = ModuleRule (FromSource check)
     }
 
@@ -26,8 +28,7 @@ check mf =
           findingScope = instanceFactScope inst,
           findingSpan = instanceFactSpan inst,
           findingMessage =
-            "This Eq instance is written out. Derive it instead, so that what\
-            \ it compares is the fields of the type."
+            T.concat ["Eq ", typeHeadText (instanceFactType inst), " is written out."]
         }
     | inst <- moduleContextInstances mf,
       originIsWrittenOut (instanceFactOrigin inst),

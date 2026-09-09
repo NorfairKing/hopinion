@@ -1,10 +1,10 @@
-[0;91;1m[error HsLambdaCase][0m: This names its last argument and then only cases on it. Drop the name and write \case.
+[0;91;1m[error HsLambdaCase][0m: This names its last argument and then only cases on it.
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsLambdaCase/bad.hs@6:1-6:14[0m
      [0;90;1m│[0m
 [0;90;1m   6 │[0m [0;91;1mv[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1md[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1mt[0m[0;91;1mN[0m[0;91;1mu[0m[0;91;1mm[0m[0;91;1mb[0m[0;91;1me[0m[0;91;1mr[0m[0;97m [0m[0;97mv[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mc[0m[0;97ma[0m[0;97ms[0m[0;97me[0m[0;97m [0m[0;97mv[0m[0;97m [0m[0;97mo[0m[0;97mf[0m
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
-     [0;90;1m•[0m [0;91m╰╸[0m [0;91mUse \case rather than naming an argument just to take it apart.[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mUse \case rather than naming an argument to take it apart.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: The name of a function is written once in a \case definition and once per equation in the other kind, so renaming the function reformats every equation it has and the diff says nothing about what changed. The argument's name is the same cost with nothing bought: a name that appears twice and means nothing beyond the case it feeds.[0m
+     [0;90;1m│[0m [0;96mNote: A \case definition writes the function's name once; equations write it once each, so renaming the function reformats every equation and buries the real change in the diff.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 6 of test_resources/Rule/HsLambdaCase/bad.hs, and say why: -- [allow:HsLambdaCase] <reason>[0m
 [0;90;1m─────╯[0m

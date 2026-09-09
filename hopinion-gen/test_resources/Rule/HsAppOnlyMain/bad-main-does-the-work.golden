@@ -1,12 +1,12 @@
-[0;91;1m[error HsAppOnlyMain][0m: This main does the work itself. Move the work into the library and leave main naming the function that does it.
+[0;91;1m[error HsAppOnlyMain][0m: This main does the work itself.
      [0;90;1m╭──▶[0m [0;32;1mthing/app/Main.hs@6:1-8:8[0m
      [0;90;1m│[0m
 [0;90;1m   6 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1mm[0m[0;91;1ma[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1md[0m[0;91;1mo[0m
 [0;90;1m   7 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m
 [0;90;1m   8 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m
      [0;90;1m•[0m [0;91m│ [0m
-     [0;90;1m•[0m [0;91m╰╸ An executable's own source holds main = theRealMain, and nothing else.[0m
+     [0;90;1m•[0m [0;91m╰╸ An executable's own source holds only main = theRealMain.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Nothing in an executable's source directory can be imported, so nothing in it can be tested either: a test suite cannot depend on an executable. Whatever is written there is therefore code no property runs, no golden file pins and no other executable can reuse, and it is the code that decides what the program does. One line naming a function in the library moves all of that somewhere a test can reach it, and costs nothing.[0m
+     [0;90;1m│[0m [0;96mNote: An executable's modules are private to it, so a test suite can reach only the library it calls into. One line naming a function in the library moves the code where a test can reach it.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 6 of thing/app/Main.hs, and say why: -- [allow:HsAppOnlyMain] <reason>[0m
 [0;90;1m─────╯[0m

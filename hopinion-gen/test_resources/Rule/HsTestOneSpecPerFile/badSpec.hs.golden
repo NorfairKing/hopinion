@@ -5,6 +5,6 @@
      [0;90;1m•[0m                [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                [0;91m╰╸[0m [0;91mA test file exports exactly (spec).[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Nothing reads a test file but the Main that gathers the specs, and it asks for spec alone, so any other export is a name no caller wants and no export list at all exports whatever gets defined there next.[0m
+     [0;90;1m│[0m [0;96mNote: Only the Main that gathers the specs reads a test file, and it asks for spec alone.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this anywhere in the file, and say why: -- [allow:file:HsTestOneSpecPerFile] <reason>[0m
 [0;90;1m─────╯[0m

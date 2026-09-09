@@ -17,9 +17,8 @@ rule =
     { ruleId = RuleId "HsTestOneSpecPerFile",
       ruleText = "A test file exports exactly (spec).",
       ruleWhy =
-        "Nothing reads a test file but the Main that gathers the specs, and it\
-        \ asks for spec alone, so any other export is a name no caller wants and\
-        \ no export list at all exports whatever gets defined there next.",
+        "Only the Main that gathers the specs reads a test file, and it asks for\
+        \ spec alone.",
       ruleImpl = ModuleRule (FromSource check)
     }
 
@@ -28,9 +27,7 @@ check ctx
   | not (moduleContextIsSpecFile ctx) = noResult
   | otherwise = case moduleContextExports ctx of
       NoExportList ->
-        finding
-          (wholeFileSpan (moduleContextPath ctx))
-          "This test file has no export list, so it exports every helper in it as well as spec."
+        finding (wholeFileSpan (moduleContextPath ctx)) "This test file has no export list."
       ExportList sp exported
         | exported == [specExport] -> noResult
         | otherwise -> finding sp (exportsInstead exported)
@@ -51,7 +48,7 @@ specExport = "spec"
 
 exportsInstead :: [Text] -> Text
 exportsInstead = \case
-  [] -> "This test file exports nothing, so nothing can run the tests in it."
+  [] -> "This test file exports nothing."
   exported ->
     T.pack
       ( unwords

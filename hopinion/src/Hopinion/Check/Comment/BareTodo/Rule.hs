@@ -15,15 +15,10 @@ rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "CommentBareTodo",
-      ruleText = "A TODO needs an issue reference or a URL saying where the follow-up is tracked.",
+      ruleText = "A TODO names an issue or a URL.",
       ruleWhy =
-        "A TODO nothing points at is a note nobody is holding. It reads like a\
-        \ plan, so the next reader assumes it is one, and it goes stale in place\
-        \ because nothing brings it back up. A reference makes it findable from\
-        \ wherever the work is actually tracked; doing it makes the note\
-        \ unnecessary. If it is neither tracked nor worth doing, the honest\
-        \ version is a comment that says what is missing and what would make it\
-        \ worth doing.",
+        "A reference tells the reader where the work is tracked. A TODO on its\
+        \ own reads like a plan, and goes stale in place.",
       ruleImpl = ModuleRule (FromSource check)
     }
 
@@ -34,7 +29,7 @@ check mf =
         { findingRule = ruleId rule,
           findingScope = scopeOfComment (moduleContextRef mf) cf,
           findingSpan = commentFactSpan cf,
-          findingMessage = "A bare TODO. Reference an issue or a URL, or do it."
+          findingMessage = "A TODO with no issue reference or URL."
         }
     | cf <- moduleContextComments mf,
       commentFactStyle cf /= StylePragma,

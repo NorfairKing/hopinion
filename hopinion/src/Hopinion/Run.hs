@@ -301,7 +301,7 @@ explainRule rs rid = case ruleNamed rs rid of
       [ chunk "There is no rule called ",
         fore red (chunk (ruleIdText rid)),
         chunk " in this build of hopinion.\n",
-        chunk "Run list-rules to see the ones there are.\n"
+        chunk "Run list-rules to see the rules this build has.\n"
       ]
   Just r ->
     Explained

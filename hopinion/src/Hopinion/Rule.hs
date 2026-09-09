@@ -66,6 +66,11 @@ data Finding = Finding
     findingScope :: !ScopeKey,
     -- | Precise, for the report and for statement-level annotation matching.
     findingSpan :: !Span,
+    -- | What was found here, and only that, named as precisely as the rule can
+    -- name it: the instance's type, the binding's name, the package it is in.
+    -- That precision is what tells two findings of one rule apart. What to do
+    -- about it is the rule's business rather than the finding's, and saying it
+    -- in both places says it twice.
     findingMessage :: !Text
   }
   deriving stock (Show, Eq, Generic)
@@ -175,12 +180,13 @@ carryOf r pkg ctx = case ruleImpl r of
 -- classes or guide references to edit when a rule is added.
 data Rule = Rule
   { ruleId :: !RuleId,
-    -- | What the rule asks for, in one sentence.
+    -- | What the rule asks for, as one short line. A reader meets it beside
+    -- the code it is about, with room for a line and no more.
     ruleText :: !Text,
-    -- | Why it asks: what goes wrong in code that does not, said well enough
-    -- that a reader just stopped by it can choose between fixing the code and
-    -- writing the suppression. A rule that cannot answer this is one nobody
-    -- will believe.
+    -- | The argument for the rule, general to the rule rather than to any one
+    -- finding: enough that a reader stopped by it can choose between fixing
+    -- the code and writing the suppression, and it stops there. A rule whose
+    -- argument a reader rejects is one they will suppress every time.
     ruleWhy :: !Text,
     ruleImpl :: !RuleImpl
   }
@@ -246,7 +252,7 @@ renderRuleSetError = \case
   TurnedOffRulesDoNotExist rids ->
     [ chunk "There is no rule called ",
       fore red (chunk (listOf rids)),
-      chunk ". Turning off a name nothing answers to leaves the rule you meant running."
+      chunk ". Check the spelling: the rule you meant is still running."
     ]
   where
     listOf = T.intercalate ", " . map ruleIdText . NE.toList

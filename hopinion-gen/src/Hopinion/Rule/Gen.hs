@@ -31,22 +31,21 @@ import Hopinion.Rule.Registry (builtinRules)
 shippedRules :: RuleSet
 shippedRules = fromRight emptyRuleSet (ruleSet builtinRules [])
 
--- | A rule that ships with nothing, which is the point of it.
+-- | A rule the repository writes for itself, which is the point of it.
 --
--- This is what a repository adding a rule of its own writes, and it is here so
--- that the example executable and the spec that watches the example executable
--- run are looking at one value rather than at two that have to be kept the same.
--- Deliberately about something no shipped rule is about, so that a run finding
--- it can only have found this.
+-- It is here so that the example executable and the spec that watches the
+-- example executable run are looking at one value rather than at two that have
+-- to be kept the same. Deliberately about something no shipped rule is about,
+-- so that a run finding it can only have found this.
 exampleRule :: Rule
 exampleRule =
   Rule
     { ruleId = RuleId "ExampleNoShouting",
-      ruleText = "A comment in this repository is not written in capitals.",
+      ruleText = "A comment in this repository uses ordinary capitalisation.",
       ruleWhy =
-        "There is no standard about this and there does not need to be. It is\
-        \ here to be a rule that hopinion does not ship, so that a repository\
-        \ adding one of its own can be watched doing it.",
+        "This rule belongs to the repository rather than to hopinion, so that a\
+        \ repository adding a rule of its own can be watched doing it. The\
+        \ standard behind it is invented for the purpose.",
       ruleImpl = ModuleRule (FromSource check)
     }
   where
