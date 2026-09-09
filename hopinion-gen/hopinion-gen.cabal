@@ -318,6 +318,7 @@ test-suite hopinion-test
       Hopinion.CommentSpec
       Hopinion.CompiledSpec
       Hopinion.ExampleSpec
+      Hopinion.Facts.ModuleSpec
       Hopinion.FactsSpec
       Hopinion.HieSpec
       Hopinion.ProjectSpec

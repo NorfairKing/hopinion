@@ -6,6 +6,7 @@ module Hopinion.Facts.Module
   ( ModuleContext (..),
     moduleContextRef,
     moduleContextIsSpecFile,
+    isSpecFilePath,
   )
 where
 
@@ -26,7 +27,7 @@ import Hopinion.Facts.Place
 import Hopinion.Facts.Suppression
 import Hopinion.Facts.TemplateHaskell
 import Hopinion.Facts.TypeApp
-import Path (File, Path, Rel)
+import Path (File, Path, Rel, filename)
 
 -- | Everything the parser saw about one module.
 --
@@ -73,4 +74,16 @@ moduleContextRef ctx =
 -- file named after that module with @Spec@ on the end. Read here rather than in
 -- each rule, so that what a test file is has one answer.
 moduleContextIsSpecFile :: ModuleContext -> Bool
-moduleContextIsSpecFile ctx = T.isSuffixOf "Spec.hs" (relPathText (moduleContextPath ctx))
+moduleContextIsSpecFile = isSpecFilePath . moduleContextPath
+
+-- | The file name alone, so that what a test file is can be asked of a path.
+--
+-- A file named exactly @Spec.hs@ is not one, even though @Spec@ is on the end
+-- of it. That is the entry point discovery generates from, and a preprocessor
+-- writes its module header, so a rule reading the source for an export list or
+-- for what the file binds is reading a file that has neither and cannot be
+-- given either.
+isSpecFilePath :: Path Rel File -> Bool
+isSpecFilePath path =
+  let name = relPathText (filename path)
+   in T.isSuffixOf "Spec.hs" name && name /= "Spec.hs"
