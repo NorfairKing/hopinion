@@ -14,9 +14,9 @@ rule =
       ruleText = "A path is a Path, not a FilePath.",
       ruleWhy =
         "Path says in the type whether it is a file or a directory, and whether\
-        \ it is absolute or relative. FilePath is String, so those mistakes\
-        \ compile. Converting at the edge with toFilePath is fine; this reports\
-        \ the type in your own signatures.",
+        \ it is absolute or relative. FilePath is String, so a directory passed\
+        \ where a file was meant compiles. Converting at the edge with\
+        \ toFilePath is fine; this reports the type in your own signatures.",
       ruleImpl = ModuleRule (FromSource check)
     }
 

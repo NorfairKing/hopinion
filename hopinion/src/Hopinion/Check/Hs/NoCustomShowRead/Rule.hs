@@ -13,7 +13,7 @@ rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "HsNoCustomShowRead",
-      ruleText = "Show and Read are either derived, or written with methods that ignore the value.",
+      ruleText = "Show and Read are derived, or their methods ignore the value.",
       ruleWhy =
         "A written Show drifts as the type changes, and a Read written to match\
         \ it drifts separately, so the pair stops roundtripping while it still\
@@ -35,7 +35,7 @@ check mf =
               [ instanceFactClass inst,
                 " ",
                 typeHeadText (instanceFactType inst),
-                " is written out, and uses the value."
+                " is written out and uses the value."
               ]
         }
     | inst <- moduleContextInstances mf,

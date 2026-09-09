@@ -9,7 +9,7 @@
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 8 of lonely/src/Lonely.hs, and say why: -- [allow:HsGenValidInGenPackage] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Orphan anywhere, and no lonely-gen.
+[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Orphan anywhere, and no lonely-gen package to write it in.
      [0;90;1m╭──▶[0m [0;32;1mlonely/src/Lonely.hs@8:1-8:25[0m
      [0;90;1m│[0m
 [0;90;1m   8 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mO[0m[0;91;1mr[0m[0;91;1mp[0m[0;91;1mh[0m[0;91;1ma[0m[0;91;1mn[0m

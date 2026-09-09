@@ -55,9 +55,9 @@ rule =
     { ruleId = RuleId "HsAppOnlyMain",
       ruleText = "An executable's own source holds only main = theRealMain.",
       ruleWhy =
-        "Only a library can be imported, so only a library can be tested. One\
-        \ line naming a function in the library moves the code where a test can\
-        \ reach it.",
+        "An executable's modules are private to it, so a test suite can reach\
+        \ only the library it calls into. One line naming a function in the\
+        \ library moves the code where a test can reach it.",
       ruleImpl =
         PackageRule
           PackageCheck

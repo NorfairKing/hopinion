@@ -438,7 +438,8 @@ findingFor o home m =
                     GenPackage gen -> ["in", concat [T.unpack (packageNameText gen), "'s test suite."]]
                     NoGenPackage gen ->
                       [ "anywhere, and no",
-                        concat [T.unpack (packageNameText gen), "."]
+                        T.unpack (packageNameText gen),
+                        "package to write it in."
                       ]
               )
           )

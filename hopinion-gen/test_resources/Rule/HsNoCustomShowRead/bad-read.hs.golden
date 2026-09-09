@@ -1,10 +1,10 @@
-[0;91;1m[error HsNoCustomShowRead][0m: Read Port is written out, and uses the value.
+[0;91;1m[error HsNoCustomShowRead][0m: Read Port is written out and uses the value.
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoCustomShowRead/bad-read.hs@5:1-6:32[0m
      [0;90;1m│[0m
 [0;90;1m   5 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mR[0m[0;91;1me[0m[0;91;1ma[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mP[0m[0;91;1mo[0m[0;91;1mr[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1mw[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1me[0m
 [0;90;1m   6 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1mr[0m[0;91;1me[0m[0;91;1ma[0m[0;91;1md[0m[0;91;1ms[0m[0;91;1mP[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1m [0m[0;91;1m_[0m[0;91;1m [0m[0;91;1ms[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1m[[0m[0;91;1m([0m[0;91;1mP[0m[0;91;1mo[0m[0;91;1mr[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m0[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1ms[0m[0;91;1m)[0m[0;91;1m][0m
      [0;90;1m•[0m [0;91m│ [0m
-     [0;90;1m•[0m [0;91m╰╸ Show and Read are either derived, or written with methods that ignore the value.[0m
+     [0;90;1m•[0m [0;91m╰╸ Show and Read are derived, or their methods ignore the value.[0m
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mNote: A written Show drifts as the type changes, and a Read written to match it drifts separately, so the pair stops roundtripping while it still compiles. Deriving keeps both in step with the fields. An instance that ignores the value prints the same text whatever it is handed, which is how a secret stays out of the logs.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 5 of test_resources/Rule/HsNoCustomShowRead/bad-read.hs, and say why: -- [allow:HsNoCustomShowRead] <reason>[0m
