@@ -16,9 +16,9 @@ rule =
           "ToJSON and FromJSON oblige jsonSpec @T in the gen package's test suite.",
         obligationWhy =
           "Both instances mean something outside this program reads the type, and\
-          \ nothing in the types makes the two halves agree. jsonSpec asserts the\
-          \ roundtrip over generated values. The spec belongs to the package that\
-          \ declares the instances.",
+          \ the compiler accepts an encoder and a decoder that disagree. jsonSpec\
+          \ asserts the roundtrip over generated values. The spec belongs to the\
+          \ package that declares the instances.",
         obligationClasses = "ToJSON" :| ["FromJSON"],
         obligationCombinator = "jsonSpec"
       }

@@ -15,9 +15,9 @@ rule =
     { ruleId = RuleId "HsLambdaCase",
       ruleText = "Use \\case rather than naming an argument to take it apart.",
       ruleWhy =
-        "A function's name is written once in a \\case definition and once per\
-        \ equation otherwise, so renaming it reformats every equation and the\
-        \ diff says nothing about what changed.",
+        "A \\case definition writes the function's name once; equations write it\
+        \ once each, so renaming the function reformats every equation and\
+        \ buries the real change in the diff.",
       ruleImpl = ModuleRule (FromSource check)
     }
 

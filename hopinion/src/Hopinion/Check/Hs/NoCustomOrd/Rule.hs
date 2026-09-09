@@ -16,7 +16,7 @@ rule =
       ruleText = "Ord is derived.",
       ruleWhy =
         "Custom ordering belongs in a function, not in the instance that every\
-        \ sort, Map and Set goes through.",
+        \ sort and Map goes through.",
       ruleImpl = ModuleRule (FromSource check)
     }
 

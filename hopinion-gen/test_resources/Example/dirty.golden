@@ -16,18 +16,18 @@
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A generator nothing runs is one nobody has checked: genValid can produce values the type's own Validity rejects, and every property built on it inherits that. The spec belongs to the package that declares the instance.[0m
+     [0;90;1m│[0m [0;96mNote: genValidSpec is what checks the generator: genValid can produce values the type's own Validity rejects, and every property built on it inherits that. The spec belongs to the package that declares the instance.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 8 of lonely/src/Lonely.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error CommentBareTodo][0m: A TODO with no issue and no URL.
+[0;91;1m[error CommentBareTodo][0m: A TODO with no issue reference or URL.
      [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@3:1-3:58[0m
      [0;90;1m│[0m
 [0;90;1m   3 │[0m [0;91;1m-[0m[0;91;1m-[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1mO[0m[0;91;1mD[0m[0;91;1mO[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1m [0m[0;91;1mb[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mm[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1mk[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mw[0m[0;91;1mh[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1mh[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mm[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1mu[0m[0;91;1ml[0m[0;91;1me[0m[0;91;1m-[0m[0;91;1ml[0m[0;91;1me[0m[0;91;1mv[0m[0;91;1me[0m[0;91;1ml[0m[0;91;1m [0m[0;91;1mf[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1md[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m.[0m
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA TODO names an issue or a URL.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A TODO nothing points at is a note nobody is holding: it reads like a plan, and nothing brings it back up.[0m
+     [0;90;1m│[0m [0;96mNote: A reference tells the reader where the work is tracked. A TODO on its own reads like a plan, and goes stale in place.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 4 of thing/src/Thing.hs, and say why: -- [allow:CommentBareTodo] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -49,6 +49,6 @@
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A generator nothing runs is one nobody has checked: genValid can produce values the type's own Validity rejects, and every property built on it inherits that. The spec belongs to the package that declares the instance.[0m
+     [0;90;1m│[0m [0;96mNote: genValidSpec is what checks the generator: genValid can produce values the type's own Validity rejects, and every property built on it inherits that. The spec belongs to the package that declares the instance.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 9 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m

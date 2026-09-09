@@ -5,6 +5,6 @@
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mOrd is derived.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Custom ordering belongs in a function, not in the instance that every sort, Map and Set goes through.[0m
+     [0;90;1m│[0m [0;96mNote: Custom ordering belongs in a function, not in the instance that every sort and Map goes through.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 6 of test_resources/Rule/HsNoCustomOrd/bad-empty.hs, and say why: -- [allow:HsNoCustomOrd] <reason>[0m
 [0;90;1m─────╯[0m

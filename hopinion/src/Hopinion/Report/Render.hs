@@ -177,7 +177,7 @@ findingReport rs sources f =
             (Just rid)
             (T.unpack (findingMessage f))
             [(positionOf sources (findingSpan f), D.This "reported here")]
-            [D.Note (unwords ["This run has no rule called", concat [rid, ", so what it asks for cannot be shown."]])]
+            [D.Note (unwords ["This run has no rule called", concat [rid, ", so the standard it comes from is missing here."]])]
         Just rule ->
           D.Err
             (Just rid)
@@ -248,7 +248,7 @@ unusedReport sources u =
     (Just "UNUSED_SUPPRESSION")
     (concat ["[allow:", T.unpack (ruleIdText (unusedRule u)), "] suppresses nothing."])
     [(positionOf sources (unusedSpan u), D.This "nothing here is reported")]
-    [D.Hint "Remove it. A suppression that has outlived its reason is worse than no suppression."]
+    [D.Hint "Remove it. A suppression that has outlived its reason misleads the next reader."]
 
 overBroadReport :: SourceMap -> OverBroad -> D.Report String
 overBroadReport sources ob =

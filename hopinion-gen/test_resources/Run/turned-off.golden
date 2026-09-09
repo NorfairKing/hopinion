@@ -1,6 +1,6 @@
 [34mCommentBareTodo[m
 A TODO names an issue or a URL.
-A TODO nothing points at is a note nobody is holding: it reads like a plan, and nothing brings it back up.
+A reference tells the reader where the work is tracked. A TODO on its own reads like a plan, and goes stale in place.
 Level: module
 [31mThis repository has turned it off in hopinion.yaml, so this run does not make it.
 [m

@@ -16,7 +16,7 @@ rule =
       ruleText = "Eq is derived.",
       ruleWhy =
         "Custom equality belongs in a function, not in the instance that every\
-        \ ==, nub and lookup goes through.",
+        \ == goes through.",
       ruleImpl = ModuleRule (FromSource check)
     }
 

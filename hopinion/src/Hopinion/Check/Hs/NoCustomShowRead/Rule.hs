@@ -13,12 +13,13 @@ rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "HsNoCustomShowRead",
-      ruleText = "Show and Read are derived, unless the methods ignore the value.",
+      ruleText = "Show and Read are either derived, or written with methods that ignore the value.",
       ruleWhy =
-        "A written Show is an undeclared second serialisation, and nothing keeps\
-        \ it, or a Read written to match it, in step with the type. An instance\
-        \ that ignores the value has nothing to drift from, which is how a\
-        \ secret stays out of the logs.",
+        "A written Show drifts as the type changes, and a Read written to match\
+        \ it drifts separately, so the pair stops roundtripping while it still\
+        \ compiles. Deriving keeps both in step with the fields. An instance\
+        \ that ignores the value prints the same text whatever it is handed,\
+        \ which is how a secret stays out of the logs.",
       ruleImpl = ModuleRule (FromSource check)
     }
 

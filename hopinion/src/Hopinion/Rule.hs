@@ -246,7 +246,7 @@ renderRuleSetError = \case
   TurnedOffRulesDoNotExist rids ->
     [ chunk "There is no rule called ",
       fore red (chunk (listOf rids)),
-      chunk ". Turning off a name nothing answers to leaves the rule you meant running."
+      chunk ". Check the spelling: the rule you meant is still running."
     ]
   where
     listOf = T.intercalate ", " . map ruleIdText . NE.toList

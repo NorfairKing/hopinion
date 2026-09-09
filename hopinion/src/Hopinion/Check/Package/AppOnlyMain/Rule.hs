@@ -53,11 +53,11 @@ rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "HsAppOnlyMain",
-      ruleText = "An executable's own source holds main = theRealMain, and nothing else.",
+      ruleText = "An executable's own source holds only main = theRealMain.",
       ruleWhy =
-        "Nothing in an executable's source directory can be imported, so nothing\
-        \ in it can be tested. One line naming a function in the library moves\
-        \ the code somewhere a test can reach.",
+        "Only a library can be imported, so only a library can be tested. One\
+        \ line naming a function in the library moves the code where a test can\
+        \ reach it.",
       ruleImpl =
         PackageRule
           PackageCheck

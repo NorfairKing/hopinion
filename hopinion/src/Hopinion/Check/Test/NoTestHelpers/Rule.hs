@@ -14,9 +14,9 @@ rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "TestNoTestHelpers",
-      ruleText = "A test file binds nothing at the top level but spec.",
+      ruleText = "A test file binds only spec at the top level.",
       ruleWhy =
-        "A helper in a test file is untested code nothing else can import, so a\
+        "A helper in a test file is untested code, private to that file, so a\
         \ test that calls it asserts whatever the helper happens to mean today.",
       ruleImpl = ModuleRule (FromSource check)
     }

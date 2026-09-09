@@ -5,7 +5,7 @@
      [0;90;1m•[0m                 [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m                 [0;91m╰╸[0m [0;91mConcatenate strings and text with a list, not with <> or ++.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: <> does not format well, literal lists do.[0m
+     [0;90;1m│[0m [0;96mNote: A literal list of the pieces formats better than a <> chain.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 9 of test_resources/Rule/HsNoSemigroupOnText/bad.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -16,7 +16,7 @@
      [0;90;1m•[0m                 [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m                 [0;91m╰╸[0m [0;91mConcatenate strings and text with a list, not with <> or ++.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: <> does not format well, literal lists do.[0m
+     [0;90;1m│[0m [0;96mNote: A literal list of the pieces formats better than a <> chain.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 13 of test_resources/Rule/HsNoSemigroupOnText/bad.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -27,7 +27,7 @@
      [0;90;1m•[0m                        [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m                        [0;91m╰╸[0m [0;91mConcatenate strings and text with a list, not with <> or ++.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: <> does not format well, literal lists do.[0m
+     [0;90;1m│[0m [0;96mNote: A literal list of the pieces formats better than a <> chain.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 17 of test_resources/Rule/HsNoSemigroupOnText/bad.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -38,7 +38,7 @@
      [0;90;1m•[0m            [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m            [0;91m╰╸[0m [0;91mConcatenate strings and text with a list, not with <> or ++.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: <> does not format well, literal lists do.[0m
+     [0;90;1m│[0m [0;96mNote: A literal list of the pieces formats better than a <> chain.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 21 of test_resources/Rule/HsNoSemigroupOnText/bad.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -49,7 +49,7 @@
      [0;90;1m•[0m          [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m          [0;91m╰╸[0m [0;91mConcatenate strings and text with a list, not with <> or ++.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: <> does not format well, literal lists do.[0m
+     [0;90;1m│[0m [0;96mNote: A literal list of the pieces formats better than a <> chain.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 26 of test_resources/Rule/HsNoSemigroupOnText/bad.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -60,7 +60,7 @@
      [0;90;1m•[0m            [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m            [0;91m╰╸[0m [0;91mConcatenate strings and text with a list, not with <> or ++.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: <> does not format well, literal lists do.[0m
+     [0;90;1m│[0m [0;96mNote: A literal list of the pieces formats better than a <> chain.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 30 of test_resources/Rule/HsNoSemigroupOnText/bad.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -71,6 +71,6 @@
      [0;90;1m•[0m           [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m           [0;91m╰╸[0m [0;91mConcatenate strings and text with a list, not with <> or ++.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: <> does not format well, literal lists do.[0m
+     [0;90;1m│[0m [0;96mNote: A literal list of the pieces formats better than a <> chain.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 34 of test_resources/Rule/HsNoSemigroupOnText/bad.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>[0m
 [0;90;1m─────╯[0m

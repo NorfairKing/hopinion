@@ -5,8 +5,8 @@
 [0;90;1m   7 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m
 [0;90;1m   8 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m
      [0;90;1m•[0m [0;91m│ [0m
-     [0;90;1m•[0m [0;91m╰╸ An executable's own source holds main = theRealMain, and nothing else.[0m
+     [0;90;1m•[0m [0;91m╰╸ An executable's own source holds only main = theRealMain.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Nothing in an executable's source directory can be imported, so nothing in it can be tested. One line naming a function in the library moves the code somewhere a test can reach.[0m
+     [0;90;1m│[0m [0;96mNote: Only a library can be imported, so only a library can be tested. One line naming a function in the library moves the code where a test can reach it.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 6 of thing/app/Main.hs, and say why: -- [allow:HsAppOnlyMain] <reason>[0m
 [0;90;1m─────╯[0m

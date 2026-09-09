@@ -6,6 +6,6 @@
      [0;90;1m•[0m [0;91m│ [0m
      [0;90;1m•[0m [0;91m╰╸ Eq is derived.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Custom equality belongs in a function, not in the instance that every ==, nub and lookup goes through.[0m
+     [0;90;1m│[0m [0;96mNote: Custom equality belongs in a function, not in the instance that every == goes through.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 7 of test_resources/Rule/HsNoCustomEq/bad-ignoring-arguments.hs, and say why: -- [allow:HsNoCustomEq] <reason>[0m
 [0;90;1m─────╯[0m

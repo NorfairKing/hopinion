@@ -12,7 +12,7 @@ rule =
   Rule
     { ruleId = RuleId "HsNoSemigroupOnText",
       ruleText = "Concatenate strings and text with a list, not with <> or ++.",
-      ruleWhy = "<> does not format well, literal lists do.",
+      ruleWhy = "A literal list of the pieces formats better than a <> chain.",
       ruleImpl = ModuleRule (FromSource check)
     }
 

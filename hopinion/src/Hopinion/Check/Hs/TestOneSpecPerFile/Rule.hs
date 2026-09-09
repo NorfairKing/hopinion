@@ -17,8 +17,8 @@ rule =
     { ruleId = RuleId "HsTestOneSpecPerFile",
       ruleText = "A test file exports exactly (spec).",
       ruleWhy =
-        "Nothing reads a test file but the Main that gathers the specs, and it\
-        \ asks for spec alone.",
+        "Only the Main that gathers the specs reads a test file, and it asks for\
+        \ spec alone.",
       ruleImpl = ModuleRule (FromSource check)
     }
 

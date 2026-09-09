@@ -6,6 +6,6 @@
      [0;90;1m•[0m [0;91m│ [0m
      [0;90;1m•[0m [0;91m╰╸ ToJSON and FromJSON oblige jsonSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Both instances mean something outside this program reads the type, and nothing in the types makes the two halves agree. jsonSpec asserts the roundtrip over generated values. The spec belongs to the package that declares the instances.[0m
+     [0;90;1m│[0m [0;96mNote: Both instances mean something outside this program reads the type, and the compiler accepts an encoder and a decoder that disagree. jsonSpec asserts the roundtrip over generated values. The spec belongs to the package that declares the instances.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 5 of thing/src/Thing.hs, and say why: -- [allow:TestJsonSpecPerJsonType] <reason>[0m
 [0;90;1m─────╯[0m
