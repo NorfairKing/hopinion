@@ -30,15 +30,26 @@ spec = do
   -- A module of a component, which is what a stored row is keyed on.
   let refIn :: Text -> Text -> ModuleRef
       refIn component m =
-        ModuleRef {moduleRefComponent = ComponentName component, moduleRefModule = ModuleKey m}
+        ModuleRef
+          { moduleRefComponent = ComponentName component,
+            moduleRefModule = ModuleKey m
+          }
 
   -- One line of a file, which is as much of a span as these tests need.
   let spanOfLine :: Path Rel File -> Word -> Span
       spanOfLine file line =
         Span
           { spanFile = file,
-            spanStart = Position {positionLine = line, positionCol = 1},
-            spanEnd = Position {positionLine = line, positionCol = 2}
+            spanStart =
+              Position
+                { positionLine = line,
+                  positionCol = 1
+                },
+            spanEnd =
+              Position
+                { positionLine = line,
+                  positionCol = 2
+                }
           }
 
   -- A suppression naming a rule, which is all these tests look at.

@@ -51,7 +51,14 @@ annotationsOf rs mk = foldr step ([], [])
       | not (meansToBeOne (T.stripStart (commentFactText cf))) = (facts, problems)
       | otherwise = case parseAnnotation rs mk cf of
           Right f -> (f : facts, problems)
-          Left err -> (facts, AnnotationProblem {annotationProblemSpan = commentFactSpan cf, annotationProblemMessage = renderAnnotationError err} : problems)
+          Left err ->
+            ( facts,
+              AnnotationProblem
+                { annotationProblemSpan = commentFactSpan cf,
+                  annotationProblemMessage = renderAnnotationError err
+                }
+                : problems
+            )
 
 -- | Every suppression in a file no rule is run over, judged.
 --
@@ -82,7 +89,12 @@ unreadSuppressionsIn rs rp t =
     -- answered in.
     verdict :: Span -> Text -> Either Unused AnnotationProblem
     verdict sp fromMarker = case ruleOf fromMarker of
-      Right rid -> Left Unused {unusedRule = rid, unusedSpan = sp}
+      Right rid ->
+        Left
+          Unused
+            { unusedRule = rid,
+              unusedSpan = sp
+            }
       Left err ->
         Right
           AnnotationProblem
@@ -97,8 +109,16 @@ unreadSuppressionsIn rs rp t =
     spanOfLine line col l =
       Span
         { spanFile = rp,
-          spanStart = Position {positionLine = line, positionCol = col},
-          spanEnd = Position {positionLine = line, positionCol = fromIntegral (T.length l) + 1}
+          spanStart =
+            Position
+              { positionLine = line,
+                positionCol = col
+              },
+          spanEnd =
+            Position
+              { positionLine = line,
+                positionCol = fromIntegral (T.length l) + 1
+              }
         }
 
     ruleOf :: Text -> Either AnnotationError RuleId
@@ -325,12 +345,18 @@ applySuppression annotations findings =
   Suppression
     { suppressionRemaining = [f | (f, Nothing) <- answered],
       suppressionUnused =
-        [ Unused {unusedRule = annotationFactRule a, unusedSpan = annotationFactSpan a}
+        [ Unused
+            { unusedRule = annotationFactRule a,
+              unusedSpan = annotationFactSpan a
+            }
         | (i, a) <- indexed,
           answersFor i == 0
         ],
       suppressionOverBroad =
-        [ OverBroad {overBroadAnnotation = a, overBroadCount = answersFor i}
+        [ OverBroad
+            { overBroadAnnotation = a,
+              overBroadCount = answersFor i
+            }
         | (i, a) <- indexed,
           answersFor i > 1
         ]

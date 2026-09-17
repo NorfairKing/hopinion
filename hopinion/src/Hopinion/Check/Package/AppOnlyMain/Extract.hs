@@ -29,12 +29,18 @@ import Path (File, Path, Rel)
 -- suppressions where there is one thing to move.
 strayAppDeclsOf :: Path Rel File -> [DeclFact] -> [LHsDecl GhcPs] -> [StrayAppDecl]
 strayAppDeclsOf rp decls ds =
-  [ StrayAppDecl {strayAppDeclName = declFactName d, strayAppDeclSpan = declFactSpan d}
+  [ StrayAppDecl
+      { strayAppDeclName = declFactName d,
+        strayAppDeclSpan = declFactSpan d
+      }
   | d <- decls,
     declFactKind d /= DeclSignature,
     declFactName d /= mainName
   ]
-    ++ [ StrayAppDecl {strayAppDeclName = mainName, strayAppDeclSpan = spanOfSrcSpan rp (getLocA ldecl)}
+    ++ [ StrayAppDecl
+           { strayAppDeclName = mainName,
+             strayAppDeclSpan = spanOfSrcSpan rp (getLocA ldecl)
+           }
        | ldecl <- ds,
          ValD _ FunBind {fun_id = n, fun_matches = mg} <- [unLoc ldecl],
          rdrText (unLoc n) == "main",

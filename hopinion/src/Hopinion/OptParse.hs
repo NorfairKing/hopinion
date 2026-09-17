@@ -115,7 +115,14 @@ parseRepository f = do
         metavar "DIR",
         value (Rel [reldir|.|])
       ]
-  pure (f RawSourceRoot {rawSourceRootDir = dir, rawSourceRootPrefix = Nothing} hieDirs)
+  pure
+    ( f
+        RawSourceRoot
+          { rawSourceRootDir = dir,
+            rawSourceRootPrefix = Nothing
+          }
+        hieDirs
+    )
 
 parsePackage :: Parser Dispatch
 parsePackage = do
@@ -302,7 +309,11 @@ parseSourceRoot = do
             metavar "DIR"
           ]
       )
-  pure RawSourceRoot {rawSourceRootDir = dir, rawSourceRootPrefix = prefix}
+  pure
+    RawSourceRoot
+      { rawSourceRootDir = dir,
+        rawSourceRootPrefix = prefix
+      }
 
 parseExplain :: Parser Dispatch
 parseExplain = do

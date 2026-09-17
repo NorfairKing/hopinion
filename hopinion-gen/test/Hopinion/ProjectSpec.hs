@@ -24,7 +24,11 @@ spec = do
   let rootAt :: Path Rel Dir -> IO SourceRoot
       rootAt dir = do
         absDir <- makeAbsolute dir
-        pure SourceRoot {sourceRootDir = absDir, sourceRootPrefix = Nothing}
+        pure
+          SourceRoot
+            { sourceRootDir = absDir,
+              sourceRootPrefix = Nothing
+            }
 
   it "has a project for each way discovery can be given something it cannot read" $ do
     (dirs, files) <- listDirRel resourceDir
@@ -92,7 +96,11 @@ spec = do
       let repo = tmp </> [reldir|repo|]
       createDirIfMissing True repo
       createDirLink (elsewhere </> [reldir|thing|]) (repo </> [reldir|linked-thing|])
-      let root = SourceRoot {sourceRootDir = repo, sourceRootPrefix = Nothing}
+      let root =
+            SourceRoot
+              { sourceRootDir = repo,
+                sourceRootPrefix = Nothing
+              }
       models <- discoverPackages root repo
       fmap (map packageModelName) models `shouldBe` Right [PackageName "thing"]
 

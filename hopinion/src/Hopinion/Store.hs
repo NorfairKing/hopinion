@@ -299,7 +299,12 @@ tableOf :: Text -> Query IncomingTable
 tableOf t = do
   columns <- filter (/= "id") <$> columnsOf t
   rows <- rowsOf t columns
-  pure IncomingTable {incomingTableName = t, incomingTableColumns = columns, incomingTableRows = rows}
+  pure
+    IncomingTable
+      { incomingTableName = t,
+        incomingTableColumns = columns,
+        incomingTableRows = rows
+      }
 
 -- | What a table's columns are called, asked of the database rather than known,
 -- so a rule bringing a new table is merged without this learning it exists.

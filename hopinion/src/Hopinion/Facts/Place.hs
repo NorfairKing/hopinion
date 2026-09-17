@@ -65,7 +65,10 @@ instance Validity Position where
 -- near two to the sixty-fourth rather than a place a reader can look at.
 positionFromGhc :: Int -> Int -> Position
 positionFromGhc line col =
-  Position {positionLine = oneBased line, positionCol = oneBased col}
+  Position
+    { positionLine = oneBased line,
+      positionCol = oneBased col
+    }
   where
     oneBased :: Int -> Word
     oneBased = fromIntegral . max 1
@@ -121,7 +124,12 @@ parseSpan t = do
   (start, end) <- twoOf "-" positions
   startPos <- position start
   endPos <- position end
-  pure Span {spanFile = file, spanStart = startPos, spanEnd = endPos}
+  pure
+    Span
+      { spanFile = file,
+        spanStart = startPos,
+        spanEnd = endPos
+      }
   where
     twoOf sep s = case T.splitOn sep s of
       [a, b] -> Just (a, b)
@@ -163,8 +171,16 @@ spanContains outer inner =
 -- in it.
 wholeFileSpan :: Path Rel File -> Span
 wholeFileSpan rp =
-  let start = Position {positionLine = 1, positionCol = 1}
-   in Span {spanFile = rp, spanStart = start, spanEnd = start}
+  let start =
+        Position
+          { positionLine = 1,
+            positionCol = 1
+          }
+   in Span
+        { spanFile = rp,
+          spanStart = start,
+          spanEnd = start
+        }
 
 -- | Whether this span is a whole file rather than something in one.
 --

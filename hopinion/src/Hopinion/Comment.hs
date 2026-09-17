@@ -524,8 +524,16 @@ statementSpanAt ctx d l =
       endCol = maybe 1 ((+ 1) . fromIntegral . T.length) (lineAt ctx lastLine)
    in Span
         { spanFile = file,
-          spanStart = Position {positionLine = firstLine, positionCol = 1},
-          spanEnd = Position {positionLine = lastLine, positionCol = endCol}
+          spanStart =
+            Position
+              { positionLine = firstLine,
+                positionCol = 1
+              },
+          spanEnd =
+            Position
+              { positionLine = lastLine,
+                positionCol = endCol
+              }
         }
   where
     -- The statement starts at the top of the comment run above it, because a

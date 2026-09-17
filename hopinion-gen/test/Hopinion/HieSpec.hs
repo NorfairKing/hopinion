@@ -148,14 +148,20 @@ spec = do
     it "finds an instance a splice generated" $
       withCompiled $ \tmp -> do
         instances <- readingInstances (tmp </> [relfile|Fixture.hi|])
-        DeclaredInstance {declaredInstanceClass = "Gennable", declaredInstanceType = "Widget"}
+        DeclaredInstance
+          { declaredInstanceClass = "Gennable",
+            declaredInstanceType = "Widget"
+          }
           `elem` instances
           `shouldBe` True
 
     it "finds one the compiler derived, which is also in no source" $
       withCompiled $ \tmp -> do
         instances <- readingInstances (tmp </> [relfile|Fixture.hi|])
-        DeclaredInstance {declaredInstanceClass = "Show", declaredInstanceType = "Written"}
+        DeclaredInstance
+          { declaredInstanceClass = "Show",
+            declaredInstanceType = "Written"
+          }
           `elem` instances
           `shouldBe` True
 

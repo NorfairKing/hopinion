@@ -108,7 +108,11 @@ instance Semigroup CompiledModules where
       }
 
 instance Monoid CompiledModules where
-  mempty = CompiledModules {compiledModulesDirs = mempty, compiledModulesByFile = M.empty}
+  mempty =
+    CompiledModules
+      { compiledModulesDirs = mempty,
+        compiledModulesByFile = M.empty
+      }
 
 -- | Every one of these modules, ready to be asked about and not yet looked for.
 --

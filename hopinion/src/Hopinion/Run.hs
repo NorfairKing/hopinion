@@ -352,7 +352,10 @@ writePackage rs hieDirs root pm = do
     pkg
     (packageModelRole pm)
     (packageModelCabal pm)
-    [ ModuleRef {moduleRefComponent = componentModelName c, moduleRefModule = m}
+    [ ModuleRef
+        { moduleRefComponent = componentModelName c,
+          moduleRefModule = m
+        }
     | c <- packageModelComponents pm,
       m <- componentModelDeclaredModules c
     ]

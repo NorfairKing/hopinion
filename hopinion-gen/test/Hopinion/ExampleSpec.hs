@@ -37,7 +37,11 @@ spec = do
   let rootAt :: Path Rel Dir -> IO SourceRoot
       rootAt dir = do
         absDir <- makeAbsolute dir
-        pure SourceRoot {sourceRootDir = absDir, sourceRootPrefix = Nothing}
+        pure
+          SourceRoot
+            { sourceRootDir = absDir,
+              sourceRootPrefix = Nothing
+            }
 
   let renderedReportFor :: Path Rel Dir -> IO Text
       renderedReportFor dir = do

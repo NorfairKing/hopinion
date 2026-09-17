@@ -45,7 +45,11 @@ spec = do
   let rootAt :: Path Rel Dir -> IO SourceRoot
       rootAt dir = do
         absDir <- makeAbsolute dir
-        pure SourceRoot {sourceRootDir = absDir, sourceRootPrefix = Nothing}
+        pure
+          SourceRoot
+            { sourceRootDir = absDir,
+              sourceRootPrefix = Nothing
+            }
 
   -- What a person would see, which is what the goldens are of.
   let renderedReportFor :: Path Rel Dir -> IO Text
@@ -61,7 +65,11 @@ spec = do
       exampleFile = $(mkRelFile "thing/src/Thing.hs")
 
   let exampleModule :: ModuleRef
-      exampleModule = ModuleRef {moduleRefComponent = ComponentName "lib", moduleRefModule = ModuleKey "Thing"}
+      exampleModule =
+        ModuleRef
+          { moduleRefComponent = ComponentName "lib",
+            moduleRefModule = ModuleKey "Thing"
+          }
 
   -- A span of a whole line, which is the shape a real one has: GHC gives an
   -- extent, and a span that starts and ends in one place is the encoding of a
@@ -70,8 +78,16 @@ spec = do
       spanAt line =
         Span
           { spanFile = exampleFile,
-            spanStart = Position {positionLine = line, positionCol = 1},
-            spanEnd = Position {positionLine = line, positionCol = 40}
+            spanStart =
+              Position
+                { positionLine = line,
+                  positionCol = 1
+                },
+            spanEnd =
+              Position
+                { positionLine = line,
+                  positionCol = 40
+                }
           }
 
   -- A line comment carrying this text, attached to a declaration.
@@ -201,8 +217,16 @@ spec = do
                            unusedSpan =
                              Span
                                { spanFile = exampleFile,
-                                 spanStart = Position {positionLine = 3, positionCol = 4},
-                                 spanEnd = Position {positionLine = 3, positionCol = 35}
+                                 spanStart =
+                                   Position
+                                     { positionLine = 3,
+                                       positionCol = 4
+                                     },
+                                 spanEnd =
+                                   Position
+                                     { positionLine = 3,
+                                       positionCol = 35
+                                     }
                                }
                          }
                      ],
@@ -255,7 +279,12 @@ spec = do
         applySuppression [a] []
           `shouldBe` Suppression
             { suppressionRemaining = [],
-              suppressionUnused = [Unused {unusedRule = RuleId "CommentBareTodo", unusedSpan = annotationFactSpan a}],
+              suppressionUnused =
+                [ Unused
+                    { unusedRule = RuleId "CommentBareTodo",
+                      unusedSpan = annotationFactSpan a
+                    }
+                ],
               suppressionOverBroad = []
             }
     it "reports an annotation that suppresses more than one finding" $
@@ -264,7 +293,12 @@ spec = do
           `shouldBe` Suppression
             { suppressionRemaining = [],
               suppressionUnused = [],
-              suppressionOverBroad = [OverBroad {overBroadAnnotation = a, overBroadCount = 2}]
+              suppressionOverBroad =
+                [ OverBroad
+                    { overBroadAnnotation = a,
+                      overBroadCount = 2
+                    }
+                ]
             }
 
     -- Two suppressions and two findings, each suppression nearest one finding.

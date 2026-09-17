@@ -192,7 +192,11 @@ blankCppDirectives = unlines . go . lines
       _ -> False
 
 startOfFile :: Position
-startOfFile = Position {positionLine = 1, positionCol = 1}
+startOfFile =
+  Position
+    { positionLine = 1,
+      positionCol = 1
+    }
 
 lexerPosition :: PState -> Position
 lexerPosition pst =
@@ -214,7 +218,10 @@ realToSpan rp rss =
 
 commentsOf :: [(Token, Span)] -> [RawComment]
 commentsOf toks =
-  [ RawComment {rawCommentSpan = sp, rawCommentText = T.pack text}
+  [ RawComment
+      { rawCommentSpan = sp,
+        rawCommentText = T.pack text
+      }
   | (t, sp) <- toks,
     Just text <- [commentText t]
   ]
@@ -233,7 +240,10 @@ commentText = \case
 -- not the tail of a module name.
 namesOf :: [(Token, Span)] -> [NameOccurrence]
 namesOf toks =
-  [ NameOccurrence {nameOccurrenceText = fsText s, nameOccurrenceSpan = sp}
+  [ NameOccurrence
+      { nameOccurrenceText = fsText s,
+        nameOccurrenceSpan = sp
+      }
   | (ITconid s, sp) <- toks
   ]
 

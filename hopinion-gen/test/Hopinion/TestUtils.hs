@@ -296,7 +296,11 @@ findingsInModule rid file = do
 renderedFindingsInModule :: RuleId -> Path Rel File -> IO Text
 renderedFindingsInModule rid file = do
   here <- getCurrentDir
-  let root = SourceRoot {sourceRootDir = here, sourceRootPrefix = Nothing}
+  let root =
+        SourceRoot
+          { sourceRootDir = here,
+            sourceRootPrefix = Nothing
+          }
   renderedFindings root =<< findingsInModule rid file
 
 findingsInProject :: RuleId -> Path Rel Dir -> IO [Finding]
@@ -356,4 +360,8 @@ sortedFindings =
 rootAt :: Path Rel Dir -> IO SourceRoot
 rootAt dir = do
   absDir <- makeAbsolute dir
-  pure SourceRoot {sourceRootDir = absDir, sourceRootPrefix = Nothing}
+  pure
+    SourceRoot
+      { sourceRootDir = absDir,
+        sourceRootPrefix = Nothing
+      }

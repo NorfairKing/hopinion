@@ -126,7 +126,11 @@ run rs settings =
       report <-
         emit
           rs
-          [SourceRoot {sourceRootDir = root, sourceRootPrefix = Nothing}]
+          [ SourceRoot
+              { sourceRootDir = root,
+                sourceRootPrefix = Nothing
+              }
+          ]
           Nothing
           (runModuleLayer rs facts)
       exitWith (verdict report)
@@ -163,7 +167,11 @@ hieDirectoriesOf dirs = HieDirectories <$> traverse absoluteDir dirs
 absolutise :: RawSourceRoot -> IO SourceRoot
 absolutise raw = do
   dir <- absoluteDir (rawSourceRootDir raw)
-  pure SourceRoot {sourceRootDir = dir, sourceRootPrefix = rawSourceRootPrefix raw}
+  pure
+    SourceRoot
+      { sourceRootDir = dir,
+        sourceRootPrefix = rawSourceRootPrefix raw
+      }
 
 absoluteDir :: SomeBase Dir -> IO (Path Abs Dir)
 absoluteDir = \case

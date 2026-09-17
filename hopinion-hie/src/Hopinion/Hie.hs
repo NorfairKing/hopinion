@@ -182,7 +182,11 @@ readDeclaredInstances path = do
     Left (e :: SomeException) -> Left (reason e)
     Right instances -> Right instances
   where
-    profile = Profile {profilePlatform = genericPlatform, profileWays = mempty}
+    profile =
+      Profile
+        { profilePlatform = genericPlatform,
+          profileWays = mempty
+        }
 
 -- | An instance whose head is not a type constructor is not one an obligation
 -- can be about, since there is no type to write @genValidSpec \@T@ at.
