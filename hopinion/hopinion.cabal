@@ -23,6 +23,9 @@ library
       Hopinion.Check.Hs.NoSemigroupOnText.Extract
       Hopinion.Check.Hs.NoSemigroupOnText.Fact
       Hopinion.Check.Hs.NoSemigroupOnText.Rule
+      Hopinion.Check.Hs.RecordFieldPerLine.Extract
+      Hopinion.Check.Hs.RecordFieldPerLine.Fact
+      Hopinion.Check.Hs.RecordFieldPerLine.Rule
       Hopinion.Check.Hs.TestOneSpecPerFile.Rule
       Hopinion.Check.Obligation
       Hopinion.Check.Package.AppOnlyMain.Extract

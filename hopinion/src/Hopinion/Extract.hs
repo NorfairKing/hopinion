@@ -24,6 +24,7 @@ import GHC.Types.SrcLoc (GenLocated (..), unLoc)
 import Hopinion.Annotation (annotationsOf)
 import Hopinion.Check.Hs.LambdaCase.Extract (casedArgumentsOf)
 import Hopinion.Check.Hs.NoSemigroupOnText.Extract (concatChainsOf)
+import Hopinion.Check.Hs.RecordFieldPerLine.Extract (crowdedRecordsOf)
 import Hopinion.Check.Package.AppOnlyMain.Extract (strayAppDeclsOf)
 import Hopinion.Comment
 import Hopinion.Extract.Ghc
@@ -56,7 +57,11 @@ extractModuleContext :: ExtractInput -> ParsedModule -> ModuleContext
 extractModuleContext input parsed =
   let rp = extractInputRelPath input
       mk = extractInputModule input
-      ref = ModuleRef {moduleRefComponent = extractInputComponentName input, moduleRefModule = mk}
+      ref =
+        ModuleRef
+          { moduleRefComponent = extractInputComponentName input,
+            moduleRefModule = mk
+          }
       decls = concatMap (declFactsOf rp) (hsmodDecls (unLoc (parsedModuleAst parsed)))
       ctx =
         mkCommentContext
@@ -82,6 +87,7 @@ extractModuleContext input parsed =
           moduleContextTypeApps = parsedModuleTypeApps parsed,
           moduleContextConcatChains = concatChainsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextCasedArguments = casedArgumentsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
+          moduleContextCrowdedRecords = crowdedRecordsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextStrayAppDecls = strayAppDeclsOf rp decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextTemplateHaskell = parsedModuleTemplateHaskell parsed,
           moduleContextOutcome = ParsedOk
@@ -114,6 +120,7 @@ emptyModuleContext input =
       moduleContextTypeApps = [],
       moduleContextConcatChains = [],
       moduleContextCasedArguments = [],
+      moduleContextCrowdedRecords = [],
       moduleContextStrayAppDecls = [],
       moduleContextTemplateHaskell = NoTemplateHaskell,
       moduleContextOutcome = ParsedOk
@@ -136,7 +143,13 @@ instanceDeclName cls th = DeclName (T.pack (unwords ["instance", T.unpack cls, T
 declFactsOf :: Path Rel File -> LHsDecl GhcPs -> [DeclFact]
 declFactsOf rp ldecl =
   let sp = spanOfLocated rp ldecl
-      one name kind = [DeclFact {declFactName = name, declFactKind = kind, declFactSpan = sp}]
+      one name kind =
+        [ DeclFact
+            { declFactName = name,
+              declFactKind = kind,
+              declFactSpan = sp
+            }
+        ]
    in case unLoc ldecl of
         TyClD _ d -> case d of
           FamDecl _ fd -> one (DeclName (rdrText (unLoc (fdLName fd)))) DeclOther
@@ -160,11 +173,19 @@ declFactsOf rp ldecl =
           VarBind {} -> one (DeclName "variable binding") DeclValue
         SigD _ s -> case s of
           TypeSig _ ns _ ->
-            [ DeclFact {declFactName = DeclName (rdrText (unLoc n)), declFactKind = DeclSignature, declFactSpan = sp}
+            [ DeclFact
+                { declFactName = DeclName (rdrText (unLoc n)),
+                  declFactKind = DeclSignature,
+                  declFactSpan = sp
+                }
             | n <- ns
             ]
           PatSynSig _ ns _ ->
-            [ DeclFact {declFactName = DeclName (rdrText (unLoc n)), declFactKind = DeclSignature, declFactSpan = sp}
+            [ DeclFact
+                { declFactName = DeclName (rdrText (unLoc n)),
+                  declFactKind = DeclSignature,
+                  declFactSpan = sp
+                }
             | n <- ns
             ]
           _ -> one (DeclName "signature") DeclOther

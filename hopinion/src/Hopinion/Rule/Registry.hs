@@ -13,6 +13,7 @@ import qualified Hopinion.Check.Hs.NoCustomOrd.Rule as NoCustomOrd
 import qualified Hopinion.Check.Hs.NoCustomShowRead.Rule as NoCustomShowRead
 import qualified Hopinion.Check.Hs.NoFilePath.Rule as NoFilePath
 import qualified Hopinion.Check.Hs.NoSemigroupOnText.Rule as NoSemigroupOnText
+import qualified Hopinion.Check.Hs.RecordFieldPerLine.Rule as RecordFieldPerLine
 import qualified Hopinion.Check.Hs.TestOneSpecPerFile.Rule as TestOneSpecPerFile
 import qualified Hopinion.Check.Package.AppOnlyMain.Rule as AppOnlyMain
 import qualified Hopinion.Check.Package.GenValidInGenPackage.Rule as GenValidInGenPackage
@@ -35,5 +36,6 @@ builtinRules =
     NoFilePath.rule,
     NoSemigroupOnText.rule,
     NoTestHelpers.rule,
+    RecordFieldPerLine.rule,
     TestOneSpecPerFile.rule
   ]

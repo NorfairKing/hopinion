@@ -14,6 +14,7 @@ import qualified Data.Text as T
 import GHC.Generics (Generic)
 import Hopinion.Check.Hs.LambdaCase.Fact
 import Hopinion.Check.Hs.NoSemigroupOnText.Fact
+import Hopinion.Check.Hs.RecordFieldPerLine.Fact
 import Hopinion.Check.Package.AppOnlyMain.Fact
 import Hopinion.Comment (CommentFact (..))
 import Hopinion.Facts.Component
@@ -52,6 +53,7 @@ data ModuleContext = ModuleContext
     moduleContextTypeApps :: ![TypeAppFact],
     moduleContextConcatChains :: ![ConcatChain],
     moduleContextCasedArguments :: ![CasedArgument],
+    moduleContextCrowdedRecords :: ![CrowdedRecord],
     moduleContextStrayAppDecls :: ![StrayAppDecl],
     moduleContextTemplateHaskell :: !TemplateHaskellUse,
     moduleContextOutcome :: !ParseOutcome

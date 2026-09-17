@@ -1,0 +1,32 @@
+[0;91;1m[error HsRecordFieldPerLine][0m: A record value of 2 fields, sharing a line.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsRecordFieldPerLine/bad.hs@9:10-9:40[0m
+     [0;90;1m│[0m
+[0;90;1m   9 │[0m [0;97mo[0m[0;97mr[0m[0;97mi[0m[0;97mg[0m[0;97mi[0m[0;97mn[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1mP[0m[0;91;1mo[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m{[0m[0;91;1mp[0m[0;91;1mo[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1mX[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1m0[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mp[0m[0;91;1mo[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1mY[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1m0[0m[0;91;1m}[0m
+     [0;90;1m•[0m          [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m          [0;91m╰╸[0m [0;91mWrite a record value with more than one field a field per line.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A field per line makes changing one field a one-line diff, so review sees the field that changed rather than the whole value. Adding a field to a value written on one line rewrites that line and reflows whatever followed. A value with one field has nothing to line up against, so it is left alone.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 9 of test_resources/Rule/HsRecordFieldPerLine/bad.hs, and say why: -- [allow:HsRecordFieldPerLine] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsRecordFieldPerLine][0m: A record update of 2 fields, sharing a line.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsRecordFieldPerLine/bad.hs@12:11-12:59[0m
+     [0;90;1m│[0m
+[0;90;1m  12 │[0m [0;97mm[0m[0;97mo[0m[0;97mv[0m[0;97me[0m[0;97md[0m[0;97m [0m[0;97mp[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1mp[0m[0;91;1m [0m[0;91;1m{[0m[0;91;1mp[0m[0;91;1mo[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1mX[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mp[0m[0;91;1mo[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1mX[0m[0;91;1m [0m[0;91;1mp[0m[0;91;1m [0m[0;91;1m+[0m[0;91;1m [0m[0;91;1m1[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mp[0m[0;91;1mo[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1mY[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mp[0m[0;91;1mo[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1mY[0m[0;91;1m [0m[0;91;1mp[0m[0;91;1m [0m[0;91;1m+[0m[0;91;1m [0m[0;91;1m1[0m[0;91;1m}[0m
+     [0;90;1m•[0m           [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m           [0;91m╰╸[0m [0;91mWrite a record value with more than one field a field per line.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A field per line makes changing one field a one-line diff, so review sees the field that changed rather than the whole value. Adding a field to a value written on one line rewrites that line and reflows whatever followed. A value with one field has nothing to line up against, so it is left alone.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 12 of test_resources/Rule/HsRecordFieldPerLine/bad.hs, and say why: -- [allow:HsRecordFieldPerLine] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsRecordFieldPerLine][0m: A record value of 2 fields, sharing a line.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsRecordFieldPerLine/bad.hs@16:5-16:35[0m
+     [0;90;1m│[0m
+[0;90;1m  16 │[0m [0;97m [0m[0;97m [0m[0;97m[[0m[0;97m [0m[0;91;1mP[0m[0;91;1mo[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m{[0m[0;91;1mp[0m[0;91;1mo[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1mX[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1m1[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mp[0m[0;91;1mo[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1mY[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1m2[0m[0;91;1m}[0m
+     [0;90;1m•[0m     [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m     [0;91m╰╸[0m [0;91mWrite a record value with more than one field a field per line.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A field per line makes changing one field a one-line diff, so review sees the field that changed rather than the whole value. Adding a field to a value written on one line rewrites that line and reflows whatever followed. A value with one field has nothing to line up against, so it is left alone.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 16 of test_resources/Rule/HsRecordFieldPerLine/bad.hs, and say why: -- [allow:HsRecordFieldPerLine] <reason>[0m
+[0;90;1m─────╯[0m
