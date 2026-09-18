@@ -5,7 +5,13 @@
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA test file binds only spec at the top level.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A helper in a test file is untested code, private to that file, so a test that calls it asserts whatever the helper happens to mean today.[0m
+     [0;90;1m│[0m [0;96mNote: Test code should be easy to delete.
+     [0;90;1m│[0;96m       In order of preference, try these:
+     [0;90;1m│[0;96m       * Move the code into a let-binding in the it that uses it
+     [0;90;1m│[0;96m       * Inline the code
+     [0;90;1m│[0;96m       * Move the code into a let-binding in the enclosing describe or spec
+     [0;90;1m│[0;96m       * Move a generator into a .Gen module, if it is used across modules
+     [0;90;1m│[0;96m       * Move a test utility into a .TestUtils module[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 11 of test_resources/Rule/TestNoTestHelpers/badSpec.hs, and say why: -- [allow:TestNoTestHelpers] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -16,6 +22,12 @@
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA test file binds only spec at the top level.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A helper in a test file is untested code, private to that file, so a test that calls it asserts whatever the helper happens to mean today.[0m
+     [0;90;1m│[0m [0;96mNote: Test code should be easy to delete.
+     [0;90;1m│[0;96m       In order of preference, try these:
+     [0;90;1m│[0;96m       * Move the code into a let-binding in the it that uses it
+     [0;90;1m│[0;96m       * Inline the code
+     [0;90;1m│[0;96m       * Move the code into a let-binding in the enclosing describe or spec
+     [0;90;1m│[0;96m       * Move a generator into a .Gen module, if it is used across modules
+     [0;90;1m│[0;96m       * Move a test utility into a .TestUtils module[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 14 of test_resources/Rule/TestNoTestHelpers/badSpec.hs, and say why: -- [allow:TestNoTestHelpers] <reason>[0m
 [0;90;1m─────╯[0m

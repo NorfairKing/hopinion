@@ -16,8 +16,13 @@ rule =
     { ruleId = RuleId "TestNoTestHelpers",
       ruleText = "A test file binds only spec at the top level.",
       ruleWhy =
-        "A helper in a test file is untested code, private to that file, so a\
-        \ test that calls it asserts whatever the helper happens to mean today.",
+        "Test code should be easy to delete.\n\
+        \In order of preference, try these:\n\
+        \* Move the code into a let-binding in the it that uses it\n\
+        \* Inline the code\n\
+        \* Move the code into a let-binding in the enclosing describe or spec\n\
+        \* Move a generator into a .Gen module, if it is used across modules\n\
+        \* Move a test utility into a .TestUtils module",
       ruleImpl = ModuleRule (FromSource check)
     }
 
