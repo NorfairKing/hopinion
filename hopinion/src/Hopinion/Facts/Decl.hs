@@ -29,6 +29,11 @@ data DeclKind
   | DeclInstance
   | DeclPattern
   | DeclForeign
+  | -- | An annotation pragma. Its own kind rather than 'DeclOther', because it
+    -- is the one declaration that is not a subject: it says something about
+    -- another declaration, so a comment above it is about that other one, and
+    -- a rule asking for declarations of some kind must never be handed this.
+    DeclAnnotation
   | DeclOther
   deriving stock (Show, Eq, Ord, Enum, Bounded, Generic)
 

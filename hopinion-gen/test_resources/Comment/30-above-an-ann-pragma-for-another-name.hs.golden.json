@@ -1,0 +1,20 @@
+[
+    {
+        "attachment": {
+            "decl": "resolveTarget"
+        },
+        "span": {
+            "end": {
+                "col": 32,
+                "line": 3
+            },
+            "file": "test_resources/Comment/30-above-an-ann-pragma-for-another-name.hs",
+            "start": {
+                "col": 1,
+                "line": 3
+            }
+        },
+        "style": "haddock-next",
+        "text": "What resolveTarget is for."
+    }
+]

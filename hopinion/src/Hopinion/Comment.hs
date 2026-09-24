@@ -446,13 +446,33 @@ previousCodeLine ctx from
       | isCodeLine ctx l = Just l
       | otherwise = go (l - 1)
 
--- | A line carries code when it is neither blank nor comment-only.
+-- | A line carries code when it is neither blank, nor comment-only, nor part of
+-- an annotation pragma.
+--
+-- An annotation is not a subject. GHC parses @{-# ANN foo ... #-}@ as a
+-- declaration, so without this the walk stops at the pragma and every comment
+-- written above one is read as being about the pragma rather than about the
+-- definition it sits on. Stepping over it is what makes those two the same
+-- answer where the pragma and the definition below it are the same name, and
+-- the right answer where they are not.
 isCodeLine :: CommentContext -> Word -> Bool
 isCodeLine ctx l = case lineAt ctx l of
   Nothing -> False
   Just line ->
     not (T.null (T.strip line))
       && not (S.member l (commentContextCommentOnly ctx))
+      && not (insideAnAnnotation ctx l)
+
+-- | Whether a line falls within an annotation pragma, which may be written over
+-- several lines and is not a subject on any of them.
+insideAnAnnotation :: CommentContext -> Word -> Bool
+insideAnAnnotation ctx l =
+  any
+    (\d -> declFactKind d == DeclAnnotation && spansLine (declFactSpan d))
+    (commentContextDecls ctx)
+  where
+    spansLine :: Span -> Bool
+    spansLine sp = positionLine (spanStart sp) <= l && l <= positionLine (spanEnd sp)
 
 -- | Whether a blank source line falls strictly between two lines.
 --

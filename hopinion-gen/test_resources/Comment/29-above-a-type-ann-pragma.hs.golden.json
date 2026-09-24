@@ -1,0 +1,20 @@
+[
+    {
+        "attachment": {
+            "decl": "Thing"
+        },
+        "span": {
+            "end": {
+                "col": 28,
+                "line": 3
+            },
+            "file": "test_resources/Comment/29-above-a-type-ann-pragma.hs",
+            "start": {
+                "col": 1,
+                "line": 3
+            }
+        },
+        "style": "haddock-next",
+        "text": "What this type is for."
+    }
+]

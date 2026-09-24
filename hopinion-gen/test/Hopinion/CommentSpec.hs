@@ -38,8 +38,16 @@ spec = do
   -- line above it, which is exactly the shape that means "attached to nothing".
   -- The reformatting changes the meaning, so the attachment changing with it is
   -- correct.
+  --
+  -- An annotation pragma naming something other than the declaration under it
+  -- has a blank line put after it, which separates the comment above the pragma
+  -- from that declaration. Same story: the layout it is read against is the
+  -- layout that changed.
   let formatSensitive :: [Path Rel File]
-      formatSensitive = [[relfile|07-end-of-do-block.hs|]]
+      formatSensitive =
+        [ [relfile|07-end-of-do-block.hs|],
+          [relfile|30-above-an-ann-pragma-for-another-name.hs|]
+        ]
 
   let subjectOf :: Attachment -> Text
       subjectOf = \case

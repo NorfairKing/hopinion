@@ -24,6 +24,7 @@ extra-source-files:
     test_resources/Annotation/suppressed/thing-gen/test/Main.hs
     test_resources/Annotation/suppressed/thing-gen/test/ThingChecks.hs
     test_resources/Annotation/suppressed/thing-gen/thing-gen.cabal
+    test_resources/Annotation/suppressed/thing/src/Annotated.hs
     test_resources/Annotation/suppressed/thing/src/Header.hs
     test_resources/Annotation/suppressed/thing/src/Thing.hs
     test_resources/Annotation/suppressed/thing/src/Trailing.hs
@@ -81,6 +82,16 @@ extra-source-files:
     test_resources/Comment/25-section-on-its-own-line-in-export-list.hs.golden.json
     test_resources/Comment/26-block-comment-above-a-statement.hs
     test_resources/Comment/26-block-comment-above-a-statement.hs.golden.json
+    test_resources/Comment/27-above-an-ann-pragma.hs
+    test_resources/Comment/27-above-an-ann-pragma.hs.golden.json
+    test_resources/Comment/28-above-a-module-ann-pragma.hs
+    test_resources/Comment/28-above-a-module-ann-pragma.hs.golden.json
+    test_resources/Comment/29-above-a-type-ann-pragma.hs
+    test_resources/Comment/29-above-a-type-ann-pragma.hs.golden.json
+    test_resources/Comment/30-above-an-ann-pragma-for-another-name.hs
+    test_resources/Comment/30-above-an-ann-pragma-for-another-name.hs.golden.json
+    test_resources/Comment/31-above-a-multiline-ann-pragma.hs
+    test_resources/Comment/31-above-a-multiline-ann-pragma.hs.golden.json
     test_resources/Example/clean/lonely/lonely.cabal
     test_resources/Example/clean/lonely/src/Lonely.hs
     test_resources/Example/clean/thing-gen/src/Thing/Gen.hs

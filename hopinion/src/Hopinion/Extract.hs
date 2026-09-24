@@ -190,7 +190,26 @@ declFactsOf rp ldecl =
             ]
           _ -> one (DeclName "signature") DeclOther
         ForD _ _ -> one (DeclName "foreign") DeclForeign
+        AnnD _ (HsAnnotation _ provenance _) -> one (annotationDeclName provenance) DeclAnnotation
         _ -> one (DeclName "declaration") DeclOther
+
+-- | An annotation pragma is named after whatever it annotates, because that is
+-- what it is about.
+--
+-- What a comment above one is about is a separate question, answered by the
+-- kind rather than by this name: attachment steps over an annotation instead of
+-- reading it as a subject, so a comment above @{-# ANN foo #-} bar@ is about
+-- @bar@ and not about @foo@. This name is what a name occurrence inside the
+-- pragma is scoped to, where the alternative was a scope called @declaration@
+-- that nothing else in the module answers to.
+--
+-- A module annotation has no name to take, and is the one spelling left
+-- describing itself.
+annotationDeclName :: AnnProvenance GhcPs -> DeclName
+annotationDeclName = \case
+  ValueAnnProvenance n -> DeclName (rdrText (unLoc n))
+  TypeAnnProvenance n -> DeclName (rdrText (unLoc n))
+  ModuleAnnProvenance -> DeclName "module annotation"
 
 dataOrNewtype :: HsDataDefn GhcPs -> DeclKind
 dataOrNewtype defn = case dd_cons defn of
