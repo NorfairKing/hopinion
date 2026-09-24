@@ -5,9 +5,10 @@ catalogue of rules not yet written; this is the order to write them in.
 
 ## What exists
 
-Thirteen rules, one at each of the three levels and then some: `CommentBareTodo`,
-`HsLambdaCase`, `HsNoCustomEq`, `HsNoCustomOrd`, `HsNoCustomShowRead`,
-`HsNoFilePath`, `HsNoSemigroupOnText`, `HsTestOneSpecPerFile` and
+Fifteen rules, one at each of the three levels and then some:
+`CommentBareTodo`, `CommentCouplingConnection`, `HsLambdaCase`,
+`HsNoCustomEq`, `HsNoCustomOrd`, `HsNoCustomShowRead`, `HsNoFilePath`,
+`HsNoSemigroupOnText`, `HsRecordFieldPerLine`, `HsTestOneSpecPerFile` and
 `TestNoTestHelpers` at the module level, `HsAppOnlyMain`
 and `HsGenValidInGenPackage` at the package level,
 `TestGenValidSpecPerGenValid` and `TestJsonSpecPerJsonType` at the project

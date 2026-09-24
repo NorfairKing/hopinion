@@ -7,6 +7,7 @@
 module Hopinion.Rule.Registry (builtinRules) where
 
 import qualified Hopinion.Check.Comment.BareTodo.Rule as BareTodo
+import qualified Hopinion.Check.Comment.CouplingConnection.Rule as CouplingConnection
 import qualified Hopinion.Check.Hs.LambdaCase.Rule as LambdaCase
 import qualified Hopinion.Check.Hs.NoCustomEq.Rule as NoCustomEq
 import qualified Hopinion.Check.Hs.NoCustomOrd.Rule as NoCustomOrd
@@ -26,6 +27,7 @@ builtinRules :: [Rule]
 builtinRules =
   [ AppOnlyMain.rule,
     BareTodo.rule,
+    CouplingConnection.rule,
     GenValidInGenPackage.rule,
     GenValidSpecPerGenValid.rule,
     JsonSpecPerJsonType.rule,

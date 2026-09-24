@@ -133,6 +133,18 @@ extra-source-files:
     test_resources/Rule/CommentBareTodo/bad.hs.golden
     test_resources/Rule/CommentBareTodo/good.hs
     test_resources/Rule/CommentBareTodo/good.hs.golden
+    test_resources/Rule/CommentCouplingConnection/bad-a-bare-check-is-not-a-connection.hs
+    test_resources/Rule/CommentCouplingConnection/bad-a-bare-check-is-not-a-connection.hs.golden
+    test_resources/Rule/CommentCouplingConnection/bad-in-a-statement.hs
+    test_resources/Rule/CommentCouplingConnection/bad-in-a-statement.hs.golden
+    test_resources/Rule/CommentCouplingConnection/bad-split-over-two-lines.hs
+    test_resources/Rule/CommentCouplingConnection/bad-split-over-two-lines.hs.golden
+    test_resources/Rule/CommentCouplingConnection/bad.hs
+    test_resources/Rule/CommentCouplingConnection/bad.hs.golden
+    test_resources/Rule/CommentCouplingConnection/good-connected-in-another-comment.hs
+    test_resources/Rule/CommentCouplingConnection/good-connected-in-another-comment.hs.golden
+    test_resources/Rule/CommentCouplingConnection/good.hs
+    test_resources/Rule/CommentCouplingConnection/good.hs.golden
     test_resources/Rule/HsAppOnlyMain/bad-a-declaration-beside-main.golden
     test_resources/Rule/HsAppOnlyMain/bad-a-declaration-beside-main/thing/app/Main.hs
     test_resources/Rule/HsAppOnlyMain/bad-a-declaration-beside-main/thing/src/Thing.hs

@@ -13,6 +13,7 @@ library
       Hopinion
       Hopinion.Annotation
       Hopinion.Check.Comment.BareTodo.Rule
+      Hopinion.Check.Comment.CouplingConnection.Rule
       Hopinion.Check.Hs.LambdaCase.Extract
       Hopinion.Check.Hs.LambdaCase.Fact
       Hopinion.Check.Hs.LambdaCase.Rule

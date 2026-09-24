@@ -3,8 +3,9 @@
 Every rule this tool could enforce that it does not enforce yet, sorted by how
 it can be enforced. A rule that ships leaves this file: what is here is work.
 
-The thirteen that ship are `CommentBareTodo`, `HsLambdaCase`, `HsNoCustomEq`,
-`HsNoCustomOrd`, `HsNoCustomShowRead`, `HsNoFilePath`, `HsNoSemigroupOnText`,
+The fifteen that ship are `CommentBareTodo`, `CommentCouplingConnection`,
+`HsLambdaCase`, `HsNoCustomEq`, `HsNoCustomOrd`, `HsNoCustomShowRead`,
+`HsNoFilePath`, `HsNoSemigroupOnText`, `HsRecordFieldPerLine`,
 `HsTestOneSpecPerFile`, `HsAppOnlyMain`, `HsGenValidInGenPackage`,
 `TestGenValidSpecPerGenValid`, `TestJsonSpecPerJsonType` and
 `TestNoTestHelpers`.
@@ -177,7 +178,7 @@ Rule ids are stable. They are what a check module cites and what an
 | `SyncNixMatchesCabal` | `default.nix` in sync with `.cabal` | A | | | cabal2nix pre-commit hook |
 | `LoopsDocumentedPerProject` | Each project has well-documented feedback loops | B | layout | warn | A documented loops section exists in the repo |
 | `TagrefIntegrity` | Tags and refs pair up | A | | | tagref |
-| `TagrefConnectCoupledCode` | Connect code that must change together | D | | | Knowing two things are coupled is the human part |
+| `TagrefConnectCoupledCode` | Connect code that must change together | D | | | Knowing two things are coupled is the human part. Once somebody has written the coupling down as prose, `CommentCouplingConnection` asks for the tag |
 
 ## Families
 

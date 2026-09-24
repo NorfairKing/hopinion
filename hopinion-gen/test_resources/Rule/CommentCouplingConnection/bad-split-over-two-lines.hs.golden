@@ -1,0 +1,11 @@
+[0;91;1m[error CommentCouplingConnection][0m: A coupling written as prose: "in sync", in a sentence that names Reader.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/CommentCouplingConnection/bad-split-over-two-lines.hs@3:1-4:17[0m
+     [0;90;1m│[0m
+[0;90;1m   3 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1m-[0m[0;91;1m-[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mw[0m[0;91;1mo[0m[0;91;1m [0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mb[0m[0;91;1ml[0m[0;91;1me[0m[0;91;1ms[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mh[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1m [0m[0;91;1m'[0m[0;91;1mR[0m[0;91;1me[0m[0;91;1ma[0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1m'[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mk[0m[0;91;1me[0m[0;91;1mp[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1mn[0m
+[0;90;1m   4 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m-[0m[0;91;1m-[0m[0;91;1m [0m[0;91;1ms[0m[0;91;1my[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1m [0m[0;91;1mb[0m[0;91;1my[0m[0;91;1m [0m[0;91;1mh[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1md[0m[0;91;1m.[0m
+     [0;90;1m•[0m [0;91m│ [0m
+     [0;90;1m•[0m [0;91m╰╸ A comment that couples two named places carries a tag or a ref.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: Prose saying that two places move together names neither of them to a tool, so nothing brings a reader to the other one when this changes. A tag and a ref do, and tagref and marginalia report the pair when one half of it goes missing. Write [tag:Name] here and [ref:Name] there, or [check:tag Name] and [check:ref Name].[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 5 of test_resources/Rule/CommentCouplingConnection/bad-split-over-two-lines.hs, and say why: -- [allow:CommentCouplingConnection] <reason>[0m
+[0;90;1m─────╯[0m
