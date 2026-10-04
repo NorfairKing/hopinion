@@ -8,6 +8,7 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import Hopinion.Check.Hs.LambdaCase.Fact
 import Hopinion.Check.Hs.NoSemigroupOnText.Fact
+import Hopinion.Check.Hs.NoStringError.Fact
 import Hopinion.Check.Package.AppOnlyMain.Fact
 import Hopinion.Comment
 import Hopinion.Facts.Component
@@ -158,6 +159,14 @@ spec = do
     genValidSpec @ConcatOperand
   describe "ConcatChain" $ do
     genValidSpec @ConcatChain
+  describe "ErrorType" $ do
+    genValidSpec @ErrorType
+  describe "ErrorSlot" $ do
+    genValidSpec @ErrorSlot
+  describe "ErrorDeclShape" $ do
+    genValidSpec @ErrorDeclShape
+  describe "ErrorDecl" $ do
+    genValidSpec @ErrorDecl
   describe "TemplateHaskellUse" $ do
     genValidSpec @TemplateHaskellUse
     it "roundtrips through the text a row stores it as" $

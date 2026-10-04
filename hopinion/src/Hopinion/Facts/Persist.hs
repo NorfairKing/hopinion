@@ -3,9 +3,6 @@
 --
 -- Here rather than beside either caller because the plain facts and the
 -- suppression ones both need it and neither can import the other.
---
--- The failure is a 'Text' rather than a type of its own because this implements
--- @persistent@'s 'fromPersistValue', so the shape is the library's.
 module Hopinion.Facts.Persist (fromPersistValueViaCodec) where
 
 import Autodocodec
@@ -18,6 +15,9 @@ import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import Database.Persist
 
+-- [allow:HsNoStringError] The failure is prose because this is @persistent@'s
+-- @fromPersistValue@ under another name, so the shape belongs to the library
+-- rather than to us.
 fromPersistValueViaCodec :: (HasCodec a) => PersistValue -> Either Text a
 fromPersistValueViaCodec v = do
   t <- fromPersistValue v

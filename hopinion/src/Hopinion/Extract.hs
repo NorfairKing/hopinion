@@ -24,6 +24,7 @@ import GHC.Types.SrcLoc (GenLocated (..), unLoc)
 import Hopinion.Annotation (annotationsOf)
 import Hopinion.Check.Hs.LambdaCase.Extract (casedArgumentsOf)
 import Hopinion.Check.Hs.NoSemigroupOnText.Extract (concatChainsOf)
+import Hopinion.Check.Hs.NoStringError.Extract (errorDeclsOf, errorSlotsOf)
 import Hopinion.Check.Hs.RecordFieldPerLine.Extract (crowdedRecordsOf)
 import Hopinion.Check.Package.AppOnlyMain.Extract (strayAppDeclsOf)
 import Hopinion.Comment
@@ -86,6 +87,8 @@ extractModuleContext input parsed =
           moduleContextAnnotationProblems = annotationProblems,
           moduleContextTypeApps = parsedModuleTypeApps parsed,
           moduleContextConcatChains = concatChainsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
+          moduleContextErrorSlots = errorSlotsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
+          moduleContextErrorDecls = errorDeclsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextCasedArguments = casedArgumentsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextCrowdedRecords = crowdedRecordsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextStrayAppDecls = strayAppDeclsOf rp decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
@@ -119,6 +122,8 @@ emptyModuleContext input =
       moduleContextAnnotationProblems = [],
       moduleContextTypeApps = [],
       moduleContextConcatChains = [],
+      moduleContextErrorSlots = [],
+      moduleContextErrorDecls = [],
       moduleContextCasedArguments = [],
       moduleContextCrowdedRecords = [],
       moduleContextStrayAppDecls = [],
@@ -388,29 +393,3 @@ sigTypeHead sigTy = do
       (subject, _) <- peelApp (peelType a)
       pure (cls, TypeHead subject)
     [] -> Nothing
-
--- | Strip the parts of a type that do not change what it is about: parens,
--- foralls, contexts and kind signatures.
-peelType :: LHsType GhcPs -> LHsType GhcPs
-peelType lt = case unLoc lt of
-  HsParTy _ t -> peelType t
-  HsForAllTy {hst_body = t} -> peelType t
-  HsQualTy {hst_body = t} -> peelType t
-  HsKindSig _ t _ -> peelType t
-  HsDocTy _ t _ -> peelType t
-  HsBangTy _ _ t -> peelType t
-  _ -> lt
-
--- | The head type constructor and its arguments, with applications flattened.
-peelApp :: LHsType GhcPs -> Maybe (Text, [LHsType GhcPs])
-peelApp lt = go lt []
-  where
-    go t acc = case unLoc (peelType t) of
-      HsTyVar _ _ n -> Just (rdrText (unLoc n), acc)
-      HsAppTy _ f x -> go f (x : acc)
-      HsAppKindTy _ f _ -> go f acc
-      HsOpTy _ _ _ n _ -> Just (rdrText (unLoc n), acc)
-      HsListTy _ _ -> Just ("[]", acc)
-      HsTupleTy {} -> Just ("(,)", acc)
-      HsFunTy {} -> Just ("->", acc)
-      _ -> Nothing

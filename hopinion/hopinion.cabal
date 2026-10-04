@@ -24,6 +24,9 @@ library
       Hopinion.Check.Hs.NoSemigroupOnText.Extract
       Hopinion.Check.Hs.NoSemigroupOnText.Fact
       Hopinion.Check.Hs.NoSemigroupOnText.Rule
+      Hopinion.Check.Hs.NoStringError.Extract
+      Hopinion.Check.Hs.NoStringError.Fact
+      Hopinion.Check.Hs.NoStringError.Rule
       Hopinion.Check.Hs.RecordFieldPerLine.Extract
       Hopinion.Check.Hs.RecordFieldPerLine.Fact
       Hopinion.Check.Hs.RecordFieldPerLine.Rule

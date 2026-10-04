@@ -13,6 +13,7 @@ import qualified Data.Text as T
 import Hopinion.Annotation (OverBroad, Unused)
 import Hopinion.Check.Hs.LambdaCase.Fact
 import Hopinion.Check.Hs.NoSemigroupOnText.Fact
+import Hopinion.Check.Hs.NoStringError.Fact
 import Hopinion.Check.Package.AppOnlyMain.Fact
 import Hopinion.Choices (Choices)
 import Hopinion.Comment (Attachment, CommentFact, CommentStyle, RawComment)
@@ -132,6 +133,14 @@ instance GenValid StrayAppDecl
 instance GenValid ConcatOperand
 
 instance GenValid ConcatChain
+
+instance GenValid ErrorType
+
+instance GenValid ErrorSlot
+
+instance GenValid ErrorDeclShape
+
+instance GenValid ErrorDecl
 
 instance GenValid TemplateHaskellUse
 

@@ -1,0 +1,197 @@
+[0;91;1m[error HsNoStringError][0m: The error type of Either is String.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@11:30-11:36[0m
+     [0;90;1m│[0m
+[0;90;1m  11 │[0m [0;97mp[0m[0;97ma[0m[0;97mr[0m[0;97ms[0m[0;97me[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mS[0m[0;97mt[0m[0;97mr[0m[0;97mi[0m[0;97mn[0m[0;97mg[0m[0;97m [0m[0;97m-[0m[0;97m>[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+     [0;90;1m•[0m                              [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                              [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 11 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type of ExceptT is Text.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@17:32-17:36[0m
+     [0;90;1m│[0m
+[0;90;1m  17 │[0m [0;97ml[0m[0;97mo[0m[0;97ma[0m[0;97md[0m[0;97mS[0m[0;97me[0m[0;97mt[0m[0;97mt[0m[0;97mi[0m[0;97mn[0m[0;97mg[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m [0m[0;97m-[0m[0;97m>[0m[0;97m [0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97mT[0m[0;97m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;97m [0m[0;97mI[0m[0;97mO[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+     [0;90;1m•[0m                                [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                                [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 17 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type of Either is String.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@22:32-22:40[0m
+     [0;90;1m│[0m
+[0;90;1m  22 │[0m [0;97mv[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97md[0m[0;97ma[0m[0;97mt[0m[0;97me[0m[0;97mA[0m[0;97ml[0m[0;97ml[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97m[[0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m][0m[0;97m [0m[0;97m-[0m[0;97m>[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1m[[0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m][0m[0;97m [0m[0;97m[[0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m][0m
+     [0;90;1m•[0m                                [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                                [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 22 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type of Either is Text.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@25:24-25:39[0m
+     [0;90;1m│[0m
+[0;90;1m  25 │[0m [0;97mf[0m[0;97mi[0m[0;97mr[0m[0;97ms[0m[0;97mt[0m[0;97mF[0m[0;97ma[0m[0;97mi[0m[0;97ml[0m[0;97mu[0m[0;97mr[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1m([0m[0;91;1mN[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1mE[0m[0;91;1mm[0m[0;91;1mp[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;91;1m)[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+     [0;90;1m•[0m                        [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                        [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 25 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type of Either is String.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@31:32-31:38[0m
+     [0;90;1m│[0m
+[0;90;1m  31 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97ma[0m[0;97mt[0m[0;97mt[0m[0;97me[0m[0;97mm[0m[0;97mp[0m[0;97mt[0m[0;97mO[0m[0;97mu[0m[0;97mt[0m[0;97mc[0m[0;97mo[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97m![0m[0;97m([0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m)[0m
+     [0;90;1m•[0m                                [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                                [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 31 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type of MonadError is String.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@35:23-35:29[0m
+     [0;90;1m│[0m
+[0;90;1m  35 │[0m [0;97mr[0m[0;97me[0m[0;97mf[0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97m([0m[0;97mM[0m[0;97mo[0m[0;97mn[0m[0;97ma[0m[0;97md[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;97m [0m[0;97mm[0m[0;97m)[0m[0;97m [0m[0;97m=[0m[0;97m>[0m[0;97m [0m[0;97mm[0m[0;97m [0m[0;97ma[0m
+     [0;90;1m•[0m                       [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                       [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 35 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type of Either is String.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@39:22-39:28[0m
+     [0;90;1m│[0m
+[0;90;1m  39 │[0m [0;97ms[0m[0;97mp[0m[0;97me[0m[0;97ml[0m[0;97ml[0m[0;97me[0m[0;97md[0m[0;97mO[0m[0;97mu[0m[0;97mt[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1m[[0m[0;91;1mC[0m[0;91;1mh[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1m][0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+     [0;90;1m•[0m                      [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                      [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 39 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type of ExceptT is String.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@44:26-44:32[0m
+     [0;90;1m│[0m
+[0;90;1m  44 │[0m [0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mA[0m[0;97mt[0m[0;97mt[0m[0;97me[0m[0;97mm[0m[0;97mp[0m[0;97mt[0m[0;97me[0m[0;97md[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97mT[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;97m [0m[0;97mI[0m[0;97mO[0m
+     [0;90;1m•[0m                          [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                          [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 44 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type of Either is String.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@48:20-48:26[0m
+     [0;90;1m│[0m
+[0;90;1m  48 │[0m [0;97mb[0m[0;97mo[0m[0;97mt[0m[0;97mh[0m[0;97mW[0m[0;97ma[0m[0;97my[0m[0;97ms[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;97m [0m[0;97m([0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97m [0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m)[0m
+     [0;90;1m•[0m                    [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                    [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 48 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type of Except is Text.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@48:35-48:39[0m
+     [0;90;1m│[0m
+[0;90;1m  48 │[0m [0;97mb[0m[0;97mo[0m[0;97mt[0m[0;97mh[0m[0;97mW[0m[0;97ma[0m[0;97my[0m[0;97ms[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97mS[0m[0;97mt[0m[0;97mr[0m[0;97mi[0m[0;97mn[0m[0;97mg[0m[0;97m [0m[0;97m([0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m)[0m
+     [0;90;1m•[0m                                   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                                   [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 48 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type of ExceptT is Text.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@53:36-53:42[0m
+     [0;90;1m│[0m
+[0;90;1m  53 │[0m [0;97mq[0m[0;97mu[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97mf[0m[0;97mi[0m[0;97me[0m[0;97md[0m[0;97mC[0m[0;97ma[0m[0;97mr[0m[0;97mr[0m[0;97mi[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97m.[0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97mT[0m[0;97m [0m[0;91;1mT[0m[0;91;1m.[0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;97m [0m[0;97mI[0m[0;97mO[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+     [0;90;1m•[0m                                    [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                                    [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 53 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type of Validation is Text.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@57:25-57:31[0m
+     [0;90;1m│[0m
+[0;90;1m  57 │[0m [0;97mc[0m[0;97mo[0m[0;97ml[0m[0;97ml[0m[0;97me[0m[0;97mc[0m[0;97mt[0m[0;97me[0m[0;97md[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mV[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97md[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97mo[0m[0;97mn[0m[0;97m [0m[0;91;1m[[0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;91;1m][0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+     [0;90;1m•[0m                         [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                         [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 57 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type of Validation is String.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@61:35-61:52[0m
+     [0;90;1m│[0m
+[0;90;1m  61 │[0m [0;97mc[0m[0;97mo[0m[0;97ml[0m[0;97ml[0m[0;97me[0m[0;97mc[0m[0;97mt[0m[0;97me[0m[0;97md[0m[0;97mA[0m[0;97mt[0m[0;97mL[0m[0;97me[0m[0;97ma[0m[0;97ms[0m[0;97mt[0m[0;97mO[0m[0;97mn[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mV[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97md[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97mo[0m[0;97mn[0m[0;97m [0m[0;91;1m([0m[0;91;1mN[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1mE[0m[0;91;1mm[0m[0;91;1mp[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m)[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+     [0;90;1m•[0m                                   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                                   [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 61 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type ParseError is Text.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@65:19-65:23[0m
+     [0;90;1m│[0m
+[0;90;1m  65 │[0m [0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mP[0m[0;97ma[0m[0;97mr[0m[0;97ms[0m[0;97me[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
+     [0;90;1m•[0m                   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m                   [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 65 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type LookupError wraps nothing but String.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@68:35-68:41[0m
+     [0;90;1m│[0m
+[0;90;1m  68 │[0m [0;97mn[0m[0;97me[0m[0;97mw[0m[0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mL[0m[0;97mo[0m[0;97mo[0m[0;97mk[0m[0;97mu[0m[0;97mp[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mL[0m[0;97mo[0m[0;97mo[0m[0;97mk[0m[0;97mu[0m[0;97mp[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m
+     [0;90;1m•[0m                                   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m                                   [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 68 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type RenderError wraps nothing but Text.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@71:32-71:36[0m
+     [0;90;1m│[0m
+[0;90;1m  71 │[0m [0;97md[0m[0;97ma[0m[0;97mt[0m[0;97ma[0m[0;97m [0m[0;97mR[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mR[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
+     [0;90;1m•[0m                                [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m                                [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 71 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type ValidationErrors is Text.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@74:25-74:38[0m
+     [0;90;1m│[0m
+[0;90;1m  74 │[0m [0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mV[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97md[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97mo[0m[0;97mn[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97ms[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1mN[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1mE[0m[0;91;1mm[0m[0;91;1mp[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
+     [0;90;1m•[0m                         [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m                         [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 74 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type StoreError wraps nothing but Text.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@77:50-77:54[0m
+     [0;90;1m│[0m
+[0;90;1m  77 │[0m [0;97mn[0m[0;97me[0m[0;97mw[0m[0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mS[0m[0;97mt[0m[0;97mo[0m[0;97mr[0m[0;97me[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mS[0m[0;97mt[0m[0;97mo[0m[0;97mr[0m[0;97me[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m{[0m[0;97mu[0m[0;97mn[0m[0;97mS[0m[0;97mt[0m[0;97mo[0m[0;97mr[0m[0;97me[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;97m}[0m
+     [0;90;1m•[0m                                                  [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                                                  [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 77 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m

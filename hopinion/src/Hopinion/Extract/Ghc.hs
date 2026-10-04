@@ -1,4 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 -- | Reading the parse tree, for whoever is reading it.
 --
@@ -11,6 +12,8 @@ module Hopinion.Extract.Ghc
     declScopeOf,
     rdrText,
     peelExpr,
+    peelType,
+    peelApp,
     infixOperands,
     spineOf,
   )
@@ -61,6 +64,37 @@ declScopeOf ref decls sp =
 
 rdrText :: Rdr.RdrName -> Text
 rdrText = T.pack . Occ.occNameString . Rdr.rdrNameOcc
+
+-- | Strip the parts of a type that do not change what it is about: parens,
+-- foralls, contexts and kind signatures.
+peelType :: LHsType GhcPs -> LHsType GhcPs
+peelType lt = case unLoc lt of
+  HsParTy _ t -> peelType t
+  HsForAllTy {hst_body = t} -> peelType t
+  HsQualTy {hst_body = t} -> peelType t
+  HsKindSig _ t _ -> peelType t
+  HsDocTy _ t _ -> peelType t
+  HsBangTy _ _ t -> peelType t
+  _ -> lt
+
+-- | The head type constructor and its arguments, with applications flattened.
+--
+-- A list, a tuple and a function type have a head that names the syntax rather
+-- than a constructor that could be applied to anything, so what they are
+-- written over is not among the arguments this returns.
+peelApp :: LHsType GhcPs -> Maybe (Text, [LHsType GhcPs])
+peelApp lt = go lt []
+  where
+    go :: LHsType GhcPs -> [LHsType GhcPs] -> Maybe (Text, [LHsType GhcPs])
+    go t acc = case unLoc (peelType t) of
+      HsTyVar _ _ n -> Just (rdrText (unLoc n), acc)
+      HsAppTy _ f x -> go f (x : acc)
+      HsAppKindTy _ f _ -> go f acc
+      HsOpTy _ _ _ n _ -> Just (rdrText (unLoc n), acc)
+      HsListTy _ _ -> Just ("[]", acc)
+      HsTupleTy {} -> Just ("(,)", acc)
+      HsFunTy {} -> Just ("->", acc)
+      _ -> Nothing
 
 -- | Neither parentheses nor a type signature change what an expression is.
 peelExpr :: LHsExpr GhcPs -> LHsExpr GhcPs
