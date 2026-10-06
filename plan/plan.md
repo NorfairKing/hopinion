@@ -5,10 +5,11 @@ catalogue of rules not yet written; this is the order to write them in.
 
 ## What exists
 
-Fifteen rules, one at each of the three levels and then some:
+Seventeen rules, one at each of the three levels and then some:
 `CommentBareTodo`, `CommentCouplingConnection`, `HsLambdaCase`,
 `HsNoCustomEq`, `HsNoCustomOrd`, `HsNoCustomShowRead`, `HsNoFilePath`,
-`HsNoSemigroupOnText`, `HsRecordFieldPerLine`, `HsTestOneSpecPerFile` and
+`HsNoSemigroupOnText`, `HsNoStringError`, `HsPrefixNaming`,
+`HsRecordFieldPerLine`, `HsTestOneSpecPerFile` and
 `TestNoTestHelpers` at the module level, `HsAppOnlyMain`
 and `HsGenValidInGenPackage` at the package level,
 `TestGenValidSpecPerGenValid` and `TestJsonSpecPerJsonType` at the project
@@ -200,7 +201,7 @@ Everything that needs the module-local declaration list and call graph.
 
 `HsTypesAboveUses`, `HsInstanceAdjacentToType`, `HsInstancePriorityOrder`,
 `HsOneLetPerBinding`, `HsMultilineRecord`, `HsLetOverWhere`,
-`HsLocalTypeSignatures`, `HsRecordFieldPrefix`,
+`HsLocalTypeSignatures`,
 `HsTestSpecTopmost`, `TestExactAssertions`,
 `TestAssertWholeValues`, `HsWhereHoldingLogic`, `HsTextViaPack`,
 `HsNoDomainBool`.
@@ -215,11 +216,21 @@ fixed rather than suppressed: the helpers that hid what a test asserts became
 let-bindings in the spec that uses them, and the ones that build a Spec became
 functions in `Hopinion.TestUtils`, which is the fix the rule names.
 
+`HsPrefixNaming` shipped ahead of the rest of this milestone as well, covering
+what this file called `HsRecordFieldPrefix` and the constructor half beside it.
+It reads the constructors and fields of a data declaration, which is a walk over
+the type declarations alone rather than over the whole module. Its measurement
+is recorded: ten fields and one hundred and twenty-four constructors against
+this repository, every one of them renamed rather than suppressed. The fields
+carried an abbreviation of their type's name. The constructors carried a shared
+prefix that was not the type's name, which reads as the convention it is only to
+someone who already knows it.
+
 **Blocked on a measurement first.** Several of these were not surveyable by
 regular expression, so their volume is unknown, and a rule with four thousand
 findings changes this milestone's shape. The first task is to implement the
-cheapest of them and count. `HsRecordFieldPrefix` and `HsStrictFields` are the
-two most likely to be large.
+cheapest of them and count. `HsStrictFields` is the one most likely to be
+large.
 
 **One walk, not one per fact.** `HsNoSemigroupOnText` brought the first
 expression-level fact, and with it a `listify` over the whole module: a generic

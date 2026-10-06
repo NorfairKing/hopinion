@@ -15,6 +15,7 @@ import qualified Hopinion.Check.Hs.NoCustomShowRead.Rule as NoCustomShowRead
 import qualified Hopinion.Check.Hs.NoFilePath.Rule as NoFilePath
 import qualified Hopinion.Check.Hs.NoSemigroupOnText.Rule as NoSemigroupOnText
 import qualified Hopinion.Check.Hs.NoStringError.Rule as NoStringError
+import qualified Hopinion.Check.Hs.PrefixNaming.Rule as PrefixNaming
 import qualified Hopinion.Check.Hs.RecordFieldPerLine.Rule as RecordFieldPerLine
 import qualified Hopinion.Check.Hs.TestOneSpecPerFile.Rule as TestOneSpecPerFile
 import qualified Hopinion.Check.Package.AppOnlyMain.Rule as AppOnlyMain
@@ -40,6 +41,7 @@ builtinRules =
     NoSemigroupOnText.rule,
     NoStringError.rule,
     NoTestHelpers.rule,
+    PrefixNaming.rule,
     RecordFieldPerLine.rule,
     TestOneSpecPerFile.rule
   ]

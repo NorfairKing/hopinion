@@ -217,6 +217,18 @@ extra-source-files:
     test_resources/Rule/HsNoStringError/bad.hs.golden
     test_resources/Rule/HsNoStringError/good.hs
     test_resources/Rule/HsNoStringError/good.hs.golden
+    test_resources/Rule/HsPrefixNaming/bad-one-field-naming-two-selectors.hs
+    test_resources/Rule/HsPrefixNaming/bad-one-field-naming-two-selectors.hs.golden
+    test_resources/Rule/HsPrefixNaming/bad-written-as-a-gadt.hs
+    test_resources/Rule/HsPrefixNaming/bad-written-as-a-gadt.hs.golden
+    test_resources/Rule/HsPrefixNaming/bad.hs
+    test_resources/Rule/HsPrefixNaming/bad.hs.golden
+    test_resources/Rule/HsPrefixNaming/good-names-a-prefix-cannot-open.hs
+    test_resources/Rule/HsPrefixNaming/good-names-a-prefix-cannot-open.hs.golden
+    test_resources/Rule/HsPrefixNaming/good-written-as-a-gadt.hs
+    test_resources/Rule/HsPrefixNaming/good-written-as-a-gadt.hs.golden
+    test_resources/Rule/HsPrefixNaming/good.hs
+    test_resources/Rule/HsPrefixNaming/good.hs.golden
     test_resources/Rule/HsRecordFieldPerLine/bad.hs
     test_resources/Rule/HsRecordFieldPerLine/bad.hs.golden
     test_resources/Rule/HsRecordFieldPerLine/good.hs

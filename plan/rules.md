@@ -3,12 +3,12 @@
 Every rule this tool could enforce that it does not enforce yet, sorted by how
 it can be enforced. A rule that ships leaves this file: what is here is work.
 
-The fifteen that ship are `CommentBareTodo`, `CommentCouplingConnection`,
+The seventeen that ship are `CommentBareTodo`, `CommentCouplingConnection`,
 `HsLambdaCase`, `HsNoCustomEq`, `HsNoCustomOrd`, `HsNoCustomShowRead`,
-`HsNoFilePath`, `HsNoSemigroupOnText`, `HsRecordFieldPerLine`,
-`HsTestOneSpecPerFile`, `HsAppOnlyMain`, `HsGenValidInGenPackage`,
-`TestGenValidSpecPerGenValid`, `TestJsonSpecPerJsonType` and
-`TestNoTestHelpers`.
+`HsNoFilePath`, `HsNoSemigroupOnText`, `HsNoStringError`, `HsPrefixNaming`,
+`HsRecordFieldPerLine`, `HsTestOneSpecPerFile`, `HsAppOnlyMain`,
+`HsGenValidInGenPackage`, `TestGenValidSpecPerGenValid`,
+`TestJsonSpecPerJsonType` and `TestNoTestHelpers`.
 
 ## How to read this
 
@@ -99,7 +99,6 @@ Rule ids are stable. They are what a check module cites and what an
 | `HsFunctionBeforeInstance` | Before writing an instance, write a function | D | | | Operationalised by `HsClassesOnlyForPolymorphism` |
 | `HsClassesOnlyForPolymorphism` | Only define type-classes for generic polymorphic code | B | project | warn | Class defined in the project with a single instance and no constrained-polymorphic use site |
 | `HsInstancesLawAbiding` | Every instance must be law-abiding | C | project | error | Obligation: a law test exists for each instance of a law-bearing class |
-| `HsRecordFieldPrefix` | Prefix naming for record fields | B | syntax | error | Field name starts with the lowercased type or constructor name |
 | `HsNoLenses` | Do not use lenses if you can help it | B | layout | warn | lens in build-depends, or a `Control.Lens` import |
 | `HsFewExtensions` | Use few language extensions | B | config | error | Extension outside the project allowlist. The allowlist is a config parameter; a one-off extension is annotated at its pragma |
 | `HsPreferText` | Prefer `Text`; `String` for errors and interop only | C | types | ratchet | Per-occurrence, annotated at the `String` it concerns. High volume at adoption |
@@ -210,13 +209,11 @@ combinator.
 `CommentSectionLabelInFunction`, `HsNoSectionHeadersInCode`,
 `HsStrictFields`
 
-**F5 DeclPredicate** (12). A predicate on one declaration. The largest family, so
+**F5 DeclPredicate** (11). A predicate on one declaration. The largest family, so
 its combinator matters most.
-`HsNewtypeNotSynonym`, `HsMultilineRecord`,
-`HsRecordFieldPrefix`, `HsLetOverWhere`,
+`HsNewtypeNotSynonym`, `HsMultilineRecord`, `HsLetOverWhere`,
 `HsOneLetPerBinding`, `HsLocalTypeSignatures`, `HsWhereHoldingLogic`,
-`HsNoDomainBool`, `HsTextViaPack`,
-`TestExactAssertions`,
+`HsNoDomainBool`, `HsTextViaPack`, `TestExactAssertions`,
 `TestAssertWholeValues`, `TestTestableTopLevel`
 
 **F6 DeclOrder** (5). A relation over positions in the declaration list. One

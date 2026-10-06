@@ -1,0 +1,43 @@
+[0;91;1m[error HsPrefixNaming][0m: A field of Point called x.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsPrefixNaming/bad.hs@4:5-4:6[0m
+     [0;90;1m│[0m
+[0;90;1m   4 │[0m [0;97m [0m[0;97m [0m[0;97m{[0m[0;97m [0m[0;91;1mx[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m,[0m
+     [0;90;1m•[0m     [0;91m┬[0m 
+     [0;90;1m•[0m     [0;91m╰╸[0m [0;91mStart a constructor or field with the name of its own type.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A constructor and a field are in scope across the whole module that declares them and across every module importing it, where the type they belong to is not written beside them. The prefix is what says which type a name at a use site is about, and it is what keeps two types in one module from wanting the same field name. The whole of the type's name, because an abbreviation is a second name for the type that nothing keeps in step with the first.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 4 of test_resources/Rule/HsPrefixNaming/bad.hs, and say why: -- [allow:HsPrefixNaming] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsPrefixNaming][0m: A field of Configuration called confPath.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsPrefixNaming/bad.hs@9:5-9:13[0m
+     [0;90;1m│[0m
+[0;90;1m   9 │[0m [0;97m [0m[0;97m [0m[0;97m{[0m[0;97m [0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1mf[0m[0;91;1mP[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1mh[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m,[0m
+     [0;90;1m•[0m     [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m     [0;91m╰╸[0m [0;91mStart a constructor or field with the name of its own type.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A constructor and a field are in scope across the whole module that declares them and across every module importing it, where the type they belong to is not written beside them. The prefix is what says which type a name at a use site is about, and it is what keeps two types in one module from wanting the same field name. The whole of the type's name, because an abbreviation is a second name for the type that nothing keeps in step with the first.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 9 of test_resources/Rule/HsPrefixNaming/bad.hs, and say why: -- [allow:HsPrefixNaming] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsPrefixNaming][0m: A field of Wrapper called unWrapper.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsPrefixNaming/bad.hs@13:28-13:37[0m
+     [0;90;1m│[0m
+[0;90;1m  13 │[0m [0;97mn[0m[0;97me[0m[0;97mw[0m[0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mW[0m[0;97mr[0m[0;97ma[0m[0;97mp[0m[0;97mp[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mW[0m[0;97mr[0m[0;97ma[0m[0;97mp[0m[0;97mp[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m{[0m[0;91;1mu[0m[0;91;1mn[0m[0;91;1mW[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mp[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1mr[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m}[0m
+     [0;90;1m•[0m                            [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                            [0;91m╰╸[0m [0;91mStart a constructor or field with the name of its own type.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A constructor and a field are in scope across the whole module that declares them and across every module importing it, where the type they belong to is not written beside them. The prefix is what says which type a name at a use site is about, and it is what keeps two types in one module from wanting the same field name. The whole of the type's name, because an abbreviation is a second name for the type that nothing keeps in step with the first.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 13 of test_resources/Rule/HsPrefixNaming/bad.hs, and say why: -- [allow:HsPrefixNaming] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsPrefixNaming][0m: A constructor of Shape called Circle.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsPrefixNaming/bad.hs@16:5-16:11[0m
+     [0;90;1m│[0m
+[0;90;1m  16 │[0m [0;97m [0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1mC[0m[0;91;1mi[0m[0;91;1mr[0m[0;91;1mc[0m[0;91;1ml[0m[0;91;1me[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+     [0;90;1m•[0m     [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m     [0;91m╰╸[0m [0;91mStart a constructor or field with the name of its own type.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A constructor and a field are in scope across the whole module that declares them and across every module importing it, where the type they belong to is not written beside them. The prefix is what says which type a name at a use site is about, and it is what keeps two types in one module from wanting the same field name. The whole of the type's name, because an abbreviation is a second name for the type that nothing keeps in step with the first.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 16 of test_resources/Rule/HsPrefixNaming/bad.hs, and say why: -- [allow:HsPrefixNaming] <reason>[0m
+[0;90;1m─────╯[0m

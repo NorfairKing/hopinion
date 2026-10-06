@@ -27,6 +27,9 @@ library
       Hopinion.Check.Hs.NoStringError.Extract
       Hopinion.Check.Hs.NoStringError.Fact
       Hopinion.Check.Hs.NoStringError.Rule
+      Hopinion.Check.Hs.PrefixNaming.Extract
+      Hopinion.Check.Hs.PrefixNaming.Fact
+      Hopinion.Check.Hs.PrefixNaming.Rule
       Hopinion.Check.Hs.RecordFieldPerLine.Extract
       Hopinion.Check.Hs.RecordFieldPerLine.Fact
       Hopinion.Check.Hs.RecordFieldPerLine.Rule

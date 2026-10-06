@@ -25,6 +25,7 @@ import Hopinion.Annotation (annotationsOf)
 import Hopinion.Check.Hs.LambdaCase.Extract (casedArgumentsOf)
 import Hopinion.Check.Hs.NoSemigroupOnText.Extract (concatChainsOf)
 import Hopinion.Check.Hs.NoStringError.Extract (errorDeclsOf, errorSlotsOf)
+import Hopinion.Check.Hs.PrefixNaming.Extract (unprefixedNamesOf)
 import Hopinion.Check.Hs.RecordFieldPerLine.Extract (crowdedRecordsOf)
 import Hopinion.Check.Package.AppOnlyMain.Extract (strayAppDeclsOf)
 import Hopinion.Comment
@@ -91,6 +92,7 @@ extractModuleContext input parsed =
           moduleContextErrorDecls = errorDeclsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextCasedArguments = casedArgumentsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextCrowdedRecords = crowdedRecordsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
+          moduleContextUnprefixedNames = unprefixedNamesOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextStrayAppDecls = strayAppDeclsOf rp decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextTemplateHaskell = parsedModuleTemplateHaskell parsed,
           moduleContextOutcome = ParseOutcomeOk
@@ -126,6 +128,7 @@ emptyModuleContext input =
       moduleContextErrorDecls = [],
       moduleContextCasedArguments = [],
       moduleContextCrowdedRecords = [],
+      moduleContextUnprefixedNames = [],
       moduleContextStrayAppDecls = [],
       moduleContextTemplateHaskell = TemplateHaskellUseNone,
       moduleContextOutcome = ParseOutcomeOk

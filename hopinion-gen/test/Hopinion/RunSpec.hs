@@ -67,7 +67,7 @@ spec = describe "explainRule" $ do
   -- refused rather than answered with prose that reads like an explanation.
   it "refuses a name nothing answers to" $
     case explainRule shippedRules (RuleId "NoSuchRule") of
-      ExplanationGiven cs -> expectationFailure (unwords ["ExplanationGiven a rule this build does not have:", show cs])
+      ExplanationGiven cs -> expectationFailure (unwords ["Explained a rule this build does not have:", show cs])
       ExplanationNoRuleCalled cs ->
         renderChunksText WithoutColours cs
           `shouldBe` "There is no rule called NoSuchRule in this build of hopinion.\n\

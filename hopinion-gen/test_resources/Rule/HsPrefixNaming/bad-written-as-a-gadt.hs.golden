@@ -1,0 +1,21 @@
+[0;91;1m[error HsPrefixNaming][0m: A constructor of Shape called Circle.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsPrefixNaming/bad-written-as-a-gadt.hs@6:3-6:9[0m
+     [0;90;1m│[0m
+[0;90;1m   6 │[0m [0;97m [0m[0;97m [0m[0;91;1mC[0m[0;91;1mi[0m[0;91;1mr[0m[0;91;1mc[0m[0;91;1ml[0m[0;91;1me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m [0m[0;97m-[0m[0;97m>[0m[0;97m [0m[0;97mS[0m[0;97mh[0m[0;97ma[0m[0;97mp[0m[0;97me[0m
+     [0;90;1m•[0m   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m   [0;91m╰╸[0m [0;91mStart a constructor or field with the name of its own type.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A constructor and a field are in scope across the whole module that declares them and across every module importing it, where the type they belong to is not written beside them. The prefix is what says which type a name at a use site is about, and it is what keeps two types in one module from wanting the same field name. The whole of the type's name, because an abbreviation is a second name for the type that nothing keeps in step with the first.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 6 of test_resources/Rule/HsPrefixNaming/bad-written-as-a-gadt.hs, and say why: -- [allow:HsPrefixNaming] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsPrefixNaming][0m: A field of Event called at.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsPrefixNaming/bad-written-as-a-gadt.hs@10:19-10:21[0m
+     [0;90;1m│[0m
+[0;90;1m  10 │[0m [0;97m [0m[0;97m [0m[0;97mE[0m[0;97mv[0m[0;97me[0m[0;97mn[0m[0;97mt[0m[0;97mO[0m[0;97mp[0m[0;97me[0m[0;97mn[0m[0;97me[0m[0;97md[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97m{[0m[0;91;1ma[0m[0;91;1mt[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m}[0m[0;97m [0m[0;97m-[0m[0;97m>[0m[0;97m [0m[0;97mE[0m[0;97mv[0m[0;97me[0m[0;97mn[0m[0;97mt[0m
+     [0;90;1m•[0m                   [0;91m┬[0m[0;91m─[0m 
+     [0;90;1m•[0m                   [0;91m╰╸[0m [0;91mStart a constructor or field with the name of its own type.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A constructor and a field are in scope across the whole module that declares them and across every module importing it, where the type they belong to is not written beside them. The prefix is what says which type a name at a use site is about, and it is what keeps two types in one module from wanting the same field name. The whole of the type's name, because an abbreviation is a second name for the type that nothing keeps in step with the first.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 10 of test_resources/Rule/HsPrefixNaming/bad-written-as-a-gadt.hs, and say why: -- [allow:HsPrefixNaming] <reason>[0m
+[0;90;1m─────╯[0m

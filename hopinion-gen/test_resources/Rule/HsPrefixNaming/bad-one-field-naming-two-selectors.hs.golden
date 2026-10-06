@@ -1,0 +1,21 @@
+[0;91;1m[error HsPrefixNaming][0m: A field of Point called x.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsPrefixNaming/bad-one-field-naming-two-selectors.hs@4:5-4:6[0m
+     [0;90;1m│[0m
+[0;90;1m   4 │[0m [0;97m [0m[0;97m [0m[0;97m{[0m[0;97m [0m[0;91;1mx[0m[0;97m,[0m[0;97m [0m[0;97my[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+     [0;90;1m•[0m     [0;91m┬[0m 
+     [0;90;1m•[0m     [0;91m╰╸[0m [0;91mStart a constructor or field with the name of its own type.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A constructor and a field are in scope across the whole module that declares them and across every module importing it, where the type they belong to is not written beside them. The prefix is what says which type a name at a use site is about, and it is what keeps two types in one module from wanting the same field name. The whole of the type's name, because an abbreviation is a second name for the type that nothing keeps in step with the first.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 4 of test_resources/Rule/HsPrefixNaming/bad-one-field-naming-two-selectors.hs, and say why: -- [allow:HsPrefixNaming] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsPrefixNaming][0m: A field of Point called y.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsPrefixNaming/bad-one-field-naming-two-selectors.hs@4:8-4:9[0m
+     [0;90;1m│[0m
+[0;90;1m   4 │[0m [0;97m [0m[0;97m [0m[0;97m{[0m[0;97m [0m[0;97mx[0m[0;97m,[0m[0;97m [0m[0;91;1my[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+     [0;90;1m•[0m        [0;91m┬[0m 
+     [0;90;1m•[0m        [0;91m╰╸[0m [0;91mStart a constructor or field with the name of its own type.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A constructor and a field are in scope across the whole module that declares them and across every module importing it, where the type they belong to is not written beside them. The prefix is what says which type a name at a use site is about, and it is what keeps two types in one module from wanting the same field name. The whole of the type's name, because an abbreviation is a second name for the type that nothing keeps in step with the first.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 4 of test_resources/Rule/HsPrefixNaming/bad-one-field-naming-two-selectors.hs, and say why: -- [allow:HsPrefixNaming] <reason>[0m
+[0;90;1m─────╯[0m

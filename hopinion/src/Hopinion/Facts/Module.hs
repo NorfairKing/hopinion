@@ -15,6 +15,7 @@ import GHC.Generics (Generic)
 import Hopinion.Check.Hs.LambdaCase.Fact
 import Hopinion.Check.Hs.NoSemigroupOnText.Fact
 import Hopinion.Check.Hs.NoStringError.Fact
+import Hopinion.Check.Hs.PrefixNaming.Fact
 import Hopinion.Check.Hs.RecordFieldPerLine.Fact
 import Hopinion.Check.Package.AppOnlyMain.Fact
 import Hopinion.Comment (CommentFact (..))
@@ -57,6 +58,7 @@ data ModuleContext = ModuleContext
     moduleContextErrorDecls :: ![ErrorDecl],
     moduleContextCasedArguments :: ![CasedArgument],
     moduleContextCrowdedRecords :: ![CrowdedRecord],
+    moduleContextUnprefixedNames :: ![UnprefixedName],
     moduleContextStrayAppDecls :: ![StrayAppDecl],
     moduleContextTemplateHaskell :: !TemplateHaskellUse,
     moduleContextOutcome :: !ParseOutcome
