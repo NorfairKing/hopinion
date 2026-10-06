@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 -- | One spec for every rule, so that adding a rule adds resources and no test
 -- code, and one test for every resource, so that adding a case adds a file and
 -- no test code either. It also carries the meta-properties, which therefore

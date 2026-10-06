@@ -1,5 +1,3 @@
-{-# LANGUAGE ScopedTypeVariables #-}
-
 -- | Beside the rule rather than in the shared extraction, because nothing else
 -- asks how a record value is laid out. What is shared is how an expression is
 -- taken apart, and that comes from 'Hopinion.Extract.Ghc'.

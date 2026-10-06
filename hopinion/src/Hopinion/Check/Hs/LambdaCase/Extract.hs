@@ -1,5 +1,4 @@
 {-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 
 -- | Beside the rule rather than in the shared extraction, because nothing else
 -- asks what a function does with its last argument. What is shared is how an
