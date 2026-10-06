@@ -93,18 +93,18 @@ extractModuleContext input parsed =
           moduleContextCrowdedRecords = crowdedRecordsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextStrayAppDecls = strayAppDeclsOf rp decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextTemplateHaskell = parsedModuleTemplateHaskell parsed,
-          moduleContextOutcome = ParsedOk
+          moduleContextOutcome = ParseOutcomeOk
         }
 
 -- | A module that did not parse still produces facts, because the project
 -- layer has to treat the failure as an error rather than as a module with no
 -- declarations.
 failedModuleContext :: ExtractInput -> Position -> Text -> ModuleContext
-failedModuleContext input errLoc errMsg = (emptyModuleContext input) {moduleContextOutcome = ParseFailed errLoc errMsg}
+failedModuleContext input errLoc errMsg = (emptyModuleContext input) {moduleContextOutcome = ParseOutcomeFailed errLoc errMsg}
 
 -- | A module that is declared and present but holds no Haskell to read.
 preprocessedModuleContext :: ExtractInput -> ModuleContext
-preprocessedModuleContext input = (emptyModuleContext input) {moduleContextOutcome = NotHaskellSource}
+preprocessedModuleContext input = (emptyModuleContext input) {moduleContextOutcome = ParseOutcomeNotHaskellSource}
 
 emptyModuleContext :: ExtractInput -> ModuleContext
 emptyModuleContext input =
@@ -114,7 +114,7 @@ emptyModuleContext input =
       moduleContextComponent = extractInputComponent input,
       moduleContextComponentName = extractInputComponentName input,
       moduleContextDecls = [],
-      moduleContextExports = NoExportList,
+      moduleContextExports = ExportListNone,
       moduleContextInstances = [],
       moduleContextNames = [],
       moduleContextComments = [],
@@ -127,8 +127,8 @@ emptyModuleContext input =
       moduleContextCasedArguments = [],
       moduleContextCrowdedRecords = [],
       moduleContextStrayAppDecls = [],
-      moduleContextTemplateHaskell = NoTemplateHaskell,
-      moduleContextOutcome = ParsedOk
+      moduleContextTemplateHaskell = TemplateHaskellUseNone,
+      moduleContextOutcome = ParseOutcomeOk
     }
 
 nameFactOf :: ModuleRef -> [DeclFact] -> NameOccurrence -> NameFact
@@ -157,30 +157,30 @@ declFactsOf rp ldecl =
         ]
    in case unLoc ldecl of
         TyClD _ d -> case d of
-          FamDecl _ fd -> one (DeclName (rdrText (unLoc (fdLName fd)))) DeclOther
-          SynDecl {tcdLName = n} -> one (DeclName (rdrText (unLoc n))) DeclTypeSynonym
+          FamDecl _ fd -> one (DeclName (rdrText (unLoc (fdLName fd)))) DeclKindOther
+          SynDecl {tcdLName = n} -> one (DeclName (rdrText (unLoc n))) DeclKindTypeSynonym
           DataDecl {tcdLName = n, tcdDataDefn = defn} ->
             one (DeclName (rdrText (unLoc n))) (dataOrNewtype defn)
-          ClassDecl {tcdLName = n} -> one (DeclName (rdrText (unLoc n))) DeclClass
+          ClassDecl {tcdLName = n} -> one (DeclName (rdrText (unLoc n))) DeclKindClass
         InstD _ d -> case d of
           ClsInstD _ ci -> case sigTypeHead (cid_poly_ty ci) of
-            Just (cls, th) -> one (instanceDeclName cls th) DeclInstance
-            Nothing -> one (DeclName "instance") DeclInstance
-          DataFamInstD _ _ -> one (DeclName "data family instance") DeclOther
-          TyFamInstD _ _ -> one (DeclName "type family instance") DeclOther
+            Just (cls, th) -> one (instanceDeclName cls th) DeclKindInstance
+            Nothing -> one (DeclName "instance") DeclKindInstance
+          DataFamInstD _ _ -> one (DeclName "data family instance") DeclKindOther
+          TyFamInstD _ _ -> one (DeclName "type family instance") DeclKindOther
         DerivD _ dd -> case sigTypeHead (dropWildCard (deriv_type dd)) of
-          Just (cls, th) -> one (instanceDeclName cls th) DeclInstance
-          Nothing -> one (DeclName "deriving instance") DeclInstance
+          Just (cls, th) -> one (instanceDeclName cls th) DeclKindInstance
+          Nothing -> one (DeclName "deriving instance") DeclKindInstance
         ValD _ b -> case b of
-          FunBind {fun_id = n} -> one (DeclName (rdrText (unLoc n))) DeclValue
-          PatBind {} -> one (DeclName "pattern binding") DeclValue
-          PatSynBind _ psb -> one (DeclName (rdrText (unLoc (psb_id psb)))) DeclPattern
-          VarBind {} -> one (DeclName "variable binding") DeclValue
+          FunBind {fun_id = n} -> one (DeclName (rdrText (unLoc n))) DeclKindValue
+          PatBind {} -> one (DeclName "pattern binding") DeclKindValue
+          PatSynBind _ psb -> one (DeclName (rdrText (unLoc (psb_id psb)))) DeclKindPattern
+          VarBind {} -> one (DeclName "variable binding") DeclKindValue
         SigD _ s -> case s of
           TypeSig _ ns _ ->
             [ DeclFact
                 { declFactName = DeclName (rdrText (unLoc n)),
-                  declFactKind = DeclSignature,
+                  declFactKind = DeclKindSignature,
                   declFactSpan = sp
                 }
             | n <- ns
@@ -188,15 +188,15 @@ declFactsOf rp ldecl =
           PatSynSig _ ns _ ->
             [ DeclFact
                 { declFactName = DeclName (rdrText (unLoc n)),
-                  declFactKind = DeclSignature,
+                  declFactKind = DeclKindSignature,
                   declFactSpan = sp
                 }
             | n <- ns
             ]
-          _ -> one (DeclName "signature") DeclOther
-        ForD _ _ -> one (DeclName "foreign") DeclForeign
-        AnnD _ (HsAnnotation _ provenance _) -> one (annotationDeclName provenance) DeclAnnotation
-        _ -> one (DeclName "declaration") DeclOther
+          _ -> one (DeclName "signature") DeclKindOther
+        ForD _ _ -> one (DeclName "foreign") DeclKindForeign
+        AnnD _ (HsAnnotation _ provenance _) -> one (annotationDeclName provenance) DeclKindAnnotation
+        _ -> one (DeclName "declaration") DeclKindOther
 
 -- | An annotation pragma is named after whatever it annotates, because that is
 -- what it is about.
@@ -218,8 +218,8 @@ annotationDeclName = \case
 
 dataOrNewtype :: HsDataDefn GhcPs -> DeclKind
 dataOrNewtype defn = case dd_cons defn of
-  NewTypeCon _ -> DeclNewtype
-  DataTypeCons _ _ -> DeclData
+  NewTypeCon _ -> DeclKindNewtype
+  DataTypeCons _ _ -> DeclKindData
 
 dropWildCard :: LHsSigWcType GhcPs -> LHsSigType GhcPs
 dropWildCard = hswc_body
@@ -230,7 +230,7 @@ dropWildCard = hswc_body
 -- list exports nothing, so a list holding one and a name exports one thing.
 exportListOf :: Path Rel File -> HsModule GhcPs -> ExportList
 exportListOf rp m = case hsmodExports m of
-  Nothing -> NoExportList
+  Nothing -> ExportListNone
   Just lies ->
     ExportList
       (spanOfSrcSpan rp (getLocA lies))
@@ -274,9 +274,9 @@ instanceFactsOf rp ref ldecl =
             [ InstanceFact
                 { instanceFactClass = cls,
                   instanceFactType = th,
-                  instanceFactOrigin = OriginInstanceDecl (instanceMethodsOf ci),
+                  instanceFactOrigin = InstanceOriginInstanceDecl (instanceMethodsOf ci),
                   instanceFactSpan = sp,
-                  instanceFactScope = ScopeOfDecl ref (instanceDeclName cls th)
+                  instanceFactScope = ScopeKeyOfDecl ref (instanceDeclName cls th)
                 }
             ]
           Nothing -> []
@@ -287,13 +287,13 @@ instanceFactsOf rp ref ldecl =
                   instanceFactType = th,
                   instanceFactOrigin = standaloneOrigin (deriv_strategy dd),
                   instanceFactSpan = sp,
-                  instanceFactScope = ScopeOfDecl ref (instanceDeclName cls th)
+                  instanceFactScope = ScopeKeyOfDecl ref (instanceDeclName cls th)
                 }
             ]
           Nothing -> []
         TyClD _ DataDecl {tcdLName = n, tcdDataDefn = defn} ->
           let subject = TypeHead (rdrText (unLoc n))
-              scope = ScopeOfDecl ref (DeclName (rdrText (unLoc n)))
+              scope = ScopeKeyOfDecl ref (DeclName (rdrText (unLoc n)))
            in [ InstanceFact
                   { instanceFactClass = cls,
                     -- The instance head type is the enclosing declaration. The
@@ -318,8 +318,8 @@ instanceMethodsOf :: ClsInstDecl GhcPs -> InstanceMethods
 instanceMethodsOf ci =
   let binds = cid_binds ci
    in if not (null binds) && all (bindIgnoresArguments . unLoc) binds
-        then MethodsIgnoreArguments
-        else MethodsUseArguments
+        then InstanceMethodsIgnoreArguments
+        else InstanceMethodsUseArguments
 
 bindIgnoresArguments :: HsBind GhcPs -> Bool
 bindIgnoresArguments = \case
@@ -344,8 +344,8 @@ isWildPat = \case
 
 standaloneOrigin :: Maybe (LDerivStrategy GhcPs) -> InstanceOrigin
 standaloneOrigin = \case
-  Just (L _ (ViaStrategy (XViaStrategyPs _ sigTy))) -> OriginDerivingVia (viaHead sigTy)
-  _ -> OriginStandaloneDeriving
+  Just (L _ (ViaStrategy (XViaStrategyPs _ sigTy))) -> InstanceOriginDerivingVia (viaHead sigTy)
+  _ -> InstanceOriginStandaloneDeriving
 
 derivedClasses :: HsDataDefn GhcPs -> [(Text, InstanceOrigin)]
 derivedClasses defn =
@@ -364,12 +364,12 @@ clauseTypes (L _ dct) = case dct of
 
 clauseOrigin :: Maybe (LDerivStrategy GhcPs) -> InstanceOrigin
 clauseOrigin = \case
-  Nothing -> OriginDerivingUnspecified
+  Nothing -> InstanceOriginDerivingUnspecified
   Just (L _ s) -> case s of
-    StockStrategy _ -> OriginDerivingStock
-    AnyclassStrategy _ -> OriginDerivingAnyclass
-    NewtypeStrategy _ -> OriginDerivingNewtype
-    ViaStrategy (XViaStrategyPs _ sigTy) -> OriginDerivingVia (viaHead sigTy)
+    StockStrategy _ -> InstanceOriginDerivingStock
+    AnyclassStrategy _ -> InstanceOriginDerivingAnyclass
+    NewtypeStrategy _ -> InstanceOriginDerivingNewtype
+    ViaStrategy (XViaStrategyPs _ sigTy) -> InstanceOriginDerivingVia (viaHead sigTy)
 
 -- | A derived class name applied to nothing, as it appears in a deriving
 -- clause, where the subject type is the enclosing declaration rather than an

@@ -123,9 +123,9 @@ findingsResult fs = CheckResult {checkResultFindings = fs}
 -- and takes no view on it, so a rule decides for itself what generated code
 -- means rather than being told by a fact computed on its behalf.
 data RuleImpl
-  = ModuleRule !ModuleCheck
-  | PackageRule !PackageCheck
-  | ProjectRule !ProjectCheck
+  = RuleImplModule !ModuleCheck
+  | RuleImplPackage !PackageCheck
+  | RuleImplProject !ProjectCheck
 
 -- | A rule that can only see one module at a time. It carries nothing, because
 -- everything it reads has become a finding by the time the module phase
@@ -134,10 +134,10 @@ data RuleImpl
 -- Pure, over the source alone. A module rule wanting what the compiler wrote
 -- down would take it as a second argument; nothing does yet. Package and
 -- project rules are unaffected, since those already run in IO.
-newtype ModuleCheck = FromSource (ModuleContext -> CheckResult)
+newtype ModuleCheck = ModuleCheckFromSource (ModuleContext -> CheckResult)
 
 moduleCheckFindings :: ModuleCheck -> ModuleContext -> CheckResult
-moduleCheckFindings (FromSource f) = f
+moduleCheckFindings (ModuleCheckFromSource f) = f
 
 data PackageCheck = PackageCheck
   { packageCheckMigration :: Migration,
@@ -153,9 +153,9 @@ data ProjectCheck = ProjectCheck
 
 ruleLevel :: Rule -> Level
 ruleLevel r = case ruleImpl r of
-  ModuleRule _ -> LevelModule
-  PackageRule _ -> LevelPackage
-  ProjectRule _ -> LevelProject
+  RuleImplModule _ -> LevelModule
+  RuleImplPackage _ -> LevelPackage
+  RuleImplProject _ -> LevelProject
 
 -- | Every table a rule brought, so that a store is created with room for all of
 -- them whether or not anything writes one.
@@ -164,17 +164,17 @@ ruleMigrations rules =
   [ m
   | r <- rules,
     m <- case ruleImpl r of
-      ModuleRule _ -> []
-      PackageRule c -> [packageCheckMigration c]
-      ProjectRule c -> [projectCheckMigration c]
+      RuleImplModule _ -> []
+      RuleImplPackage c -> [packageCheckMigration c]
+      RuleImplProject c -> [projectCheckMigration c]
   ]
 
 -- | What this rule writes out of one module, or nothing when it writes nothing.
 carryOf :: Rule -> PackageName -> ModuleContext -> Carry
 carryOf r pkg ctx = case ruleImpl r of
-  ModuleRule _ -> pure ()
-  PackageRule c -> packageCheckCarry c pkg ctx
-  ProjectRule c -> projectCheckCarry c pkg ctx
+  RuleImplModule _ -> pure ()
+  RuleImplPackage c -> packageCheckCarry c pkg ctx
+  RuleImplProject c -> projectCheckCarry c pkg ctx
 
 -- | Every rule owns its own metadata, so there is no central table of levels,
 -- classes or guide references to edit when a rule is added.
@@ -197,8 +197,8 @@ data Rule = Rule
 -- turned off is still one this run knows: a suppression naming it is a
 -- suppression to remove, where one naming nothing is a typo.
 data RuleUse
-  = RuleRuns
-  | RuleTurnedOff
+  = RuleUseRuns
+  | RuleUseTurnedOff
   deriving stock (Show, Eq, Generic)
 
 instance Validity RuleUse
@@ -232,24 +232,24 @@ newtype RuleSet = RuleSet {ruleSetEntries :: [RuleEntry]}
 -- reaches a report, and 'renderRuleSetError' is the only place any of them is
 -- put into words.
 data RuleSetError
-  = RuleIdsAreNotIds !(NonEmpty RuleId)
-  | TwoRulesByOneId !(NonEmpty RuleId)
-  | TurnedOffRulesDoNotExist !(NonEmpty RuleId)
+  = RuleSetErrorIdsAreNotIds !(NonEmpty RuleId)
+  | RuleSetErrorTwoRulesByOneId !(NonEmpty RuleId)
+  | RuleSetErrorTurnedOffRulesDoNotExist !(NonEmpty RuleId)
   deriving (Show, Eq)
 
 renderRuleSetError :: RuleSetError -> [Chunk]
 renderRuleSetError = \case
-  RuleIdsAreNotIds rids ->
+  RuleSetErrorIdsAreNotIds rids ->
     [ chunk "These rule ids are not ids: ",
       fore red (chunk (listOf rids)),
       chunk ". An id is PascalCase, alphanumeric, and holds no colon."
     ]
-  TwoRulesByOneId rids ->
+  RuleSetErrorTwoRulesByOneId rids ->
     [ chunk "Two rules are called ",
       fore red (chunk (listOf rids)),
       chunk ". An id is what a report prints and what explain is asked about, so it has to mean one rule."
     ]
-  TurnedOffRulesDoNotExist rids ->
+  RuleSetErrorTurnedOffRulesDoNotExist rids ->
     [ chunk "There is no rule called ",
       fore red (chunk (listOf rids)),
       chunk ". Check the spelling: the rule you meant is still running."
@@ -276,7 +276,7 @@ ruleSet rules off = do
     tagged r =
       RuleEntry
         { ruleEntryRule = r,
-          ruleEntryUse = if ruleId r `elem` off then RuleTurnedOff else RuleRuns
+          ruleEntryUse = if ruleId r `elem` off then RuleUseTurnedOff else RuleUseRuns
         }
 
     -- A rule writes its own id as a literal, so this is where one that is not
@@ -285,17 +285,17 @@ ruleSet rules off = do
     assertEveryIdIsWellFormed =
       case [rid | r <- rules, let rid = ruleId r, not (isValid rid)] of
         [] -> Right ()
-        malformed -> Left (RuleIdsAreNotIds (NE.fromList malformed))
+        malformed -> Left (RuleSetErrorIdsAreNotIds (NE.fromList malformed))
 
     assertNoDuplicates =
       case [ids | ids@(_ : _ : _) <- groupSame (sort (map ruleId rules))] of
         [] -> Right ()
-        (clashing : _) -> Left (TwoRulesByOneId (NE.fromList clashing))
+        (clashing : _) -> Left (RuleSetErrorTwoRulesByOneId (NE.fromList clashing))
 
     assertEveryTurnedOffRuleExists =
       case [rid | rid <- off, rid `notElem` map ruleId rules] of
         [] -> Right ()
-        missing -> Left (TurnedOffRulesDoNotExist (NE.fromList missing))
+        missing -> Left (RuleSetErrorTurnedOffRulesDoNotExist (NE.fromList missing))
 
     groupSame = \case
       [] -> []
@@ -309,12 +309,12 @@ emptyRuleSet = RuleSet []
 
 -- | The rules that run, in the order they were registered.
 ruleSetRules :: RuleSet -> [Rule]
-ruleSetRules rs = [ruleEntryRule e | e <- ruleSetEntries rs, ruleEntryUse e == RuleRuns]
+ruleSetRules rs = [ruleEntryRule e | e <- ruleSetEntries rs, ruleEntryUse e == RuleUseRuns]
 
 -- | The rules this repository has decided against, which it still knows: a
 -- suppression naming one is wrong differently from one naming nothing.
 ruleSetTurnedOff :: RuleSet -> [Rule]
-ruleSetTurnedOff rs = [ruleEntryRule e | e <- ruleSetEntries rs, ruleEntryUse e == RuleTurnedOff]
+ruleSetTurnedOff rs = [ruleEntryRule e | e <- ruleSetEntries rs, ruleEntryUse e == RuleUseTurnedOff]
 
 -- | What this run makes of a name somebody wrote down. 'Nothing' is a name
 -- nothing here answers to, which is a typo, and means the rule they meant is
@@ -338,7 +338,7 @@ entryFor rs rid = case [e | e <- ruleSetEntries rs, ruleId (ruleEntryRule e) == 
 -- layer.
 ruleFor :: RuleSet -> RuleId -> Maybe Rule
 ruleFor rs rid = case entryFor rs rid of
-  Just e | ruleEntryUse e == RuleRuns -> Just (ruleEntryRule e)
+  Just e | ruleEntryUse e == RuleUseRuns -> Just (ruleEntryRule e)
   _ -> Nothing
 
 -- | The rule an id names whether or not this run makes it, which is what a
@@ -364,8 +364,8 @@ withoutRules off rs =
 scopeOfComment :: ModuleRef -> CommentFact -> ScopeKey
 scopeOfComment mk cf =
   case commentFactAttachment cf of
-    AttachedToDecl d -> ScopeOfDecl mk d
-    AttachedToStatement d _ -> ScopeOfDecl mk d
-    AttachedToFile -> ScopeOfFile mk
-    AttachedToExportList -> ScopeOfFile mk
-    Unattached -> ScopeOfFile mk
+    AttachmentToDecl d -> ScopeKeyOfDecl mk d
+    AttachmentToStatement d _ -> ScopeKeyOfDecl mk d
+    AttachmentToFile -> ScopeKeyOfFile mk
+    AttachmentToExportList -> ScopeKeyOfFile mk
+    AttachmentToNothing -> ScopeKeyOfFile mk

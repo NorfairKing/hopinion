@@ -83,10 +83,10 @@ data ModuleArtifacts = ModuleArtifacts
 data Answer a
   = Answered !a
   | -- | Nothing at any of the paths a build would have written to.
-    NothingThere
+    AnswerNothingThere
   | -- | Something at one of them, and why it did not answer: written by a
     -- different compiler, or about a different module.
-    Unusable ![Text]
+    AnswerUnusable ![Text]
 
 -- | A build was given and could not answer for a module it promised to cover.
 --
@@ -206,9 +206,9 @@ answerFor rp cm which = case M.lookup rp (compiledModulesByFile cm) of
     case (found, compiledModulesDirs cm) of
       (Answered answer, _) -> pure (Just answer)
       (_, HieDirectories []) -> pure Nothing
-      (NothingThere, HieDirectories dirs) ->
+      (AnswerNothingThere, HieDirectories dirs) ->
         promisedButAbsent (moduleArtifactsKey artifacts) rp [concat ["nothing at ", toFilePath d] | d <- dirs]
-      (Unusable whys, HieDirectories _) ->
+      (AnswerUnusable whys, HieDirectories _) ->
         promisedButAbsent (moduleArtifactsKey artifacts) rp (map T.unpack whys)
 
 -- | The build promised this module and did not answer for it, said with what
@@ -280,11 +280,11 @@ sameSourceFile compiled rp = case compiled of
 -- is what says which compiler wrote it.
 lookUp :: HieDirectories -> ModuleKey -> Path Rel File -> IO (Answer CompiledModule)
 lookUp (HieDirectories dirs) mk rp = case artifactFileOf "hie" mk of
-  Nothing -> pure NothingThere
+  Nothing -> pure AnswerNothingThere
   Just relative -> go relative [] dirs
   where
     go :: Path Rel File -> [Text] -> [Path Abs Dir] -> IO (Answer CompiledModule)
-    go _ whys [] = pure (if null whys then NothingThere else Unusable (reverse whys))
+    go _ whys [] = pure (if null whys then AnswerNothingThere else AnswerUnusable (reverse whys))
     -- Read rather than asked about and then read: a file that is there for the
     -- question and gone for the read would be an exception out of a rule.
     go relative whys (d : rest) = do
@@ -328,16 +328,16 @@ lookUp (HieDirectories dirs) mk rp = case artifactFileOf "hie" mk of
 -- picks the directory and the interface is read from the one it picked.
 lookUpInterface :: HieDirectories -> ModuleKey -> Path Rel File -> IO (Answer [DeclaredInstance])
 lookUpInterface (HieDirectories ds) mk rp = case artifactFileOf "hi" mk of
-  Nothing -> pure NothingThere
+  Nothing -> pure AnswerNothingThere
   Just relative -> go relative [] ds
   where
     go :: Path Rel File -> [Text] -> [Path Abs Dir] -> IO (Answer [DeclaredInstance])
-    go _ whys [] = pure (if null whys then NothingThere else Unusable (reverse whys))
+    go _ whys [] = pure (if null whys then AnswerNothingThere else AnswerUnusable (reverse whys))
     go relative whys (d : rest) = do
       here <- lookUp (HieDirectories [d]) mk rp
       case here of
-        NothingThere -> go relative whys rest
-        Unusable theirs -> go relative (reverse theirs ++ whys) rest
+        AnswerNothingThere -> go relative whys rest
+        AnswerUnusable theirs -> go relative (reverse theirs ++ whys) rest
         Answered _ -> do
           let file = d </> relative
           let path = toFilePath file

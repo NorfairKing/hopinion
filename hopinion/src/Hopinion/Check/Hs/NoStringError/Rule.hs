@@ -24,7 +24,7 @@ rule =
         \ is reported. Naming the prose does not make it a type: a synonym for\
         \ String is a String, and a wrapper around one has a single constructor,\
         \ which is still nothing to branch on.",
-      ruleImpl = ModuleRule (FromSource check)
+      ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 
 check :: ModuleContext -> CheckResult
@@ -73,8 +73,8 @@ declFindings mf =
 -- | How a declaration holds its prose, which is what a reader has to undo.
 shapeSaying :: ErrorDeclShape -> String
 shapeSaying = \case
-  ErrorDeclSynonym -> "is"
-  ErrorDeclWrapper -> "wraps nothing but"
+  ErrorDeclShapeSynonym -> "is"
+  ErrorDeclShapeWrapper -> "wraps nothing but"
 
 sentence :: [String] -> T.Text
 sentence ws = T.pack (concat [unwords ws, "."])

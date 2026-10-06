@@ -111,13 +111,13 @@ spec = do
   it "says so when the root is not a directory, rather than throwing" $ do
     root <- rootAt (resourceDir </> [reldir|no-such-directory|])
     result <- discoverPackages root (sourceRootDir root)
-    result `shouldBe` Left (NoDirectoryAt (sourceRootDir root))
+    result `shouldBe` Left (DiscoveryErrorNoDirectoryAt (sourceRootDir root))
 
   it "carries that into the report rather than killing the run" $ do
     root <- rootAt (resourceDir </> [reldir|no-such-directory|])
     report <- runCheck shippedRules noHieDirectories root
     [t | ComplaintFailure t <- complaintsList report]
-      `shouldBe` [RepositoryUnreadable (renderDiscoveryError (NoDirectoryAt (sourceRootDir root)))]
+      `shouldBe` [FailureRepositoryUnreadable (renderDiscoveryError (DiscoveryErrorNoDirectoryAt (sourceRootDir root)))]
 
   -- A cabal file may declare a source directory that is not there, and sydtest
   -- does. Walking it for unclaimed modules must be an empty answer rather than
@@ -136,8 +136,8 @@ spec = do
     let dir = resourceDir </> [reldir|absent-module|]
     report <- runCheck shippedRules noHieDirectories =<< rootAt dir
     [t | ComplaintFailure t <- complaintsList report]
-      `shouldBe` [ FactsIncomplete
-                     ( PackageDoesNotCover
+      `shouldBe` [ FailureFactsIncomplete
+                     ( StoreProblemPackageDoesNotCover
                          (PackageName "thing")
                          ModuleRef
                            { moduleRefModule = ModuleKey "Vanished",

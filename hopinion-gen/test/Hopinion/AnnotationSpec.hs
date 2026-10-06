@@ -95,16 +95,16 @@ spec = do
       commentSaying text =
         CommentFact
           { commentFactSpan = spanAt 3,
-            commentFactStyle = StyleLine,
+            commentFactStyle = CommentStyleLine,
             commentFactText = text,
-            commentFactAttachment = AttachedToDecl (DeclName "loose")
+            commentFactAttachment = AttachmentToDecl (DeclName "loose")
           }
 
   let todoFinding :: Finding
       todoFinding =
         Finding
           { findingRule = RuleId "CommentBareTodo",
-            findingScope = ScopeOfDecl exampleModule (DeclName "loose"),
+            findingScope = ScopeKeyOfDecl exampleModule (DeclName "loose"),
             findingSpan = spanAt 3,
             findingMessage = "a bare marker"
           }
@@ -128,10 +128,10 @@ spec = do
             }
 
   let parsedIn :: CommentStyle -> Text -> Either AnnotationError AnnotationFact
-      parsedIn = parsedWith (AttachedToDecl (DeclName "loose"))
+      parsedIn = parsedWith (AttachmentToDecl (DeclName "loose"))
 
   let parsed :: Text -> Either AnnotationError AnnotationFact
-      parsed = parsedIn StyleLine
+      parsed = parsedIn CommentStyleLine
 
   let withParsed :: Text -> (AnnotationFact -> IO ()) -> IO ()
       withParsed text act = case parsed text of
@@ -158,7 +158,7 @@ spec = do
     it "reads a bare marker as a suppression that is missing its rule" $
       let (facts, problems) = annotationsOf shippedRules exampleModule [commentSaying "[allow] because"]
        in (length facts, map annotationProblemMessage problems)
-            `shouldBe` (0, [renderAnnotationError NoRuleNamed])
+            `shouldBe` (0, [renderAnnotationError AnnotationErrorNoRuleNamed])
 
     it "leaves a comment that merely starts like the marker alone" $
       annotationsOf shippedRules exampleModule [commentSaying "[allowlist] the hosts we permit"]
@@ -167,30 +167,30 @@ spec = do
   describe "parseAnnotation" $ do
     it "rejects a bare marker with no rule" $
       parsed "[allow] because"
-        `shouldBe` Left NoRuleNamed
+        `shouldBe` Left AnnotationErrorNoRuleNamed
     it "rejects an unknown rule" $
       parsed "[allow:NoSuchRule] because"
-        `shouldBe` Left (UnknownRuleId "NoSuchRule")
+        `shouldBe` Left (AnnotationErrorUnknownRuleId "NoSuchRule")
     it "rejects a suppression with no reason" $
       parsed "[allow:CommentBareTodo]"
-        `shouldBe` Left NoReason
+        `shouldBe` Left AnnotationErrorNoReason
     it "rejects a comma list of rules" $
       parsed "[allow:CommentBareTodo,HsGenValidInGenPackage] because"
-        `shouldBe` Left TwoRulesAtOneSite
+        `shouldBe` Left AnnotationErrorTwoRulesAtOneSite
     it "refuses to sit in a documentation comment" $
-      parsedIn StyleHaddockNext "[allow:CommentBareTodo] because"
-        `shouldBe` Left InHaddock
+      parsedIn CommentStyleHaddockNext "[allow:CommentBareTodo] because"
+        `shouldBe` Left AnnotationErrorInHaddock
     it "refuses to be unattached" $
-      parsedWith Unattached StyleLine "[allow:CommentBareTodo] because"
-        `shouldBe` Left AttachedToNothing
+      parsedWith AttachmentToNothing CommentStyleLine "[allow:CommentBareTodo] because"
+        `shouldBe` Left AnnotationErrorAttachedToNothing
     it "accepts a rule and a reason" $ do
       reason <- givenReason "because it is fine"
       parsed "[allow:CommentBareTodo] because it is fine"
         `shouldBe` Right
           AnnotationFact
             { annotationFactRule = RuleId "CommentBareTodo",
-              annotationFactScope = ScopeOfDecl exampleModule (DeclName "loose"),
-              annotationFactPrecision = PrecisionDecl,
+              annotationFactScope = ScopeKeyOfDecl exampleModule (DeclName "loose"),
+              annotationFactPrecision = AnnotationPrecisionDecl,
               annotationFactReason = ReasonGiven reason,
               annotationFactSpan = spanAt 1
             }
@@ -199,8 +199,8 @@ spec = do
         `shouldBe` Right
           AnnotationFact
             { annotationFactRule = RuleId "CommentBareTodo",
-              annotationFactScope = ScopeOfDecl exampleModule (DeclName "loose"),
-              annotationFactPrecision = PrecisionDecl,
+              annotationFactScope = ScopeKeyOfDecl exampleModule (DeclName "loose"),
+              annotationFactPrecision = AnnotationPrecisionDecl,
               annotationFactReason = ReasonAdoption,
               annotationFactSpan = spanAt 1
             }
@@ -237,10 +237,10 @@ spec = do
         `shouldBe` [1, 3]
     it "reports one that names no rule as broken, exactly as a file that is read would" $
       map annotationProblemMessage (snd (unreadSuppressionsIn shippedRules exampleFile "-- [allow] because\n"))
-        `shouldBe` [renderAnnotationError NoRuleNamed]
+        `shouldBe` [renderAnnotationError AnnotationErrorNoRuleNamed]
     it "reports one that names a rule nothing answers to as broken" $
       map annotationProblemMessage (snd (unreadSuppressionsIn shippedRules exampleFile "-- [allow:NoSuchRule] because\n"))
-        `shouldBe` [renderAnnotationError (UnknownRuleId "NoSuchRule")]
+        `shouldBe` [renderAnnotationError (AnnotationErrorUnknownRuleId "NoSuchRule")]
     it "leaves a file that merely mentions a word starting the same way alone" $
       unreadSuppressionsIn shippedRules exampleFile "module Thing where\n\n-- the [allowlist] of hosts we permit\n"
         `shouldBe` ([], [])
@@ -263,7 +263,7 @@ spec = do
       suppressionFor todoFinding {findingSpan = wholeFileSpan exampleFile} "because"
         `shouldBe` "-- [allow:file:CommentBareTodo] because"
     it "is file-scoped for a finding whose comment attaches to no declaration" $
-      suppressionFor todoFinding {findingScope = ScopeOfFile exampleModule} "because"
+      suppressionFor todoFinding {findingScope = ScopeKeyOfFile exampleModule} "because"
         `shouldBe` "-- [allow:file:CommentBareTodo] because"
 
   describe "applySuppression" $ do
@@ -372,7 +372,7 @@ spec = do
             [t | ComplaintFailure t <- complaintsList report]
               `shouldBe` replicate
                 3
-                (FactsIncomplete (SuppressionNamesRuleNotRun (RuleId "CommentBareTodo")))
+                (FailureFactsIncomplete (StoreProblemSuppressionNamesRuleNotRun (RuleId "CommentBareTodo")))
 
   -- The keystone. On-by-default with unlimited local escapes is only safe while
   -- a suppression cannot outlive its reason, so every way one can stop being

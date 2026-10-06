@@ -19,8 +19,8 @@ import GHC.Generics (Generic)
 import Hopinion.Facts.Name
 
 data PackageRole
-  = RoleMain
-  | RoleGen
+  = PackageRoleMain
+  | PackageRoleGen
   deriving stock (Show, Eq, Ord, Enum, Bounded, Generic)
 
 instance Validity PackageRole
@@ -36,8 +36,8 @@ instance PersistFieldSql PackageRole where
 
 packageRoleText :: PackageRole -> Text
 packageRoleText = \case
-  RoleMain -> "main"
-  RoleGen -> "gen"
+  PackageRoleMain -> "main"
+  PackageRoleGen -> "gen"
 
 parsePackageRole :: Text -> Maybe PackageRole
 parsePackageRole t = lookup t [(packageRoleText r, r) | r <- [minBound .. maxBound]]
@@ -47,7 +47,7 @@ parsePackageRole t = lookup t [(packageRoleText r, r) | r <- [minBound .. maxBou
 -- tests has all its obligations unmet, and saying which package is missing is
 -- most of what the reader needs.
 data GenPackage
-  = NoGenPackage !PackageName
+  = GenPackageNone !PackageName
   | GenPackage !PackageName
   deriving stock (Show, Eq, Generic)
 

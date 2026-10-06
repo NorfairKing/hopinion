@@ -107,4 +107,4 @@ spec = do
       renderReportColoured
         shippedRules
         (SourceMap M.empty)
-        (failureComplaints [FactsIncomplete (NoFactsForPackage (PackageName "lonely"))])
+        (failureComplaints [FailureFactsIncomplete (StoreProblemNoFactsForPackage (PackageName "lonely"))])

@@ -119,8 +119,8 @@ data ModuleModel = ModuleModel
 -- | Whether the file behind a declared module is Haskell to read or a
 -- preprocessor input, which holds no Haskell and so is read by nothing here.
 data ModuleSource
-  = HaskellSource
-  | PreprocessedSource
+  = ModuleSourceHaskell
+  | ModuleSourcePreprocessed
   deriving (Show, Eq)
 
 data ComponentModel = ComponentModel
@@ -164,24 +164,24 @@ data PackageModel = PackageModel
 -- the exception: they are that library's rendering of its own syntax, passed
 -- through rather than owned here.
 data DiscoveryError
-  = NoDirectoryAt !(Path Abs Dir)
-  | NoCabalFileUnder !(Path Abs Dir)
-  | CabalFileOutsideRoot !(Path Abs File)
-  | CabalFileUnparseable !(Path Abs File) !Text
-  | TwoPackagesCalled !PackageName !(NonEmpty (Path Rel File))
+  = DiscoveryErrorNoDirectoryAt !(Path Abs Dir)
+  | DiscoveryErrorNoCabalFileUnder !(Path Abs Dir)
+  | DiscoveryErrorCabalFileOutsideRoot !(Path Abs File)
+  | DiscoveryErrorCabalFileUnparseable !(Path Abs File) !Text
+  | DiscoveryErrorTwoPackagesCalled !PackageName !(NonEmpty (Path Rel File))
   deriving (Show, Eq)
 
 renderDiscoveryError :: DiscoveryError -> Text
 renderDiscoveryError = \case
-  NoDirectoryAt dir ->
+  DiscoveryErrorNoDirectoryAt dir ->
     T.pack (unwords ["There is no directory at", toFilePath dir, "to read packages from."])
-  NoCabalFileUnder dir ->
+  DiscoveryErrorNoCabalFileUnder dir ->
     T.pack (unwords ["No cabal file under", toFilePath dir])
-  CabalFileOutsideRoot cabalFile ->
+  DiscoveryErrorCabalFileOutsideRoot cabalFile ->
     T.pack (unwords ["Outside the source root:", toFilePath cabalFile])
-  CabalFileUnparseable cabalFile errs ->
+  DiscoveryErrorCabalFileUnparseable cabalFile errs ->
     T.pack (unwords ["Failed to parse", toFilePath cabalFile, ":", T.unpack errs])
-  TwoPackagesCalled name cabalFiles ->
+  DiscoveryErrorTwoPackagesCalled name cabalFiles ->
     T.pack
       ( unwords
           ( [ "Two packages are called",
@@ -201,7 +201,7 @@ discoverPackages root from = do
   -- anything between the asking and the walking could delete the directory.
   walked <- forgivingAbsence (packageCabalFiles from)
   case walked of
-    Nothing -> pure (Left (NoDirectoryAt from))
+    Nothing -> pure (Left (DiscoveryErrorNoDirectoryAt from))
     Just cabalFiles -> do
       models <- traverse (readPackageModel root) cabalFiles
       pure (sequence models >>= assertNamesAreUnique)
@@ -217,7 +217,7 @@ discoverPackages root from = do
         [] -> Right models
         (clashing@(first :| _) : _) ->
           Left
-            ( TwoPackagesCalled
+            ( DiscoveryErrorTwoPackagesCalled
                 (packageModelName first)
                 (NE.map packageModelCabal clashing)
             )
@@ -284,9 +284,9 @@ readPackageModel root cabalFile = do
   contents <- BS.readFile (toFilePath cabalFile)
   case (snd (runParseResult (parseGenericPackageDescription contents)), relPathIn root cabalFile) of
     (_, Nothing) ->
-      pure (Left (CabalFileOutsideRoot cabalFile))
+      pure (Left (DiscoveryErrorCabalFileOutsideRoot cabalFile))
     (Left (_, errs), _) ->
-      pure (Left (CabalFileUnparseable cabalFile (T.pack (show errs))))
+      pure (Left (DiscoveryErrorCabalFileUnparseable cabalFile (T.pack (show errs))))
     (Right gpd, Just relCabal) -> do
       let pd = flattenPackageDescription gpd
       let dir = parent cabalFile
@@ -296,7 +296,7 @@ readPackageModel root cabalFile = do
         ( Right
             PackageModel
               { packageModelName = PackageName name,
-                packageModelRole = if T.isSuffixOf "-gen" name then RoleGen else RoleMain,
+                packageModelRole = if T.isSuffixOf "-gen" name then PackageRoleGen else PackageRoleMain,
                 packageModelDir = dir,
                 packageModelCabal = relCabal,
                 packageModelComponents = components,
@@ -311,14 +311,14 @@ readPackageModel root cabalFile = do
 componentsOf :: PackageDescription -> [DeclaredComponent]
 componentsOf pd =
   concat
-    [ [ DeclaredComponent ComponentLib (nameOfLibrary l) (libBuildInfo l) (libraryModules l) Nothing
+    [ [ DeclaredComponent ComponentKindLib (nameOfLibrary l) (libBuildInfo l) (libraryModules l) Nothing
       | Just l <- [library pd]
       ],
-      [ DeclaredComponent ComponentLib (nameOfLibrary l) (libBuildInfo l) (libraryModules l) Nothing
+      [ DeclaredComponent ComponentKindLib (nameOfLibrary l) (libBuildInfo l) (libraryModules l) Nothing
       | l <- subLibraries pd
       ],
       [ DeclaredComponent
-          ComponentApp
+          ComponentKindApp
           (unqualName (exeName e))
           (buildInfo e)
           (otherModules (buildInfo e))
@@ -326,7 +326,7 @@ componentsOf pd =
       | e <- executables pd
       ],
       [ DeclaredComponent
-          ComponentTest
+          ComponentKindTest
           (unqualName (testName t))
           (testBuildInfo t)
           (otherModules (testBuildInfo t))
@@ -334,7 +334,7 @@ componentsOf pd =
       | t <- testSuites pd
       ],
       [ DeclaredComponent
-          ComponentBench
+          ComponentKindBench
           (unqualName (Cabal.benchmarkName b))
           (Cabal.benchmarkBuildInfo b)
           (otherModules (Cabal.benchmarkBuildInfo b))
@@ -409,8 +409,8 @@ resolveModule root sourceDirs m = do
   -- Haskell first: a package may ship both, in which case the checked-in
   -- module is the one to read.
   pure $ case (haskell, preprocessed) of
-    (f : _, _) -> modelFor HaskellSource f
-    ([], f : _) -> modelFor PreprocessedSource f
+    (f : _, _) -> modelFor ModuleSourceHaskell f
+    ([], f : _) -> modelFor ModuleSourcePreprocessed f
     ([], []) -> Nothing
   where
     modelFor source f = do
@@ -538,7 +538,7 @@ resolveMain root sourceDirs mainIs = do
             moduleModelRelPath = rp,
             moduleModelSource =
               if fileExtension f `elem` map Just preprocessorExtensions
-                then PreprocessedSource
-                else HaskellSource
+                then ModuleSourcePreprocessed
+                else ModuleSourceHaskell
           }
     [] -> Nothing

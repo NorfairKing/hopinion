@@ -111,22 +111,22 @@ choicesFile = [relfile|hopinion.yaml|]
 --
 -- YAML's and aeson's own messages are passed through rather than owned here.
 data ChoicesError
-  = NotYaml !Text
-  | NotASetOfSettings
-  | SettingsNobodyKnows !(NonEmpty Text)
-  | SettingRefused !Text
+  = ChoicesErrorNotYaml !Text
+  | ChoicesErrorNotASetOfSettings
+  | ChoicesErrorSettingsNobodyKnows !(NonEmpty Text)
+  | ChoicesErrorSettingRefused !Text
   deriving (Show, Eq)
 
 -- | Absence is only an error for a caller that named the file: a repository that
 -- has not written one has decided nothing, which is 'readChoicesIn' below.
 data ChoicesFileError
-  = ChoicesFileAbsent !(Path Abs File)
-  | ChoicesFileRefused !(Path Abs File) !ChoicesError
+  = ChoicesFileErrorAbsent !(Path Abs File)
+  | ChoicesFileErrorRefused !(Path Abs File) !ChoicesError
   deriving (Show, Eq)
 
 renderChoicesFileError :: ChoicesFileError -> Text
 renderChoicesFileError = \case
-  ChoicesFileAbsent path ->
+  ChoicesFileErrorAbsent path ->
     T.pack
       ( unwords
           [ "There is no file at",
@@ -134,12 +134,12 @@ renderChoicesFileError = \case
             toFilePath choicesFile
           ]
       )
-  ChoicesFileRefused path err -> T.pack (unwords [toFilePath path, said err])
+  ChoicesFileErrorRefused path err -> T.pack (unwords [toFilePath path, said err])
   where
     said = \case
-      NotYaml t -> unwords ["is not YAML:", T.unpack t]
-      NotASetOfSettings -> "holds something that is not a set of settings."
-      SettingsNobodyKnows unknown ->
+      ChoicesErrorNotYaml t -> unwords ["is not YAML:", T.unpack t]
+      ChoicesErrorNotASetOfSettings -> "holds something that is not a set of settings."
+      ChoicesErrorSettingsNobodyKnows unknown ->
         unwords
           [ "sets",
             concat [T.unpack (T.intercalate ", " (NE.toList unknown)), ","],
@@ -147,13 +147,13 @@ renderChoicesFileError = \case
             "nothing acts on, so it is refused rather than ignored. It knows:",
             T.unpack (T.intercalate ", " knownKeys)
           ]
-      SettingRefused t -> T.unpack t
+      ChoicesErrorSettingRefused t -> T.unpack t
 
 parseChoices :: BS.ByteString -> Either ChoicesError Choices
 parseChoices contents = do
   value <-
     first
-      (NotYaml . T.pack . Yaml.prettyPrintParseException)
+      (ChoicesErrorNotYaml . T.pack . Yaml.prettyPrintParseException)
       (Yaml.decodeEither' contents)
   case value of
     -- An empty file is a file that sets nothing, which the codec already has an
@@ -163,18 +163,18 @@ parseChoices contents = do
     JSON.Object o -> do
       assertOnlyKnownKeys (map Key.toText (KeyMap.keys o))
       viaCodec value
-    _ -> Left NotASetOfSettings
+    _ -> Left ChoicesErrorNotASetOfSettings
   where
     -- Everything this file means, the codec means. Nothing here reads a key or
     -- a value for itself: the check above is over the key names alone, and they
     -- come from the codec too.
     viaCodec =
-      first (SettingRefused . T.pack . unwords . words)
+      first (ChoicesErrorSettingRefused . T.pack . unwords . words)
         . JSON.parseEither parseJSONViaCodec
 
     assertOnlyKnownKeys keys = case filter (`notElem` knownKeys) keys of
       [] -> Right ()
-      unknown -> Left (SettingsNobodyKnows (NE.fromList unknown))
+      unknown -> Left (ChoicesErrorSettingsNobodyKnows (NE.fromList unknown))
 
 -- | The file at this path, which has to be there.
 --
@@ -184,8 +184,8 @@ readChoicesFrom :: Path Abs File -> IO (Either ChoicesFileError Choices)
 readChoicesFrom path = do
   read' <- forgivingAbsence (BS.readFile (toFilePath path))
   pure $ case read' of
-    Nothing -> Left (ChoicesFileAbsent path)
-    Just contents -> first (ChoicesFileRefused path) (parseChoices contents)
+    Nothing -> Left (ChoicesFileErrorAbsent path)
+    Just contents -> first (ChoicesFileErrorRefused path) (parseChoices contents)
 
 -- | The file beside a repository, which is what the development loop reads.
 --
@@ -198,4 +198,4 @@ readChoicesIn root = do
   read' <- forgivingAbsence (BS.readFile (toFilePath path))
   pure $ case read' of
     Nothing -> Right noChoices
-    Just contents -> first (ChoicesFileRefused path) (parseChoices contents)
+    Just contents -> first (ChoicesFileErrorRefused path) (parseChoices contents)

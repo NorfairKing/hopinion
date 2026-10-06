@@ -51,8 +51,8 @@ spanOfLocated rp ldecl = spanOfSrcSpan rp (getLocA ldecl)
 declScopeOf :: ModuleRef -> [DeclFact] -> Span -> ScopeKey
 declScopeOf ref decls sp =
   case [d | d <- decls, spansLine d] of
-    (d : _) -> ScopeOfDecl ref (declFactName d)
-    [] -> ScopeOfFile ref
+    (d : _) -> ScopeKeyOfDecl ref (declFactName d)
+    [] -> ScopeKeyOfFile ref
   where
     line :: Word
     line = positionLine (spanStart sp)

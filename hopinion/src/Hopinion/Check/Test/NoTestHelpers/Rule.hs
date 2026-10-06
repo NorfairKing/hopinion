@@ -23,7 +23,7 @@ rule =
         \* Move the code into a let-binding in the enclosing describe or spec\n\
         \* Move a generator into a .Gen module, if it is used across modules\n\
         \* Move a test utility into a .TestUtils module",
-      ruleImpl = ModuleRule (FromSource check)
+      ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 
 -- | Every top-level binding a test file has beside spec.
@@ -40,7 +40,7 @@ check ctx
       findingsResult
         [ Finding
             { findingRule = ruleId rule,
-              findingScope = ScopeOfDecl (moduleContextRef ctx) (declFactName d),
+              findingScope = ScopeKeyOfDecl (moduleContextRef ctx) (declFactName d),
               findingSpan = declFactSpan d,
               findingMessage =
                 T.concat
@@ -50,7 +50,7 @@ check ctx
                   ]
             }
         | d <- moduleContextDecls ctx,
-          declFactKind d == DeclValue,
+          declFactKind d == DeclKindValue,
           declFactName d /= specName
         ]
 

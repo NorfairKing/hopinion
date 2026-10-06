@@ -17,7 +17,7 @@ rule =
       ruleWhy =
         "Custom ordering belongs in a function, not in the instance that every\
         \ sort and Map goes through.",
-      ruleImpl = ModuleRule (FromSource check)
+      ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 
 check :: ModuleContext -> CheckResult

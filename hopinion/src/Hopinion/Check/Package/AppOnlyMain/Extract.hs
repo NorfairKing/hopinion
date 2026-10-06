@@ -34,7 +34,7 @@ strayAppDeclsOf rp decls ds =
         strayAppDeclSpan = declFactSpan d
       }
   | d <- decls,
-    declFactKind d /= DeclSignature,
+    declFactKind d /= DeclKindSignature,
     declFactName d /= mainName
   ]
     ++ [ StrayAppDecl

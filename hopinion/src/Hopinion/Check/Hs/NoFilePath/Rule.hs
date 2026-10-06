@@ -17,7 +17,7 @@ rule =
         \ it is absolute or relative. FilePath is String, so a directory passed\
         \ where a file was meant compiles. Converting at the edge with\
         \ toFilePath is fine; this reports the type in your own signatures.",
-      ruleImpl = ModuleRule (FromSource check)
+      ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 
 check :: ModuleContext -> CheckResult

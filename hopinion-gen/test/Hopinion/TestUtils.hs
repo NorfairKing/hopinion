@@ -98,8 +98,8 @@ ruleResourcesDir = [reldir|test_resources/Rule|]
 -- about, or code it must report on. A name that says neither is an error, so
 -- nothing can sit in a rule's directory without a test over it.
 data ResourceCase
-  = CleanCase
-  | DirtyCase
+  = ResourceCaseClean
+  | ResourceCaseDirty
   deriving stock (Show, Eq, Ord)
 
 -- | Read off the name alone, so it answers the same for the directory of a
@@ -109,15 +109,15 @@ data ResourceCase
 -- trailing separator getting in the way.
 caseOf :: Path Rel t -> Maybe ResourceCase
 caseOf name
-  | "good" `isPrefixOf` toFilePath name = Just CleanCase
-  | "bad" `isPrefixOf` toFilePath name = Just DirtyCase
+  | "good" `isPrefixOf` toFilePath name = Just ResourceCaseClean
+  | "bad" `isPrefixOf` toFilePath name = Just ResourceCaseDirty
   | otherwise = Nothing
 
 -- | Whether this rule's level makes the layered path meaningful over the same
 -- resources.
 data SplitCheck
-  = SplitIsUnderTest
-  | SplitIsNotUnderTest
+  = SplitCheckUnderTest
+  | SplitCheckNotUnderTest
 
 -- | Everything one rule is held to: that it has both kinds of resource, and
 -- what it says about each of them.
@@ -135,12 +135,12 @@ ruleSpec r =
         it "has a clean case and a dirty one, and nothing else" $ do
           (dirs, files) <- listDirRel dir
           sort (nub (map caseOf dirs ++ map caseOf files))
-            `shouldBe` [Just CleanCase, Just DirtyCase]
+            `shouldBe` [Just ResourceCaseClean, Just ResourceCaseDirty]
 
         case ruleLevel r of
           LevelModule -> scenarioDir dir (moduleScenario rid . (dir </>))
-          LevelPackage -> projectScenarios rid dir SplitIsNotUnderTest
-          LevelProject -> projectScenarios rid dir SplitIsUnderTest
+          LevelPackage -> projectScenarios rid dir SplitCheckNotUnderTest
+          LevelProject -> projectScenarios rid dir SplitCheckUnderTest
 
 -- | A rule's own directory name, which is its id.
 ruleDirName :: RuleId -> IO (Path Rel Dir)
@@ -165,11 +165,11 @@ moduleScenario rid file
         goldenTextFile (toFilePath golden) (renderedFindingsInModule rid file)
 
       case caseOf (filename file) of
-        Just CleanCase ->
+        Just ResourceCaseClean ->
           it "reports nothing" $ do
             fs <- findingsInModule rid file
             fs `shouldBe` []
-        Just DirtyCase ->
+        Just ResourceCaseDirty ->
           it "reports something" $ do
             fs <- findingsInModule rid file
             fs `shouldNotBe` []
@@ -188,7 +188,7 @@ moduleScenario rid file
           formatted <-
             T.pack
               <$> readProcess "ormolu" ["--stdin-input-file", toFilePath file] (T.unpack original)
-          facts <- factsForSource shippedRules file [] ComponentLib formatted
+          facts <- factsForSource shippedRules file [] ComponentKindLib formatted
           let after' =
                 [ findingMessage f
                 | f <- complaintsFindings (runModuleLayer shippedRules facts),
@@ -218,11 +218,11 @@ projectScenario rid splitCheck project =
       goldenTextFile (toFilePath golden) (renderedFindingsInProject rid project)
 
     case caseOf (dirname project) of
-      Just CleanCase ->
+      Just ResourceCaseClean ->
         it "reports nothing" $ do
           fs <- findingsInProject rid project
           fs `shouldBe` []
-      Just DirtyCase ->
+      Just ResourceCaseDirty ->
         it "reports something" $ do
           fs <- findingsInProject rid project
           fs `shouldNotBe` []
@@ -232,8 +232,8 @@ projectScenario rid splitCheck project =
           (expectationFailure (unwords ["Neither a good nor a bad case:", toFilePath project]) :: IO ())
 
     case splitCheck of
-      SplitIsNotUnderTest -> pure ()
-      SplitIsUnderTest ->
+      SplitCheckNotUnderTest -> pure ()
+      SplitCheckUnderTest ->
         it "reports the same through fact files as in one process" (splitAgrees project)
 
 -- | The scenarios, which are the directories: a rule above the module level is
@@ -287,7 +287,7 @@ renderedFindings root fs = do
 
 findingsInModule :: RuleId -> Path Rel File -> IO [Finding]
 findingsInModule rid file = do
-  report <- runModuleCommand shippedRules file [] ComponentLib
+  report <- runModuleCommand shippedRules file [] ComponentKindLib
   pure [f | f <- complaintsFindings report, findingRule f == rid]
 
 -- | A module case names its resource the way the suite was invoked, relative to

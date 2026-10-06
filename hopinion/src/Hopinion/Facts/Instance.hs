@@ -23,12 +23,12 @@ import Hopinion.Facts.Place
 -- Carried by the origin rather than beside it, because a derived instance has
 -- no body and a field answering for one would be answering about nothing.
 data InstanceMethods
-  = MethodsUseArguments
+  = InstanceMethodsUseArguments
   | -- | Every method the instance writes out discards all of its arguments, so
     -- what it produces cannot depend on the value it was given. An instance
     -- that writes out no methods at all is not this: what its class defaults do
     -- with the value is not in the file.
-    MethodsIgnoreArguments
+    InstanceMethodsIgnoreArguments
   deriving stock (Show, Eq, Ord, Generic)
 
 instance Validity InstanceMethods
@@ -37,17 +37,17 @@ instance Validity InstanceMethods
 -- reconsidered rather than falling into a catch-all, and a missed form is a
 -- silently unsatisfied obligation.
 --
--- 'OriginDerivingUnspecified' is a deriving clause with no strategy. Which one
--- GHC picks depends on the extensions in force, so recording it as stock would
--- be a guess.
+-- 'InstanceOriginDerivingUnspecified' is a deriving clause with no strategy.
+-- Which one GHC picks depends on the extensions in force, so recording it as
+-- stock would be a guess.
 data InstanceOrigin
-  = OriginInstanceDecl !InstanceMethods
-  | OriginStandaloneDeriving
-  | OriginDerivingStock
-  | OriginDerivingNewtype
-  | OriginDerivingAnyclass
-  | OriginDerivingVia !TypeHead
-  | OriginDerivingUnspecified
+  = InstanceOriginInstanceDecl !InstanceMethods
+  | InstanceOriginStandaloneDeriving
+  | InstanceOriginDerivingStock
+  | InstanceOriginDerivingNewtype
+  | InstanceOriginDerivingAnyclass
+  | InstanceOriginDerivingVia !TypeHead
+  | InstanceOriginDerivingUnspecified
   deriving stock (Show, Eq, Ord, Generic)
 
 instance Validity InstanceOrigin
@@ -60,14 +60,14 @@ instance Validity InstanceOrigin
 -- question by default.
 originIsWrittenOut :: InstanceOrigin -> Bool
 originIsWrittenOut = \case
-  OriginInstanceDecl MethodsUseArguments -> True
-  OriginInstanceDecl MethodsIgnoreArguments -> True
-  OriginStandaloneDeriving -> False
-  OriginDerivingStock -> False
-  OriginDerivingNewtype -> False
-  OriginDerivingAnyclass -> False
-  OriginDerivingVia _ -> False
-  OriginDerivingUnspecified -> False
+  InstanceOriginInstanceDecl InstanceMethodsUseArguments -> True
+  InstanceOriginInstanceDecl InstanceMethodsIgnoreArguments -> True
+  InstanceOriginStandaloneDeriving -> False
+  InstanceOriginDerivingStock -> False
+  InstanceOriginDerivingNewtype -> False
+  InstanceOriginDerivingAnyclass -> False
+  InstanceOriginDerivingVia _ -> False
+  InstanceOriginDerivingUnspecified -> False
 
 data InstanceFact = InstanceFact
   { instanceFactClass :: !Text,

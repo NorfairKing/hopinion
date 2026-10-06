@@ -20,7 +20,7 @@ rule =
         \ compiles. Deriving keeps both in step with the fields. An instance\
         \ that ignores the value prints the same text whatever it is handed,\
         \ which is how a secret stays out of the logs.",
-      ruleImpl = ModuleRule (FromSource check)
+      ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 
 check :: ModuleContext -> CheckResult
@@ -39,6 +39,6 @@ check mf =
               ]
         }
     | inst <- moduleContextInstances mf,
-      instanceFactOrigin inst == OriginInstanceDecl MethodsUseArguments,
+      instanceFactOrigin inst == InstanceOriginInstanceDecl InstanceMethodsUseArguments,
       instanceFactClass inst `elem` ["Show", "Read"]
     ]

@@ -51,11 +51,11 @@ spec = do
 
   let subjectOf :: Attachment -> Text
       subjectOf = \case
-        AttachedToDecl d -> T.concat ["decl ", declNameText d]
-        AttachedToStatement d _ -> T.concat ["statement in ", declNameText d]
-        AttachedToFile -> "file"
-        AttachedToExportList -> "export list"
-        Unattached -> "unattached"
+        AttachmentToDecl d -> T.concat ["decl ", declNameText d]
+        AttachmentToStatement d _ -> T.concat ["statement in ", declNameText d]
+        AttachmentToFile -> "file"
+        AttachmentToExportList -> "export list"
+        AttachmentToNothing -> "unattached"
 
   -- What each comment is about, in order, with the positions left out.
   let subjects :: ModuleContext -> [Text]
@@ -85,7 +85,7 @@ spec = do
         -- asserts.
         it "attaches every comment to what the golden says" $
           goldenJSONValueFile (toFilePath golden) $
-            moduleContextComments <$> factsForFile shippedRules path [] ComponentLib
+            moduleContextComments <$> factsForFile shippedRules path [] ComponentKindLib
 
         -- Attachment is anchored to structure rather than to layout, so
         -- reformatting must not move a comment from one subject to another, and
@@ -96,12 +96,12 @@ spec = do
         -- which changes the comment without changing what it is about.
         unless (filename path `elem` formatSensitive) $
           it "attaches the same way after ormolu" $ do
-            before' <- subjects <$> factsForFile shippedRules path [] ComponentLib
+            before' <- subjects <$> factsForFile shippedRules path [] ComponentKindLib
             original <- TIO.readFile (toFilePath path)
             formatted <-
               T.pack
                 <$> readProcess "ormolu" ["--stdin-input-file", toFilePath path] (T.unpack original)
-            after' <- subjects <$> factsForSource shippedRules path [] ComponentLib formatted
+            after' <- subjects <$> factsForSource shippedRules path [] ComponentKindLib formatted
             after' `shouldBe` before'
       else
         -- Nothing else belongs here, so a stray file fails rather than sitting

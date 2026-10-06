@@ -47,12 +47,12 @@ import Hopinion.Facts.Name
 import Hopinion.Facts.Place
 
 data CommentStyle
-  = StyleLine
-  | StyleBlock
-  | StyleHaddockNext
-  | StyleHaddockPrev
-  | StyleHaddockNamed
-  | StylePragma
+  = CommentStyleLine
+  | CommentStyleBlock
+  | CommentStyleHaddockNext
+  | CommentStyleHaddockPrev
+  | CommentStyleHaddockNamed
+  | CommentStylePragma
   deriving stock (Show, Eq, Ord, Enum, Bounded, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec CommentStyle)
 
@@ -62,27 +62,28 @@ instance HasCodec CommentStyle where
   codec =
     named "CommentStyle" $
       stringConstCodec
-        ( (StyleLine, "line")
-            :| [ (StyleBlock, "block"),
-                 (StyleHaddockNext, "haddock-next"),
-                 (StyleHaddockPrev, "haddock-prev"),
-                 (StyleHaddockNamed, "haddock-named"),
-                 (StylePragma, "pragma")
+        ( (CommentStyleLine, "line")
+            :| [ (CommentStyleBlock, "block"),
+                 (CommentStyleHaddockNext, "haddock-next"),
+                 (CommentStyleHaddockPrev, "haddock-prev"),
+                 (CommentStyleHaddockNamed, "haddock-named"),
+                 (CommentStylePragma, "pragma")
                ]
         )
 
--- | 'Unattached' is an outcome rather than a failure: such a comment is ignored
--- by every rule that needs a subject, and such an annotation is an error.
+-- | 'AttachmentToNothing' is an outcome rather than a failure: such a comment
+-- is ignored by every rule that needs a subject, and such an annotation is an
+-- error.
 --
--- 'AttachedToStatement' carries the enclosing declaration too, because the
+-- 'AttachmentToStatement' carries the enclosing declaration too, because the
 -- portable scope key is only as fine as a declaration and would otherwise not
 -- be recoverable for a comment inside one.
 data Attachment
-  = AttachedToDecl !DeclName
-  | AttachedToStatement !DeclName !Span
-  | AttachedToFile
-  | AttachedToExportList
-  | Unattached
+  = AttachmentToDecl !DeclName
+  | AttachmentToStatement !DeclName !Span
+  | AttachmentToFile
+  | AttachmentToExportList
+  | AttachmentToNothing
   deriving stock (Show, Eq, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec Attachment)
 
@@ -97,8 +98,8 @@ instance HasCodec Attachment where
       dimapCodec fromEither toEither $
         disjointEitherCodec
           ( stringConstCodec
-              ( (AttachedToFile, "file")
-                  :| [(AttachedToExportList, "export-list"), (Unattached, "unattached")]
+              ( (AttachmentToFile, "file")
+                  :| [(AttachmentToExportList, "export-list"), (AttachmentToNothing, "unattached")]
               )
           )
           ( object "AttachedTo" $
@@ -107,10 +108,10 @@ instance HasCodec Attachment where
                 <*> optionalField "statement" "the statement it is about, when it is one" .= snd
           )
     where
-      fromEither = either id (\(d, mSpan) -> maybe (AttachedToDecl d) (AttachedToStatement d) mSpan)
+      fromEither = either id (\(d, mSpan) -> maybe (AttachmentToDecl d) (AttachmentToStatement d) mSpan)
       toEither = \case
-        AttachedToDecl d -> Right (d, Nothing)
-        AttachedToStatement d s -> Right (d, Just s)
+        AttachmentToDecl d -> Right (d, Nothing)
+        AttachmentToStatement d s -> Right (d, Just s)
         other -> Left other
 
 data CommentFact = CommentFact
@@ -207,23 +208,28 @@ data CommentBlock = CommentBlock
     commentBlockSpan :: !Span,
     commentBlockStyle :: !CommentStyle,
     commentBlockText :: !Text,
-    commentBlockTrailing :: !Trailing
+    commentBlockPlacement :: !CommentPlacement
   }
   deriving stock (Show, Eq, Generic)
 
 instance Validity CommentBlock
 
-data Trailing
-  = OnItsOwnLines
-  | TrailingCode
+-- | Whether a comment shares its line with code.
+--
+-- The two are not interchangeable at attachment time: a comment with code to
+-- its left is about that code, and one on its own lines is about whatever
+-- comes after it, so the question is asked before any other.
+data CommentPlacement
+  = CommentPlacementOnItsOwnLines
+  | CommentPlacementTrailingCode
   deriving stock (Show, Eq, Generic)
 
-instance Validity Trailing
+instance Validity CommentPlacement
 
 commentStyleOf :: Text -> CommentStyle
 commentStyleOf t
-  | T.isPrefixOf "{-#" t = StylePragma
-  | T.isPrefixOf "{-" t = StyleBlock
+  | T.isPrefixOf "{-#" t = CommentStylePragma
+  | T.isPrefixOf "{-" t = CommentStyleBlock
   | otherwise = fst (lineComment t)
 
 -- | The prose inside a comment, with its markers removed.
@@ -247,29 +253,29 @@ lineComment t =
     ((style, rest) : _) -> (style, rest)
     -- Not a marker, so every leading dash is a dash: @--- foo@ and a row of
     -- them are prose, and a banner keeps whatever it is made of.
-    [] -> (StyleLine, T.dropWhile (== '-') t)
+    [] -> (CommentStyleLine, T.dropWhile (== '-') t)
   where
     -- Both spellings of each, since Haddock accepts the space and people write
     -- it both ways. Longest first, so the space is consumed by the marker
     -- rather than left at the front of the prose.
     markers =
-      [ (StyleHaddockNext, "-- |"),
-        (StyleHaddockNext, "--|"),
-        (StyleHaddockPrev, "-- ^"),
-        (StyleHaddockPrev, "--^"),
-        (StyleHaddockNamed, "-- $"),
-        (StyleHaddockNamed, "--$")
+      [ (CommentStyleHaddockNext, "-- |"),
+        (CommentStyleHaddockNext, "--|"),
+        (CommentStyleHaddockPrev, "-- ^"),
+        (CommentStyleHaddockPrev, "--^"),
+        (CommentStyleHaddockNamed, "-- $"),
+        (CommentStyleHaddockNamed, "--$")
       ]
 
 commentBlocks :: CommentContext -> [RawComment] -> [CommentBlock]
-commentBlocks ctx = map toBlock . group . map withTrailing
+commentBlocks ctx = map toBlock . group . map withPlacement
   where
-    withTrailing :: RawComment -> (RawComment, Trailing)
-    withTrailing rc = (rc, if hasCodeBefore ctx rc then TrailingCode else OnItsOwnLines)
+    withPlacement :: RawComment -> (RawComment, CommentPlacement)
+    withPlacement rc = (rc, if hasCodeBefore ctx rc then CommentPlacementTrailingCode else CommentPlacementOnItsOwnLines)
 
     -- A block is non-empty by construction, which is what lets its span and its
     -- style be read off without a partial function or a made-up fallback.
-    group :: [(RawComment, Trailing)] -> [NonEmpty (RawComment, Trailing)]
+    group :: [(RawComment, CommentPlacement)] -> [NonEmpty (RawComment, CommentPlacement)]
     group = \case
       [] -> []
       (x : xs) -> go x [] xs
@@ -285,13 +291,13 @@ commentBlocks ctx = map toBlock . group . map withTrailing
           [] -> first
 
     continues ::
-      (RawComment, Trailing) ->
-      (RawComment, Trailing) ->
-      (RawComment, Trailing) ->
+      (RawComment, CommentPlacement) ->
+      (RawComment, CommentPlacement) ->
+      (RawComment, CommentPlacement) ->
       Bool
-    continues (firstC, _) (prevC, prevT) (nextC, nextT) =
-      prevT == OnItsOwnLines
-        && nextT == OnItsOwnLines
+    continues (firstC, _) (prevC, prevP) (nextC, nextP) =
+      prevP == CommentPlacementOnItsOwnLines
+        && nextP == CommentPlacementOnItsOwnLines
         && positionLine (spanEnd (rawCommentSpan prevC)) + 1 == positionLine (spanStart (rawCommentSpan nextC))
         && positionCol (spanStart (rawCommentSpan prevC)) == positionCol (spanStart (rawCommentSpan nextC))
         && commentStyleOf (rawCommentText prevC) == commentStyleOf (rawCommentText nextC)
@@ -309,8 +315,8 @@ commentBlocks ctx = map toBlock . group . map withTrailing
     endsSuppression firstC prevC =
       isSuppression (rawCommentText firstC) && T.null (commentBody (rawCommentText prevC))
 
-    toBlock :: NonEmpty (RawComment, Trailing) -> CommentBlock
-    toBlock grouped@((firstComment, trailing) :| _) =
+    toBlock :: NonEmpty (RawComment, CommentPlacement) -> CommentBlock
+    toBlock grouped@((firstComment, placement) :| _) =
       let cs = map fst (NE.toList grouped)
           start = spanStart (rawCommentSpan firstComment)
        in CommentBlock
@@ -323,7 +329,7 @@ commentBlocks ctx = map toBlock . group . map withTrailing
                   },
               commentBlockStyle = commentStyleOf (rawCommentText firstComment),
               commentBlockText = T.intercalate "\n" (map (commentBody . rawCommentText) cs),
-              commentBlockTrailing = trailing
+              commentBlockPlacement = placement
             }
 
 hasCodeBefore :: CommentContext -> RawComment -> Bool
@@ -355,22 +361,22 @@ attachComments ctx rcs = map toFact (commentBlocks ctx rcs)
 
     attachmentOf :: CommentBlock -> Attachment
     attachmentOf b
-      | commentBlockStyle b == StylePragma = Unattached
+      | commentBlockStyle b == CommentStylePragma = AttachmentToNothing
       -- The export list is tested before trailing, which is the one place this
       -- order matters. As ormolu formats an export list, a section
       -- header shares its line with the opening paren, so the trailing test
       -- would claim it first. Nothing is lost: an export list holds no
       -- statement and no declaration for a trailing comment to attach to.
-      | insideExportList b = AttachedToExportList
-      | commentBlockTrailing b == TrailingCode = trailingAttachment b
-      | beforeModuleHeader b = AttachedToFile
+      | insideExportList b = AttachmentToExportList
+      | commentBlockPlacement b == CommentPlacementTrailingCode = trailingAttachment b
+      | beforeModuleHeader b = AttachmentToFile
       | otherwise = case nextCodeLine ctx (endLine b) of
           Just next
             | not (blankBetween ctx (endLine b) next) ->
                 case topLevelDeclStartingAt ctx next of
-                  Just d -> AttachedToDecl (declFactName d)
+                  Just d -> AttachmentToDecl (declFactName d)
                   Nothing -> case enclosingDecl ctx next of
-                    Just d -> AttachedToStatement (declFactName d) (statementSpanAt ctx d next)
+                    Just d -> AttachmentToStatement (declFactName d) (statementSpanAt ctx d next)
                     Nothing -> postfixOrUnattached b
           _ -> postfixOrUnattached b
 
@@ -381,10 +387,10 @@ attachComments ctx rcs = map toFact (commentBlocks ctx rcs)
     trailingAttachment b =
       let l = startLine b
        in case topLevelDeclStartingAt ctx l of
-            Just d | declFactSpan d `endsOnLine` l -> AttachedToDecl (declFactName d)
+            Just d | declFactSpan d `endsOnLine` l -> AttachmentToDecl (declFactName d)
             _ -> case enclosingDecl ctx l of
-              Just d -> AttachedToStatement (declFactName d) (statementSpanAt ctx d l)
-              Nothing -> Unattached
+              Just d -> AttachmentToStatement (declFactName d) (statementSpanAt ctx d l)
+              Nothing -> AttachmentToNothing
 
     -- Postfix Haddock refers to what is above it. Anything else inside a
     -- declaration with nothing below it still belongs to the statement it sits
@@ -393,16 +399,16 @@ attachComments ctx rcs = map toFact (commentBlocks ctx rcs)
     postfixOrUnattached b =
       case enclosingDecl ctx (startLine b) of
         Just d
-          | commentBlockStyle b == StyleHaddockPrev -> AttachedToDecl (declFactName d)
+          | commentBlockStyle b == CommentStyleHaddockPrev -> AttachmentToDecl (declFactName d)
           | otherwise -> case previousCodeLine ctx (startLine b) of
-              Just prev -> AttachedToStatement (declFactName d) (statementSpanAt ctx d prev)
-              Nothing -> AttachedToStatement (declFactName d) (declFactSpan d)
+              Just prev -> AttachmentToStatement (declFactName d) (statementSpanAt ctx d prev)
+              Nothing -> AttachmentToStatement (declFactName d) (declFactSpan d)
         Nothing ->
-          if commentBlockStyle b == StyleHaddockPrev
+          if commentBlockStyle b == CommentStyleHaddockPrev
             then case declEndingBefore ctx (startLine b) of
-              Just d -> AttachedToDecl (declFactName d)
-              Nothing -> Unattached
-            else Unattached
+              Just d -> AttachmentToDecl (declFactName d)
+              Nothing -> AttachmentToNothing
+            else AttachmentToNothing
 
     insideExportList :: CommentBlock -> Bool
     insideExportList b = case commentContextExportList ctx of
@@ -468,7 +474,7 @@ isCodeLine ctx l = case lineAt ctx l of
 insideAnAnnotation :: CommentContext -> Word -> Bool
 insideAnAnnotation ctx l =
   any
-    (\d -> declFactKind d == DeclAnnotation && spansLine (declFactSpan d))
+    (\d -> declFactKind d == DeclKindAnnotation && spansLine (declFactSpan d))
     (commentContextDecls ctx)
   where
     spansLine :: Span -> Bool

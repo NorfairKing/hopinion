@@ -19,14 +19,14 @@ rule =
       ruleWhy =
         "Only the Main that gathers the specs reads a test file, and it asks for\
         \ spec alone.",
-      ruleImpl = ModuleRule (FromSource check)
+      ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 
 check :: ModuleContext -> CheckResult
 check ctx
   | not (moduleContextIsSpecFile ctx) = noResult
   | otherwise = case moduleContextExports ctx of
-      NoExportList ->
+      ExportListNone ->
         finding (wholeFileSpan (moduleContextPath ctx)) "This test file has no export list."
       ExportList sp exported
         | exported == [specExport] -> noResult
@@ -37,7 +37,7 @@ check ctx
       findingsResult
         [ Finding
             { findingRule = ruleId rule,
-              findingScope = ScopeOfFile (moduleContextRef ctx),
+              findingScope = ScopeKeyOfFile (moduleContextRef ctx),
               findingSpan = sp,
               findingMessage = message
             }

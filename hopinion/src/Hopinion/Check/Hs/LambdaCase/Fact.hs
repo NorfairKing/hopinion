@@ -17,8 +17,8 @@ import Hopinion.Facts.Place
 -- @case@ to delete along with the argument, and the other has equations to
 -- merge.
 data ArgumentShape
-  = ArgumentNamedThenCased
-  | ArgumentSplitOverEquations
+  = ArgumentShapeNamedThenCased
+  | ArgumentShapeSplitOverEquations
   deriving stock (Show, Eq, Generic)
 
 instance Validity ArgumentShape

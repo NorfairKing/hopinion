@@ -17,8 +17,8 @@ import Hopinion.Facts.Place
 -- look: a construction is named by its constructor, and an update is a brace
 -- somewhere to the right of the value it changes.
 data RecordUse
-  = RecordConstructed
-  | RecordUpdated
+  = RecordUseConstructed
+  | RecordUseUpdated
   deriving stock (Show, Eq, Generic)
 
 instance Validity RecordUse

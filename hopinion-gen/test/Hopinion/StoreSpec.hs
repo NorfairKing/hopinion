@@ -57,8 +57,8 @@ spec = do
       suppressionOf rule =
         AnnotationFact
           { annotationFactRule = RuleId rule,
-            annotationFactScope = ScopeOfFile (refIn "lib" "Thing"),
-            annotationFactPrecision = PrecisionFile,
+            annotationFactScope = ScopeKeyOfFile (refIn "lib" "Thing"),
+            annotationFactPrecision = AnnotationPrecisionFile,
             annotationFactReason = ReasonAdoption,
             annotationFactSpan = spanOfLine [relfile|thing/src/Thing.hs|] 1
           }
@@ -78,7 +78,7 @@ spec = do
         -- Raw, because what a rule's table is called is that rule's business
         -- and this is about a table this build has never heard of, which is
         -- what an executable with a rule this one lacks leaves behind.
-        withStore [] (OnDisk foreign') $ do
+        withStore [] (StoreLocationOnDisk foreign') $ do
           rawExecute "CREATE TABLE \"a_rule_we_do_not_have\" (\"id\" INTEGER PRIMARY KEY, \"what\" VARCHAR NOT NULL)" []
           rawExecute "INSERT INTO \"a_rule_we_do_not_have\" (\"what\") VALUES ('something')" []
         unmergeable <- withMemoryStore [] (mergeStore foreign')
@@ -95,12 +95,12 @@ spec = do
     it "copies every table a store holds when this one has them all" $
       withSystemTempDir "hopinion-store" $ \tmp -> do
         let foreign' = tmp </> [relfile|foreign.db|]
-        withStore [] (OnDisk foreign') $
+        withStore [] (StoreLocationOnDisk foreign') $
           insertKey
             (StoredPackageKey (PackageName "thing"))
             StoredPackage
               { storedPackageName = PackageName "thing",
-                storedPackageRole = RoleMain,
+                storedPackageRole = PackageRoleMain,
                 storedPackageCabal = StoredPath [relfile|thing/thing.cabal|]
               }
         merged <- withMemoryStore [] $ do
@@ -131,7 +131,7 @@ spec = do
     it "says yes about a store merged from one written in another format" $
       withSystemTempDir "hopinion-store" $ \tmp -> do
         let foreign' = tmp </> [relfile|foreign.db|]
-        withStore [] (OnDisk foreign') $ do
+        withStore [] (StoreLocationOnDisk foreign') $ do
           let format = formatVersionNumber currentFormatVersion + 1
           insertKey (StoredMetaKey format) StoredMeta {storedMetaFormatVersion = format}
         other <- withMemoryStore [] $ do
@@ -149,7 +149,7 @@ spec = do
       names <- withMemoryStore [] $ do
         writePackageEnvelope
           (PackageName "thing")
-          RoleMain
+          PackageRoleMain
           [relfile|thing/thing.cabal|]
           [refIn "lib" "Thing"]
         packageNames
@@ -161,13 +161,13 @@ spec = do
     -- a repository-relative file.
     it "writes a package that reads back as the row it wrote" $ do
       stored <- withMemoryStore [] $ do
-        writePackageEnvelope (PackageName "thing") RoleGen [relfile|thing/thing.cabal|] []
+        writePackageEnvelope (PackageName "thing") PackageRoleGen [relfile|thing/thing.cabal|] []
         get (StoredPackageKey (PackageName "thing"))
       stored
         `shouldBe` Just
           StoredPackage
             { storedPackageName = PackageName "thing",
-              storedPackageRole = RoleGen,
+              storedPackageRole = PackageRoleGen,
               storedPackageCabal = StoredPath [relfile|thing/thing.cabal|]
             }
 
@@ -181,8 +181,8 @@ spec = do
       thrown <-
         try
           ( withMemoryStore [] $ do
-              writePackageEnvelope (PackageName "thing") RoleMain [relfile|a/thing.cabal|] []
-              writePackageEnvelope (PackageName "thing") RoleMain [relfile|b/thing.cabal|] []
+              writePackageEnvelope (PackageName "thing") PackageRoleMain [relfile|a/thing.cabal|] []
+              writePackageEnvelope (PackageName "thing") PackageRoleMain [relfile|b/thing.cabal|] []
           )
       renderedOf thrown `shouldSatisfy` T.isInfixOf "UNIQUE constraint failed: stored_package.name"
 
@@ -191,19 +191,19 @@ spec = do
     -- is the thing under test rather than an empty table.
     it "writes the suppressions of one module and reads back only that package's" $ do
       stored <- withMemoryStore [] $ do
-        writePackageEnvelope (PackageName "thing") RoleMain [relfile|thing/thing.cabal|] []
-        writePackageEnvelope (PackageName "other") RoleMain [relfile|other/other.cabal|] []
+        writePackageEnvelope (PackageName "thing") PackageRoleMain [relfile|thing/thing.cabal|] []
+        writePackageEnvelope (PackageName "other") PackageRoleMain [relfile|other/other.cabal|] []
         writeModuleEnvelope
           (PackageName "thing")
           (refIn "lib" "Thing")
           [relfile|thing/src/Thing.hs|]
-          ParsedOk
+          ParseOutcomeOk
           [suppressionOf "CommentBareTodo"]
         writeModuleEnvelope
           (PackageName "other")
           (refIn "lib" "Other")
           [relfile|other/src/Other.hs|]
-          ParsedOk
+          ParseOutcomeOk
           [suppressionOf "HsNoCustomShowRead"]
         annotationsOfPackage (PackageName "thing")
       map annotationFactRule stored `shouldBe` [RuleId "CommentBareTodo"]
@@ -212,9 +212,9 @@ spec = do
       thrown <-
         try
           ( withMemoryStore [] $ do
-              writePackageEnvelope (PackageName "thing") RoleMain [relfile|thing/thing.cabal|] []
-              writeModuleEnvelope (PackageName "thing") (refIn "lib" "Thing") [relfile|a.hs|] ParsedOk []
-              writeModuleEnvelope (PackageName "thing") (refIn "lib" "Thing") [relfile|b.hs|] ParsedOk []
+              writePackageEnvelope (PackageName "thing") PackageRoleMain [relfile|thing/thing.cabal|] []
+              writeModuleEnvelope (PackageName "thing") (refIn "lib" "Thing") [relfile|a.hs|] ParseOutcomeOk []
+              writeModuleEnvelope (PackageName "thing") (refIn "lib" "Thing") [relfile|b.hs|] ParseOutcomeOk []
           )
       renderedOf thrown
         `shouldSatisfy` T.isInfixOf "UNIQUE constraint failed: stored_module.package, stored_module.module_ref"
@@ -227,7 +227,7 @@ spec = do
       thrown <-
         try
           ( withMemoryStore [] $ do
-              writePackageEnvelope (PackageName "thing") RoleMain [relfile|thing/thing.cabal|] []
+              writePackageEnvelope (PackageName "thing") PackageRoleMain [relfile|thing/thing.cabal|] []
               rawExecute
                 "INSERT INTO stored_annotation (package, module_ref, annotation) VALUES ('thing', 'lib:Thing', 'not a fact')"
                 []

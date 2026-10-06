@@ -57,7 +57,7 @@ data Dispatch
 -- | Whether the module command prints every comment with what it attached to,
 -- which is for debugging the attachment pass rather than for checking anything.
 data DumpComments
-  = NoDumpComments
+  = DumpCommentsNone
   | DumpComments
   deriving stock (Show, Eq)
 
@@ -277,14 +277,14 @@ parseModule = do
         option,
         long "component",
         metavar (T.unpack (T.intercalate "|" (map componentKindText [minBound .. maxBound]))),
-        value ComponentLib
+        value ComponentKindLib
       ]
   dump <-
     setting
       [ help "Print every comment with its attachment",
         switch DumpComments,
         long "dump-comments",
-        value NoDumpComments
+        value DumpCommentsNone
       ]
   pure (DispatchModule file (map T.pack extensions) component dump)
 

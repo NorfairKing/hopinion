@@ -126,7 +126,7 @@ obligationRule o =
       ruleText = obligationText o,
       ruleWhy = obligationWhy o,
       ruleImpl =
-        ProjectRule
+        RuleImplProject
           ProjectCheck
             { projectCheckMigration = obligationMigration,
               projectCheckCarry = carry o,
@@ -149,9 +149,9 @@ carry o pkg ctx = do
       typeAppFactFunction ta == obligationCombinator o
     ]
   case moduleContextTemplateHaskell ctx of
-    NoTemplateHaskell -> pure ()
-    UsesQuasiQuotes -> generates UsesQuasiQuotes
-    UsesSplices -> generates UsesSplices
+    TemplateHaskellUseNone -> pure ()
+    TemplateHaskellUseQuasiQuotes -> generates TemplateHaskellUseQuasiQuotes
+    TemplateHaskellUseSplices -> generates TemplateHaskellUseSplices
   where
     ref = moduleContextRef ctx
     kind = moduleContextComponent ctx
@@ -194,8 +194,8 @@ carry o pkg ctx = do
 
     declOf :: ScopeKey -> DeclName
     declOf = \case
-      ScopeOfDecl _ d -> d
-      ScopeOfFile _ -> DeclName ""
+      ScopeKeyOfDecl _ d -> d
+      ScopeKeyOfFile _ -> DeclName ""
 
 findings :: Obligation -> CompiledModules -> Query CheckResult
 findings o compiled = do
@@ -225,7 +225,7 @@ perPackage o compiled pkg = do
   home <- genPackageFor pkg
   unmet <- obligationsUnmetIn o pkg (genPackageName home)
   reportable <- case home of
-    NoGenPackage _ -> pure unmet
+    GenPackageNone _ -> pure unmet
     GenPackage gen -> do
       splicing <- splicingTestModulesOf o gen
       filterM (notGeneratedIn o compiled splicing) unmet
@@ -233,7 +233,7 @@ perPackage o compiled pkg = do
 
 genPackageName :: GenPackage -> PackageName
 genPackageName = \case
-  NoGenPackage n -> n
+  GenPackageNone n -> n
   GenPackage n -> n
 
 -- | The obligations a module makes by generating an instance, which the source
@@ -329,7 +329,7 @@ madeInLibraryOf o pkg =
           made <- from (table @ObligationMade)
           where_ (made ^. ObligationMadeRule ==. val (obligationId o))
           where_ (made ^. ObligationMadePackage ==. val pkg)
-          where_ (made ^. ObligationMadeKind ==. val ComponentLib)
+          where_ (made ^. ObligationMadeKind ==. val ComponentKindLib)
           orderBy [asc (made ^. ObligationMadeModuleRef), asc (made ^. ObligationMadeId)]
           pure made
       )
@@ -342,7 +342,7 @@ metInTestSuiteOf o gen =
           met <- from (table @ObligationMet)
           where_ (met ^. ObligationMetRule ==. val (obligationId o))
           where_ (met ^. ObligationMetPackage ==. val gen)
-          where_ (met ^. ObligationMetKind ==. val ComponentTest)
+          where_ (met ^. ObligationMetKind ==. val ComponentKindTest)
           pure (met ^. ObligationMetTypeHead)
       )
 
@@ -387,7 +387,7 @@ libraryModulesUsingTemplateHaskell o pkg =
           generating <- from (table @ObligationTemplateHaskell)
           where_ (generating ^. ObligationTemplateHaskellRule ==. val (obligationId o))
           where_ (generating ^. ObligationTemplateHaskellPackage ==. val pkg)
-          where_ (generating ^. ObligationTemplateHaskellKind ==. val ComponentLib)
+          where_ (generating ^. ObligationTemplateHaskellKind ==. val ComponentKindLib)
           orderBy [asc (generating ^. ObligationTemplateHaskellModuleRef)]
           pure generating
       )
@@ -410,8 +410,8 @@ splicingTestModulesOf o pkg =
           splicing <- from (table @ObligationTemplateHaskell)
           where_ (splicing ^. ObligationTemplateHaskellRule ==. val (obligationId o))
           where_ (splicing ^. ObligationTemplateHaskellPackage ==. val pkg)
-          where_ (splicing ^. ObligationTemplateHaskellKind ==. val ComponentTest)
-          where_ (splicing ^. ObligationTemplateHaskellUse ==. val UsesSplices)
+          where_ (splicing ^. ObligationTemplateHaskellKind ==. val ComponentKindTest)
+          where_ (splicing ^. ObligationTemplateHaskellUse ==. val TemplateHaskellUseSplices)
           orderBy [asc (splicing ^. ObligationTemplateHaskellModuleRef)]
           pure splicing
       )
@@ -423,7 +423,7 @@ findingFor o home m =
   Finding
     { findingRule = obligationId o,
       findingScope =
-        ScopeOfDecl
+        ScopeKeyOfDecl
           (obligationMadeModuleRef m)
           (obligationMadeDecl m),
       findingSpan = obligationMadeSpan m,
@@ -436,7 +436,7 @@ findingFor o home m =
                 ]
                   ++ case home of
                     GenPackage gen -> ["in", concat [T.unpack (packageNameText gen), "'s test suite."]]
-                    NoGenPackage gen ->
+                    GenPackageNone gen ->
                       [ "anywhere, and no",
                         T.unpack (packageNameText gen),
                         "package to write it in."

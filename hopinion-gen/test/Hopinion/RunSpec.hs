@@ -36,8 +36,8 @@ spec = describe "explainRule" $ do
     goldenTextFile (toFilePath (resourceDir </> [relfile|runs.golden|])) $
       pure $
         renderChunksText With8BitColours $ case explainRule shippedRules (RuleId "CommentBareTodo") of
-          Explained cs -> cs
-          NoRuleCalled cs -> cs
+          ExplanationGiven cs -> cs
+          ExplanationNoRuleCalled cs -> cs
 
   it "asks for colour when the terminal has it" $
     renderChunksText With8BitColours (listRules shippedRules)
@@ -60,15 +60,15 @@ spec = describe "explainRule" $ do
         Left err -> fail (T.unpack (renderChunksText WithoutColours (renderRuleSetError err)))
         Right rs ->
           pure $ renderChunksText With8BitColours $ case explainRule rs (RuleId "CommentBareTodo") of
-            Explained cs -> cs
-            NoRuleCalled cs -> cs
+            ExplanationGiven cs -> cs
+            ExplanationNoRuleCalled cs -> cs
 
   -- A name nothing answers to is a question this build cannot answer, so it is
   -- refused rather than answered with prose that reads like an explanation.
   it "refuses a name nothing answers to" $
     case explainRule shippedRules (RuleId "NoSuchRule") of
-      Explained cs -> expectationFailure (unwords ["Explained a rule this build does not have:", show cs])
-      NoRuleCalled cs ->
+      ExplanationGiven cs -> expectationFailure (unwords ["ExplanationGiven a rule this build does not have:", show cs])
+      ExplanationNoRuleCalled cs ->
         renderChunksText WithoutColours cs
           `shouldBe` "There is no rule called NoSuchRule in this build of hopinion.\n\
                      \Run list-rules to see the rules this build has.\n"

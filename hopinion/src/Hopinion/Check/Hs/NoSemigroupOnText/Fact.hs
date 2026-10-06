@@ -17,8 +17,8 @@ import Hopinion.Facts.Place
 -- everything else is a name or a call whose type is somewhere the parser cannot
 -- follow. The types tier is what turns the second answer into a real one.
 data ConcatOperand
-  = OperandStringLiteral
-  | OperandSomethingElse
+  = ConcatOperandStringLiteral
+  | ConcatOperandSomethingElse
   deriving stock (Show, Eq, Generic)
 
 instance Validity ConcatOperand

@@ -20,7 +20,7 @@ rule =
         \ field to a value written on one line rewrites that line and reflows\
         \ whatever followed. A value with one field has nothing to line up\
         \ against, so it is left alone.",
-      ruleImpl = ModuleRule (FromSource check)
+      ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 
 check :: ModuleContext -> CheckResult
@@ -39,6 +39,6 @@ messageFor :: RecordUse -> Word -> Text
 messageFor use fields =
   let subject :: Text
       subject = case use of
-        RecordConstructed -> "A record value"
-        RecordUpdated -> "A record update"
+        RecordUseConstructed -> "A record value"
+        RecordUseUpdated -> "A record update"
    in T.concat [subject, " of ", T.pack (show fields), " fields, sharing a line."]

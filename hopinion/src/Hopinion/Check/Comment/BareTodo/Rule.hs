@@ -19,7 +19,7 @@ rule =
       ruleWhy =
         "A reference tells the reader where the work is tracked. A TODO on its\
         \ own reads like a plan, and goes stale in place.",
-      ruleImpl = ModuleRule (FromSource check)
+      ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 
 check :: ModuleContext -> CheckResult
@@ -32,7 +32,7 @@ check mf =
           findingMessage = "A TODO with no issue reference or URL."
         }
     | cf <- moduleContextComments mf,
-      commentFactStyle cf /= StylePragma,
+      commentFactStyle cf /= CommentStylePragma,
       hasBareTodo (commentFactText cf)
     ]
 

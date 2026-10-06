@@ -161,7 +161,7 @@ errorDeclsOf rp ref decls ds =
 declaredError :: TyClDecl GhcPs -> Maybe (Text, ErrorDeclShape, LHsType GhcPs)
 declaredError = \case
   SynDecl {tcdLName = n, tcdRhs = rhs} ->
-    Just (rdrText (unLoc n), ErrorDeclSynonym, rhs)
+    Just (rdrText (unLoc n), ErrorDeclShapeSynonym, rhs)
   DataDecl {tcdLName = n, tcdDataDefn = defn} -> do
     let name = rdrText (unLoc n)
     con <- soleConstructor defn
@@ -169,7 +169,7 @@ declaredError = \case
     if echoesTypeName name conName
       then do
         field <- soleField con
-        pure (name, ErrorDeclWrapper, field)
+        pure (name, ErrorDeclShapeWrapper, field)
       else Nothing
   _ -> Nothing
 

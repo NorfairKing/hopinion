@@ -18,7 +18,7 @@ rule =
         "A \\case definition writes the function's name once; equations write it\
         \ once each, so renaming the function reformats every equation and\
         \ buries the real change in the diff.",
-      ruleImpl = ModuleRule (FromSource check)
+      ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 
 check :: ModuleContext -> CheckResult
@@ -35,5 +35,5 @@ check mf =
 
 messageFor :: ArgumentShape -> Text
 messageFor = \case
-  ArgumentNamedThenCased -> "This names its last argument and then only cases on it."
-  ArgumentSplitOverEquations -> "This is spread over one equation per pattern."
+  ArgumentShapeNamedThenCased -> "This names its last argument and then only cases on it."
+  ArgumentShapeSplitOverEquations -> "This is spread over one equation per pattern."

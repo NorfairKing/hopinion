@@ -25,9 +25,9 @@ import GHC.Generics (Generic)
 -- quasiquote expands one body that is in the file. A module doing both records
 -- the splice, which is the weaker guarantee.
 data TemplateHaskellUse
-  = NoTemplateHaskell
-  | UsesQuasiQuotes
-  | UsesSplices
+  = TemplateHaskellUseNone
+  | TemplateHaskellUseQuasiQuotes
+  | TemplateHaskellUseSplices
   deriving stock (Show, Eq, Ord, Enum, Bounded, Generic)
 
 instance Validity TemplateHaskellUse
@@ -43,9 +43,9 @@ instance PersistFieldSql TemplateHaskellUse where
 
 templateHaskellUseText :: TemplateHaskellUse -> Text
 templateHaskellUseText = \case
-  NoTemplateHaskell -> "no"
-  UsesQuasiQuotes -> "quasiquotes"
-  UsesSplices -> "splices"
+  TemplateHaskellUseNone -> "no"
+  TemplateHaskellUseQuasiQuotes -> "quasiquotes"
+  TemplateHaskellUseSplices -> "splices"
 
 parseTemplateHaskellUse :: Text -> Maybe TemplateHaskellUse
 parseTemplateHaskellUse t =

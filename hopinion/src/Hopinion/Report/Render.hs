@@ -334,5 +334,5 @@ sourcesForReport roots report = do
     readOne rp = do
       read' <- traverse (forgivingAbsence . readSource) (mapMaybe (`sourceFileIn` rp) roots)
       pure $ case catMaybes read' of
-        [] -> Left (NoSourceFor rp)
+        [] -> Left (FailureNoSourceFor rp)
         (contents : _) -> Right (rp, contents)

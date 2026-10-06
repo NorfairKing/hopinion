@@ -74,9 +74,9 @@ instance HasCodec NonEmptyText where
         codec
 
 data AnnotationPrecision
-  = PrecisionFile
-  | PrecisionDecl
-  | PrecisionStatement !Span
+  = AnnotationPrecisionFile
+  | AnnotationPrecisionDecl
+  | AnnotationPrecisionStatement !Span
   deriving stock (Show, Eq, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec AnnotationPrecision)
 
@@ -87,12 +87,12 @@ instance HasCodec AnnotationPrecision where
     named "AnnotationPrecision" $
       dimapCodec fromEither toEither $
         disjointEitherCodec
-          (stringConstCodec ((PrecisionFile, "file") :| [(PrecisionDecl, "decl")]))
-          (object "PrecisionStatement" (requiredField "statement" "the statement it covers"))
+          (stringConstCodec ((AnnotationPrecisionFile, "file") :| [(AnnotationPrecisionDecl, "decl")]))
+          (object "AnnotationPrecisionStatement" (requiredField "statement" "the statement it covers"))
     where
-      fromEither = either id PrecisionStatement
+      fromEither = either id AnnotationPrecisionStatement
       toEither = \case
-        PrecisionStatement s -> Right s
+        AnnotationPrecisionStatement s -> Right s
         other -> Left other
 
 -- | Two constructors rather than a magic string, so the adoption-debt

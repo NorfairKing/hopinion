@@ -253,9 +253,9 @@ namesOf toks =
 -- application.
 templateHaskellOf :: [(Token, Span)] -> TemplateHaskellUse
 templateHaskellOf toks
-  | any (isSplice . fst) toks = UsesSplices
-  | any (isQuasiQuote . fst) toks = UsesQuasiQuotes
-  | otherwise = NoTemplateHaskell
+  | any (isSplice . fst) toks = TemplateHaskellUseSplices
+  | any (isQuasiQuote . fst) toks = TemplateHaskellUseQuasiQuotes
+  | otherwise = TemplateHaskellUseNone
   where
     isSplice :: Token -> Bool
     isSplice = \case

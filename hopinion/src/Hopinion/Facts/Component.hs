@@ -17,10 +17,10 @@ import Database.Persist.Sql (PersistFieldSql (..), SqlType (..))
 import GHC.Generics (Generic)
 
 data ComponentKind
-  = ComponentLib
-  | ComponentApp
-  | ComponentTest
-  | ComponentBench
+  = ComponentKindLib
+  | ComponentKindApp
+  | ComponentKindTest
+  | ComponentKindBench
   deriving stock (Show, Eq, Ord, Enum, Bounded, Generic)
 
 instance Validity ComponentKind
@@ -36,10 +36,10 @@ instance PersistFieldSql ComponentKind where
 
 componentKindText :: ComponentKind -> Text
 componentKindText = \case
-  ComponentLib -> "lib"
-  ComponentApp -> "app"
-  ComponentTest -> "test"
-  ComponentBench -> "bench"
+  ComponentKindLib -> "lib"
+  ComponentKindApp -> "app"
+  ComponentKindTest -> "test"
+  ComponentKindBench -> "bench"
 
 -- | What @--component@ accepts as well as what a row stores, so the spellings a
 -- person can type are the spellings the store uses and there is one table of

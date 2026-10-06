@@ -89,11 +89,11 @@ instance HasCodec ParseFailure where
 -- at each constructor why: what they are about is an absolute path, and a store
 -- path in a report is somewhere nobody reading it can navigate to.
 data Failure
-  = ModuleDidNotParse !ParseFailure
-  | NoSourceFor !(Path Rel File)
-  | RepositoryUnreadable !Text
-  | ChoicesRefused !Text
-  | RuleSetRefused !Text
+  = FailureModuleDidNotParse !ParseFailure
+  | FailureNoSourceFor !(Path Rel File)
+  | FailureRepositoryUnreadable !Text
+  | FailureChoicesRefused !Text
+  | FailureRuleSetRefused !Text
   | -- | A package output this run was given and cannot use: absent, repeated,
     -- written by another build of the tool, or holding facts that will not
     -- merge.
@@ -102,15 +102,15 @@ data Failure
     -- absolute path. A run under Nix is handed store paths, and a store path in
     -- a report is somewhere nobody reading it can navigate to, so there is
     -- nothing for a consumer to do with it but print the sentence.
-    PackageOutputRefused !Text
+    FailurePackageOutputRefused !Text
   | -- | A build was given @.hie@ files and could not answer for a module it was
     -- held to covering. Rendered for the reason above: it names the directories
     -- it looked in.
-    ArtifactsRefused !Text
+    FailureArtifactsRefused !Text
   | -- | The project layer was given no package to expect, which is the one way
     -- it could answer "clean" without having read anything.
-    NoPackagesExpected
-  | FactsIncomplete !StoreProblem
+    FailureNoPackagesExpected
+  | FailureFactsIncomplete !StoreProblem
   deriving stock (Show, Eq, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec Failure)
 
@@ -124,12 +124,12 @@ instance Validity Failure
 -- module a build was supposed to have compiled and did not. All of them are
 -- about names rather than about paths on the machine, so all of them are typed.
 data StoreProblem
-  = NoFactsForPackage !PackageName
-  | FactsFromAnotherVersion
-  | PackageDoesNotCover !PackageName !ModuleRef
-  | StoredModuleDidNotParse !ModuleKey
-  | SuppressionNamesRuleNotRun !RuleId
-  | NoArtifactFor !(Path Rel File)
+  = StoreProblemNoFactsForPackage !PackageName
+  | StoreProblemFactsFromAnotherVersion
+  | StoreProblemPackageDoesNotCover !PackageName !ModuleRef
+  | StoreProblemModuleDidNotParse !ModuleKey
+  | StoreProblemSuppressionNamesRuleNotRun !RuleId
+  | StoreProblemNoArtifactFor !(Path Rel File)
   deriving stock (Show, Eq, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec StoreProblem)
 
@@ -142,24 +142,24 @@ instance HasCodec StoreProblem where
         discriminatedUnionCodec "kind" enc dec
     where
       enc = \case
-        NoFactsForPackage p -> ("no-facts", mapToEncoder p (requiredField' "package"))
-        FactsFromAnotherVersion -> ("another-version", mapToEncoder () (pureCodec ()))
-        PackageDoesNotCover p ref -> ("module-not-covered", mapToEncoder (p, ref) notCovered)
-        StoredModuleDidNotParse mk -> ("did-not-parse", mapToEncoder mk (requiredField' "module"))
-        SuppressionNamesRuleNotRun rid -> ("rule-not-run", mapToEncoder rid (requiredField' "rule"))
-        NoArtifactFor rp -> ("no-artifact", mapToEncoder rp (requiredFieldWith' "path" relPathCodec))
+        StoreProblemNoFactsForPackage p -> ("no-facts", mapToEncoder p (requiredField' "package"))
+        StoreProblemFactsFromAnotherVersion -> ("another-version", mapToEncoder () (pureCodec ()))
+        StoreProblemPackageDoesNotCover p ref -> ("module-not-covered", mapToEncoder (p, ref) notCovered)
+        StoreProblemModuleDidNotParse mk -> ("did-not-parse", mapToEncoder mk (requiredField' "module"))
+        StoreProblemSuppressionNamesRuleNotRun rid -> ("rule-not-run", mapToEncoder rid (requiredField' "rule"))
+        StoreProblemNoArtifactFor rp -> ("no-artifact", mapToEncoder rp (requiredFieldWith' "path" relPathCodec))
       dec =
         HM.fromList
-          [ ("no-facts", ("a package whose facts never arrived", mapToDecoder NoFactsForPackage (requiredField' "package"))),
-            ("another-version", ("facts written by another build of the tool", mapToDecoder (const FactsFromAnotherVersion) (pureCodec ()))),
+          [ ("no-facts", ("a package whose facts never arrived", mapToDecoder StoreProblemNoFactsForPackage (requiredField' "package"))),
+            ("another-version", ("facts written by another build of the tool", mapToDecoder (const StoreProblemFactsFromAnotherVersion) (pureCodec ()))),
             ( "module-not-covered",
               ( "a module a package declares and its facts do not cover",
-                mapToDecoder (uncurry PackageDoesNotCover) notCovered
+                mapToDecoder (uncurry StoreProblemPackageDoesNotCover) notCovered
               )
             ),
-            ("did-not-parse", ("a module the tool could not read", mapToDecoder StoredModuleDidNotParse (requiredField' "module"))),
-            ("rule-not-run", ("a suppression naming a rule this run does not make", mapToDecoder SuppressionNamesRuleNotRun (requiredField' "rule"))),
-            ("no-artifact", ("a module a build that was given did not cover", mapToDecoder NoArtifactFor (requiredFieldWith' "path" relPathCodec)))
+            ("did-not-parse", ("a module the tool could not read", mapToDecoder StoreProblemModuleDidNotParse (requiredField' "module"))),
+            ("rule-not-run", ("a suppression naming a rule this run does not make", mapToDecoder StoreProblemSuppressionNamesRuleNotRun (requiredField' "rule"))),
+            ("no-artifact", ("a module a build that was given did not cover", mapToDecoder StoreProblemNoArtifactFor (requiredFieldWith' "path" relPathCodec)))
           ]
 
       notCovered :: JSONObjectCodec (PackageName, ModuleRef)
@@ -167,10 +167,10 @@ instance HasCodec StoreProblem where
 
 renderStoreProblem :: StoreProblem -> Text
 renderStoreProblem = \case
-  NoFactsForPackage p -> T.concat ["No facts for expected package ", packageNameText p]
-  FactsFromAnotherVersion ->
+  StoreProblemNoFactsForPackage p -> T.concat ["No facts for expected package ", packageNameText p]
+  StoreProblemFactsFromAnotherVersion ->
     "The fact store was written in a different format than this build of the tool reads."
-  PackageDoesNotCover p ref ->
+  StoreProblemPackageDoesNotCover p ref ->
     T.concat
       [ "Package ",
         packageNameText p,
@@ -180,15 +180,15 @@ renderStoreProblem = \case
         componentNameText (moduleRefComponent ref),
         " but its facts do not cover it"
       ]
-  StoredModuleDidNotParse mk -> T.concat ["Module ", moduleKeyText mk, " failed to parse"]
-  SuppressionNamesRuleNotRun rid ->
+  StoreProblemModuleDidNotParse mk -> T.concat ["Module ", moduleKeyText mk, " failed to parse"]
+  StoreProblemSuppressionNamesRuleNotRun rid ->
     T.concat
       [ "A suppression in the facts names ",
         ruleIdText rid,
         ", which this run does not run. ",
         "The package outputs and this run were given different rule sets."
       ]
-  NoArtifactFor rp ->
+  StoreProblemNoArtifactFor rp ->
     T.concat
       [ "No .hie file for ",
         relPathText rp,
@@ -204,31 +204,31 @@ instance HasCodec Failure where
         discriminatedUnionCodec "kind" enc dec
     where
       enc = \case
-        ModuleDidNotParse pf -> ("did-not-parse", mapToEncoder pf (requiredField' "did-not-parse"))
-        NoSourceFor rp -> ("no-source", mapToEncoder rp (requiredFieldWith' "no-source" relPathCodec))
-        RepositoryUnreadable t -> ("unreadable", mapToEncoder t (requiredField' "unreadable"))
-        ChoicesRefused t -> ("choices-refused", mapToEncoder t (requiredField' "choices-refused"))
-        RuleSetRefused t -> ("rules-refused", mapToEncoder t (requiredField' "rules-refused"))
-        PackageOutputRefused t -> ("output-refused", mapToEncoder t (requiredField' "output-refused"))
-        ArtifactsRefused t -> ("artifacts-refused", mapToEncoder t (requiredField' "artifacts-refused"))
-        NoPackagesExpected -> ("no-packages", mapToEncoder () (pureCodec ()))
-        FactsIncomplete p -> ("facts-incomplete", mapToEncoder p (requiredField' "facts-incomplete"))
+        FailureModuleDidNotParse pf -> ("did-not-parse", mapToEncoder pf (requiredField' "did-not-parse"))
+        FailureNoSourceFor rp -> ("no-source", mapToEncoder rp (requiredFieldWith' "no-source" relPathCodec))
+        FailureRepositoryUnreadable t -> ("unreadable", mapToEncoder t (requiredField' "unreadable"))
+        FailureChoicesRefused t -> ("choices-refused", mapToEncoder t (requiredField' "choices-refused"))
+        FailureRuleSetRefused t -> ("rules-refused", mapToEncoder t (requiredField' "rules-refused"))
+        FailurePackageOutputRefused t -> ("output-refused", mapToEncoder t (requiredField' "output-refused"))
+        FailureArtifactsRefused t -> ("artifacts-refused", mapToEncoder t (requiredField' "artifacts-refused"))
+        FailureNoPackagesExpected -> ("no-packages", mapToEncoder () (pureCodec ()))
+        FailureFactsIncomplete p -> ("facts-incomplete", mapToEncoder p (requiredField' "facts-incomplete"))
       dec =
         HM.fromList
-          [ ("did-not-parse", ("a module the tool could not read", mapToDecoder ModuleDidNotParse (requiredField' "did-not-parse"))),
-            ("no-source", ("a reported path no source root accounts for", mapToDecoder NoSourceFor (requiredFieldWith' "no-source" relPathCodec))),
-            ("unreadable", ("what stopped the repository from being read", mapToDecoder RepositoryUnreadable (requiredField' "unreadable"))),
-            ("choices-refused", ("what this repository asked for that is refused", mapToDecoder ChoicesRefused (requiredField' "choices-refused"))),
-            ("rules-refused", ("why the rules this run was asked for are not a set", mapToDecoder RuleSetRefused (requiredField' "rules-refused"))),
-            ("output-refused", ("a package output this run cannot use", mapToDecoder PackageOutputRefused (requiredField' "output-refused"))),
-            ("artifacts-refused", ("what a build did not answer for", mapToDecoder ArtifactsRefused (requiredField' "artifacts-refused"))),
-            ("no-packages", ("the project layer was given nothing to expect", mapToDecoder (const NoPackagesExpected) (pureCodec ()))),
-            ("facts-incomplete", ("what the merged facts do not add up to", mapToDecoder FactsIncomplete (requiredField' "facts-incomplete")))
+          [ ("did-not-parse", ("a module the tool could not read", mapToDecoder FailureModuleDidNotParse (requiredField' "did-not-parse"))),
+            ("no-source", ("a reported path no source root accounts for", mapToDecoder FailureNoSourceFor (requiredFieldWith' "no-source" relPathCodec))),
+            ("unreadable", ("what stopped the repository from being read", mapToDecoder FailureRepositoryUnreadable (requiredField' "unreadable"))),
+            ("choices-refused", ("what this repository asked for that is refused", mapToDecoder FailureChoicesRefused (requiredField' "choices-refused"))),
+            ("rules-refused", ("why the rules this run was asked for are not a set", mapToDecoder FailureRuleSetRefused (requiredField' "rules-refused"))),
+            ("output-refused", ("a package output this run cannot use", mapToDecoder FailurePackageOutputRefused (requiredField' "output-refused"))),
+            ("artifacts-refused", ("what a build did not answer for", mapToDecoder FailureArtifactsRefused (requiredField' "artifacts-refused"))),
+            ("no-packages", ("the project layer was given nothing to expect", mapToDecoder (const FailureNoPackagesExpected) (pureCodec ()))),
+            ("facts-incomplete", ("what the merged facts do not add up to", mapToDecoder FailureFactsIncomplete (requiredField' "facts-incomplete")))
           ]
 
 renderFailure :: Failure -> Text
 renderFailure = \case
-  ModuleDidNotParse pf ->
+  FailureModuleDidNotParse pf ->
     T.concat
       [ relPathText (parseFailurePath pf),
         ":",
@@ -238,19 +238,19 @@ renderFailure = \case
         ": ",
         parseFailureMessage pf
       ]
-  NoSourceFor rp ->
+  FailureNoSourceFor rp ->
     T.concat
       [ "No source root accounts for ",
         relPathText rp,
         ", so it cannot be shown against its code. Pass --source PREFIX=DIR for the package it is in."
       ]
-  RepositoryUnreadable t -> t
-  ChoicesRefused t -> t
-  RuleSetRefused t -> t
-  PackageOutputRefused t -> t
-  ArtifactsRefused t -> t
-  NoPackagesExpected -> "The project layer was given no packages to expect."
-  FactsIncomplete p -> renderStoreProblem p
+  FailureRepositoryUnreadable t -> t
+  FailureChoicesRefused t -> t
+  FailureRuleSetRefused t -> t
+  FailurePackageOutputRefused t -> t
+  FailureArtifactsRefused t -> t
+  FailureNoPackagesExpected -> "The project layer was given no packages to expect."
+  FailureFactsIncomplete p -> renderStoreProblem p
 
 -- | One thing a run has to complain about.
 --
@@ -338,8 +338,8 @@ encodeReport = JSON.encode . toJSONViaCodec
 -- by a hopinion whose format is not this one. Both messages are aeson's own,
 -- passed through rather than owned here.
 data ReportError
-  = ReportIsNotJson !Text
-  | ReportIsNotAReport !Text
+  = ReportErrorNotJson !Text
+  | ReportErrorNotAReport !Text
   deriving stock (Show, Eq)
 
 -- | One of those and the directory it was read from, which is what tells a
@@ -352,14 +352,14 @@ renderReportDirError (ReportDirError dir err) =
   T.pack (unwords [concat [toFilePath dir, ":"], T.unpack (said err)])
   where
     said = \case
-      ReportIsNotJson t -> t
-      ReportIsNotAReport t -> t
+      ReportErrorNotJson t -> t
+      ReportErrorNotAReport t -> t
 
 decodeReport :: LB.ByteString -> Either ReportError Complaints
 decodeReport bs = case JSON.eitherDecode bs of
-  Left err -> Left (ReportIsNotJson (T.pack err))
+  Left err -> Left (ReportErrorNotJson (T.pack err))
   Right value -> case JSON.parseEither parseJSONViaCodec value of
-    Left err -> Left (ReportIsNotAReport (T.pack err))
+    Left err -> Left (ReportErrorNotAReport (T.pack err))
     Right report -> Right report
 
 -- | What a package's output directory holds: the facts to read, the report as

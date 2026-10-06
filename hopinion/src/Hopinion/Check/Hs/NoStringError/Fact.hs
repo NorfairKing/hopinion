@@ -49,8 +49,8 @@ instance Validity ErrorSlot
 -- Two shapes because the fix differs: a synonym is deleted and replaced by a
 -- type, where a wrapper already is one and needs constructors instead.
 data ErrorDeclShape
-  = ErrorDeclSynonym
-  | ErrorDeclWrapper
+  = ErrorDeclShapeSynonym
+  | ErrorDeclShapeWrapper
   deriving stock (Show, Eq, Generic)
 
 instance Validity ErrorDeclShape

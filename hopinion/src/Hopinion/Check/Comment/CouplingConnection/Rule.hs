@@ -38,7 +38,7 @@ rule =
         \ tag and a ref do, and tagref and marginalia report the pair when one\
         \ half of it goes missing. Write [tag:Name] here and [ref:Name] there, or\
         \ [check:tag Name] and [check:ref Name].",
-      ruleImpl = ModuleRule (FromSource check)
+      ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 
 check :: ModuleContext -> CheckResult
@@ -60,7 +60,7 @@ check mf =
                   ]
             }
         | cf <- moduleContextComments mf,
-          commentFactStyle cf /= StylePragma,
+          commentFactStyle cf /= CommentStylePragma,
           not (S.member (scopeOf cf) connected),
           Just (phrase, name) <- [couplingIn (commentFactText cf)]
         ]

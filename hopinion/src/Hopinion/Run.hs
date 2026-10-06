@@ -67,7 +67,7 @@ import UnliftIO.Async (pooledMapConcurrently)
 -- | Where a run's store lives: in the output directory when there is one, and
 -- in memory when there is not.
 storeAt :: Maybe (Path Abs Dir) -> StoreLocation
-storeAt = maybe InMemory (OnDisk . (</> factsFile))
+storeAt = maybe StoreLocationInMemory (StoreLocationOnDisk . (</> factsFile))
 
 -- | Every table the envelope and the rules between them need.
 --
@@ -90,9 +90,9 @@ runCheck :: RuleSet -> HieDirectories -> SourceRoot -> IO Complaints
 runCheck given hieDirs root = do
   decided <- readChoicesIn (sourceRootDir root)
   case decided of
-    Left err -> pure (failureComplaints [ChoicesRefused (renderChoicesFileError err)])
+    Left err -> pure (failureComplaints [FailureChoicesRefused (renderChoicesFileError err)])
     Right choices -> case withoutRules (choicesDisabled choices) given of
-      Left err -> pure (failureComplaints [RuleSetRefused (renderChunksText WithoutColours (renderRuleSetError err))])
+      Left err -> pure (failureComplaints [FailureRuleSetRefused (renderChunksText WithoutColours (renderRuleSetError err))])
       Right rs -> runCheckWithoutChoices rs hieDirs root
 
 -- | The same, over the rule set exactly as given.
@@ -118,8 +118,8 @@ runPackageCommand :: RuleSet -> HieDirectories -> SourceRoot -> Path Abs Dir -> 
 runPackageCommand rs hieDirs root dir mOut = reportingArtifactProblems $ do
   eModels <- discoverPackages root dir
   case eModels of
-    Left err -> pure (failureComplaints [RepositoryUnreadable (renderDiscoveryError err)])
-    Right [] -> pure (failureComplaints [RepositoryUnreadable (renderDiscoveryError (NoCabalFileUnder dir))])
+    Left err -> pure (failureComplaints [FailureRepositoryUnreadable (renderDiscoveryError err)])
+    Right [] -> pure (failureComplaints [FailureRepositoryUnreadable (renderDiscoveryError (DiscoveryErrorNoCabalFileUnder dir))])
     Right (pm : _) -> do
       traverse_ ensureDir mOut
       withStore (storeMigrations rs) (storeAt mOut) $ do
@@ -138,15 +138,15 @@ runProjectCommand rs hieDirs packageDirs expectedNames mOut = reportingArtifactP
   -- rather than on the version that explains it.
   foreignFormats <- unreadableFormats packageDirs
   case (sequence earlier, repeatedDirs packageDirs ++ foreignFormats) of
-    (_, refused@(_ : _)) -> pure (failureComplaints (map PackageOutputRefused refused))
-    (Left err, _) -> pure (failureComplaints [PackageOutputRefused (renderReportDirError err)])
+    (_, refused@(_ : _)) -> pure (failureComplaints (map FailurePackageOutputRefused refused))
+    (Left err, _) -> pure (failureComplaints [FailurePackageOutputRefused (renderReportDirError err)])
     (Right reports, []) -> do
       traverse_ ensureDir mOut
       withStore (storeMigrations rs) (storeAt mOut) $ do
         writeMeta
         unmergeable <- concat <$> traverse (mergeStore . (</> factsFile)) packageDirs
         if not (null unmergeable)
-          then pure (failureComplaints (map PackageOutputRefused unmergeable))
+          then pure (failureComplaints (map FailurePackageOutputRefused unmergeable))
           else do
             -- This process never saw the source, so the modules come from the
             -- merged facts, which is also what keeps both paths asking about
@@ -158,7 +158,7 @@ runProjectCommand rs hieDirs packageDirs expectedNames mOut = reportingArtifactP
                     hieDirs
                     [ (moduleRefModule (storedModuleModuleRef m), storedPathFile (storedModulePath m))
                     | m <- modules,
-                      ParsedOk <- [storedModuleOutcome m]
+                      ParseOutcomeOk <- [storedModuleOutcome m]
                     ]
                 )
             projectReport <- projectReportFor rs (map PackageName expectedNames) compiled
@@ -172,7 +172,7 @@ reportingArtifactProblems :: IO Complaints -> IO Complaints
 reportingArtifactProblems act = do
   result <- try act
   pure $ case result of
-    Left (ArtifactProblem t) -> failureComplaints [ArtifactsRefused t]
+    Left (ArtifactProblem t) -> failureComplaints [FailureArtifactsRefused t]
     Right report -> report
 
 -- | Every package output whose facts this build of the tool cannot read.
@@ -216,7 +216,7 @@ repeatedDirs dirs =
 
 projectReportFor :: RuleSet -> [PackageName] -> CompiledModules -> Query Complaints
 projectReportFor rs expected compiled = case NE.nonEmpty (nub (sort expected)) of
-  Nothing -> pure (failureComplaints [NoPackagesExpected])
+  Nothing -> pure (failureComplaints [FailureNoPackagesExpected])
   Just neExpected -> runProjectPhase rs neExpected compiled
 
 -- | One module, for an editor or for debugging the parser. The context comes
@@ -285,8 +285,8 @@ listRules rs =
 -- prose on the same stream and the same exit code leaves a caller unable to
 -- tell the two apart.
 data Explanation
-  = Explained ![Chunk]
-  | NoRuleCalled ![Chunk]
+  = ExplanationGiven ![Chunk]
+  | ExplanationNoRuleCalled ![Chunk]
   deriving (Show, Eq)
 
 -- | What a rule asks for and why, whether or not this run makes it.
@@ -297,14 +297,14 @@ data Explanation
 explainRule :: RuleSet -> RuleId -> Explanation
 explainRule rs rid = case ruleNamed rs rid of
   Nothing ->
-    NoRuleCalled
+    ExplanationNoRuleCalled
       [ chunk "There is no rule called ",
         fore red (chunk (ruleIdText rid)),
         chunk " in this build of hopinion.\n",
         chunk "Run list-rules to see the rules this build has.\n"
       ]
   Just r ->
-    Explained
+    ExplanationGiven
       ( concat
           [ [fore blue (chunk (ruleIdText (ruleId r))), chunk "\n"],
             [chunk (ruleText r), chunk "\n"],
@@ -319,14 +319,14 @@ explainRule rs rid = case ruleNamed rs rid of
       turnedOff :: [Chunk]
       turnedOff =
         [ fore red (chunk "This repository has turned it off in hopinion.yaml, so this run does not make it.\n")
-        | useOf rs rid == Just RuleTurnedOff
+        | useOf rs rid == Just RuleUseTurnedOff
         ]
 
 withPackages :: SourceRoot -> ([PackageModel] -> IO Complaints) -> IO Complaints
 withPackages root act = do
   eModels <- discoverPackages root (sourceRootDir root)
   case eModels of
-    Left err -> pure (failureComplaints [RepositoryUnreadable (renderDiscoveryError err)])
+    Left err -> pure (failureComplaints [FailureRepositoryUnreadable (renderDiscoveryError err)])
     Right models -> act models
 
 -- | One package, read once: the module phase over every module in it, writing
@@ -344,7 +344,7 @@ writePackage rs hieDirs root pm = do
           hieDirs
           [ (moduleContextModule ctx, moduleContextPath ctx)
           | ctx <- contexts,
-            ParsedOk <- [moduleContextOutcome ctx]
+            ParseOutcomeOk <- [moduleContextOutcome ctx]
           ]
       )
   unread <- liftIO (unreadSuppressionsOf rs root pm)
@@ -403,8 +403,8 @@ moduleContextFor rs cm mm = do
             extractInputRules = rs
           }
   case moduleModelSource mm of
-    PreprocessedSource -> pure (preprocessedModuleContext extractInput)
-    HaskellSource -> do
+    ModuleSourcePreprocessed -> pure (preprocessedModuleContext extractInput)
+    ModuleSourceHaskell -> do
       src <- readSource (moduleModelFile mm)
       let input =
             ParseInput
@@ -446,15 +446,15 @@ runModuleLayer rs mf =
       )
   where
     resultFor = \case
-      ParsedOk -> foldMap (\c -> c mf) (moduleChecks rs)
-      ParseFailed _ _ -> noResult
-      NotHaskellSource -> noResult
+      ParseOutcomeOk -> foldMap (\c -> c mf) (moduleChecks rs)
+      ParseOutcomeFailed _ _ -> noResult
+      ParseOutcomeNotHaskellSource -> noResult
 
     failures = \case
-      ParsedOk -> []
-      NotHaskellSource -> []
-      ParseFailed pos msg ->
-        [ ModuleDidNotParse
+      ParseOutcomeOk -> []
+      ParseOutcomeNotHaskellSource -> []
+      ParseOutcomeFailed pos msg ->
+        [ FailureModuleDidNotParse
             ParseFailure
               { parseFailurePath = moduleContextPath mf,
                 parseFailurePosition = pos,
@@ -471,9 +471,9 @@ runPackagePhase rs pkg compiled = do
   pure (layerComplaints rs LevelPackage (mconcat results) annotations)
   where
     perRule r = case ruleImpl r of
-      PackageRule c -> packageCheckFindings c pkg compiled
-      ModuleRule _ -> pure noResult
-      ProjectRule _ -> pure noResult
+      RuleImplPackage c -> packageCheckFindings c pkg compiled
+      RuleImplModule _ -> pure noResult
+      RuleImplProject _ -> pure noResult
 
 -- | The project phase: every project rule, over what every module in every
 -- package wrote for it, and over what a build said about all of them.
@@ -484,15 +484,15 @@ runProjectPhase rs expected compiled = do
   -- Every problem, not the first: a build that missed a dozen modules names a
   -- dozen, which at a rebuild apiece is one fix rather than twelve.
   if not (null problems)
-    then pure (failureComplaints (map FactsIncomplete problems))
+    then pure (failureComplaints (map FailureFactsIncomplete problems))
     else do
       results <- traverse perRule (rulesAtLevel rs LevelProject)
       layerComplaints rs LevelProject (mconcat results) <$> storedAnnotations
   where
     perRule r = case ruleImpl r of
-      ProjectRule c -> projectCheckFindings c compiled
-      ModuleRule _ -> pure noResult
-      PackageRule _ -> pure noResult
+      RuleImplProject c -> projectCheckFindings c compiled
+      RuleImplModule _ -> pure noResult
+      RuleImplPackage _ -> pure noResult
 
 -- | Absent input is an error, never an empty set. Every failure mode here would
 -- otherwise turn into a silently satisfied obligation: a package whose facts
@@ -514,38 +514,38 @@ storeProblems rs expected uncovered = do
           [(storedModulePackage m, S.singleton (storedModuleModuleRef m)) | m <- modules]
   pure
     ( concat
-        [ [ NoFactsForPackage p
+        [ [ StoreProblemNoFactsForPackage p
           | p <- NE.toList expected,
             p `notElem` present
           ],
-          [FactsFromAnotherVersion | otherVersion],
-          [ PackageDoesNotCover p ref
+          [StoreProblemFactsFromAnotherVersion | otherVersion],
+          [ StoreProblemPackageDoesNotCover p ref
           | (p, refs) <- declared,
             ref <- refs,
             not (S.member ref (M.findWithDefault S.empty p covered))
           ],
-          [ StoredModuleDidNotParse (moduleRefModule (storedModuleModuleRef m))
+          [ StoreProblemModuleDidNotParse (moduleRefModule (storedModuleModuleRef m))
           | m <- modules,
-            ParseFailed _ _ <- [storedModuleOutcome m]
+            ParseOutcomeFailed _ _ <- [storedModuleOutcome m]
           ],
           -- The package runs and this one are separate processes and can be
           -- given different rule sets. A suppression naming a rule this run does
           -- not run belongs to no level, so it would neither answer for anything
           -- nor be reported unused. Both ways of not running it, since the
           -- parser refuses either and this never saw the comment to say which.
-          [ SuppressionNamesRuleNotRun (annotationFactRule a)
+          [ StoreProblemSuppressionNamesRuleNotRun (annotationFactRule a)
           | a <- annotations,
-            useOf rs (annotationFactRule a) /= Just RuleRuns
+            useOf rs (annotationFactRule a) /= Just RuleUseRuns
           ],
           -- A build was given, so it answers for every module or it answers for
           -- none: a module it left out is one every rule is told nothing about,
           -- which reads exactly like a module there is nothing to say about.
-          map NoArtifactFor uncovered
+          map StoreProblemNoArtifactFor uncovered
         ]
     )
 
 moduleChecks :: RuleSet -> [ModuleContext -> CheckResult]
-moduleChecks rs = [moduleCheckFindings c | r <- rulesAtLevel rs LevelModule, ModuleRule c <- [ruleImpl r]]
+moduleChecks rs = [moduleCheckFindings c | r <- rulesAtLevel rs LevelModule, RuleImplModule c <- [ruleImpl r]]
 
 -- | Each level judges exactly the annotations naming its own rules, which keeps
 -- unused-annotation detection sound without a global pass. A rule this set does
@@ -579,7 +579,7 @@ unreadSuppressionsOf rs root pm = do
       [ moduleModelFile mm
       | c <- packageModelComponents pm,
         mm <- componentModelModules c,
-        PreprocessedSource <- [moduleModelSource mm]
+        ModuleSourcePreprocessed <- [moduleModelSource mm]
       ]
 
     judged :: (Path Rel File, Path Abs File) -> IO Complaints

@@ -20,21 +20,21 @@ import Hopinion.Facts.Name
 import Hopinion.Facts.Place
 
 data DeclKind
-  = DeclValue
-  | DeclSignature
-  | DeclData
-  | DeclNewtype
-  | DeclTypeSynonym
-  | DeclClass
-  | DeclInstance
-  | DeclPattern
-  | DeclForeign
-  | -- | An annotation pragma. Its own kind rather than 'DeclOther', because it
-    -- is the one declaration that is not a subject: it says something about
+  = DeclKindValue
+  | DeclKindSignature
+  | DeclKindData
+  | DeclKindNewtype
+  | DeclKindTypeSynonym
+  | DeclKindClass
+  | DeclKindInstance
+  | DeclKindPattern
+  | DeclKindForeign
+  | -- | An annotation pragma. Its own kind rather than 'DeclKindOther', because
+    -- it is the one declaration that is not a subject: it says something about
     -- another declaration, so a comment above it is about that other one, and
     -- a rule asking for declarations of some kind must never be handed this.
-    DeclAnnotation
-  | DeclOther
+    DeclKindAnnotation
+  | DeclKindOther
   deriving stock (Show, Eq, Ord, Enum, Bounded, Generic)
 
 instance Validity DeclKind

@@ -249,8 +249,8 @@ instance PersistFieldSql ModuleRef where
 -- statement-level variant: a portable statement address would have to be an
 -- index path into a syntax tree, which breaks under editing.
 data ScopeKey
-  = ScopeOfFile !ModuleRef
-  | ScopeOfDecl !ModuleRef !DeclName
+  = ScopeKeyOfFile !ModuleRef
+  | ScopeKeyOfDecl !ModuleRef !DeclName
   deriving stock (Show, Eq, Ord, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec ScopeKey)
 
@@ -258,18 +258,18 @@ instance Validity ScopeKey
 
 scopeKeyModule :: ScopeKey -> ModuleRef
 scopeKeyModule = \case
-  ScopeOfFile m -> m
-  ScopeOfDecl m _ -> m
+  ScopeKeyOfFile m -> m
+  ScopeKeyOfDecl m _ -> m
 
 instance HasCodec ScopeKey where
   codec =
     named "ScopeKey" $
       object "ScopeKey" $
         bimapCodec
-          (\(m, mDecl) -> Right (maybe (ScopeOfFile m) (ScopeOfDecl m) mDecl))
+          (\(m, mDecl) -> Right (maybe (ScopeKeyOfFile m) (ScopeKeyOfDecl m) mDecl))
           ( \case
-              ScopeOfFile m -> (m, Nothing)
-              ScopeOfDecl m d -> (m, Just d)
+              ScopeKeyOfFile m -> (m, Nothing)
+              ScopeKeyOfDecl m d -> (m, Just d)
           )
           ( (,)
               <$> requiredField "module" "the module the scope is in" .= fst

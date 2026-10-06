@@ -60,7 +60,7 @@ rule =
         \ it, so the shipped executable carries QuickCheck and the generators.\
         \ The -gen package stops that at the test suite.",
       ruleImpl =
-        PackageRule
+        RuleImplPackage
           PackageCheck
             { packageCheckMigration = generatorMigration,
               packageCheckCarry = carry,
@@ -83,8 +83,8 @@ carry pkg ctx =
           }
   where
     declOf = \case
-      ScopeOfDecl _ d -> d
-      ScopeOfFile _ -> DeclName ""
+      ScopeKeyOfDecl _ d -> d
+      ScopeKeyOfFile _ -> DeclName ""
 
 -- | A generator in the library of a package whose role is main, which is the
 -- whole rule as one query. A gen package is where generators belong, so joining
@@ -105,8 +105,8 @@ findings pkg _ = do
                     `on` (\(g :& p) -> g ^. GeneratorFactPackage ==. p ^. StoredPackageName)
               )
           where_ (g ^. GeneratorFactPackage ==. val pkg)
-          where_ (g ^. GeneratorFactKind ==. val ComponentLib)
-          where_ (p ^. StoredPackageRole ==. val RoleMain)
+          where_ (g ^. GeneratorFactKind ==. val ComponentKindLib)
+          where_ (p ^. StoredPackageRole ==. val PackageRoleMain)
           orderBy [asc (g ^. GeneratorFactModuleRef)]
           pure g
       )
@@ -117,7 +117,7 @@ findingFor g =
   Finding
     { findingRule = ruleId rule,
       findingScope =
-        ScopeOfDecl (generatorFactModuleRef g) (generatorFactDecl g),
+        ScopeKeyOfDecl (generatorFactModuleRef g) (generatorFactDecl g),
       findingSpan = generatorFactSpan g,
       findingMessage =
         T.concat

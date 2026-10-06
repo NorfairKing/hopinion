@@ -50,10 +50,10 @@ crowdedRecordsOf rp ref decls ds =
 layoutOf :: Path Rel File -> LHsExpr GhcPs -> Maybe (RecordUse, [Word])
 layoutOf rp le = case unLoc le of
   RecordCon {rcon_flds = flds} ->
-    Just (RecordConstructed, map (startLine rp) (rec_flds flds) ++ dotdotLines rp flds)
+    Just (RecordUseConstructed, map (startLine rp) (rec_flds flds) ++ dotdotLines rp flds)
   RecordUpd {rupd_flds = flds} ->
     Just
-      ( RecordUpdated,
+      ( RecordUseUpdated,
         case flds of
           RegularRecUpdFields {recUpdFields = fs} -> map (startLine rp) fs
           OverloadedRecUpdFields {olRecUpdFields = fs} -> map (startLine rp) fs

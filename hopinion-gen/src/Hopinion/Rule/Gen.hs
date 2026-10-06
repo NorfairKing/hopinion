@@ -46,7 +46,7 @@ exampleRule =
         "This rule belongs to the repository rather than to hopinion, so that a\
         \ repository adding a rule of its own can be watched doing it. The\
         \ standard behind it is invented for the purpose.",
-      ruleImpl = ModuleRule (FromSource check)
+      ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
   where
     check mf =
@@ -58,7 +58,7 @@ exampleRule =
               findingMessage = "A comment in capitals."
             }
         | cf <- moduleContextComments mf,
-          commentFactStyle cf /= StylePragma,
+          commentFactStyle cf /= CommentStylePragma,
           isShouting (commentFactText cf)
         ]
 

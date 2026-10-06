@@ -121,8 +121,8 @@ instance PersistFieldSql StoredPath where
 -- one is a mistake in whatever enumerated the packages or the modules, and the
 -- caller has to have ruled it out before it gets here. Discovery does rule out
 -- two packages by one name, which is what 'Hopinion.Project.discoverPackages'
--- refuses as @TwoPackagesCalled@. The stamp is the exception, and 'writeMeta'
--- says why.
+-- refuses as @DiscoveryErrorTwoPackagesCalled@. The stamp is the exception,
+-- and 'writeMeta' says why.
 --
 -- Suppressions are rows, since a module has as many as it has, and one opaque
 -- column each, since nothing queries into one.
@@ -168,14 +168,14 @@ StoredAnnotation
 -- at all is a file name that is not one, and a magic string is a state a type
 -- can rule out.
 data StoreLocation
-  = InMemory
-  | OnDisk !(Path Abs File)
+  = StoreLocationInMemory
+  | StoreLocationOnDisk !(Path Abs File)
   deriving (Show, Eq)
 
 storeLocationText :: StoreLocation -> Text
 storeLocationText = \case
-  InMemory -> ":memory:"
-  OnDisk p -> T.pack (toFilePath p)
+  StoreLocationInMemory -> ":memory:"
+  StoreLocationOnDisk p -> T.pack (toFilePath p)
 
 -- | A store, migrated for the envelope and for every rule that brought a
 -- schema.
@@ -194,7 +194,7 @@ withStore migrations location act =
 -- | The same store with nowhere to put it, which is what the one-process run
 -- uses, and why the two paths can be asserted to agree.
 withMemoryStore :: [Migration] -> Query a -> IO a
-withMemoryStore migrations = withStore migrations InMemory
+withMemoryStore migrations = withStore migrations StoreLocationInMemory
 
 -- | Copy everything out of another store into this one, or say which of its
 -- tables this one has nowhere to put.
@@ -262,7 +262,7 @@ readEverything :: Path Abs File -> IO [IncomingTable]
 readEverything path =
   runResourceT $
     runNoLoggingT $
-      withSqliteConnInfo (withoutWal (mkSqliteConnectionInfo (storeLocationText (OnDisk path)))) $
+      withSqliteConnInfo (withoutWal (mkSqliteConnectionInfo (storeLocationText (StoreLocationOnDisk path)))) $
         runReaderT $ do
           names <- rawSql "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name" []
           traverse (\(Single t) -> tableOf t) names
@@ -283,7 +283,7 @@ storedFormatOf :: Path Abs File -> IO (Maybe Word)
 storedFormatOf path =
   runResourceT $
     runNoLoggingT $
-      withSqliteConnInfo (withoutWal (mkSqliteConnectionInfo (storeLocationText (OnDisk path)))) $
+      withSqliteConnInfo (withoutWal (mkSqliteConnectionInfo (storeLocationText (StoreLocationOnDisk path)))) $
         runReaderT $ do
           stamped <-
             rawSql
@@ -429,18 +429,18 @@ genPackageFor pkg = do
             pure (p ^. StoredPackageRole)
         )
   case role of
-    Just RoleGen -> pure (GenPackage pkg)
-    Just RoleMain -> generatorPackageNamed (genNameOf pkg)
+    Just PackageRoleGen -> pure (GenPackage pkg)
+    Just PackageRoleMain -> generatorPackageNamed (genNameOf pkg)
     -- A package the store never heard of has no facts, so it has made no
     -- obligation that needs a home. The name is still the name it would have.
-    Nothing -> pure (NoGenPackage (genNameOf pkg))
+    Nothing -> pure (GenPackageNone (genNameOf pkg))
 
 genNameOf :: PackageName -> PackageName
 genNameOf pkg = PackageName (T.concat [packageNameText pkg, "-gen"])
 
 generatorPackageNamed :: PackageName -> Query GenPackage
 generatorPackageNamed gen =
-  maybe (NoGenPackage gen) (GenPackage . unValue)
+  maybe (GenPackageNone gen) (GenPackage . unValue)
     <$> selectOne
       ( do
           p <- from (table @StoredPackage)

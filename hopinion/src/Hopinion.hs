@@ -53,8 +53,8 @@ hopinionWith rules = do
   settings <- getSettings
   off <- disabledFor settings
   let started = do
-        ids <- first ChoicesUnreadable off
-        first RulesUnusable (ruleSet rules [] >>= withoutRules ids)
+        ids <- first StartupErrorChoicesUnreadable off
+        first StartupErrorRulesUnusable (ruleSet rules [] >>= withoutRules ids)
   case started of
     -- Nothing that stops a run this early is something to report about the
     -- code: it is a mistake in the executable, in the arguments, or in the
@@ -67,13 +67,13 @@ hopinionWith rules = do
 
 -- | What can stop a run before it has read any code.
 data StartupError
-  = ChoicesUnreadable !ChoicesFileError
-  | RulesUnusable !RuleSetError
+  = StartupErrorChoicesUnreadable !ChoicesFileError
+  | StartupErrorRulesUnusable !RuleSetError
 
 renderStartupError :: StartupError -> [Chunk]
 renderStartupError = \case
-  ChoicesUnreadable err -> [chunk (renderChoicesFileError err)]
-  RulesUnusable err -> renderRuleSetError err
+  StartupErrorChoicesUnreadable err -> [chunk (renderChoicesFileError err)]
+  StartupErrorRulesUnusable err -> renderRuleSetError err
 
 -- | Which rules this run is to leave alone, which is what the repository's file
 -- says and nothing else. There is no flag for it, so the answer cannot differ
@@ -118,7 +118,7 @@ run rs settings =
     DispatchModule relFile extensions component dump -> do
       facts <- factsForFile rs relFile extensions component
       case dump of
-        NoDumpComments -> pure ()
+        DumpCommentsNone -> pure ()
         DumpComments -> mapM_ (TIO.putStrLn . renderComment) (moduleContextComments facts)
       -- The module command reports paths exactly as it was given them, so the
       -- working directory is what they are relative to.
@@ -145,8 +145,8 @@ run rs settings =
           exitWith (verdict (foldMap fst reports))
     DispatchListRules -> putChunksLocale (listRules rs)
     DispatchExplain rid -> case explainRule rs rid of
-      Explained cs -> putChunksLocale cs
-      NoRuleCalled cs -> do
+      ExplanationGiven cs -> putChunksLocale cs
+      ExplanationNoRuleCalled cs -> do
         hPutChunksLocale stderr cs
         exitWith (ExitFailure 1)
 

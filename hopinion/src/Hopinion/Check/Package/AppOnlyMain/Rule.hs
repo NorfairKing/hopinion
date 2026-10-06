@@ -59,7 +59,7 @@ rule =
         \ only the library it calls into. One line naming a function in the\
         \ library moves the code where a test can reach it.",
       ruleImpl =
-        PackageRule
+        RuleImplPackage
           PackageCheck
             { packageCheckMigration = strayAppDeclMigration,
               packageCheckCarry = carry,
@@ -92,7 +92,7 @@ findings pkg _ = do
       ( do
           s <- from (table @StrayAppDeclFact)
           where_ (s ^. StrayAppDeclFactPackage ==. val pkg)
-          where_ (s ^. StrayAppDeclFactKind ==. val ComponentApp)
+          where_ (s ^. StrayAppDeclFactKind ==. val ComponentKindApp)
           orderBy [asc (s ^. StrayAppDeclFactModuleRef), asc (s ^. StrayAppDeclFactId)]
           pure s
       )
@@ -105,7 +105,7 @@ findingFor :: StrayAppDeclFact -> Finding
 findingFor s =
   Finding
     { findingRule = ruleId rule,
-      findingScope = ScopeOfDecl (strayAppDeclFactModuleRef s) (strayAppDeclFactDecl s),
+      findingScope = ScopeKeyOfDecl (strayAppDeclFactModuleRef s) (strayAppDeclFactDecl s),
       findingSpan = strayAppDeclFactSpan s,
       findingMessage =
         if strayAppDeclFactDecl s == DeclName "main"

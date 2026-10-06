@@ -161,38 +161,38 @@ marker = "[allow"
 -- | Every way a comment that means to be a suppression fails to be one.
 --
 -- Typed because each is a different fix, and because the parser and the report
--- would otherwise agree on the wording by copying it. 'NotASuppression' is the
--- one that is not a mistake: it is what every comment that is not one answers,
--- and 'annotationsOf' reads it as "nothing to see here" rather than as a
--- problem.
+-- would otherwise agree on the wording by copying it.
+-- 'AnnotationErrorNotASuppression' is the one that is not a mistake: it is what
+-- every comment that is not one answers, and 'annotationsOf' reads it as
+-- "nothing to see here" rather than as a problem.
 data AnnotationError
-  = NotASuppression
-  | InHaddock
-  | NoClosingBracket
-  | NoRuleNamed
-  | TwoRulesAtOneSite
-  | UnknownRuleId !Text
-  | RuleIsTurnedOff !RuleId
-  | NoReason
-  | AttachedToNothing
+  = AnnotationErrorNotASuppression
+  | AnnotationErrorInHaddock
+  | AnnotationErrorNoClosingBracket
+  | AnnotationErrorNoRuleNamed
+  | AnnotationErrorTwoRulesAtOneSite
+  | AnnotationErrorUnknownRuleId !Text
+  | AnnotationErrorRuleIsTurnedOff !RuleId
+  | AnnotationErrorNoReason
+  | AnnotationErrorAttachedToNothing
   deriving (Show, Eq)
 
 renderAnnotationError :: AnnotationError -> Text
 renderAnnotationError = \case
-  NotASuppression -> "not a suppression"
-  InHaddock -> "A suppression has no business in generated documentation."
-  NoClosingBracket -> "A suppression needs a closing bracket."
-  NoRuleNamed -> "A bare [allow] would silently absorb rules added later. Name the rule."
-  TwoRulesAtOneSite -> "One rule per annotation: two rules at one site means two reasons."
-  UnknownRuleId t -> T.concat ["Unknown rule id: ", t]
-  RuleIsTurnedOff rid ->
+  AnnotationErrorNotASuppression -> "not a suppression"
+  AnnotationErrorInHaddock -> "A suppression has no business in generated documentation."
+  AnnotationErrorNoClosingBracket -> "A suppression needs a closing bracket."
+  AnnotationErrorNoRuleNamed -> "A bare [allow] would silently absorb rules added later. Name the rule."
+  AnnotationErrorTwoRulesAtOneSite -> "One rule per annotation: two rules at one site means two reasons."
+  AnnotationErrorUnknownRuleId t -> T.concat ["Unknown rule id: ", t]
+  AnnotationErrorRuleIsTurnedOff rid ->
     T.concat
       [ "This suppresses ",
         ruleIdText rid,
         ", which this repository has turned off, so it suppresses nothing. Remove it."
       ]
-  NoReason -> "A suppression with no reason is a config exception with extra steps."
-  AttachedToNothing -> "This suppression sits on its own. Move it against the code it concerns."
+  AnnotationErrorNoReason -> "A suppression with no reason is a config exception with extra steps."
+  AnnotationErrorAttachedToNothing -> "This suppression sits on its own. Move it against the code it concerns."
 
 parseAnnotation :: RuleSet -> ModuleRef -> CommentFact -> Either AnnotationError AnnotationFact
 parseAnnotation rs mk cf = do
@@ -201,7 +201,7 @@ parseAnnotation rs mk cf = do
   ruleId' <- namedRule rs ruleText'
   reason' <-
     maybe
-      (Left NoReason)
+      (Left AnnotationErrorNoReason)
       Right
       (nonEmptyText (T.strip reason))
   (scope, precision) <- placement fileScoped
@@ -216,16 +216,16 @@ parseAnnotation rs mk cf = do
       }
   where
     assertNotHaddock =
-      if commentFactStyle cf `elem` [StyleHaddockNext, StyleHaddockPrev, StyleHaddockNamed]
-        then Left InHaddock
+      if commentFactStyle cf `elem` [CommentStyleHaddockNext, CommentStyleHaddockPrev, CommentStyleHaddockNamed]
+        then Left AnnotationErrorInHaddock
         else Right ()
 
     placement fileScoped = case (fileScoped, commentFactAttachment cf) of
-      (FileScoped, _) -> Right (ScopeOfFile mk, PrecisionFile)
-      (SiteScoped, AttachedToDecl d) -> Right (ScopeOfDecl mk d, PrecisionDecl)
-      (SiteScoped, AttachedToStatement d sp) -> Right (ScopeOfDecl mk d, PrecisionStatement sp)
-      (SiteScoped, _) ->
-        Left AttachedToNothing
+      (AnnotationReachFile, _) -> Right (ScopeKeyOfFile mk, AnnotationPrecisionFile)
+      (AnnotationReachSite, AttachmentToDecl d) -> Right (ScopeKeyOfDecl mk d, AnnotationPrecisionDecl)
+      (AnnotationReachSite, AttachmentToStatement d sp) -> Right (ScopeKeyOfDecl mk d, AnnotationPrecisionStatement sp)
+      (AnnotationReachSite, _) ->
+        Left AnnotationErrorAttachedToNothing
 
 -- | The rule a suppression names, if this run makes it.
 --
@@ -236,15 +236,15 @@ parseAnnotation rs mk cf = do
 -- outlived its finding is: it answers for nothing.
 namedRule :: RuleSet -> Text -> Either AnnotationError RuleId
 namedRule rs t = do
-  rid <- maybe (Left (UnknownRuleId t)) Right (parseRuleId t)
+  rid <- maybe (Left (AnnotationErrorUnknownRuleId t)) Right (parseRuleId t)
   case useOf rs rid of
-    Just RuleRuns -> Right rid
-    Nothing -> Left (UnknownRuleId t)
-    Just RuleTurnedOff -> Left (RuleIsTurnedOff rid)
+    Just RuleUseRuns -> Right rid
+    Nothing -> Left (AnnotationErrorUnknownRuleId t)
+    Just RuleUseTurnedOff -> Left (AnnotationErrorRuleIsTurnedOff rid)
 
 data AnnotationReach
-  = FileScoped
-  | SiteScoped
+  = AnnotationReachFile
+  | AnnotationReachSite
   deriving stock (Show, Eq, Generic)
 
 instance Validity AnnotationReach
@@ -254,17 +254,17 @@ instance Validity AnnotationReach
 -- reasons.
 splitAnnotation :: Text -> Either AnnotationError (AnnotationReach, Text, Text)
 splitAnnotation t = do
-  afterMarker <- maybe (Left NotASuppression) Right (T.stripPrefix marker t)
+  afterMarker <- maybe (Left AnnotationErrorNotASuppression) Right (T.stripPrefix marker t)
   (inside, reason) <- case T.breakOn "]" afterMarker of
-    (_, rest) | T.null rest -> Left NoClosingBracket
+    (_, rest) | T.null rest -> Left AnnotationErrorNoClosingBracket
     (inside, rest) -> Right (inside, T.drop 1 rest)
-  body <- maybe (Left NoRuleNamed) Right (T.stripPrefix ":" inside)
+  body <- maybe (Left AnnotationErrorNoRuleNamed) Right (T.stripPrefix ":" inside)
   case T.stripPrefix "file:" body of
-    Just rest -> pure (FileScoped, T.strip rest, reason)
+    Just rest -> pure (AnnotationReachFile, T.strip rest, reason)
     Nothing ->
       if T.isInfixOf "," body
-        then Left TwoRulesAtOneSite
-        else pure (SiteScoped, T.strip body, reason)
+        then Left AnnotationErrorTwoRulesAtOneSite
+        else pure (AnnotationReachSite, T.strip body, reason)
 
 -- | An annotation suppresses a finding when the rule ids match and the
 -- annotation reaches the finding's site.
@@ -273,9 +273,9 @@ suppresses a f =
   annotationFactRule a == findingRule f
     && scopeKeyModule (annotationFactScope a) == scopeKeyModule (findingScope f)
     && case annotationFactPrecision a of
-      PrecisionFile -> True
-      PrecisionDecl -> annotationFactScope a == findingScope f
-      PrecisionStatement sp -> spanContains sp (findingSpan f)
+      AnnotationPrecisionFile -> True
+      AnnotationPrecisionDecl -> annotationFactScope a == findingScope f
+      AnnotationPrecisionStatement sp -> spanContains sp (findingSpan f)
 
 -- | A suppression that answers for nothing: the rule it names, and where it is
 -- written.
@@ -404,9 +404,9 @@ applySuppression annotations findings =
 
     specificity :: AnnotationPrecision -> Word
     specificity = \case
-      PrecisionStatement _ -> 0
-      PrecisionDecl -> 1
-      PrecisionFile -> 2
+      AnnotationPrecisionStatement _ -> 0
+      AnnotationPrecisionDecl -> 1
+      AnnotationPrecisionFile -> 2
 
 -- | The suppression that answers for this finding, which is the same text
 -- whether it is written into a file or offered to a reader. The reason is left
@@ -439,5 +439,5 @@ suppressionIsFileScoped f =
   isWholeFileSpan (findingSpan f) || isFileScope (findingScope f)
   where
     isFileScope = \case
-      ScopeOfFile _ -> True
-      ScopeOfDecl _ _ -> False
+      ScopeKeyOfFile _ -> True
+      ScopeKeyOfDecl _ _ -> False

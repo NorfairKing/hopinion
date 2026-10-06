@@ -99,6 +99,6 @@ concatRuns le =
 
 operandOf :: LHsExpr GhcPs -> ConcatOperand
 operandOf le = case unLoc (peelExpr le) of
-  HsLit _ HsString {} -> OperandStringLiteral
-  HsLit _ HsMultilineString {} -> OperandStringLiteral
-  _ -> OperandSomethingElse
+  HsLit _ HsString {} -> ConcatOperandStringLiteral
+  HsLit _ HsMultilineString {} -> ConcatOperandStringLiteral
+  _ -> ConcatOperandSomethingElse

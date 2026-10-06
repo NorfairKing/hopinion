@@ -18,7 +18,7 @@ import Hopinion.Facts.Place
 -- them has to say back. Documentation in an export list is not one of them: a
 -- section heading exports nothing.
 data ExportList
-  = NoExportList
+  = ExportListNone
   | ExportList !Span ![Text]
   deriving stock (Show, Eq, Generic)
 

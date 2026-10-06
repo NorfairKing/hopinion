@@ -24,12 +24,12 @@ import Hopinion.Facts.Place
 -- treat an unparsed module as an error rather than as a module with no
 -- declarations.
 data ParseOutcome
-  = ParsedOk
-  | ParseFailed !Position !Text
+  = ParseOutcomeOk
+  | ParseOutcomeFailed !Position !Text
   | -- | The module is real and its source is not Haskell: a preprocessor
     -- generates it at build time. Neither a parse failure nor a module that
     -- vanished, so it must be neither reported nor silently dropped.
-    NotHaskellSource
+    ParseOutcomeNotHaskellSource
   deriving stock (Show, Eq, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec ParseOutcome)
 
@@ -40,18 +40,18 @@ instance HasCodec ParseOutcome where
     named "ParseOutcome" $
       dimapCodec fromEither toEither $
         disjointEitherCodec
-          (stringConstCodec ((ParsedOk, "ok") :| [(NotHaskellSource, "not-haskell-source")]))
-          ( object "ParseFailed" $
+          (stringConstCodec ((ParseOutcomeOk, "ok") :| [(ParseOutcomeNotHaskellSource, "not-haskell-source")]))
+          ( object "ParseOutcomeFailed" $
               (,)
                 <$> requiredField "loc" "where the parse failed" .= fst
                 <*> requiredField "message" "why the parse failed" .= snd
           )
     where
-      fromEither = either id (uncurry ParseFailed)
+      fromEither = either id (uncurry ParseOutcomeFailed)
       toEither = \case
-        ParsedOk -> Left ParsedOk
-        NotHaskellSource -> Left NotHaskellSource
-        ParseFailed l m -> Right (l, m)
+        ParseOutcomeOk -> Left ParseOutcomeOk
+        ParseOutcomeNotHaskellSource -> Left ParseOutcomeNotHaskellSource
+        ParseOutcomeFailed l m -> Right (l, m)
 
 -- | A shape rather than a spelling, and nothing queries into it, so it is
 -- stored whole through the codec it already carries.

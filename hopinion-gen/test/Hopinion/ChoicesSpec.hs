@@ -73,19 +73,19 @@ spec = do
     -- them without anybody writing them down twice.
     it "refuses a key it does not know, rather than ignoring it" $
       parseChoices "disabled_rules:\n  - CommentBareTodo\n"
-        `shouldBe` Left (SettingsNobodyKnows ("disabled_rules" :| []))
+        `shouldBe` Left (ChoicesErrorSettingsNobodyKnows ("disabled_rules" :| []))
 
     -- The sentence a reader is shown, which is the renderer's and names the file
     -- the caller opened.
     it "says which file and which setting" $
       renderChoicesFileError
-        (ChoicesFileRefused [absfile|/repo/hopinion.yaml|] (SettingsNobodyKnows ("disabled_rules" :| [])))
+        (ChoicesFileErrorRefused [absfile|/repo/hopinion.yaml|] (ChoicesErrorSettingsNobodyKnows ("disabled_rules" :| [])))
         `shouldBe` "/repo/hopinion.yaml sets disabled_rules, which mean nothing here. A setting this \
                    \file does not know is a decision nothing acts on, so it is refused rather \
                    \than ignored. It knows: disabled-rules"
 
     it "refuses something that is not a set of settings" $
-      parseChoices "- CommentBareTodo\n" `shouldBe` Left NotASetOfSettings
+      parseChoices "- CommentBareTodo\n" `shouldBe` Left ChoicesErrorNotASetOfSettings
 
     it "refuses a name that is not a rule id" $
       parseChoices "disabled-rules:\n  - not an id\n"

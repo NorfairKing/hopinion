@@ -58,9 +58,9 @@ shapeOf = \case
       then Nothing
       else case ms of
         (m :| []) ->
-          if namesThenCases (unLoc m) then Just (ArgumentNamedThenCased, name) else Nothing
+          if namesThenCases (unLoc m) then Just (ArgumentShapeNamedThenCased, name) else Nothing
         _ ->
-          if splitOverEquations (fmap unLoc ms) then Just (ArgumentSplitOverEquations, name) else Nothing
+          if splitOverEquations (fmap unLoc ms) then Just (ArgumentShapeSplitOverEquations, name) else Nothing
   PatBind {} -> Nothing
   VarBind {} -> Nothing
   PatSynBind {} -> Nothing
