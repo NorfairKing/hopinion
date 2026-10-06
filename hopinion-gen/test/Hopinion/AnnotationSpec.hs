@@ -369,7 +369,7 @@ spec = do
                 (map snd named)
                 (map fst named)
                 Nothing
-            [t | ComplaintFailure t <- complaintList report]
+            [t | ComplaintFailure t <- complaintsList report]
               `shouldBe` replicate
                 3
                 (FactsIncomplete (SuppressionNamesRuleNotRun (RuleId "CommentBareTodo")))

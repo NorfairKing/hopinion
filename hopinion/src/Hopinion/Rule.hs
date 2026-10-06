@@ -205,8 +205,8 @@ instance Validity RuleUse
 
 -- | One rule, and whether this run makes it.
 data RuleEntry = RuleEntry
-  { entryRule :: !Rule,
-    entryUse :: !RuleUse
+  { ruleEntryRule :: !Rule,
+    ruleEntryUse :: !RuleUse
   }
 
 -- | The rules a run is made of, in the order they were registered.
@@ -275,8 +275,8 @@ ruleSet rules off = do
   where
     tagged r =
       RuleEntry
-        { entryRule = r,
-          entryUse = if ruleId r `elem` off then RuleTurnedOff else RuleRuns
+        { ruleEntryRule = r,
+          ruleEntryUse = if ruleId r `elem` off then RuleTurnedOff else RuleRuns
         }
 
     -- A rule writes its own id as a literal, so this is where one that is not
@@ -309,21 +309,21 @@ emptyRuleSet = RuleSet []
 
 -- | The rules that run, in the order they were registered.
 ruleSetRules :: RuleSet -> [Rule]
-ruleSetRules rs = [entryRule e | e <- ruleSetEntries rs, entryUse e == RuleRuns]
+ruleSetRules rs = [ruleEntryRule e | e <- ruleSetEntries rs, ruleEntryUse e == RuleRuns]
 
 -- | The rules this repository has decided against, which it still knows: a
 -- suppression naming one is wrong differently from one naming nothing.
 ruleSetTurnedOff :: RuleSet -> [Rule]
-ruleSetTurnedOff rs = [entryRule e | e <- ruleSetEntries rs, entryUse e == RuleTurnedOff]
+ruleSetTurnedOff rs = [ruleEntryRule e | e <- ruleSetEntries rs, ruleEntryUse e == RuleTurnedOff]
 
 -- | What this run makes of a name somebody wrote down. 'Nothing' is a name
 -- nothing here answers to, which is a typo, and means the rule they meant is
 -- still running.
 useOf :: RuleSet -> RuleId -> Maybe RuleUse
-useOf rs rid = entryUse <$> entryFor rs rid
+useOf rs rid = ruleEntryUse <$> entryFor rs rid
 
 entryFor :: RuleSet -> RuleId -> Maybe RuleEntry
-entryFor rs rid = case [e | e <- ruleSetEntries rs, ruleId (entryRule e) == rid] of
+entryFor rs rid = case [e | e <- ruleSetEntries rs, ruleId (ruleEntryRule e) == rid] of
   (e : _) -> Just e
   [] -> Nothing
 
@@ -338,14 +338,14 @@ entryFor rs rid = case [e | e <- ruleSetEntries rs, ruleId (entryRule e) == rid]
 -- layer.
 ruleFor :: RuleSet -> RuleId -> Maybe Rule
 ruleFor rs rid = case entryFor rs rid of
-  Just e | entryUse e == RuleRuns -> Just (entryRule e)
+  Just e | ruleEntryUse e == RuleRuns -> Just (ruleEntryRule e)
   _ -> Nothing
 
 -- | The rule an id names whether or not this run makes it, which is what a
 -- command that talks about a rule rather than running one wants: a rule turned
 -- off is still a rule this build can be asked about.
 ruleNamed :: RuleSet -> RuleId -> Maybe Rule
-ruleNamed rs rid = entryRule <$> entryFor rs rid
+ruleNamed rs rid = ruleEntryRule <$> entryFor rs rid
 
 rulesAtLevel :: RuleSet -> Level -> [Rule]
 rulesAtLevel rs l = [r | r <- ruleSetRules rs, ruleLevel r == l]
@@ -355,7 +355,7 @@ rulesAtLevel rs l = [r | r <- ruleSetRules rs, ruleLevel r == l]
 withoutRules :: [RuleId] -> RuleSet -> Either RuleSetError RuleSet
 withoutRules off rs =
   ruleSet
-    (map entryRule (ruleSetEntries rs))
+    (map ruleEntryRule (ruleSetEntries rs))
     (off ++ map ruleId (ruleSetTurnedOff rs))
 
 -- | The scope an annotation about this comment would have to name. A comment

@@ -306,7 +306,7 @@ renderedFindingsInModule rid file = do
 findingsInProject :: RuleId -> Path Rel Dir -> IO [Finding]
 findingsInProject rid dir = do
   report <- runCheck shippedRules noHieDirectories =<< rootAt dir
-  [t | ComplaintFailure t <- complaintList report] `shouldBe` []
+  [t | ComplaintFailure t <- complaintsList report] `shouldBe` []
   pure [f | f <- complaintsFindings report, findingRule f == rid]
 
 renderedFindingsInProject :: RuleId -> Path Rel Dir -> IO Text
@@ -331,7 +331,7 @@ splitAgrees dir = withSystemTempDir "hopinion-split" $ \tmp -> do
     Right models -> do
       named <- mapM (writeOne tmp root) models
       throughFiles <- runProjectCommand shippedRules noHieDirectories (map snd named) (map fst named) Nothing
-      [t | ComplaintFailure t <- complaintList throughFiles] `shouldBe` []
+      [t | ComplaintFailure t <- complaintsList throughFiles] `shouldBe` []
       -- Every finding, not only the project ones: the project phase unions in
       -- what the package phase already found, so the two paths agree or they do
       -- not.

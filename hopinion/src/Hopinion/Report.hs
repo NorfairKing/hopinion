@@ -296,7 +296,7 @@ instance HasCodec Complaint where
 
 -- | Everything a run has to say, which is everything it has to complain about.
 -- A clean run is 'mempty', which is the whole of what 'isClean' has to ask.
-newtype Complaints = Complaints {complaintList :: [Complaint]}
+newtype Complaints = Complaints {complaintsList :: [Complaint]}
   deriving stock (Show, Eq, Generic)
   deriving newtype (Semigroup, Monoid)
   deriving (FromJSON, ToJSON) via (Autodocodec Complaints)
@@ -304,10 +304,10 @@ newtype Complaints = Complaints {complaintList :: [Complaint]}
 instance Validity Complaints
 
 instance HasCodec Complaints where
-  codec = named "Complaints" (dimapCodec Complaints complaintList codec)
+  codec = named "Complaints" (dimapCodec Complaints complaintsList codec)
 
 complaintsFindings :: Complaints -> [Finding]
-complaintsFindings cs = [f | ComplaintFinding f <- complaintList cs]
+complaintsFindings cs = [f | ComplaintFinding f <- complaintsList cs]
 
 -- | The failures alone, which is what a caller asking "could the tool tell at
 -- all" wants, and what a test asserting the answer to that asks.

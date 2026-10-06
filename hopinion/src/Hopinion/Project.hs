@@ -363,30 +363,30 @@ componentsOf pd =
       _ -> Nothing
 
 data DeclaredComponent = DeclaredComponent
-  { declaredKind :: !ComponentKind,
-    declaredName :: !ComponentName,
-    declaredBuildInfo :: !BuildInfo,
-    declaredModules :: ![CabalModule.ModuleName],
-    declaredMainIs :: !(Maybe (Path Rel File))
+  { declaredComponentKind :: !ComponentKind,
+    declaredComponentName :: !ComponentName,
+    declaredComponentBuildInfo :: !BuildInfo,
+    declaredComponentModules :: ![CabalModule.ModuleName],
+    declaredComponentMainIs :: !(Maybe (Path Rel File))
   }
 
 componentOf :: SourceRoot -> Path Abs Dir -> DeclaredComponent -> IO ComponentModel
 componentOf root dir declared = do
-  let bi = declaredBuildInfo declared
-  let kind = declaredKind declared
+  let bi = declaredComponentBuildInfo declared
+  let kind = declaredComponentKind declared
   let sourceDirs = [dir </> d | Just d <- map (parseRelDir . getSymbolicPath) (hsSourceDirs bi)]
-  let wanted = filter (not . isAutogen) (declaredModules declared)
+  let wanted = filter (not . isAutogen) (declaredComponentModules declared)
   found <- traverse (resolveModule root sourceDirs) wanted
-  mainModule <- traverse (resolveMain root sourceDirs) (declaredMainIs declared)
+  mainModule <- traverse (resolveMain root sourceDirs) (declaredComponentMainIs declared)
   pure
     ComponentModel
       { componentModelKind = kind,
-        componentModelName = declaredName declared,
+        componentModelName = declaredComponentName declared,
         componentModelDefaultExtensions = map extensionText (defaultExtensions bi),
         componentModelModules = catMaybes found ++ catMaybes (catMaybes [mainModule]),
         componentModelDeclaredModules =
           map moduleKeyOf wanted
-            ++ [ModuleKey "Main" | Just _ <- [declaredMainIs declared]],
+            ++ [ModuleKey "Main" | Just _ <- [declaredComponentMainIs declared]],
         componentModelSourceDirs = sourceDirs
       }
 

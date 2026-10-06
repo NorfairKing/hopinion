@@ -56,7 +56,7 @@ newtype SourceMap = SourceMap (M.Map (Path Rel File) Text)
 -- | The files a caller has to read for 'renderReport' to have anything to show.
 reportFiles :: Complaints -> [Path Rel File]
 reportFiles report =
-  nub (mapMaybe (fmap spanFile . complaintSpan) (complaintList report))
+  nub (mapMaybe (fmap spanFile . complaintSpan) (complaintsList report))
 
 -- | Where a complaint is, when it is anywhere. A failure is the one that is
 -- not: there is no code to point at.
@@ -128,7 +128,7 @@ diagnosticFor rs sm@(SourceMap sources) report =
 -- tool could not do, then what is wrong with the code, then what is wrong with
 -- the suppressions written about it.
 reportsIn :: RuleSet -> SourceMap -> Complaints -> [D.Report String]
-reportsIn rs sources report = map (complaintReport rs sources) (sortOn ordering (complaintList report))
+reportsIn rs sources report = map (complaintReport rs sources) (sortOn ordering (complaintsList report))
   where
     -- Findings among themselves are in source order, which is how a reader
     -- walks a file.

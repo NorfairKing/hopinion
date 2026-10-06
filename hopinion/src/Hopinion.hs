@@ -84,14 +84,14 @@ renderStartupError = \case
 -- 'runCheck'.
 disabledFor :: Settings -> IO (Either ChoicesFileError [RuleId])
 disabledFor settings = do
-  told <- case settingHopinionFile settings of
+  told <- case settingsHopinionFile settings of
     Nothing -> pure (Right noChoices)
     Just named -> readChoicesFrom =<< absoluteFile named
   pure (choicesDisabled <$> told)
 
 run :: RuleSet -> Settings -> IO ()
 run rs settings =
-  case settingDispatch settings of
+  case settingsDispatch settings of
     DispatchCheck root hieDirs -> do
       absRoot <- absolutise root
       absHie <- hieDirectoriesOf hieDirs

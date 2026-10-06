@@ -23,11 +23,11 @@ import Path (Dir, File, Path, Rel, SomeBase (..), parseRelDir, parseRelFile, par
 import Paths_hopinion (version)
 
 data Settings = Settings
-  { settingDispatch :: !Dispatch,
+  { settingsDispatch :: !Dispatch,
     -- | Where the repository says which rules it has decided against, when the
     -- command was given a package rather than a repository and so cannot look
     -- beside it.
-    settingHopinionFile :: !(Maybe (SomeBase File))
+    settingsHopinionFile :: !(Maybe (SomeBase File))
   }
 
 -- | A source root as it was typed, before anything has looked at the disk.
@@ -69,14 +69,14 @@ instance HasParser Settings where
 
 parseSettings :: Parser Settings
 parseSettings = withoutConfig $ do
-  settingDispatch <- parseDispatch
+  settingsDispatch <- parseDispatch
   -- Where the file is, never what is in it: nothing about a run is configured on
   -- a command line.
   --
   -- For the two commands that cannot find it. A package derivation is handed one
   -- package's subtree, and the project command is handed fact files and no
   -- source at all; @check@ is handed the repository and looks beside it.
-  settingHopinionFile <-
+  settingsHopinionFile <-
     optional
       ( setting
           [ help "The repository's hopinion.yaml, for a command that was given a package rather than a repository",

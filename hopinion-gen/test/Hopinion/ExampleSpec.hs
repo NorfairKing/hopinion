@@ -97,7 +97,7 @@ spec = do
     -- whatever the tool did.
     it "fails at every level" $ do
       report <- runCheck shippedRules noHieDirectories =<< rootAt (resourceDir </> [reldir|dirty|])
-      [t | ComplaintFailure t <- complaintList report] `shouldBe` []
+      [t | ComplaintFailure t <- complaintsList report] `shouldBe` []
       sort (nub (map ruleLevel (mapMaybe (ruleFor shippedRules . findingRule) (complaintsFindings report))))
         `shouldBe` [LevelModule, LevelPackage, LevelProject]
 
