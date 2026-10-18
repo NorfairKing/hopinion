@@ -3,12 +3,13 @@
 Every rule this tool could enforce that it does not enforce yet, sorted by how
 it can be enforced. A rule that ships leaves this file: what is here is work.
 
-The eighteen that ship are `CommentBareTodo`, `CommentCouplingConnection`,
+The nineteen that ship are `CommentBareTodo`, `CommentCouplingConnection`,
 `HsLambdaCase`, `HsNoAnonymousScalar`, `HsNoCustomEq`, `HsNoCustomOrd`,
 `HsNoCustomShowRead`, `HsNoFilePath`, `HsNoSemigroupOnText`, `HsNoStringError`,
-`HsPrefixNaming`, `HsRecordFieldPerLine`, `HsTestOneSpecPerFile`,
-`HsAppOnlyMain`, `HsGenValidInGenPackage`, `TestGenValidSpecPerGenValid`,
-`TestJsonSpecPerJsonType` and `TestNoTestHelpers`.
+`HsPrefixNaming`, `HsRecordFieldPerLine`, `HsScalarNewtypeUnused`,
+`HsTestOneSpecPerFile`, `HsAppOnlyMain`, `HsGenValidInGenPackage`,
+`TestGenValidSpecPerGenValid`, `TestJsonSpecPerJsonType` and
+`TestNoTestHelpers`.
 
 ## How to read this
 

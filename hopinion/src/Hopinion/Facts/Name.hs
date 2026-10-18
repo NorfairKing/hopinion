@@ -15,6 +15,7 @@ module Hopinion.Facts.Name
     DeclName (..),
     PackageName (..),
     ComponentName (..),
+    mainLibraryComponent,
     ExtensionName (..),
     TypeHead (..),
   )
@@ -113,6 +114,15 @@ instance Validity ComponentName where
 
 instance HasCodec ComponentName where
   codec = named "ComponentName" (dimapCodec ComponentName unComponentName codec)
+
+-- | What a package's main library is called here.
+--
+-- A cabal file gives the main library no name of its own, so one is chosen, and
+-- it is chosen in one place: a dependency on a package is a dependency on this
+-- component of it, and the reader of an edge and the writer of one have to
+-- agree about which component that is.
+mainLibraryComponent :: ComponentName
+mainLibraryComponent = ComponentName "lib"
 
 -- | One language extension, named as a cabal file or a command line spells it.
 --

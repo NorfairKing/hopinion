@@ -152,6 +152,7 @@ spec = do
           PackageRoleMain
           [relfile|thing/thing.cabal|]
           [refIn "lib" "Thing"]
+          []
         packageNames
       names `shouldBe` [PackageName "thing"]
 
@@ -161,7 +162,7 @@ spec = do
     -- a repository-relative file.
     it "writes a package that reads back as the row it wrote" $ do
       stored <- withMemoryStore [] $ do
-        writePackageEnvelope (PackageName "thing") PackageRoleGen [relfile|thing/thing.cabal|] []
+        writePackageEnvelope (PackageName "thing") PackageRoleGen [relfile|thing/thing.cabal|] [] []
         get (StoredPackageKey (PackageName "thing"))
       stored
         `shouldBe` Just
@@ -181,8 +182,8 @@ spec = do
       thrown <-
         try
           ( withMemoryStore [] $ do
-              writePackageEnvelope (PackageName "thing") PackageRoleMain [relfile|a/thing.cabal|] []
-              writePackageEnvelope (PackageName "thing") PackageRoleMain [relfile|b/thing.cabal|] []
+              writePackageEnvelope (PackageName "thing") PackageRoleMain [relfile|a/thing.cabal|] [] []
+              writePackageEnvelope (PackageName "thing") PackageRoleMain [relfile|b/thing.cabal|] [] []
           )
       renderedOf thrown `shouldSatisfy` T.isInfixOf "UNIQUE constraint failed: stored_package.name"
 
@@ -191,8 +192,8 @@ spec = do
     -- is the thing under test rather than an empty table.
     it "writes the suppressions of one module and reads back only that package's" $ do
       stored <- withMemoryStore [] $ do
-        writePackageEnvelope (PackageName "thing") PackageRoleMain [relfile|thing/thing.cabal|] []
-        writePackageEnvelope (PackageName "other") PackageRoleMain [relfile|other/other.cabal|] []
+        writePackageEnvelope (PackageName "thing") PackageRoleMain [relfile|thing/thing.cabal|] [] []
+        writePackageEnvelope (PackageName "other") PackageRoleMain [relfile|other/other.cabal|] [] []
         writeModuleEnvelope
           (PackageName "thing")
           (refIn "lib" "Thing")
@@ -212,7 +213,7 @@ spec = do
       thrown <-
         try
           ( withMemoryStore [] $ do
-              writePackageEnvelope (PackageName "thing") PackageRoleMain [relfile|thing/thing.cabal|] []
+              writePackageEnvelope (PackageName "thing") PackageRoleMain [relfile|thing/thing.cabal|] [] []
               writeModuleEnvelope (PackageName "thing") (refIn "lib" "Thing") [relfile|a.hs|] ParseOutcomeOk []
               writeModuleEnvelope (PackageName "thing") (refIn "lib" "Thing") [relfile|b.hs|] ParseOutcomeOk []
           )
@@ -227,7 +228,7 @@ spec = do
       thrown <-
         try
           ( withMemoryStore [] $ do
-              writePackageEnvelope (PackageName "thing") PackageRoleMain [relfile|thing/thing.cabal|] []
+              writePackageEnvelope (PackageName "thing") PackageRoleMain [relfile|thing/thing.cabal|] [] []
               rawExecute
                 "INSERT INTO stored_annotation (package, module_ref, annotation) VALUES ('thing', 'lib:Thing', 'not a fact')"
                 []

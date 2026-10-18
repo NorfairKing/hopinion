@@ -47,8 +47,10 @@ import Distribution.PackageDescription
 import qualified Distribution.PackageDescription as Cabal
 import Distribution.PackageDescription.Configuration (flattenPackageDescription)
 import Distribution.PackageDescription.Parsec (parseGenericPackageDescription, runParseResult)
+import Distribution.Types.Dependency (depPkgName)
 import Distribution.Types.Library (Library (..))
 import Distribution.Types.LibraryName (LibraryName (..))
+import qualified Distribution.Types.PackageName as CabalPackage
 import Distribution.Types.UnqualComponentName (unUnqualComponentName)
 import Distribution.Utils.Path (getSymbolicPath)
 import Hopinion.Facts.Component
@@ -136,7 +138,15 @@ data ComponentModel = ComponentModel
     -- resolved, or the assertion would compare a list against itself and a
     -- module that vanished from disk would go unnoticed.
     componentModelDeclaredModules :: ![ModuleKey],
-    componentModelSourceDirs :: ![Path Abs Dir]
+    componentModelSourceDirs :: ![Path Abs Dir],
+    -- | What the cabal file says this component builds against, by name and
+    -- unresolved.
+    --
+    -- Names rather than packages, because a cabal file is read on its own and
+    -- most of what it names is not in the repository at all. Which of them is
+    -- a package here is a question only the whole project can answer, and the
+    -- project layer is where it is asked.
+    componentModelDependencies :: ![PackageName]
   }
   deriving (Show, Eq)
 
@@ -350,7 +360,7 @@ componentsOf pd =
 
     -- The main library has no name of its own, and every other component does.
     nameOfLibrary l = case libName l of
-      LMainLibName -> ComponentName "lib"
+      LMainLibName -> mainLibraryComponent
       LSubLibName n -> unqualName n
 
     unqualName = ComponentName . T.pack . unUnqualComponentName
@@ -390,7 +400,9 @@ componentOf root dir declared = do
         componentModelDeclaredModules =
           map moduleKeyOf wanted
             ++ [ModuleKey "Main" | Just _ <- [declaredComponentMainIs declared]],
-        componentModelSourceDirs = sourceDirs
+        componentModelSourceDirs = sourceDirs,
+        componentModelDependencies =
+          map (PackageName . T.pack . CabalPackage.unPackageName . depPkgName) (targetBuildDepends bi)
       }
 
 -- | @Paths_foo@ and friends are generated at build time, so they are declared

@@ -16,6 +16,7 @@ import Hopinion.Check.Hs.NoAnonymousScalar.Fact
 import Hopinion.Extract.Ghc
 import Hopinion.Facts.Decl
 import Hopinion.Facts.Place
+import Hopinion.Facts.Primitive (isAnonymousContainerName, isPrimitiveTypeName)
 import Path (File, Path, Rel)
 
 -- | Every constructor in the module that holds an anonymous primitive its own

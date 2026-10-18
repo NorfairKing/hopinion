@@ -241,6 +241,30 @@ extra-source-files:
     test_resources/Rule/HsRecordFieldPerLine/bad.hs.golden
     test_resources/Rule/HsRecordFieldPerLine/good.hs
     test_resources/Rule/HsRecordFieldPerLine/good.hs.golden
+    test_resources/Rule/HsScalarNewtypeUnused/bad-depended-on-by-one-component.golden
+    test_resources/Rule/HsScalarNewtypeUnused/bad-depended-on-by-one-component/jobs/jobs.cabal
+    test_resources/Rule/HsScalarNewtypeUnused/bad-depended-on-by-one-component/jobs/src/Jobs/Payload.hs
+    test_resources/Rule/HsScalarNewtypeUnused/bad-depended-on-by-one-component/jobs/test/Main.hs
+    test_resources/Rule/HsScalarNewtypeUnused/bad-depended-on-by-one-component/thing/src/Thing/Scalars.hs
+    test_resources/Rule/HsScalarNewtypeUnused/bad-depended-on-by-one-component/thing/thing.cabal
+    test_resources/Rule/HsScalarNewtypeUnused/bad.golden
+    test_resources/Rule/HsScalarNewtypeUnused/bad/thing-jobs/src/Thing/Jobs.hs
+    test_resources/Rule/HsScalarNewtypeUnused/bad/thing-jobs/thing-jobs.cabal
+    test_resources/Rule/HsScalarNewtypeUnused/bad/thing/src/Thing/Scalars.hs
+    test_resources/Rule/HsScalarNewtypeUnused/bad/thing/src/Thing/Settings.hs
+    test_resources/Rule/HsScalarNewtypeUnused/bad/thing/thing.cabal
+    test_resources/Rule/HsScalarNewtypeUnused/good-in-a-template-haskell-quote.golden
+    test_resources/Rule/HsScalarNewtypeUnused/good-in-a-template-haskell-quote/thing/src/Thing/Quoted.hs
+    test_resources/Rule/HsScalarNewtypeUnused/good-in-a-template-haskell-quote/thing/thing.cabal
+    test_resources/Rule/HsScalarNewtypeUnused/good-without-a-dependency-edge.golden
+    test_resources/Rule/HsScalarNewtypeUnused/good-without-a-dependency-edge/thing-jobs/src/Thing/Jobs.hs
+    test_resources/Rule/HsScalarNewtypeUnused/good-without-a-dependency-edge/thing-jobs/thing-jobs.cabal
+    test_resources/Rule/HsScalarNewtypeUnused/good-without-a-dependency-edge/thing/src/Thing/Scalars.hs
+    test_resources/Rule/HsScalarNewtypeUnused/good-without-a-dependency-edge/thing/thing.cabal
+    test_resources/Rule/HsScalarNewtypeUnused/good.golden
+    test_resources/Rule/HsScalarNewtypeUnused/good/thing/src/Thing/Scalars.hs
+    test_resources/Rule/HsScalarNewtypeUnused/good/thing/src/Thing/Settings.hs
+    test_resources/Rule/HsScalarNewtypeUnused/good/thing/thing.cabal
     test_resources/Rule/HsTestOneSpecPerFile/badExportsNothingSpec.hs
     test_resources/Rule/HsTestOneSpecPerFile/badExportsNothingSpec.hs.golden
     test_resources/Rule/HsTestOneSpecPerFile/badNoExportListSpec.hs
@@ -365,6 +389,7 @@ test-suite hopinion-test
   main-is: Main.hs
   other-modules:
       Hopinion.AnnotationSpec
+      Hopinion.Check.Project.ScalarNewtypeUnused.FactSpec
       Hopinion.ChoicesSpec
       Hopinion.CommentSpec
       Hopinion.CompiledSpec

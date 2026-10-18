@@ -1,13 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingStrategies #-}
-{-# LANGUAGE OverloadedStrings #-}
 
-module Hopinion.Check.Hs.NoAnonymousScalar.Fact
-  ( AnonymousScalars (..),
-    isPrimitiveTypeName,
-    isAnonymousContainerName,
-  )
-where
+module Hopinion.Check.Hs.NoAnonymousScalar.Fact (AnonymousScalars (..)) where
 
 import Data.Text (Text)
 import Data.Validity
@@ -49,50 +43,3 @@ instance Validity AnonymousScalars where
           "the constructor holds an anonymous primitive"
           (not (null (anonymousScalarsTypes as)))
       ]
-
--- | Whether a type written under this name, and applied to nothing, is one of
--- the primitives a constructor's own name has to speak for.
---
--- The name alone, with whatever qualifier it was written under already off,
--- because the module a type arrived through says nothing about what a field
--- holding it holds: @T.Text@ and the @Text@ beside it are the same scalar to
--- whoever is counting arguments at a call site. A synonym is not resolved for
--- the same reason in reverse: it is a name, and what is wrong with a synonym
--- standing in for a newtype is HsNewtypeNotSynonym's complaint rather than
--- this one.
---
--- Bool is deliberately not here. Two of them in one constructor is
--- HsNoDomainBool's finding, and the same line reported twice in two
--- vocabularies is worse than reported once.
-isPrimitiveTypeName :: Text -> Bool
-isPrimitiveTypeName name =
-  name
-    `elem` [ "Text",
-             "String",
-             "ByteString",
-             "Char",
-             "Int",
-             "Int8",
-             "Int16",
-             "Int32",
-             "Int64",
-             "Integer",
-             "Word",
-             "Word8",
-             "Word16",
-             "Word32",
-             "Word64",
-             "Double",
-             "Float",
-             "Rational"
-           ]
-
--- | Whether a type of one argument hands a reader of it exactly what a reader
--- of its argument would have had.
---
--- These three say how many of the thing there are and nothing about what the
--- thing is, so a field holding one is as anonymous as a field holding what it
--- wraps. A type that says something of its own is not one of them, however few
--- arguments it takes: a reader of @Path Abs File@ has been told what it is.
-isAnonymousContainerName :: Text -> Bool
-isAnonymousContainerName name = name `elem` ["Maybe", "NonEmpty", "[]"]

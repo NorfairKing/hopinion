@@ -56,6 +56,7 @@ module Hopinion.Store
     expectedModulesOf,
     writtenByAnotherVersion,
     storedFormatOf,
+    dependencyEdges,
   )
 where
 
@@ -160,7 +161,41 @@ StoredAnnotation
     moduleRef ModuleRef
     annotation AnnotationFact
     deriving Show Eq
+
+StoredDependency
+    package PackageName
+    component ComponentName
+    dependency PackageName
+    Primary package component dependency
+    deriving Show Eq
 |]
+
+-- | Every edge a cabal file in the project declares, from a component to a
+-- package name it builds against.
+--
+-- Unresolved, since a cabal file names far more than the repository holds: what
+-- is a package here and what is a dependency from Hackage is a question for
+-- whoever has the whole project, which is the caller.
+--
+-- Ordered, so that a reachability walk over them visits in the same order
+-- every run.
+dependencyEdges :: Query [(PackageName, ComponentName, PackageName)]
+dependencyEdges =
+  map (\(Value p, Value c, Value d) -> (p, c, d))
+    <$> select
+      ( do
+          d <- from (table @StoredDependency)
+          orderBy
+            [ asc (d ^. StoredDependencyPackage),
+              asc (d ^. StoredDependencyComponent),
+              asc (d ^. StoredDependencyDependency)
+            ]
+          pure
+            ( d ^. StoredDependencyPackage,
+              d ^. StoredDependencyComponent,
+              d ^. StoredDependencyDependency
+            )
+      )
 
 -- | Where a store lives.
 --
@@ -356,8 +391,9 @@ writePackageEnvelope ::
   PackageRole ->
   Path Rel File ->
   [ModuleRef] ->
+  [(ComponentName, PackageName)] ->
   Carry
-writePackageEnvelope name role cabal expected = do
+writePackageEnvelope name role cabal expected depends = do
   insertKey
     (StoredPackageKey name)
     StoredPackage
@@ -375,6 +411,20 @@ writePackageEnvelope name role cabal expected = do
             }
     )
     expected
+  -- Overwriting rather than inserting, because a cabal file naming one
+  -- dependency twice across a component's conditionals declares one edge and
+  -- not two, and an insert keyed on the edge would refuse the second.
+  mapM_
+    ( \(component, dependency) ->
+        repsert
+          (StoredDependencyKey name component dependency)
+          StoredDependency
+            { storedDependencyPackage = name,
+              storedDependencyComponent = component,
+              storedDependencyDependency = dependency
+            }
+    )
+    depends
 
 writeModuleEnvelope ::
   PackageName ->

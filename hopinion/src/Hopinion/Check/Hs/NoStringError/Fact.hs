@@ -12,6 +12,7 @@ where
 import Data.Text (Text)
 import Data.Validity
 import GHC.Generics (Generic)
+import Hopinion.Facts.Name
 import Hopinion.Facts.Place
 
 -- | What the source says the error of a slot is.
@@ -60,7 +61,7 @@ instance Validity ErrorDeclShape
 -- The span is the prose rather than the declaration, so that what is underlined
 -- is what has to change, the same as for a slot.
 data ErrorDecl = ErrorDecl
-  { errorDeclName :: !Text,
+  { errorDeclName :: !DeclName,
     errorDeclShape :: !ErrorDeclShape,
     errorDeclError :: !ErrorType,
     errorDeclSpan :: !Span,

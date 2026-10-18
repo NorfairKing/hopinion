@@ -359,6 +359,10 @@ writePackage rs hieDirs root pm = do
     | c <- packageModelComponents pm,
       m <- componentModelDeclaredModules c
     ]
+    [ (componentModelName c, dep)
+    | c <- packageModelComponents pm,
+      dep <- componentModelDependencies c
+    ]
   mapM_ writeContext contexts
   pure
     ( mconcat (map (runModuleLayer rs) contexts) <> unread,

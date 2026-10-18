@@ -17,6 +17,7 @@ import qualified GHC.Types.SrcLoc as SrcLoc
 import Hopinion.Check.Hs.NoStringError.Fact
 import Hopinion.Extract.Ghc
 import Hopinion.Facts.Decl
+import Hopinion.Facts.Name
 import Hopinion.Facts.Place
 import Path (File, Path, Rel)
 
@@ -140,7 +141,7 @@ elementErrorType el = case peelApp el of
 errorDeclsOf :: Path Rel File -> ModuleRef -> [DeclFact] -> [LHsDecl GhcPs] -> [ErrorDecl]
 errorDeclsOf rp ref decls ds =
   [ ErrorDecl
-      { errorDeclName = name,
+      { errorDeclName = DeclName name,
         errorDeclShape = shape,
         errorDeclError = errorTypeOf prose,
         errorDeclSpan = sp,

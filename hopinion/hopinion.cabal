@@ -44,6 +44,9 @@ library
       Hopinion.Check.Package.GenValidInGenPackage.Rule
       Hopinion.Check.Project.GenValidSpecPerGenValid.Rule
       Hopinion.Check.Project.JsonSpecPerJsonType.Rule
+      Hopinion.Check.Project.ScalarNewtypeUnused.Extract
+      Hopinion.Check.Project.ScalarNewtypeUnused.Fact
+      Hopinion.Check.Project.ScalarNewtypeUnused.Rule
       Hopinion.Check.Test.NoTestHelpers.Rule
       Hopinion.Choices
       Hopinion.Comment
@@ -61,6 +64,7 @@ library
       Hopinion.Facts.Package
       Hopinion.Facts.Persist
       Hopinion.Facts.Place
+      Hopinion.Facts.Primitive
       Hopinion.Facts.Suppression
       Hopinion.Facts.TemplateHaskell
       Hopinion.Facts.TypeApp

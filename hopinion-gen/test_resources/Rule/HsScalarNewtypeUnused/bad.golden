@@ -1,0 +1,43 @@
+[0;91;1m[error HsScalarNewtypeUnused][0m: activateRepoJobInstallationId holds a bare Int, and the project has InstallationId.
+     [0;90;1m╭──▶[0m [0;32;1mthing-jobs/src/Thing/Jobs.hs@7:39-7:42[0m
+     [0;90;1m│[0m
+[0;90;1m   7 │[0m [0;97m [0m[0;97m [0m[0;97m{[0m[0;97m [0m[0;97ma[0m[0;97mc[0m[0;97mt[0m[0;97mi[0m[0;97mv[0m[0;97ma[0m[0;97mt[0m[0;97me[0m[0;97mR[0m[0;97me[0m[0;97mp[0m[0;97mo[0m[0;97mJ[0m[0;97mo[0m[0;97mb[0m[0;97mI[0m[0;97mn[0m[0;97ms[0m[0;97mt[0m[0;97ma[0m[0;97ml[0m[0;97ml[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97mo[0m[0;97mn[0m[0;97mI[0m[0;97md[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97m![0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m
+     [0;90;1m•[0m                                       [0;91m┬[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m                                       [0;91m╰╸[0m [0;91mA field named after a project scalar newtype has that newtype's type.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: The project has already decided that this scalar deserves a type and written the type down, so a field that spells the type's name and keeps the primitive is a site that went without what is already there. The name on the field tells a reader what the type would have told the compiler: two fields of one primitive can be passed in each other's place, which is what the newtype rules out and what a name cannot. Where the scalar has genuinely stopped being the domain type, which is what a rendering boundary is, say that in a suppression.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 7 of thing-jobs/src/Thing/Jobs.hs, and say why: -- [allow:HsScalarNewtypeUnused] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsScalarNewtypeUnused][0m: settingsHostname holds a bare Text, and the project has Hostname.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing/Settings.hs@8:26-8:30[0m
+     [0;90;1m│[0m
+[0;90;1m   8 │[0m [0;97m [0m[0;97m [0m[0;97m{[0m[0;97m [0m[0;97ms[0m[0;97me[0m[0;97mt[0m[0;97mt[0m[0;97mi[0m[0;97mn[0m[0;97mg[0m[0;97ms[0m[0;97mH[0m[0;97mo[0m[0;97ms[0m[0;97mt[0m[0;97mn[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97m![0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;97m,[0m
+     [0;90;1m•[0m                          [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                          [0;91m╰╸[0m [0;91mA field named after a project scalar newtype has that newtype's type.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: The project has already decided that this scalar deserves a type and written the type down, so a field that spells the type's name and keeps the primitive is a site that went without what is already there. The name on the field tells a reader what the type would have told the compiler: two fields of one primitive can be passed in each other's place, which is what the newtype rules out and what a name cannot. Where the scalar has genuinely stopped being the domain type, which is what a rendering boundary is, say that in a suppression.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 8 of thing/src/Thing/Settings.hs, and say why: -- [allow:HsScalarNewtypeUnused] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsScalarNewtypeUnused][0m: settingsUsername holds a bare Text, and the project has Username.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing/Settings.hs@10:33-10:37[0m
+     [0;90;1m│[0m
+[0;90;1m  10 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97ms[0m[0;97me[0m[0;97mt[0m[0;97mt[0m[0;97mi[0m[0;97mn[0m[0;97mg[0m[0;97ms[0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mn[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97m![0m[0;97m([0m[0;97mM[0m[0;97ma[0m[0;97my[0m[0;97mb[0m[0;97me[0m[0;97m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;97m)[0m
+     [0;90;1m•[0m                                 [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                                 [0;91m╰╸[0m [0;91mA field named after a project scalar newtype has that newtype's type.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: The project has already decided that this scalar deserves a type and written the type down, so a field that spells the type's name and keeps the primitive is a site that went without what is already there. The name on the field tells a reader what the type would have told the compiler: two fields of one primitive can be passed in each other's place, which is what the newtype rules out and what a name cannot. Where the scalar has genuinely stopped being the domain type, which is what a rendering boundary is, say that in a suppression.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 10 of thing/src/Thing/Settings.hs, and say why: -- [allow:HsScalarNewtypeUnused] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsScalarNewtypeUnused][0m: repoOwnerName holds a bare Text, and the project has OwnerName.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing/Settings.hs@16:23-16:27[0m
+     [0;90;1m│[0m
+[0;90;1m  16 │[0m [0;97m [0m[0;97m [0m[0;97m{[0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mp[0m[0;97mo[0m[0;97mO[0m[0;97mw[0m[0;97mn[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97m![0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
+     [0;90;1m•[0m                       [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m                       [0;91m╰╸[0m [0;91mA field named after a project scalar newtype has that newtype's type.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: The project has already decided that this scalar deserves a type and written the type down, so a field that spells the type's name and keeps the primitive is a site that went without what is already there. The name on the field tells a reader what the type would have told the compiler: two fields of one primitive can be passed in each other's place, which is what the newtype rules out and what a name cannot. Where the scalar has genuinely stopped being the domain type, which is what a rendering boundary is, say that in a suppression.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 16 of thing/src/Thing/Settings.hs, and say why: -- [allow:HsScalarNewtypeUnused] <reason>[0m
+[0;90;1m─────╯[0m
