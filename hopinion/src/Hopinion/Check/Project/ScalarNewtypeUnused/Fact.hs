@@ -6,6 +6,7 @@ module Hopinion.Check.Project.ScalarNewtypeUnused.Fact
     PrimitiveField (..),
     scalarFor,
     endsInTypeName,
+    wordsOfName,
     reachablePackages,
   )
 where
@@ -124,17 +125,48 @@ scalarFor lexicon pf =
         (sn : _) -> Just sn
         [] -> Nothing
 
--- | Whether a field's name ends in a type's name, beginning a word where it
--- does.
+-- | Whether a field's name ends in a type's name, word for word.
 --
--- The word boundary is read off the field's name rather than by splitting both
--- names into words, so there is no second splitting to keep in step with the
--- first: the field holds the type's name when those letters are on the end of
--- it and the one they start at is a capital, which is where a reader sees the
--- record prefix stop. That is what makes @myhostname@ not a hostname, and what
--- lets @fooJSONUrl@ be a @JsonUrl@.
+-- Both names are split into words and the type's words have to be the end of
+-- the field's, which is stricter than asking whether the letters are on the end
+-- of it. Reading the boundary off the field's letters alone said that
+-- @gitUserName@ holds a @Username@, because the letters are the same ones: what
+-- tells a git author's name from a platform username is that one is two words
+-- and the other is one, and only splitting both can see that.
+--
+-- The comparison inside a word ignores case, so @fooJSONUrl@ still holds a
+-- @JsonUrl@: a word spelled in capitals is the same word.
 endsInTypeName :: Text -> Text -> Bool
 endsInTypeName typeName field =
-  let (prefix, suffix) = T.splitAt (T.length field - T.length typeName) field
-   in T.toLower suffix == T.toLower typeName
-        && (T.null prefix || maybe False (isUpper . fst) (T.uncons suffix))
+  let wanted = wordsOfName typeName
+      have = wordsOfName field
+   in not (null wanted)
+        && length wanted <= length have
+        && map T.toLower (drop (length have - length wanted) have) == map T.toLower wanted
+
+-- | A name split where a reader sees one word stop and the next begin.
+--
+-- A run of capitals is one word, so @JSONUrl@ is @JSON@ and @Url@ rather than
+-- a word per letter, and the last capital of such a run starts the next word
+-- when a lowercase letter follows it.
+wordsOfName :: Text -> [Text]
+wordsOfName = filter (not . T.null) . go
+  where
+    go :: Text -> [Text]
+    go t
+      | T.null t = []
+      | otherwise =
+          let (ups, afterUps) = T.span isUpper t
+           in case T.length ups of
+                -- No capital here, so a run of what is not one is a word.
+                0 -> let (lows, rest) = T.break isUpper t in lows : go rest
+                -- One capital starts a word that the letters after it finish.
+                1 -> let (lows, rest) = T.break isUpper afterUps in (ups <> lows) : go rest
+                -- Several capitals are one word rather than a word each, and
+                -- the last of them starts the next word when lowercase
+                -- follows: the U of JSONUrl belongs to Url.
+                n ->
+                  let (word, carried) = T.splitAt (n - 1) ups
+                   in if T.null afterUps
+                        then [ups]
+                        else word : go (carried <> afterUps)

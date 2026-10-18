@@ -11,9 +11,41 @@ import Test.Syd
 
 spec :: Spec
 spec = do
+  describe "wordsOfName" $ do
+    it "reads a single word as one word" $
+      wordsOfName "Username" `shouldBe` ["Username"]
+
+    it "splits where a capital begins a word" $
+      wordsOfName "gitUserName" `shouldBe` ["git", "User", "Name"]
+
+    -- A run of capitals is one word rather than a word per letter, and the run
+    -- gives its last letter to the word that follows it.
+    it "reads a run of capitals as one word" $
+      wordsOfName "fooJSONUrl" `shouldBe` ["foo", "JSON", "Url"]
+
+    it "keeps a trailing run of capitals whole" $
+      wordsOfName "parseJSON" `shouldBe` ["parse", "JSON"]
+
+    it "keeps digits with the word they are written in" $
+      wordsOfName "e2eOIDCSettingClientSecret"
+        `shouldBe` ["e2e", "OIDC", "Setting", "Client", "Secret"]
+
+    it "reads a name with no capitals as one word" $
+      wordsOfName "myhostname" `shouldBe` ["myhostname"]
+
   describe "endsInTypeName" $ do
     it "matches a field that is the type's name and nothing else" $
       endsInTypeName "Hostname" "hostname" `shouldBe` True
+
+    -- The letters of Username are the end of gitUserName, and a git author's
+    -- name is not a platform username. What tells them apart is that one is two
+    -- words and the other is one, which is why both names are split rather than
+    -- only the field's.
+    it "does not match letters that fall across a word boundary" $
+      endsInTypeName "Username" "gitUserName" `shouldBe` False
+
+    it "matches the same letters when the words do line up" $
+      endsInTypeName "Username" "pushEventUserUsername" `shouldBe` True
 
     it "matches a field that is the type's name after a record prefix" $
       endsInTypeName "Hostname" "settingsHostname" `shouldBe` True
