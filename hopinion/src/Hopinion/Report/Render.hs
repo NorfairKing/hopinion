@@ -56,7 +56,7 @@ newtype SourceMap = SourceMap (M.Map (Path Rel File) Text)
 -- | The files a caller has to read for 'renderReport' to have anything to show.
 reportFiles :: Complaints -> [Path Rel File]
 reportFiles report =
-  nub (mapMaybe (fmap spanFile . complaintSpan) (complaintsList report))
+  nub (mapMaybe (fmap spanFile . complaintSpan) (unComplaints report))
 
 -- | Where a complaint is, when it is anywhere. A failure is the one that is
 -- not: there is no code to point at.
@@ -128,7 +128,7 @@ diagnosticFor rs sm@(SourceMap sources) report =
 -- tool could not do, then what is wrong with the code, then what is wrong with
 -- the suppressions written about it.
 reportsIn :: RuleSet -> SourceMap -> Complaints -> [D.Report String]
-reportsIn rs sources report = map (complaintReport rs sources) (sortOn ordering (complaintsList report))
+reportsIn rs sources report = map (complaintReport rs sources) (sortOn ordering (unComplaints report))
   where
     -- Findings among themselves are in source order, which is how a reader
     -- walks a file.
@@ -170,7 +170,7 @@ problemReport sources p =
 -- only what the standards say about it is missing.
 findingReport :: RuleSet -> SourceMap -> Finding -> D.Report String
 findingReport rs sources f =
-  let rid = T.unpack (ruleIdText (findingRule f))
+  let rid = T.unpack (unRuleId (findingRule f))
    in case ruleFor rs (findingRule f) of
         Nothing ->
           D.Err
@@ -246,7 +246,7 @@ unusedReport :: SourceMap -> Unused -> D.Report String
 unusedReport sources u =
   D.Err
     (Just "UNUSED_SUPPRESSION")
-    (concat ["[allow:", T.unpack (ruleIdText (unusedRule u)), "] suppresses nothing."])
+    (concat ["[allow:", T.unpack (unRuleId (unusedRule u)), "] suppresses nothing."])
     [(positionOf sources (unusedSpan u), D.This "nothing here is reported")]
     [D.Hint "Remove it. A suppression that has outlived its reason misleads the next reader."]
 
@@ -257,7 +257,7 @@ overBroadReport sources ob =
    in D.Err
         (Just "OVER_BROAD_SUPPRESSION")
         ( unwords
-            [ concat ["[allow:", T.unpack (ruleIdText (annotationFactRule a)), "]"],
+            [ concat ["[allow:", T.unpack (unRuleId (annotationFactRule a)), "]"],
               "suppresses",
               show n,
               "findings at once."

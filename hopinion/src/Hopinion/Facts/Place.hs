@@ -224,7 +224,7 @@ instance HasCodec ModuleRef where
 -- one separates them.
 moduleRefText :: ModuleRef -> Text
 moduleRefText r =
-  T.concat [componentNameText (moduleRefComponent r), ":", moduleKeyText (moduleRefModule r)]
+  T.concat [unComponentName (moduleRefComponent r), ":", unModuleKey (moduleRefModule r)]
 
 parseModuleRef :: Text -> Maybe ModuleRef
 parseModuleRef t = case T.breakOn ":" t of

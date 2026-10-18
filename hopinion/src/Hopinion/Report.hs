@@ -167,24 +167,24 @@ instance HasCodec StoreProblem where
 
 renderStoreProblem :: StoreProblem -> Text
 renderStoreProblem = \case
-  StoreProblemNoFactsForPackage p -> T.concat ["No facts for expected package ", packageNameText p]
+  StoreProblemNoFactsForPackage p -> T.concat ["No facts for expected package ", unPackageName p]
   StoreProblemFactsFromAnotherVersion ->
     "The fact store was written in a different format than this build of the tool reads."
   StoreProblemPackageDoesNotCover p ref ->
     T.concat
       [ "Package ",
-        packageNameText p,
+        unPackageName p,
         " declares module ",
-        moduleKeyText (moduleRefModule ref),
+        unModuleKey (moduleRefModule ref),
         " in ",
-        componentNameText (moduleRefComponent ref),
+        unComponentName (moduleRefComponent ref),
         " but its facts do not cover it"
       ]
-  StoreProblemModuleDidNotParse mk -> T.concat ["Module ", moduleKeyText mk, " failed to parse"]
+  StoreProblemModuleDidNotParse mk -> T.concat ["Module ", unModuleKey mk, " failed to parse"]
   StoreProblemSuppressionNamesRuleNotRun rid ->
     T.concat
       [ "A suppression in the facts names ",
-        ruleIdText rid,
+        unRuleId rid,
         ", which this run does not run. ",
         "The package outputs and this run were given different rule sets."
       ]
@@ -296,7 +296,7 @@ instance HasCodec Complaint where
 
 -- | Everything a run has to say, which is everything it has to complain about.
 -- A clean run is 'mempty', which is the whole of what 'isClean' has to ask.
-newtype Complaints = Complaints {complaintsList :: [Complaint]}
+newtype Complaints = Complaints {unComplaints :: [Complaint]}
   deriving stock (Show, Eq, Generic)
   deriving newtype (Semigroup, Monoid)
   deriving (FromJSON, ToJSON) via (Autodocodec Complaints)
@@ -304,10 +304,10 @@ newtype Complaints = Complaints {complaintsList :: [Complaint]}
 instance Validity Complaints
 
 instance HasCodec Complaints where
-  codec = named "Complaints" (dimapCodec Complaints complaintsList codec)
+  codec = named "Complaints" (dimapCodec Complaints unComplaints codec)
 
 complaintsFindings :: Complaints -> [Finding]
-complaintsFindings cs = [f | ComplaintFinding f <- complaintsList cs]
+complaintsFindings cs = [f | ComplaintFinding f <- unComplaints cs]
 
 -- | The failures alone, which is what a caller asking "could the tool tell at
 -- all" wants, and what a test asserting the answer to that asks.

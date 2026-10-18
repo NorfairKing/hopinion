@@ -120,7 +120,7 @@ spec = do
       other `shouldBe` False
     it "says yes about a store stamped with another format version" $ do
       other <- withMemoryStore [] $ do
-        let format = formatVersionNumber currentFormatVersion + 1
+        let format = unFormatVersion currentFormatVersion + 1
         insertKey (StoredMetaKey format) StoredMeta {storedMetaFormatVersion = format}
         writtenByAnotherVersion
       other `shouldBe` True
@@ -132,7 +132,7 @@ spec = do
       withSystemTempDir "hopinion-store" $ \tmp -> do
         let foreign' = tmp </> [relfile|foreign.db|]
         withStore [] (StoreLocationOnDisk foreign') $ do
-          let format = formatVersionNumber currentFormatVersion + 1
+          let format = unFormatVersion currentFormatVersion + 1
           insertKey (StoredMetaKey format) StoredMeta {storedMetaFormatVersion = format}
         other <- withMemoryStore [] $ do
           writeMeta

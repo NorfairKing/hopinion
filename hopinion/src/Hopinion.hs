@@ -12,7 +12,7 @@ import Control.Monad ((>=>))
 import Data.Bifunctor (first)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
-import Hopinion.Choices (ChoicesFileError, choicesDisabled, noChoices, readChoicesFrom, renderChoicesFileError)
+import Hopinion.Choices (ChoicesFileError, noChoices, readChoicesFrom, renderChoicesFileError, unChoices)
 import Hopinion.Comment
 import Hopinion.Facts.Module
 import Hopinion.Facts.Name
@@ -87,7 +87,7 @@ disabledFor settings = do
   told <- case settingsHopinionFile settings of
     Nothing -> pure (Right noChoices)
     Just named -> readChoicesFrom =<< absoluteFile named
-  pure (choicesDisabled <$> told)
+  pure (unChoices <$> told)
 
 run :: RuleSet -> Settings -> IO ()
 run rs settings =

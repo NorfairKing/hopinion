@@ -145,7 +145,7 @@ nameFactOf ref decls occ =
 -- list and by every instance fact, so that a comment above an instance and a
 -- finding at that instance agree on one scope key.
 instanceDeclName :: Text -> TypeHead -> DeclName
-instanceDeclName cls th = DeclName (T.pack (unwords ["instance", T.unpack cls, T.unpack (typeHeadText th)]))
+instanceDeclName cls th = DeclName (T.pack (unwords ["instance", T.unpack cls, T.unpack (unTypeHead th)]))
 
 declFactsOf :: Path Rel File -> LHsDecl GhcPs -> [DeclFact]
 declFactsOf rp ldecl =

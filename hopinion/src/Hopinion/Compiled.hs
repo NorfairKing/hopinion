@@ -179,7 +179,7 @@ anyDirectoryHolds (HieDirectories dirs) (Just relative) =
 -- @A\/B\/C.hie@ or @A\/B\/C.hi@ under one of the directories.
 artifactFileOf :: String -> ModuleKey -> Maybe (Path Rel File)
 artifactFileOf extension mk =
-  parseRelFile (FP.joinPath (map T.unpack (T.splitOn "." (moduleKeyText mk))) FP.<.> extension)
+  parseRelFile (FP.joinPath (map T.unpack (T.splitOn "." (unModuleKey mk))) FP.<.> extension)
 
 compiledModuleOf :: Path Rel File -> CompiledModules -> IO (Maybe CompiledModule)
 compiledModuleOf rp cm = answerFor rp cm moduleArtifactsCompiled
@@ -224,7 +224,7 @@ promisedButAbsent mk rp whys =
             ( unlines
                 ( unwords
                     [ "A build's .hie files were given, so every module has to be covered by them, but",
-                      T.unpack (moduleKeyText mk),
+                      T.unpack (unModuleKey mk),
                       "from",
                       T.unpack (relPathText rp),
                       "is not. A rule asked what that module's code generates and would have been",
@@ -297,7 +297,7 @@ lookUp (HieDirectories dirs) mk rp = case artifactFileOf "hie" mk of
           case read' of
             Left err -> go relative (unreadable path (renderArtifactUnreadable err) : whys) rest
             Right compiled
-              | compiledModuleName compiled /= moduleKeyText mk ->
+              | compiledModuleName compiled /= unModuleKey mk ->
                   go relative (aboutAnother path (compiledModuleName compiled) : whys) rest
               | not (sameSourceFile (compiledModuleFile compiled) rp) ->
                   go relative (fromAnother path (compiledModuleFile compiled) : whys) rest
@@ -307,7 +307,7 @@ lookUp (HieDirectories dirs) mk rp = case artifactFileOf "hie" mk of
       T.pack (unwords [path, "is there and this build of hopinion cannot read it:", T.unpack err])
 
     aboutAnother path name =
-      T.pack (unwords [path, "is there and is about", T.unpack name, "rather than", T.unpack (moduleKeyText mk)])
+      T.pack (unwords [path, "is there and is about", T.unpack name, "rather than", T.unpack (unModuleKey mk)])
 
     fromAnother path file =
       T.pack

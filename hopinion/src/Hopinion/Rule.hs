@@ -93,24 +93,24 @@ instance HasCodec Finding where
 -- demand on the build, which fails the run, or a question narrowed until it is
 -- answerable.
 newtype CheckResult = CheckResult
-  { checkResultFindings :: [Finding]
+  { unCheckResult :: [Finding]
   }
   deriving stock (Show, Eq, Generic)
 
 instance Semigroup CheckResult where
   a <> b =
     CheckResult
-      { checkResultFindings = checkResultFindings a ++ checkResultFindings b
+      { unCheckResult = unCheckResult a ++ unCheckResult b
       }
 
 instance Monoid CheckResult where
   mempty = noResult
 
 noResult :: CheckResult
-noResult = CheckResult {checkResultFindings = []}
+noResult = CheckResult {unCheckResult = []}
 
 findingsResult :: [Finding] -> CheckResult
-findingsResult fs = CheckResult {checkResultFindings = fs}
+findingsResult fs = CheckResult {unCheckResult = fs}
 
 -- | What a rule does, and where its findings come from.
 --
@@ -221,7 +221,7 @@ data RuleEntry = RuleEntry
 -- disagree, and building it from a list is where a duplicate id would be
 -- silently resolved rather than loudly refused, which is what 'ruleSet' exists
 -- to do. A lookup over a hundred rules does not need an index.
-newtype RuleSet = RuleSet {ruleSetEntries :: [RuleEntry]}
+newtype RuleSet = RuleSet {unRuleSet :: [RuleEntry]}
 
 -- | What can stop a list of rules from being a set, as what happened rather
 -- than as the sentence about it.
@@ -255,7 +255,7 @@ renderRuleSetError = \case
       chunk ". Check the spelling: the rule you meant is still running."
     ]
   where
-    listOf = T.intercalate ", " . map ruleIdText . NE.toList
+    listOf = T.intercalate ", " . map unRuleId . NE.toList
 
 -- | A set from the rules that are to run and the ids that are not.
 --
@@ -309,12 +309,12 @@ emptyRuleSet = RuleSet []
 
 -- | The rules that run, in the order they were registered.
 ruleSetRules :: RuleSet -> [Rule]
-ruleSetRules rs = [ruleEntryRule e | e <- ruleSetEntries rs, ruleEntryUse e == RuleUseRuns]
+ruleSetRules rs = [ruleEntryRule e | e <- unRuleSet rs, ruleEntryUse e == RuleUseRuns]
 
 -- | The rules this repository has decided against, which it still knows: a
 -- suppression naming one is wrong differently from one naming nothing.
 ruleSetTurnedOff :: RuleSet -> [Rule]
-ruleSetTurnedOff rs = [ruleEntryRule e | e <- ruleSetEntries rs, ruleEntryUse e == RuleUseTurnedOff]
+ruleSetTurnedOff rs = [ruleEntryRule e | e <- unRuleSet rs, ruleEntryUse e == RuleUseTurnedOff]
 
 -- | What this run makes of a name somebody wrote down. 'Nothing' is a name
 -- nothing here answers to, which is a typo, and means the rule they meant is
@@ -323,7 +323,7 @@ useOf :: RuleSet -> RuleId -> Maybe RuleUse
 useOf rs rid = ruleEntryUse <$> entryFor rs rid
 
 entryFor :: RuleSet -> RuleId -> Maybe RuleEntry
-entryFor rs rid = case [e | e <- ruleSetEntries rs, ruleId (ruleEntryRule e) == rid] of
+entryFor rs rid = case [e | e <- unRuleSet rs, ruleId (ruleEntryRule e) == rid] of
   (e : _) -> Just e
   [] -> Nothing
 
@@ -355,7 +355,7 @@ rulesAtLevel rs l = [r | r <- ruleSetRules rs, ruleLevel r == l]
 withoutRules :: [RuleId] -> RuleSet -> Either RuleSetError RuleSet
 withoutRules off rs =
   ruleSet
-    (map ruleEntryRule (ruleSetEntries rs))
+    (map ruleEntryRule (unRuleSet rs))
     (off ++ map ruleId (ruleSetTurnedOff rs))
 
 -- | The scope an annotation about this comment would have to name. A comment

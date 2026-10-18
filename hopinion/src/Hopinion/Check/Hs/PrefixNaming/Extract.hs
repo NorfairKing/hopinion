@@ -45,10 +45,10 @@ unprefixedNamesOf rp ref decls ds =
       }
   | DataDecl {tcdLName = n, tcdDataDefn = defn} <- listify (const True :: TyClDecl GhcPs -> Bool) ds,
     let th = TypeHead (rdrText (unLoc n)),
-    isWord (typeHeadText th),
+    isWord (unTypeHead th),
     (role, written, sp) <- introducedBy rp defn,
     isWord written,
-    not (prefixedByType th written)
+    not (nameIsRight role th written)
   ]
 
 -- | A name opening with a letter, which is the only kind a prefix can be read
@@ -57,15 +57,21 @@ isWord :: Text -> Bool
 isWord t = maybe False (isAlpha . fst) (T.uncons t)
 
 -- | Every name the right-hand side of a data declaration introduces.
+--
+-- Which role a field is given is decided here, because this is the only place
+-- that can see whether the declaration is a newtype. The field itself is
+-- written the same either way.
 introducedBy :: Path Rel File -> HsDataDefn GhcPs -> [(NameRole, Text, Span)]
-introducedBy rp defn = concatMap (namesOfCon rp . unLoc) (dd_cons defn)
+introducedBy rp defn = case dd_cons defn of
+  NewTypeCon con -> namesOfCon rp NameRoleNewtypeField (unLoc con)
+  DataTypeCons _ cons -> concatMap (namesOfCon rp NameRoleField . unLoc) cons
 
-namesOfCon :: Path Rel File -> ConDecl GhcPs -> [(NameRole, Text, Span)]
-namesOfCon rp = \case
+namesOfCon :: Path Rel File -> NameRole -> ConDecl GhcPs -> [(NameRole, Text, Span)]
+namesOfCon rp fieldRole = \case
   ConDeclH98 {con_name = n, con_args = args} ->
-    constructorNameAt rp n : concatMap (namesOfField rp) (h98Fields args)
+    constructorNameAt rp n : concatMap (namesOfField rp fieldRole) (h98Fields args)
   ConDeclGADT {con_names = ns, con_g_args = args} ->
-    map (constructorNameAt rp) (toList ns) ++ concatMap (namesOfField rp) (gadtFields args)
+    map (constructorNameAt rp) (toList ns) ++ concatMap (namesOfField rp fieldRole) (gadtFields args)
 
 constructorNameAt :: Path Rel File -> LIdP GhcPs -> (NameRole, Text, Span)
 constructorNameAt rp ln = (NameRoleConstructor, rdrText (unLoc ln), spanOfSrcSpan rp (getLocA ln))
@@ -83,8 +89,8 @@ gadtFields = \case
 
 -- | One declared field can name several selectors, each of which is a name of
 -- its own to get right.
-namesOfField :: Path Rel File -> LConDeclField GhcPs -> [(NameRole, Text, Span)]
-namesOfField rp lf =
-  [ (NameRoleField, rdrText (unLoc (foLabel (unLoc lfo))), spanOfSrcSpan rp (getLocA lfo))
+namesOfField :: Path Rel File -> NameRole -> LConDeclField GhcPs -> [(NameRole, Text, Span)]
+namesOfField rp fieldRole lf =
+  [ (fieldRole, rdrText (unLoc (foLabel (unLoc lfo))), spanOfSrcSpan rp (getLocA lfo))
   | lfo <- cd_fld_names (unLoc lf)
   ]

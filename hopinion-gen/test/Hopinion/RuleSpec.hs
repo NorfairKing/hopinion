@@ -37,7 +37,7 @@ spec = do
     (dirs, files) <- listDirRel ruleResourcesDir
     expected <-
       traverse
-        (parseRelDir . T.unpack . ruleIdText . ruleId)
+        (parseRelDir . T.unpack . unRuleId . ruleId)
         (ruleSetRules shippedRules)
     sort dirs `shouldBe` sort expected
     files `shouldBe` []
@@ -46,7 +46,7 @@ spec = do
   -- and read back. Both directions, since a rule whose text no longer parses
   -- would take every suppression naming it with it.
   it "reads every rule id back from the text it is written as" $
-    traverse (parseRuleId . ruleIdText . ruleId) (ruleSetRules shippedRules)
+    traverse (parseRuleId . unRuleId . ruleId) (ruleSetRules shippedRules)
       `shouldBe` Just (map ruleId (ruleSetRules shippedRules))
 
   -- A reader meets the rule text beside the code it is about, where there is

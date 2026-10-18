@@ -97,11 +97,11 @@ type Query a = SqlPersistT (NoLoggingT (ResourceT IO)) a
 -- Stored as the text it renders to and read back through the same parser every
 -- other path goes through, so a row that is not a relative file path fails here
 -- rather than inside a rule.
-newtype StoredPath = StoredPath {storedPathFile :: Path Rel File}
+newtype StoredPath = StoredPath {unStoredPath :: Path Rel File}
   deriving (Show, Eq)
 
 instance PersistField StoredPath where
-  toPersistValue = toPersistValue . relPathText . storedPathFile
+  toPersistValue = toPersistValue . relPathText . unStoredPath
   fromPersistValue v = do
     t <- fromPersistValue v
     maybe
@@ -436,7 +436,7 @@ genPackageFor pkg = do
     Nothing -> pure (GenPackageNone (genNameOf pkg))
 
 genNameOf :: PackageName -> PackageName
-genNameOf pkg = PackageName (T.concat [packageNameText pkg, "-gen"])
+genNameOf pkg = PackageName (T.concat [unPackageName pkg, "-gen"])
 
 generatorPackageNamed :: PackageName -> Query GenPackage
 generatorPackageNamed gen =
@@ -512,7 +512,7 @@ writtenByAnotherVersion =
     <$> select
       ( do
           m <- from (table @StoredMeta)
-          where_ (m ^. StoredMetaFormatVersion !=. val (formatVersionNumber currentFormatVersion))
+          where_ (m ^. StoredMetaFormatVersion !=. val (unFormatVersion currentFormatVersion))
           limit 1
           pure (m ^. StoredMetaFormatVersion)
       )
@@ -523,5 +523,5 @@ writtenByAnotherVersion =
 writeMeta :: Carry
 writeMeta =
   repsert
-    (StoredMetaKey (formatVersionNumber currentFormatVersion))
-    StoredMeta {storedMetaFormatVersion = formatVersionNumber currentFormatVersion}
+    (StoredMetaKey (unFormatVersion currentFormatVersion))
+    StoredMeta {storedMetaFormatVersion = unFormatVersion currentFormatVersion}

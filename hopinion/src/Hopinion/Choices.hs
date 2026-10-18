@@ -56,7 +56,7 @@ import Path.IO (forgivingAbsence)
 
 -- | Everything the file says, which is one thing so far.
 newtype Choices = Choices
-  { choicesDisabled :: [RuleId]
+  { unChoices :: [RuleId]
   }
   deriving stock (Show, Eq, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec Choices)
@@ -73,7 +73,7 @@ instance HasObjectCodec Choices where
         "disabled-rules"
         []
         "the rules this repository has decided against, which no run of it makes"
-        .= choicesDisabled
+        .= unChoices
 
 instance HasCodec Choices where
   codec = object "Choices" objectCodec
@@ -96,7 +96,7 @@ knownKeys = keysOf (jsonObjectSchemaViaCodec @Choices)
       ObjectAllOfSchema ss -> concatMap keysOf (NE.toList ss)
 
 noChoices :: Choices
-noChoices = Choices {choicesDisabled = []}
+noChoices = Choices {unChoices = []}
 
 choicesFile :: Path Rel File
 choicesFile = [relfile|hopinion.yaml|]

@@ -51,8 +51,8 @@ spec = do
 
   let subjectOf :: Attachment -> Text
       subjectOf = \case
-        AttachmentToDecl d -> T.concat ["decl ", declNameText d]
-        AttachmentToStatement d _ -> T.concat ["statement in ", declNameText d]
+        AttachmentToDecl d -> T.concat ["decl ", unDeclName d]
+        AttachmentToStatement d _ -> T.concat ["statement in ", unDeclName d]
         AttachmentToFile -> "file"
         AttachmentToExportList -> "export list"
         AttachmentToNothing -> "unattached"

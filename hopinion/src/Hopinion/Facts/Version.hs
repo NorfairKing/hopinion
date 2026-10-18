@@ -10,7 +10,7 @@ where
 import Data.Validity
 import GHC.Generics (Generic)
 
-newtype FormatVersion = FormatVersion {formatVersionNumber :: Word}
+newtype FormatVersion = FormatVersion {unFormatVersion :: Word}
   deriving stock (Show, Eq, Ord, Generic)
 
 instance Validity FormatVersion

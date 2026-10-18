@@ -36,7 +36,7 @@ spec = do
     jsonSpec @RuleId
     it "round trips through its text" $
       forAllValid $ \r ->
-        parseRuleId (ruleIdText r) `shouldBe` Just r
+        parseRuleId (unRuleId r) `shouldBe` Just r
     -- A suppression is @[allow:RuleId] reason@, and the bracket is meant to be
     -- able to grow a second colon-separated field later. That only stays
     -- possible while no rule id contains a colon of its own.
@@ -46,10 +46,10 @@ spec = do
             isPascalCase t = case T.uncons t of
               Nothing -> False
               Just (c, rest) -> isUpper c && T.all (\x -> isAlphaNum x || x == '_') rest
-         in ruleIdText r `shouldSatisfy` isPascalCase
+         in unRuleId r `shouldSatisfy` isPascalCase
     it "contains no colon, leaving the second colon free for later" $
       forAllValid $ \r ->
-        ruleIdText r `shouldSatisfy` not . T.isInfixOf ":"
+        unRuleId r `shouldSatisfy` not . T.isInfixOf ":"
   describe "Level" $ do
     genValidSpec @Level
   describe "ModuleKey" $ do

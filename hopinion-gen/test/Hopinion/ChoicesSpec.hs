@@ -56,7 +56,7 @@ spec = do
 
     it "reads the rules a repository has decided against" $
       parseChoices "disabled-rules:\n  - CommentBareTodo\n"
-        `shouldBe` Right (Choices {choicesDisabled = [RuleId "CommentBareTodo"]})
+        `shouldBe` Right (Choices {unChoices = [RuleId "CommentBareTodo"]})
 
     it "reads a file holding nothing as nothing decided" $
       parseChoices "" `shouldBe` Right noChoices

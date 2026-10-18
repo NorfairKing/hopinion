@@ -34,7 +34,7 @@ check mf =
             T.concat
               [ instanceFactClass inst,
                 " ",
-                typeHeadText (instanceFactType inst),
+                unTypeHead (instanceFactType inst),
                 " is written out and uses the value."
               ]
         }

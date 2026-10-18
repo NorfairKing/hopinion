@@ -248,7 +248,7 @@ genPackageName = \case
 -- forgets, and a suppression against the file is what a person would write.
 recordGeneratedObligations :: Obligation -> CompiledModules -> PackageName -> ObligationTemplateHaskell -> Query ()
 recordGeneratedObligations o compiled pkg s = do
-  declared <- liftIO (declaredInstancesOf (storedPathFile (obligationTemplateHaskellFile s)) compiled)
+  declared <- liftIO (declaredInstancesOf (unStoredPath (obligationTemplateHaskellFile s)) compiled)
   case declared of
     -- No build spoke for this module, so what it generates stays unknown and
     -- the source is all there is. Only a run with no artifacts at all gets
@@ -272,8 +272,8 @@ recordGeneratedObligations o compiled pkg s = do
             obligationMadePackage = pkg,
             obligationMadeModuleRef = obligationTemplateHaskellModuleRef source,
             obligationMadeKind = obligationTemplateHaskellKind source,
-            obligationMadeSpan = wholeFileSpan (storedPathFile (obligationTemplateHaskellFile source)),
-            obligationMadeDecl = DeclName (T.pack (unwords ["instance", T.unpack cls, T.unpack (typeHeadText th)])),
+            obligationMadeSpan = wholeFileSpan (unStoredPath (obligationTemplateHaskellFile source)),
+            obligationMadeDecl = DeclName (T.pack (unwords ["instance", T.unpack cls, T.unpack (unTypeHead th)])),
             obligationMadeClassName = cls,
             obligationMadeTypeHead = th
           }
@@ -358,8 +358,8 @@ notGeneratedIn o compiled splicing made =
           liftIO
             ( couldGenerateUseOf
                 (obligationCombinator o)
-                (typeHeadText (obligationMadeTypeHead made))
-                (storedPathFile (obligationTemplateHaskellFile s))
+                (unTypeHead (obligationMadeTypeHead made))
+                (unStoredPath (obligationTemplateHaskellFile s))
                 compiled
             )
       )
@@ -431,13 +431,13 @@ findingFor o home m =
           ( unwords
               ( [ "No",
                   T.unpack (obligationCombinator o),
-                  concat ["@", T.unpack (typeHeadText (obligationMadeTypeHead m))]
+                  concat ["@", T.unpack (unTypeHead (obligationMadeTypeHead m))]
                 ]
                   ++ case home of
-                    GenPackage gen -> ["in", concat [T.unpack (packageNameText gen), "'s test suite."]]
+                    GenPackage gen -> ["in", concat [T.unpack (unPackageName gen), "'s test suite."]]
                     GenPackageNone gen ->
                       [ "anywhere, and no",
-                        T.unpack (packageNameText gen),
+                        T.unpack (unPackageName gen),
                         "package to write it in."
                       ]
               )

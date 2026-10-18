@@ -45,7 +45,7 @@ check ctx
               findingMessage =
                 T.concat
                   [ "A top-level binding beside spec: ",
-                    declNameText (declFactName d),
+                    unDeclName (declFactName d),
                     "."
                   ]
             }

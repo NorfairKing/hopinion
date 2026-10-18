@@ -121,7 +121,7 @@ findingFor g =
       findingMessage =
         T.concat
           [ "A GenValid instance in ",
-            packageNameText (generatorFactPackage g),
+            unPackageName (generatorFactPackage g),
             "'s library."
           ]
     }

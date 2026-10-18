@@ -185,7 +185,7 @@ renderDiscoveryError = \case
     T.pack
       ( unwords
           ( [ "Two packages are called",
-              T.unpack (packageNameText name),
+              T.unpack (unPackageName name),
               "and one name is all the facts of either can be filed under:"
             ]
               ++ [T.unpack (relPathText c) | c <- NE.toList cabalFiles]

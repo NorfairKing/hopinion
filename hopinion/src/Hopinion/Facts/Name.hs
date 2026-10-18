@@ -50,7 +50,7 @@ relPathCodec =
       (T.pack . toFilePath)
       codec
 
-newtype ModuleKey = ModuleKey {moduleKeyText :: Text}
+newtype ModuleKey = ModuleKey {unModuleKey :: Text}
   deriving stock (Show, Read, Eq, Ord, Generic)
   deriving newtype (PersistField, PersistFieldSql)
   deriving (FromJSON, ToJSON) via (Autodocodec ModuleKey)
@@ -58,9 +58,9 @@ newtype ModuleKey = ModuleKey {moduleKeyText :: Text}
 instance Validity ModuleKey
 
 instance HasCodec ModuleKey where
-  codec = named "ModuleKey" (dimapCodec ModuleKey moduleKeyText codec)
+  codec = named "ModuleKey" (dimapCodec ModuleKey unModuleKey codec)
 
-newtype DeclName = DeclName {declNameText :: Text}
+newtype DeclName = DeclName {unDeclName :: Text}
   deriving stock (Show, Read, Eq, Ord, Generic)
   deriving newtype (PersistField, PersistFieldSql)
   deriving (FromJSON, ToJSON) via (Autodocodec DeclName)
@@ -68,13 +68,13 @@ newtype DeclName = DeclName {declNameText :: Text}
 instance Validity DeclName
 
 instance HasCodec DeclName where
-  codec = named "DeclName" (dimapCodec DeclName declNameText codec)
+  codec = named "DeclName" (dimapCodec DeclName unDeclName codec)
 
 -- | A package is keyed on its name in the store, and persistent generates that
 -- key as a newtype deriving all three, so stripping them here fails the
 -- quasi-quoter rather than anything a person can see. The four names beside
 -- this one are in no natural key and carry none of them.
-newtype PackageName = PackageName {packageNameText :: Text}
+newtype PackageName = PackageName {unPackageName :: Text}
   deriving stock (Show, Read, Eq, Ord, Generic)
   -- The three web ones are persistent's doing, not this tool's: a package name
   -- is the key of a stored package, and the quasi-quoter derives them for every
@@ -86,7 +86,7 @@ newtype PackageName = PackageName {packageNameText :: Text}
 instance Validity PackageName
 
 instance HasCodec PackageName where
-  codec = named "PackageName" (dimapCodec PackageName packageNameText codec)
+  codec = named "PackageName" (dimapCodec PackageName unPackageName codec)
 
 -- | A component's own name, as the cabal file spells it: @lib@ for a library,
 -- and the declared name for a sub-library, executable, test suite or benchmark.
@@ -94,7 +94,7 @@ instance HasCodec PackageName where
 -- What makes a module identifiable, where a module name does not: every
 -- @main-is@ component has a module called @Main@, and keying on the module name
 -- alone lets one of them stand in for the others.
-newtype ComponentName = ComponentName {componentNameText :: Text}
+newtype ComponentName = ComponentName {unComponentName :: Text}
   deriving stock (Show, Read, Eq, Ord, Generic)
   deriving newtype (PersistField, PersistFieldSql)
   deriving (FromJSON, ToJSON) via (Autodocodec ComponentName)
@@ -107,16 +107,16 @@ instance Validity ComponentName where
   validate cn =
     mconcat
       [ genericValidate cn,
-        declare "the name holds no colon" (not (T.isInfixOf ":" (componentNameText cn)))
+        declare "the name holds no colon" (not (T.isInfixOf ":" (unComponentName cn)))
       ]
 
 instance HasCodec ComponentName where
-  codec = named "ComponentName" (dimapCodec ComponentName componentNameText codec)
+  codec = named "ComponentName" (dimapCodec ComponentName unComponentName codec)
 
 -- | The head type constructor, applied arguments dropped. Matching on the head
 -- answers "is this type tested at all" rather than "is this instantiation
 -- tested", which is the question the obligation engine wants.
-newtype TypeHead = TypeHead {typeHeadText :: Text}
+newtype TypeHead = TypeHead {unTypeHead :: Text}
   deriving stock (Show, Read, Eq, Ord, Generic)
   deriving newtype (PersistField, PersistFieldSql)
 

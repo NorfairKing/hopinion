@@ -34,7 +34,7 @@ import GHC.Generics (Generic)
 --
 -- The shape is closed, which is what keeps it a name rather than a string, and
 -- 'Validity' is what says the shape.
-newtype RuleId = RuleId {ruleIdText :: Text}
+newtype RuleId = RuleId {unRuleId :: Text}
   deriving stock (Show, Eq, Ord, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec RuleId)
 
@@ -62,7 +62,7 @@ parseRuleId t = let rid = RuleId t in if isValid rid then Just rid else Nothing
 -- with, so a stored row stays readable and a renamed rule cannot silently
 -- change what was written.
 instance PersistField RuleId where
-  toPersistValue = toPersistValue . ruleIdText
+  toPersistValue = toPersistValue . unRuleId
   fromPersistValue v = do
     t <- fromPersistValue v
     maybe (Left "not a rule id") Right (parseRuleId t)
@@ -75,7 +75,7 @@ instance HasCodec RuleId where
     named "RuleId" $
       bimapCodec
         (maybe (Left "not a rule id") Right . parseRuleId)
-        ruleIdText
+        unRuleId
         codec
 
 data Level

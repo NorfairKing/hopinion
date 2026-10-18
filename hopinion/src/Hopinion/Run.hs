@@ -43,7 +43,7 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import Database.Persist.Sql (Migration)
 import Hopinion.Annotation
-import Hopinion.Choices (choicesDisabled, readChoicesIn, renderChoicesFileError)
+import Hopinion.Choices (readChoicesIn, renderChoicesFileError, unChoices)
 import Hopinion.Compiled
 import Hopinion.Extract
 import Hopinion.Facts.Component
@@ -91,7 +91,7 @@ runCheck given hieDirs root = do
   decided <- readChoicesIn (sourceRootDir root)
   case decided of
     Left err -> pure (failureComplaints [FailureChoicesRefused (renderChoicesFileError err)])
-    Right choices -> case withoutRules (choicesDisabled choices) given of
+    Right choices -> case withoutRules (unChoices choices) given of
       Left err -> pure (failureComplaints [FailureRuleSetRefused (renderChunksText WithoutColours (renderRuleSetError err))])
       Right rs -> runCheckWithoutChoices rs hieDirs root
 
@@ -156,7 +156,7 @@ runProjectCommand rs hieDirs packageDirs expectedNames mOut = reportingArtifactP
               liftIO
                 ( compiledModulesFor
                     hieDirs
-                    [ (moduleRefModule (storedModuleModuleRef m), storedPathFile (storedModulePath m))
+                    [ (moduleRefModule (storedModuleModuleRef m), unStoredPath (storedModulePath m))
                     | m <- modules,
                       ParseOutcomeOk <- [storedModuleOutcome m]
                     ]
@@ -187,12 +187,12 @@ unreadableFormats dirs = do
               "were written in format",
               concat [maybe "no format at all" show stamp, ","],
               "and this build of hopinion reads format",
-              concat [show (formatVersionNumber currentFormatVersion), "."],
+              concat [show (unFormatVersion currentFormatVersion), "."],
               "Build the package outputs and the project with one hopinion."
             ]
         )
     | (dir, stamp) <- stamps,
-      stamp /= Just (formatVersionNumber currentFormatVersion)
+      stamp /= Just (unFormatVersion currentFormatVersion)
     ]
 
 -- | Every package directory given more than once.
@@ -269,7 +269,7 @@ listRules rs =
     )
   where
     line off r =
-      [ fore blue (chunk (ruleIdText (ruleId r))),
+      [ fore blue (chunk (unRuleId (ruleId r))),
         chunk "\t",
         if off then fore red (chunk "off") else chunk "runs",
         chunk "\t",
@@ -299,14 +299,14 @@ explainRule rs rid = case ruleNamed rs rid of
   Nothing ->
     ExplanationNoRuleCalled
       [ chunk "There is no rule called ",
-        fore red (chunk (ruleIdText rid)),
+        fore red (chunk (unRuleId rid)),
         chunk " in this build of hopinion.\n",
         chunk "Run list-rules to see the rules this build has.\n"
       ]
   Just r ->
     ExplanationGiven
       ( concat
-          [ [fore blue (chunk (ruleIdText (ruleId r))), chunk "\n"],
+          [ [fore blue (chunk (unRuleId (ruleId r))), chunk "\n"],
             [chunk (ruleText r), chunk "\n"],
             [chunk (ruleWhy r), chunk "\n"],
             [ chunk (T.concat ["Level: ", levelText (ruleLevel r)]),
@@ -423,7 +423,7 @@ moduleContextFor rs cm mm = do
 -- suppressions live, so this is built once here.
 layerComplaints :: RuleSet -> Level -> CheckResult -> [AnnotationFact] -> Complaints
 layerComplaints rs level result inScope =
-  let sup = applySuppression (annotationsAtLevel rs level inScope) (checkResultFindings result)
+  let sup = applySuppression (annotationsAtLevel rs level inScope) (unCheckResult result)
    in complaintsOf
         ( concat
             [ map ComplaintFinding (suppressionRemaining sup),

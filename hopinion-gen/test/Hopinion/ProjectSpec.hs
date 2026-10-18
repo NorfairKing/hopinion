@@ -116,7 +116,7 @@ spec = do
   it "carries that into the report rather than killing the run" $ do
     root <- rootAt (resourceDir </> [reldir|no-such-directory|])
     report <- runCheck shippedRules noHieDirectories root
-    [t | ComplaintFailure t <- complaintsList report]
+    [t | ComplaintFailure t <- unComplaints report]
       `shouldBe` [FailureRepositoryUnreadable (renderDiscoveryError (DiscoveryErrorNoDirectoryAt (sourceRootDir root)))]
 
   -- A cabal file may declare a source directory that is not there, and sydtest
@@ -135,7 +135,7 @@ spec = do
   it "fails when a declared module is missing from the tree, naming it" $ do
     let dir = resourceDir </> [reldir|absent-module|]
     report <- runCheck shippedRules noHieDirectories =<< rootAt dir
-    [t | ComplaintFailure t <- complaintsList report]
+    [t | ComplaintFailure t <- unComplaints report]
       `shouldBe` [ FailureFactsIncomplete
                      ( StoreProblemPackageDoesNotCover
                          (PackageName "thing")
@@ -153,7 +153,7 @@ spec = do
   it "fails when two packages are called the same thing, naming both cabal files" $ do
     let dir = resourceDir </> [reldir|duplicate-package|]
     report <- runCheck shippedRules noHieDirectories =<< rootAt dir
-    [renderFailure t | ComplaintFailure t <- complaintsList report]
+    [renderFailure t | ComplaintFailure t <- unComplaints report]
       `shouldBe` [ "Two packages are called thing and one name is all the facts of either \
                    \can be filed under: first/thing.cabal second/thing.cabal"
                  ]

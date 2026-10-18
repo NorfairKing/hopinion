@@ -75,7 +75,7 @@ spec = do
     -- The one question a wrapper deciding whether to fail has to ask.
     it "is clean exactly when it has nothing to complain about" $
       forAllValid $ \complaints ->
-        isClean complaints `shouldBe` null (complaintsList complaints)
+        isClean complaints `shouldBe` null (unComplaints complaints)
 
   it "has the repository the goldens are of, and the goldens" $ do
     (dirs, files) <- listDirRel resourceDir

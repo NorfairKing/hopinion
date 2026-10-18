@@ -28,7 +28,7 @@ check mf =
           findingScope = instanceFactScope inst,
           findingSpan = instanceFactSpan inst,
           findingMessage =
-            T.concat ["Ord ", typeHeadText (instanceFactType inst), " is written out."]
+            T.concat ["Ord ", unTypeHead (instanceFactType inst), " is written out."]
         }
     | inst <- moduleContextInstances mf,
       originIsWrittenOut (instanceFactOrigin inst),

@@ -123,7 +123,7 @@ data SplitCheck
 ruleSpec :: Rule -> Spec
 ruleSpec r =
   let rid = ruleId r
-   in describe (T.unpack (ruleIdText rid)) $ do
+   in describe (T.unpack (unRuleId rid)) $ do
         dir <- runIO ((ruleResourcesDir </>) <$> ruleDirName rid)
 
         -- A rule with only clean resources would pass while never firing, and a
@@ -143,7 +143,7 @@ ruleSpec r =
 
 -- | A rule's own directory name, which is its id.
 ruleDirName :: RuleId -> IO (Path Rel Dir)
-ruleDirName = parseRelDir . T.unpack . ruleIdText
+ruleDirName = parseRelDir . T.unpack . unRuleId
 
 -- | One module, and beside it the golden of what the rule makes of it.
 --
@@ -305,7 +305,7 @@ renderedFindingsInModule rid file = do
 findingsInProject :: RuleId -> Path Rel Dir -> IO [Finding]
 findingsInProject rid dir = do
   report <- runCheck shippedRules noHieDirectories =<< rootAt dir
-  [t | ComplaintFailure t <- complaintsList report] `shouldBe` []
+  [t | ComplaintFailure t <- unComplaints report] `shouldBe` []
   pure [f | f <- complaintsFindings report, findingRule f == rid]
 
 renderedFindingsInProject :: RuleId -> Path Rel Dir -> IO Text
@@ -330,7 +330,7 @@ splitAgrees dir = withSystemTempDir "hopinion-split" $ \tmp -> do
     Right models -> do
       named <- mapM (writeOne tmp root) models
       throughFiles <- runProjectCommand shippedRules noHieDirectories (map snd named) (map fst named) Nothing
-      [t | ComplaintFailure t <- complaintsList throughFiles] `shouldBe` []
+      [t | ComplaintFailure t <- unComplaints throughFiles] `shouldBe` []
       -- Every finding, not only the project ones: the project phase unions in
       -- what the package phase already found, so the two paths agree or they do
       -- not.
@@ -340,7 +340,7 @@ splitAgrees dir = withSystemTempDir "hopinion-split" $ \tmp -> do
 -- path under test is the one the derivations run.
 writeOne :: Path Abs Dir -> SourceRoot -> PackageModel -> IO (Text, Path Abs Dir)
 writeOne tmp root pm = do
-  let name = packageNameText (packageModelName pm)
+  let name = unPackageName (packageModelName pm)
   dir <- (tmp </>) <$> parseRelDir (T.unpack name)
   ensureDir dir
   report <- runPackageCommand shippedRules noHieDirectories root (packageModelDir pm) (Just dir)
@@ -351,7 +351,7 @@ writeOne tmp root pm = do
 sortedFindings :: Complaints -> [Finding]
 sortedFindings =
   sortOn
-    (\f -> (findingSpan f, ruleIdText (findingRule f), findingMessage f))
+    (\f -> (findingSpan f, unRuleId (findingRule f), findingMessage f))
     . complaintsFindings
 
 -- | A source root over a directory, resolved against the working directory the

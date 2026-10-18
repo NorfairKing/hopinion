@@ -112,7 +112,7 @@ findingFor s =
           else
             T.concat
               [ "A declaration beside main: ",
-                declNameText (strayAppDeclFactDecl s),
+                unDeclName (strayAppDeclFactDecl s),
                 "."
               ]
     }

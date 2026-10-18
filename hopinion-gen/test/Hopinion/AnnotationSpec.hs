@@ -355,7 +355,7 @@ spec = do
           Left err -> expectationFailure (T.unpack (renderDiscoveryError err))
           Right models -> do
             named <- forM models $ \pm -> do
-              let name = packageNameText (packageModelName pm)
+              let name = unPackageName (packageModelName pm)
               dir <- (tmp </>) <$> parseRelDir (T.unpack name)
               ensureDir dir
               report <- runPackageCommand withEverything noHieDirectories root (packageModelDir pm) (Just dir)
@@ -369,7 +369,7 @@ spec = do
                 (map snd named)
                 (map fst named)
                 Nothing
-            [t | ComplaintFailure t <- complaintsList report]
+            [t | ComplaintFailure t <- unComplaints report]
               `shouldBe` replicate
                 3
                 (FailureFactsIncomplete (StoreProblemSuppressionNamesRuleNotRun (RuleId "CommentBareTodo")))

@@ -188,7 +188,7 @@ renderAnnotationError = \case
   AnnotationErrorRuleIsTurnedOff rid ->
     T.concat
       [ "This suppresses ",
-        ruleIdText rid,
+        unRuleId rid,
         ", which this repository has turned off, so it suppresses nothing. Remove it."
       ]
   AnnotationErrorNoReason -> "A suppression with no reason is a config exception with extra steps."
@@ -425,7 +425,7 @@ suppressionFor f reason =
   T.concat
     [ "-- [allow:",
       if suppressionIsFileScoped f then "file:" else "",
-      ruleIdText (findingRule f),
+      unRuleId (findingRule f),
       "] ",
       reason
     ]
