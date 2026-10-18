@@ -16,7 +16,7 @@ import Hopinion.Check.Hs.NoAnonymousScalar.Fact
 import Hopinion.Extract.Ghc
 import Hopinion.Facts.Decl
 import Hopinion.Facts.Place
-import Hopinion.Facts.Primitive (isAnonymousContainerName, isPrimitiveTypeName)
+import Hopinion.Facts.Primitive (isPrimitiveTypeName)
 import Path (File, Path, Rel)
 
 -- | Every constructor in the module that holds an anonymous primitive its own
@@ -107,16 +107,25 @@ gadtPositional = \case
 -- | The primitive one field holds, under the name a reader meets it by, or
 -- nothing when the field is not an anonymous primitive at all.
 --
--- A container of a primitive is one, and is named as it is written, because a
--- reader of @!(Maybe Text)@ has been told how many there are and nothing else.
--- A field whose type takes arguments of its own is not one however primitive
--- what it takes may be, since a type that says something is a name.
+-- A @Maybe@ of a primitive is one, and is named as it is written, because a
+-- reader of @!(Maybe Text)@ has been told whether there is one and nothing
+-- else. A field whose type takes arguments of its own is not one however
+-- primitive what it takes may be, since a type that says something is a name.
 anonymousPrimitiveOf :: LHsType GhcPs -> Maybe Text
 anonymousPrimitiveOf lt = do
   (con, args) <- appliedTypeOf lt
   case args of
     [] | isPrimitiveTypeName con -> Just con
-    [arg] | isAnonymousContainerName con -> appliedText con <$> anonymousPrimitiveOf arg
+    -- A list and a NonEmpty are collections rather than the thing they
+    -- collect, and a reader of one has been told that there are several, which
+    -- is something. The exception is @[Char]@: that is @String@ spelled out,
+    -- and a primitive this rule read under one spelling and not the other
+    -- would be a way around it that no other rule closes.
+    [arg] | con == "[]", anonymousPrimitiveOf arg == Just "Char" -> Just "[Char]"
+    -- A Maybe holds at most one of the thing, so a field holding one is as
+    -- anonymous as a field holding the thing, and the newtype that fixes it
+    -- goes inside.
+    [arg] | con == "Maybe" -> appliedText con <$> anonymousPrimitiveOf arg
     _ -> Nothing
 
 -- | The head of a type and the arguments it is applied to, with a list read as
@@ -131,14 +140,12 @@ appliedTypeOf lt = case unLoc (peelType lt) of
   HsListTy _ el -> Just ("[]", [el])
   _ -> peelApp lt
 
--- | A one-argument application written the way its own syntax writes it, which
--- is brackets for a list and a space for everything else.
+-- | A one-argument application written the way its own syntax writes it.
 --
 -- An argument that is itself an application is parenthesised, because what
--- this builds is read beside the code it is about, and a reader of @NonEmpty
--- Maybe Text@ would be looking for a type their file does not hold.
+-- this builds is read beside the code it is about, and a reader of @Maybe Maybe
+-- Text@ would be looking for a type their file does not hold.
 appliedText :: Text -> Text -> Text
 appliedText con inner
-  | con == "[]" = T.concat ["[", inner, "]"]
   | T.isInfixOf " " inner = T.concat [con, " (", inner, ")"]
   | otherwise = T.concat [con, " ", inner]

@@ -10,12 +10,17 @@
 -- field that went without a name and HsScalarNewtypeUnused about the newtype
 -- that would have given it one, and a set that disagreed with itself would have
 -- one rule asking for what the other does not read.
+--
+-- What is not here is which containers are transparent, because the two rules
+-- want different answers and both are right. One asks whether a field holds an
+-- anonymous primitive, and a collection of a thing is not the thing. The other
+-- asks where a newtype would go, and it goes inside the collection. Each says
+-- so where it reads its own types.
 module Hopinion.Facts.Primitive
   ( Primitive,
     unPrimitive,
     primitiveNamed,
     isPrimitiveTypeName,
-    isAnonymousContainerName,
   )
 where
 
@@ -99,14 +104,3 @@ primitiveNames =
     "Float",
     "Rational"
   ]
-
--- | Whether a type of one argument hands a reader of it exactly what a reader
--- of its argument would have had.
---
--- These three say how many of the thing there are and nothing about what the
--- thing is, so a field holding one is as anonymous as a field holding what it
--- wraps, and a newtype that fixes it goes inside the container rather than
--- around it. A type that says something of its own is not one of them, however
--- few arguments it takes: a reader of @Path Abs File@ has been told what it is.
-isAnonymousContainerName :: Text -> Bool
-isAnonymousContainerName name = name `elem` ["Maybe", "NonEmpty", "[]"]
