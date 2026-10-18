@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Hopinion.Check.Project.ScalarNewtypeUnused.Fact
   ( ScalarNewtype (..),
@@ -7,6 +8,7 @@ module Hopinion.Check.Project.ScalarNewtypeUnused.Fact
     scalarFor,
     endsInTypeName,
     wordsOfName,
+    constructorIsExported,
     reachablePackages,
   )
 where
@@ -21,6 +23,7 @@ import qualified Data.Text as T
 import Data.Validity
 import Data.Validity.Text ()
 import GHC.Generics (Generic)
+import Hopinion.Facts.Export (ExportEntry (..), ExportList (..))
 import Hopinion.Facts.Name
 import Hopinion.Facts.Place
 import Hopinion.Facts.Primitive (Primitive)
@@ -29,6 +32,10 @@ import Hopinion.Facts.Primitive (Primitive)
 -- values are each one primitive.
 data ScalarNewtype = ScalarNewtype
   { scalarNewtypeType :: !TypeHead,
+    -- | The constructor the type is built with, which is not always the type's
+    -- own name and is what an export list has to expose for a site elsewhere
+    -- to be able to wrap anything in it.
+    scalarNewtypeConstructor :: !Text,
     scalarNewtypePrimitive :: !Primitive
   }
   deriving stock (Show, Eq, Generic)
@@ -97,6 +104,41 @@ reachablePackages inProject edges from component =
              in go (S.union seen next) (S.union rest next)
       first' = S.difference (dependenciesOf from component) (S.singleton from)
    in go (S.insert from first') first'
+
+-- | Whether a module's export list lets anything outside it wrap a value in
+-- this constructor.
+--
+-- A type exported without its constructor is a type whose values come only
+-- from the functions beside it, which is a decision its module made on purpose:
+-- @Width@ in one repository says so in a comment, so that a panel can only have
+-- a width the grid has room for. Naming such a type as the fix for a field is
+-- asking for something the field cannot do.
+--
+-- A module with no export list exports everything it declares, so there is
+-- nothing hidden to find.
+constructorIsExported :: ExportList -> TypeHead -> Text -> Bool
+constructorIsExported exports ty con = case exports of
+  ExportListNone -> True
+  ExportList _ entries -> any exposes entries
+  where
+    exposes :: ExportEntry -> Bool
+    exposes entry =
+      let (name, children) = T.breakOn "(" (unExportEntry entry)
+       in -- The entry has to be about this type. Asking only whether some
+          -- entry opens its subordinates would have one @Thing (..)@ anywhere
+          -- in a module answer for every constructor the module declares.
+          T.strip name == unTypeHead ty
+            && case children of
+              -- A plain name exports the type and nothing under it. A
+              -- constructor has no other way out of a module than its type's
+              -- subordinate list, so there is nothing else a bare name could
+              -- be exporting, however much it looks like the constructor: a
+              -- newtype and its constructor are usually written under one
+              -- name.
+              "" -> False
+              _ ->
+                let inner = map T.strip (T.splitOn "," (T.dropEnd 1 (T.drop 1 children)))
+                 in ".." `elem` inner || con `elem` inner
 
 -- | The scalar the project has already named that this field holds, or nothing
 -- when the project has no name for what it holds.

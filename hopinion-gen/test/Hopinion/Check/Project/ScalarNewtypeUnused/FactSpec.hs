@@ -1,16 +1,36 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
 
 module Hopinion.Check.Project.ScalarNewtypeUnused.FactSpec (spec) where
 
 import qualified Data.Set as S
 import Database.Persist (PersistField (..))
 import Hopinion.Check.Project.ScalarNewtypeUnused.Fact
+import Hopinion.Facts.Export (ExportEntry (..), ExportList (..))
 import Hopinion.Facts.Name
+import Hopinion.Facts.Place
 import Hopinion.Facts.Primitive
+import Path (relfile)
 import Test.Syd
 
 spec :: Spec
 spec = do
+  -- Where a span points is nothing these answers depend on, and every
+  -- ExportList carries one.
+  let sp =
+        Span
+          { spanFile = [relfile|Thing.hs|],
+            spanStart =
+              Position
+                { positionLine = 1,
+                  positionCol = 1
+                },
+            spanEnd =
+              Position
+                { positionLine = 1,
+                  positionCol = 1
+                }
+          }
   describe "wordsOfName" $ do
     it "reads a single word as one word" $
       wordsOfName "Username" `shouldBe` ["Username"]
@@ -142,6 +162,48 @@ spec = do
         (PackageName "a")
         mainLibraryComponent
         `shouldBe` S.fromList [PackageName "a", PackageName "b"]
+
+  describe "constructorIsExported" $ do
+    -- A module with no export list exports what it declares, so there is
+    -- nothing kept in to find.
+    it "exposes everything when there is no export list" $
+      constructorIsExported ExportListNone (TypeHead "Width") "Width" `shouldBe` True
+
+    -- A newtype and its constructor are usually written under one name, so a
+    -- bare entry looks exactly like the constructor and is not it: a
+    -- constructor leaves a module only inside its type's subordinate list.
+    it "does not expose a constructor behind a bare type name" $
+      constructorIsExported (ExportList sp [ExportEntry "Width"]) (TypeHead "Width") "Width"
+        `shouldBe` False
+
+    it "exposes a constructor under two dots" $
+      constructorIsExported (ExportList sp [ExportEntry "Width(..)"]) (TypeHead "Width") "Width"
+        `shouldBe` True
+
+    it "exposes a constructor the list names" $
+      constructorIsExported
+        (ExportList sp [ExportEntry "Width(Width, unWidth)"])
+        (TypeHead "Width")
+        "Width"
+        `shouldBe` True
+
+    it "does not expose a constructor a list leaves out" $
+      constructorIsExported (ExportList sp [ExportEntry "Width(unWidth)"]) (TypeHead "Width") "Width"
+        `shouldBe` False
+
+    -- Asking only whether some entry opens its subordinates had one Thing (..)
+    -- anywhere in a module answer for every constructor the module declares,
+    -- which is how a Width nobody can build was named as a fix.
+    it "does not let another type's two dots expose this constructor" $
+      constructorIsExported
+        (ExportList sp [ExportEntry "Dashboard(..)", ExportEntry "Width"])
+        (TypeHead "Width")
+        "Width"
+        `shouldBe` False
+
+    it "says nothing is exposed by a list that does not mention the type" $
+      constructorIsExported (ExportList sp [ExportEntry "halfWidth"]) (TypeHead "Width") "Width"
+        `shouldBe` False
 
   describe "primitiveNamed" $ do
     it "refuses a type this rule does not read as a primitive" $

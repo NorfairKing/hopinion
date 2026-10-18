@@ -10,6 +10,8 @@ module Hopinion.Check.Project.ScalarNewtypeUnused.Extract
   )
 where
 
+import qualified Data.List.NonEmpty as NE
+import Data.Text (Text)
 import GHC.Hs
 import GHC.Types.SrcLoc (SrcSpan, unLoc)
 import Hopinion.Check.Project.ScalarNewtypeUnused.Fact
@@ -32,6 +34,7 @@ scalarNewtypesOf :: [LHsDecl GhcPs] -> [ScalarNewtype]
 scalarNewtypesOf ds =
   [ ScalarNewtype
       { scalarNewtypeType = TypeHead (rdrText (unLoc n)),
+        scalarNewtypeConstructor = constructorNameOf con,
         scalarNewtypePrimitive = prim
       }
   | DataDecl {tcdLName = n, tcdDataDefn = defn} <- declaredDataDecls ds,
@@ -124,6 +127,13 @@ constructorsOf :: HsDataDefn GhcPs -> [ConDecl GhcPs]
 constructorsOf defn = case dd_cons defn of
   NewTypeCon con -> [unLoc con]
   DataTypeCons _ cons -> map unLoc cons
+
+-- | What the one constructor is called, which a type's own name usually is and
+-- is not obliged to be.
+constructorNameOf :: ConDecl GhcPs -> Text
+constructorNameOf = \case
+  ConDeclH98 {con_name = n} -> rdrText (unLoc n)
+  ConDeclGADT {con_names = ns} -> rdrText (unLoc (NE.head ns))
 
 soleConstructor :: HsDataDefn GhcPs -> Maybe (ConDecl GhcPs)
 soleConstructor defn = case constructorsOf defn of

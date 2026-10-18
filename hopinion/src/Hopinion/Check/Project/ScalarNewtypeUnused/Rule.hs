@@ -56,8 +56,10 @@ share
   [persistLowerCase|
 ProjectScalar
     package PackageName
+    moduleRef ModuleRef
     typeHead TypeHead
     primitive Primitive
+    constructorExported Bool
     deriving Show Eq
 
 ScalarSite
@@ -108,8 +110,14 @@ carry pkg ctx = do
         insert_
           ProjectScalar
             { projectScalarPackage = pkg,
+              projectScalarModuleRef = moduleContextRef ctx,
               projectScalarTypeHead = scalarNewtypeType sn,
-              projectScalarPrimitive = scalarNewtypePrimitive sn
+              projectScalarPrimitive = scalarNewtypePrimitive sn,
+              projectScalarConstructorExported =
+                constructorIsExported
+                  (moduleContextExports ctx)
+                  (scalarNewtypeType sn)
+                  (scalarNewtypeConstructor sn)
             }
     )
     (moduleContextScalarNewtypes ctx)
@@ -139,13 +147,36 @@ findings _ = do
   sites <- scalarSites
   inProject <- packageNames
   edges <- dependencyEdges
+  -- A name the project declares in more than one module names no type: three
+  -- ClientSecret newtypes, one per forge, had this rule tell a reader to use
+  -- "ClientSecret" and pick between them by row order. A name that does not
+  -- identify a type cannot be the fix for anything, so it is not in the
+  -- lexicon at all.
+  --
+  -- Counted over modules rather than rows, because two modules declaring one
+  -- name is the ambiguity and one module read twice is not.
+  let declaredIn :: M.Map TypeHead (S.Set ModuleRef)
+      declaredIn =
+        M.fromListWith
+          S.union
+          [(scalarNewtypeType l, S.singleton ref) | (_, ref, _, l) <- lexicon]
+  let unambiguous :: [(PackageName, ScalarNewtype)]
+      unambiguous =
+        [ (pkg, l)
+        | (pkg, _, exported, l) <- lexicon,
+          -- A constructor its module keeps to itself is one no site elsewhere
+          -- can wrap a value in, so naming the type is asking for what the
+          -- field cannot do.
+          exported,
+          maybe False ((== 1) . S.size) (M.lookup (scalarNewtypeType l) declaredIn)
+        ]
   -- The lexicon a site may draw on is the same for every site in one component,
   -- and a repository has a few dozen components against a few thousand fields,
   -- so it is worked out per component rather than per field.
   let lexiconFor :: (PackageName, ComponentName) -> [ScalarNewtype]
       lexiconFor (pkg, component) =
         let reachable = reachablePackages inProject edges pkg component
-         in [l | (owner, l) <- lexicon, S.member owner reachable]
+         in [l | (owner, l) <- unambiguous, S.member owner reachable]
   let lexicons :: M.Map (PackageName, ComponentName) [ScalarNewtype]
       lexicons =
         M.fromList
@@ -166,13 +197,19 @@ findings _ = do
 --
 -- Ordered, because 'scalarFor' leaves the earlier of two names of one length
 -- answering and every run has to agree about which one that is.
-projectScalars :: Query [(PackageName, ScalarNewtype)]
+projectScalars :: Query [(PackageName, ModuleRef, Bool, ScalarNewtype)]
 projectScalars =
   map
-    ( \(Value pkg, Value th, Value prim) ->
+    ( \(Value pkg, Value ref, Value exported, Value th, Value prim) ->
         ( pkg,
+          ref,
+          exported,
           ScalarNewtype
             { scalarNewtypeType = th,
+              -- The constructor's own name is not read again here: what it was
+              -- needed for was asking the declaring module's export list, and
+              -- that answer is the column beside it.
+              scalarNewtypeConstructor = unTypeHead th,
               scalarNewtypePrimitive = prim
             }
         )
@@ -181,7 +218,13 @@ projectScalars =
       ( do
           s <- from (table @ProjectScalar)
           orderBy [asc (s ^. ProjectScalarTypeHead), asc (s ^. ProjectScalarId)]
-          pure (s ^. ProjectScalarPackage, s ^. ProjectScalarTypeHead, s ^. ProjectScalarPrimitive)
+          pure
+            ( s ^. ProjectScalarPackage,
+              s ^. ProjectScalarModuleRef,
+              s ^. ProjectScalarConstructorExported,
+              s ^. ProjectScalarTypeHead,
+              s ^. ProjectScalarPrimitive
+            )
       )
 
 -- | Every field written as a bare primitive, with the module it is in.

@@ -253,6 +253,15 @@ extra-source-files:
     test_resources/Rule/HsScalarNewtypeUnused/bad/thing/src/Thing/Scalars.hs
     test_resources/Rule/HsScalarNewtypeUnused/bad/thing/src/Thing/Settings.hs
     test_resources/Rule/HsScalarNewtypeUnused/bad/thing/thing.cabal
+    test_resources/Rule/HsScalarNewtypeUnused/good-a-constructor-kept-in.golden
+    test_resources/Rule/HsScalarNewtypeUnused/good-a-constructor-kept-in/thing/src/Thing/Grid.hs
+    test_resources/Rule/HsScalarNewtypeUnused/good-a-constructor-kept-in/thing/src/Thing/Panel.hs
+    test_resources/Rule/HsScalarNewtypeUnused/good-a-constructor-kept-in/thing/thing.cabal
+    test_resources/Rule/HsScalarNewtypeUnused/good-an-ambiguous-name.golden
+    test_resources/Rule/HsScalarNewtypeUnused/good-an-ambiguous-name/thing/src/Thing/Github.hs
+    test_resources/Rule/HsScalarNewtypeUnused/good-an-ambiguous-name/thing/src/Thing/Gitlab.hs
+    test_resources/Rule/HsScalarNewtypeUnused/good-an-ambiguous-name/thing/src/Thing/Settings.hs
+    test_resources/Rule/HsScalarNewtypeUnused/good-an-ambiguous-name/thing/thing.cabal
     test_resources/Rule/HsScalarNewtypeUnused/good-in-a-template-haskell-quote.golden
     test_resources/Rule/HsScalarNewtypeUnused/good-in-a-template-haskell-quote/thing/src/Thing/Quoted.hs
     test_resources/Rule/HsScalarNewtypeUnused/good-in-a-template-haskell-quote/thing/thing.cabal
