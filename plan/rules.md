@@ -122,6 +122,8 @@ Rule ids are stable. They are what a check module cites and what an
 | `HsIllegalStatesUnrepresentable` | Make illegal states unrepresentable | D | | | The parent principle |
 | `HsNewtypeNotSynonym` | `newtype`s, not `type` synonyms, for domain scalars | B | syntax | error | `type X = Text / Int / String / Double` |
 | `HsNoDomainBool` | Named two-constructor type over `Bool` for domain flags | C | syntax | ratchet | Scope to record fields and non-final argument positions. A predicate returning `Bool` is fine |
+| `HsNoAnonymousScalar` | A constructor of two or more fields holds no anonymous primitive | C | syntax | ratchet | Written, shipped and taken back out: `RULE_PROPOSAL.md`. Forty-eight percent of findings in a repository that had not adopted the practice want a suppression |
+| `HsScalarNewtypeUnused` | A field named after a project scalar newtype has that newtype's type | C | project | ratchet | Written, shipped and taken back out: `OTHER_RULE_PROPOSAL.md`. Three of eight findings in one repository are wrong and the reason is semantic |
 | `HsNoCatchAllOwnSum` | No catch-all `_ ->` on your own sum types | B | types | error | Needs to know the scrutinee type is project-defined |
 | `HsNonempty` | `NonEmpty` for collections that must not be empty | D | | | |
 | `HsUndefinedTrick` | Use the undefined trick when every field must be considered | D | | | Cannot tell where it is warranted |
@@ -209,8 +211,9 @@ combinator.
 `CommentSectionLabelInFunction`, `HsNoSectionHeadersInCode`,
 `HsStrictFields`
 
-**F5 DeclPredicate** (11). A predicate on one declaration. The largest family, so
+**F5 DeclPredicate** (12). A predicate on one declaration. The largest family, so
 its combinator matters most.
+`HsNoAnonymousScalar`,
 `HsNewtypeNotSynonym`, `HsMultilineRecord`, `HsLetOverWhere`,
 `HsOneLetPerBinding`, `HsLocalTypeSignatures`, `HsWhereHoldingLogic`,
 `HsNoDomainBool`, `HsTextViaPack`, `TestExactAssertions`,
@@ -236,11 +239,11 @@ combinator taking a comparator covers all of them.
 `HsHlintBansPartial`, `HsNoWeederExceptions`, `HsFewExtensions`,
 `NixNoFlakeUtils`, `NixAgenixSecrets`, `NixX86_64Only`
 
-**F10 ProjectIndex** (5). Needs cross-package tables. Bespoke, around 25 lines
+**F10 ProjectIndex** (6). Needs cross-package tables. Bespoke, around 25 lines
 each.
 `CommentDanglingHaddockRef`, `CommentCopyPastedTwin`,
 `HsTestDescribeOrder`, `HsClassesOnlyForPolymorphism`,
-`HsRecordSyntaxForProducts`
+`HsRecordSyntaxForProducts`, `HsScalarNewtypeUnused`
 
 **F11 Types** (3). Needs `.hie` enrichment.
 `HsNoCatchAllOwnSum`, `HsMonomorphicOverConstraints`, `HsPreferText`
