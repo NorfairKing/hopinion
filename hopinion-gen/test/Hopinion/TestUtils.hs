@@ -338,10 +338,10 @@ splitAgrees dir = withSystemTempDir "hopinion-split" $ \tmp -> do
 
 -- | What the package command writes, written the same way, so that the layered
 -- path under test is the one the derivations run.
-writeOne :: Path Abs Dir -> SourceRoot -> PackageModel -> IO (Text, Path Abs Dir)
+writeOne :: Path Abs Dir -> SourceRoot -> PackageModel -> IO (PackageName, Path Abs Dir)
 writeOne tmp root pm = do
-  let name = unPackageName (packageModelName pm)
-  dir <- (tmp </>) <$> parseRelDir (T.unpack name)
+  let name = packageModelName pm
+  dir <- (tmp </>) <$> parseRelDir (T.unpack (unPackageName name))
   ensureDir dir
   report <- runPackageCommand shippedRules noHieDirectories root (packageModelDir pm) (Just dir)
   (sources, _) <- sourcesForReport [root] report

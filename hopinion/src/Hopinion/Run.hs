@@ -131,7 +131,7 @@ runPackageCommand rs hieDirs root dir mOut = reportingArtifactProblems $ do
 -- | The project phase takes what the package phase produced, both halves of it:
 -- the store to make more findings out of, and the findings already made, which
 -- it unions in rather than deriving again.
-runProjectCommand :: RuleSet -> HieDirectories -> [Path Abs Dir] -> [Text] -> Maybe (Path Abs Dir) -> IO Complaints
+runProjectCommand :: RuleSet -> HieDirectories -> [Path Abs Dir] -> [PackageName] -> Maybe (Path Abs Dir) -> IO Complaints
 runProjectCommand rs hieDirs packageDirs expectedNames mOut = reportingArtifactProblems $ do
   earlier <- traverse readReportFrom packageDirs
   -- Before the merge, which copies column by column and would fail on a name
@@ -161,7 +161,7 @@ runProjectCommand rs hieDirs packageDirs expectedNames mOut = reportingArtifactP
                       ParseOutcomeOk <- [storedModuleOutcome m]
                     ]
                 )
-            projectReport <- projectReportFor rs (map PackageName expectedNames) compiled
+            projectReport <- projectReportFor rs expectedNames compiled
             pure (mconcat (map fst reports) <> projectReport)
 
 -- | A build that could not answer for a module it was held to covering is
@@ -222,14 +222,14 @@ projectReportFor rs expected compiled = case NE.nonEmpty (nub (sort expected)) o
 -- | One module, for an editor or for debugging the parser. The context comes
 -- from flags rather than from a cabal file, so this command never needs to
 -- discover anything.
-runModuleCommand :: RuleSet -> Path Rel File -> [Text] -> ComponentKind -> IO Complaints
+runModuleCommand :: RuleSet -> Path Rel File -> [ExtensionName] -> ComponentKind -> IO Complaints
 runModuleCommand rs file extensions component =
   runModuleLayer rs <$> factsForFile rs file extensions component
 
 -- | One file's facts, with the file standing in for the module name. Used by
 -- the module command and by the tests, so neither reaches around the extraction
 -- path a real run uses.
-factsForFile :: RuleSet -> Path Rel File -> [Text] -> ComponentKind -> IO ModuleContext
+factsForFile :: RuleSet -> Path Rel File -> [ExtensionName] -> ComponentKind -> IO ModuleContext
 factsForFile rs file extensions component = do
   here <- resolveFile' (toFilePath file)
   src <- readSource here
@@ -237,7 +237,7 @@ factsForFile rs file extensions component = do
 
 -- | The same, over source that is not on disk, which is what asking "would this
 -- reformatted module attach its comments the same way" needs.
-factsForSource :: RuleSet -> Path Rel File -> [Text] -> ComponentKind -> Text -> IO ModuleContext
+factsForSource :: RuleSet -> Path Rel File -> [ExtensionName] -> ComponentKind -> Text -> IO ModuleContext
 factsForSource rs rp extensions component src = do
   let input =
         ParseInput

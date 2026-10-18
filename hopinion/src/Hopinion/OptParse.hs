@@ -14,9 +14,9 @@ module Hopinion.OptParse
 where
 
 import Data.List.NonEmpty (NonEmpty (..))
-import Data.Text (Text)
 import qualified Data.Text as T
 import Hopinion.Facts.Component (ComponentKind (..), componentKindText, parseComponentKind)
+import Hopinion.Facts.Name (ExtensionName (..), PackageName (..))
 import Hopinion.Rule.Id (RuleId, parseRuleId)
 import OptEnvConf
 import Path (Dir, File, Path, Rel, SomeBase (..), parseRelDir, parseRelFile, parseSomeDir, parseSomeFile, reldir)
@@ -48,8 +48,8 @@ data RawSourceRoot = RawSourceRoot
 data Dispatch
   = DispatchCheck !RawSourceRoot ![SomeBase Dir]
   | DispatchPackage !RawSourceRoot !(SomeBase Dir) !(Maybe (SomeBase Dir)) ![SomeBase Dir]
-  | DispatchProject ![SomeBase Dir] ![Text] ![RawSourceRoot] !(Maybe (SomeBase Dir)) ![SomeBase Dir]
-  | DispatchModule !(Path Rel File) ![Text] !ComponentKind !DumpComments
+  | DispatchProject ![SomeBase Dir] ![PackageName] ![RawSourceRoot] !(Maybe (SomeBase Dir)) ![SomeBase Dir]
+  | DispatchModule !(Path Rel File) ![ExtensionName] !ComponentKind !DumpComments
   | DispatchJudge !(NonEmpty (SomeBase Dir))
   | DispatchListRules
   | DispatchExplain !RuleId
@@ -235,7 +235,7 @@ parseProject = do
             metavar "PREFIX=DIR"
           ]
       )
-  pure (DispatchProject packageDirs (T.splitOn "," (T.pack expected)) sources reportOut hieDirs)
+  pure (DispatchProject packageDirs (map PackageName (T.splitOn "," (T.pack expected))) sources reportOut hieDirs)
 
 -- | A half that is not a path is refused here, rather than carried as text to
 -- wherever would otherwise have to decide what it meant.
@@ -286,7 +286,7 @@ parseModule = do
         long "dump-comments",
         value DumpCommentsNone
       ]
-  pure (DispatchModule file (map T.pack extensions) component dump)
+  pure (DispatchModule file (map (ExtensionName . T.pack) extensions) component dump)
 
 parseSourceRoot :: Parser RawSourceRoot
 parseSourceRoot = do

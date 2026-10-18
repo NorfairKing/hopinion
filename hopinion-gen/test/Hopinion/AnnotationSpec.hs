@@ -355,8 +355,8 @@ spec = do
           Left err -> expectationFailure (T.unpack (renderDiscoveryError err))
           Right models -> do
             named <- forM models $ \pm -> do
-              let name = unPackageName (packageModelName pm)
-              dir <- (tmp </>) <$> parseRelDir (T.unpack name)
+              let name = packageModelName pm
+              dir <- (tmp </>) <$> parseRelDir (T.unpack (unPackageName name))
               ensureDir dir
               report <- runPackageCommand withEverything noHieDirectories root (packageModelDir pm) (Just dir)
               (sources, _) <- sourcesForReport [root] report

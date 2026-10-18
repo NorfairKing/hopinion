@@ -177,6 +177,14 @@ extra-source-files:
     test_resources/Rule/HsLambdaCase/bad.hs.golden
     test_resources/Rule/HsLambdaCase/good.hs
     test_resources/Rule/HsLambdaCase/good.hs.golden
+    test_resources/Rule/HsNoAnonymousScalar/bad-written-as-a-gadt.hs
+    test_resources/Rule/HsNoAnonymousScalar/bad-written-as-a-gadt.hs.golden
+    test_resources/Rule/HsNoAnonymousScalar/bad.hs
+    test_resources/Rule/HsNoAnonymousScalar/bad.hs.golden
+    test_resources/Rule/HsNoAnonymousScalar/good-in-a-template-haskell-quote.hs
+    test_resources/Rule/HsNoAnonymousScalar/good-in-a-template-haskell-quote.hs.golden
+    test_resources/Rule/HsNoAnonymousScalar/good.hs
+    test_resources/Rule/HsNoAnonymousScalar/good.hs.golden
     test_resources/Rule/HsNoCustomEq/bad-empty.hs
     test_resources/Rule/HsNoCustomEq/bad-empty.hs.golden
     test_resources/Rule/HsNoCustomEq/bad-ignoring-arguments.hs

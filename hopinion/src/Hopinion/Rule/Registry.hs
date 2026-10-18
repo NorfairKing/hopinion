@@ -9,6 +9,7 @@ module Hopinion.Rule.Registry (builtinRules) where
 import qualified Hopinion.Check.Comment.BareTodo.Rule as BareTodo
 import qualified Hopinion.Check.Comment.CouplingConnection.Rule as CouplingConnection
 import qualified Hopinion.Check.Hs.LambdaCase.Rule as LambdaCase
+import qualified Hopinion.Check.Hs.NoAnonymousScalar.Rule as NoAnonymousScalar
 import qualified Hopinion.Check.Hs.NoCustomEq.Rule as NoCustomEq
 import qualified Hopinion.Check.Hs.NoCustomOrd.Rule as NoCustomOrd
 import qualified Hopinion.Check.Hs.NoCustomShowRead.Rule as NoCustomShowRead
@@ -34,6 +35,7 @@ builtinRules =
     GenValidSpecPerGenValid.rule,
     JsonSpecPerJsonType.rule,
     LambdaCase.rule,
+    NoAnonymousScalar.rule,
     NoCustomEq.rule,
     NoCustomOrd.rule,
     NoCustomShowRead.rule,

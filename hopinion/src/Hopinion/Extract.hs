@@ -22,6 +22,7 @@ import GHC.Hs
 import GHC.Types.SrcLoc (GenLocated (..), unLoc)
 import Hopinion.Annotation (annotationsOf)
 import Hopinion.Check.Hs.LambdaCase.Extract (casedArgumentsOf)
+import Hopinion.Check.Hs.NoAnonymousScalar.Extract (anonymousScalarsOf)
 import Hopinion.Check.Hs.NoSemigroupOnText.Extract (concatChainsOf)
 import Hopinion.Check.Hs.NoStringError.Extract (errorDeclsOf, errorSlotsOf)
 import Hopinion.Check.Hs.PrefixNaming.Extract (unprefixedNamesOf)
@@ -90,6 +91,7 @@ extractModuleContext input parsed =
           moduleContextErrorSlots = errorSlotsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextErrorDecls = errorDeclsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextCasedArguments = casedArgumentsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
+          moduleContextAnonymousScalars = anonymousScalarsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextCrowdedRecords = crowdedRecordsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextUnprefixedNames = unprefixedNamesOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextStrayAppDecls = strayAppDeclsOf rp decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
@@ -126,6 +128,7 @@ emptyModuleContext input =
       moduleContextErrorSlots = [],
       moduleContextErrorDecls = [],
       moduleContextCasedArguments = [],
+      moduleContextAnonymousScalars = [],
       moduleContextCrowdedRecords = [],
       moduleContextUnprefixedNames = [],
       moduleContextStrayAppDecls = [],
@@ -236,7 +239,7 @@ exportListOf rp m = case hsmodExports m of
   Just lies ->
     ExportList
       (spanOfSrcSpan rp (getLocA lies))
-      (mapMaybe (exportedText . unLoc) (unLoc lies))
+      (map ExportEntry (mapMaybe (exportedText . unLoc) (unLoc lies)))
 
 exportedText :: IE GhcPs -> Maybe Text
 exportedText = \case

@@ -62,7 +62,7 @@ data ParseInput = ParseInput
   { -- | How the module is named in every fact and finding.
     parseInputRelPath :: !(Path Rel File),
     -- | @default-extensions@ from the cabal file, before in-file pragmas.
-    parseInputDefaultExtensions :: ![Text],
+    parseInputDefaultExtensions :: ![ExtensionName],
     -- | The module's own text, as it is on disk.
     --
     -- Text rather than a String, so that the text the spans refer to is this
@@ -140,20 +140,21 @@ parseHaskellModule input = do
 
 -- | The bare parser configuration, plus the cabal file's @default-extensions@.
 -- In-file @LANGUAGE@ pragmas are layered on top of this by the caller.
-baseDynFlags :: [Text] -> DynFlags
+baseDynFlags :: [ExtensionName] -> DynFlags
 baseDynFlags = foldl apply (defaultDynFlags fakeSettings)
   where
-    apply :: DynFlags -> Text -> DynFlags
-    apply flags name =
-      case T.stripPrefix "No" name of
-        Just rest
-          | Just ext <- ExSession.readExtension (T.unpack rest) -> xopt_unset flags ext
-        _ -> case ExSession.readExtension (T.unpack name) of
-          Just ext -> xopt_set flags ext
-          -- An extension the parser does not know is not a parse failure: it
-          -- is either a typo in the cabal file or a flag with no syntactic
-          -- effect, and neither is this tool's business.
-          Nothing -> flags
+    apply :: DynFlags -> ExtensionName -> DynFlags
+    apply flags extension =
+      let name = unExtensionName extension
+       in case T.stripPrefix "No" name of
+            Just rest
+              | Just ext <- ExSession.readExtension (T.unpack rest) -> xopt_unset flags ext
+            _ -> case ExSession.readExtension (T.unpack name) of
+              Just ext -> xopt_set flags ext
+              -- An extension the parser does not know is not a parse failure:
+              -- it is either a typo in the cabal file or a flag with no
+              -- syntactic effect, and neither is this tool's business.
+              Nothing -> flags
 
 -- | hopinion never runs a C preprocessor: it has no build, so it does not know
 -- what @MIN_VERSION_foo@ expands to. Directive lines are blanked, keeping their

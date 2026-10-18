@@ -43,16 +43,16 @@ check ctx
             }
         ]
 
-specExport :: Text
-specExport = "spec"
+specExport :: ExportEntry
+specExport = ExportEntry "spec"
 
-exportsInstead :: [Text] -> Text
+exportsInstead :: [ExportEntry] -> Text
 exportsInstead = \case
   [] -> "This test file exports nothing."
   exported ->
     T.pack
       ( unwords
           [ "This test file exports",
-            concat [T.unpack (T.intercalate ", " exported), "."]
+            concat [T.unpack (T.intercalate ", " (map unExportEntry exported)), "."]
           ]
       )

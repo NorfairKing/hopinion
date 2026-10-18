@@ -111,6 +111,8 @@ spec = do
   describe "ComponentName" $ do
     genValidSpec @ComponentName
     jsonSpec @ComponentName
+  describe "ExtensionName" $ do
+    genValidSpec @ExtensionName
   describe "ParseOutcome" $ do
     genValidSpec @ParseOutcome
     jsonSpec @ParseOutcome
@@ -118,6 +120,8 @@ spec = do
     genValidSpec @DeclKind
   describe "DeclFact" $ do
     genValidSpec @DeclFact
+  describe "ExportEntry" $ do
+    genValidSpec @ExportEntry
   describe "ExportList" $ do
     genValidSpec @ExportList
   describe "InstanceMethods" $ do

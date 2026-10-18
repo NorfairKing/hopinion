@@ -17,6 +17,9 @@ library
       Hopinion.Check.Hs.LambdaCase.Extract
       Hopinion.Check.Hs.LambdaCase.Fact
       Hopinion.Check.Hs.LambdaCase.Rule
+      Hopinion.Check.Hs.NoAnonymousScalar.Extract
+      Hopinion.Check.Hs.NoAnonymousScalar.Fact
+      Hopinion.Check.Hs.NoAnonymousScalar.Rule
       Hopinion.Check.Hs.NoCustomEq.Rule
       Hopinion.Check.Hs.NoCustomOrd.Rule
       Hopinion.Check.Hs.NoCustomShowRead.Rule

@@ -23,4 +23,4 @@ instance Validity FormatVersion
 -- would be dropped by the insert, and two versions where one is never read is a
 -- check that reads as stronger than it is.
 currentFormatVersion :: FormatVersion
-currentFormatVersion = FormatVersion 4
+currentFormatVersion = FormatVersion 5

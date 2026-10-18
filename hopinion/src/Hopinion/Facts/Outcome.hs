@@ -25,7 +25,11 @@ import Hopinion.Facts.Place
 -- declarations.
 data ParseOutcome
   = ParseOutcomeOk
-  | ParseOutcomeFailed !Position !Text
+  | -- [allow:HsNoAnonymousScalar] The Text is what GHC's parser said, relayed.
+    -- A newtype around it would name the library it came from rather than
+    -- anything this tool has a notion of, and nothing here ever holds two of
+    -- them to confuse.
+    ParseOutcomeFailed !Position !Text
   | -- | The module is real and its source is not Haskell: a preprocessor
     -- generates it at build time. Neither a parse failure nor a module that
     -- vanished, so it must be neither reported nor silently dropped.

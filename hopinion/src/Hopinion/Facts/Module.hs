@@ -13,6 +13,7 @@ where
 import qualified Data.Text as T
 import GHC.Generics (Generic)
 import Hopinion.Check.Hs.LambdaCase.Fact
+import Hopinion.Check.Hs.NoAnonymousScalar.Fact
 import Hopinion.Check.Hs.NoSemigroupOnText.Fact
 import Hopinion.Check.Hs.NoStringError.Fact
 import Hopinion.Check.Hs.PrefixNaming.Fact
@@ -57,6 +58,7 @@ data ModuleContext = ModuleContext
     moduleContextErrorSlots :: ![ErrorSlot],
     moduleContextErrorDecls :: ![ErrorDecl],
     moduleContextCasedArguments :: ![CasedArgument],
+    moduleContextAnonymousScalars :: ![AnonymousScalars],
     moduleContextCrowdedRecords :: ![CrowdedRecord],
     moduleContextUnprefixedNames :: ![UnprefixedName],
     moduleContextStrayAppDecls :: ![StrayAppDecl],

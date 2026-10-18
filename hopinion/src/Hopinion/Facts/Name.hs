@@ -15,6 +15,7 @@ module Hopinion.Facts.Name
     DeclName (..),
     PackageName (..),
     ComponentName (..),
+    ExtensionName (..),
     TypeHead (..),
   )
 where
@@ -112,6 +113,16 @@ instance Validity ComponentName where
 
 instance HasCodec ComponentName where
   codec = named "ComponentName" (dimapCodec ComponentName unComponentName codec)
+
+-- | One language extension, named as a cabal file or a command line spells it.
+--
+-- Its own type because an extension name travels from a cabal file through the
+-- parser's flags and is never the module text, the component name or anything
+-- else it is passed beside.
+newtype ExtensionName = ExtensionName {unExtensionName :: Text}
+  deriving stock (Show, Eq, Ord, Generic)
+
+instance Validity ExtensionName
 
 -- | The head type constructor, applied arguments dropped. Matching on the head
 -- answers "is this type tested at all" rather than "is this instantiation

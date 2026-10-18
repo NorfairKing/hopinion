@@ -80,6 +80,8 @@ instance GenValid ModuleRef
 
 instance GenValid ScopeKey
 
+instance GenValid ExtensionName
+
 instance GenValid ComponentKind
 
 instance GenValid ParseOutcome
@@ -87,6 +89,8 @@ instance GenValid ParseOutcome
 instance GenValid DeclKind
 
 instance GenValid DeclFact
+
+instance GenValid ExportEntry
 
 instance GenValid ExportList
 

@@ -129,7 +129,7 @@ data ComponentModel = ComponentModel
     -- apart when their kinds and their module names are the same: a package
     -- with four test suites has four modules called @Main@.
     componentModelName :: !ComponentName,
-    componentModelDefaultExtensions :: ![Text],
+    componentModelDefaultExtensions :: ![ExtensionName],
     componentModelModules :: ![ModuleModel],
     -- | What the cabal file says the component contains, which the project
     -- layer asserts the facts cover. From the cabal file rather than from what
@@ -167,7 +167,10 @@ data DiscoveryError
   = DiscoveryErrorNoDirectoryAt !(Path Abs Dir)
   | DiscoveryErrorNoCabalFileUnder !(Path Abs Dir)
   | DiscoveryErrorCabalFileOutsideRoot !(Path Abs File)
-  | DiscoveryErrorCabalFileUnparseable !(Path Abs File) !Text
+  | -- [allow:HsNoAnonymousScalar] The Text is Cabal's rendering of its own
+    -- syntax, which the comment above says is passed through rather than owned
+    -- here, and a type of our own around it would claim otherwise.
+    DiscoveryErrorCabalFileUnparseable !(Path Abs File) !Text
   | DiscoveryErrorTwoPackagesCalled !PackageName !(NonEmpty (Path Rel File))
   deriving (Show, Eq)
 
@@ -382,7 +385,7 @@ componentOf root dir declared = do
     ComponentModel
       { componentModelKind = kind,
         componentModelName = declaredComponentName declared,
-        componentModelDefaultExtensions = map extensionText (defaultExtensions bi),
+        componentModelDefaultExtensions = map (ExtensionName . extensionText) (defaultExtensions bi),
         componentModelModules = catMaybes found ++ catMaybes (catMaybes [mainModule]),
         componentModelDeclaredModules =
           map moduleKeyOf wanted
