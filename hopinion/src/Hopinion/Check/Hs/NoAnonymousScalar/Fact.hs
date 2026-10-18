@@ -90,9 +90,18 @@ isPrimitiveTypeName name =
 -- | Whether a type of one argument hands a reader of it exactly what a reader
 -- of its argument would have had.
 --
--- These three say how many of the thing there are and nothing about what the
--- thing is, so a field holding one is as anonymous as a field holding what it
--- wraps. A type that says something of its own is not one of them, however few
+-- @Maybe@ holds at most one of the thing, so a field holding one is as
+-- anonymous as a field holding the thing itself, and the newtype that fixes it
+-- goes inside: a @Maybe Text@ whose @Text@ is a @Username@ is a
+-- @Maybe Username@.
+--
+-- A list and a @NonEmpty@ are not here. A collection of a thing has a
+-- different character from the thing, and a reader of one has been told that
+-- there are several, which is something. What this costs is a field holding
+-- the only primitive in its constructor as a list, which is a shape this rule
+-- leaves alone rather than one it reads.
+--
+-- A type that says something of its own is not here either, however few
 -- arguments it takes: a reader of @Path Abs File@ has been told what it is.
 isAnonymousContainerName :: Text -> Bool
-isAnonymousContainerName name = name `elem` ["Maybe", "NonEmpty", "[]"]
+isAnonymousContainerName name = name == "Maybe"

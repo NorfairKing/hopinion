@@ -6,6 +6,7 @@ module Hopinion.Check.Hs.NoStringError.Rule (rule) where
 import qualified Data.Text as T
 import Hopinion.Check.Hs.NoStringError.Fact
 import Hopinion.Facts.Module
+import Hopinion.Facts.Name
 import Hopinion.Rule
 import Hopinion.Rule.Id
 
@@ -61,7 +62,7 @@ declFindings mf =
           findingMessage =
             sentence
               [ "The error type",
-                T.unpack (errorDeclName ed),
+                T.unpack (unDeclName (errorDeclName ed)),
                 shapeSaying (errorDeclShape ed),
                 name
               ]

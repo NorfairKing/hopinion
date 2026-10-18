@@ -27,11 +27,15 @@ data OIDCRuleError
 -- length and a limit, and nothing here says in which order.
 data PostError = PostErrorTooLong !Text !Int !Int
 
--- A container is as anonymous as what it holds, and the fix is the same: the
--- attribute path is a type, the reason stays prose.
-data EvalLine = EvalLineErrored !(NonEmpty Text) !Text
-
+-- A Maybe holds at most one of the thing, so it is as anonymous as the thing
+-- and the fix goes inside it.
 data Lookup = LookupMissed !(Maybe Text) !Text
+
+-- A collection is not the thing it collects, so neither of these lists is read
+-- as a primitive, and what is reported here is the bare Text beside them. The
+-- fix the rule asks for is a type on that one: what the lists want is a
+-- question it leaves alone.
+data EvalLine = EvalLineErrored !(NonEmpty Text) !Text
 
 data Request = RequestKeyValue ![Text] !Text
 
@@ -39,7 +43,9 @@ data Request = RequestKeyValue ![Text] !Text
 -- this is read after the qualifiers come off.
 data Shape = ShapeApplied !T.Text !SB.ByteString
 
--- [Char] is String spelled out, and String is Text with other syllables.
+-- [Char] is the one list the rule reads, because it is String spelled out and
+-- a primitive read under one spelling and not the other would be a way around
+-- the rule that nothing else closes.
 data Decode = DecodeFailed ![Char] !String
 
 -- A product written positionally is a constructor like any other. Here the
@@ -59,8 +65,8 @@ data Answer
 
 -- One primitive among fields that are types is still named nowhere: the
 -- constructor names what it holds altogether, and a reader looking for which
--- of the four holds the module names counts to find out.
-data Dispatch = DispatchProject !SourceRoot ![Text] !ComponentKind !Verbosity
+-- of the four holds the owner counts to find out.
+data Dispatch = DispatchProject !SourceRoot !Text !ComponentKind !Verbosity
 
 -- Fields are confusable with the ones beside them and no others, so this is
 -- two findings and not three: the first constructor holds nothing a name has

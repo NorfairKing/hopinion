@@ -106,8 +106,9 @@ gadtPositional = \case
 -- | The primitive one field holds, under the name a reader meets it by, or
 -- nothing when the field is not an anonymous primitive at all.
 --
--- A container of a primitive is one, and is named as it is written, because a
--- reader of @!(Maybe Text)@ has been told how many there are and nothing else.
+-- A @Maybe@ of a primitive is one, and is named as it is written, because a
+-- reader of @!(Maybe Text)@ has been told whether there is one and nothing
+-- else.
 -- A field whose type takes arguments of its own is not one however primitive
 -- what it takes may be, since a type that says something is a name.
 anonymousPrimitiveOf :: LHsType GhcPs -> Maybe Text
@@ -115,6 +116,11 @@ anonymousPrimitiveOf lt = do
   (con, args) <- appliedTypeOf lt
   case args of
     [] | isPrimitiveTypeName con -> Just con
+    -- A list and a NonEmpty are collections rather than the thing they
+    -- collect. The exception is @[Char]@: that is @String@ spelled out, and a
+    -- primitive this rule read under one spelling and not the other would be a
+    -- way around it that no other rule closes.
+    [arg] | con == "[]", anonymousPrimitiveOf arg == Just "Char" -> Just "[Char]"
     [arg] | isAnonymousContainerName con -> appliedText con <$> anonymousPrimitiveOf arg
     _ -> Nothing
 
@@ -130,14 +136,12 @@ appliedTypeOf lt = case unLoc (peelType lt) of
   HsListTy _ el -> Just ("[]", [el])
   _ -> peelApp lt
 
--- | A one-argument application written the way its own syntax writes it, which
--- is brackets for a list and a space for everything else.
+-- | A one-argument application written the way its own syntax writes it.
 --
 -- An argument that is itself an application is parenthesised, because what
--- this builds is read beside the code it is about, and a reader of @NonEmpty
--- Maybe Text@ would be looking for a type their file does not hold.
+-- this builds is read beside the code it is about, and a reader of @Maybe Maybe
+-- Text@ would be looking for a type their file does not hold.
 appliedText :: Text -> Text -> Text
 appliedText con inner
-  | con == "[]" = T.concat ["[", inner, "]"]
   | T.isInfixOf " " inner = T.concat [con, " (", inner, ")"]
   | otherwise = T.concat [con, " ", inner]
