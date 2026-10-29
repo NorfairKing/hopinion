@@ -341,7 +341,8 @@ returns the rule, and the resources are a repository per case rather than a
 module, since the level is project.
 
 A rule a repository writes for itself takes the same steps minus the second: it
-goes in that repository's own executable, which calls `hopinionWith`.
+goes in that repository's own library, in a function that calls `hopinionWith`
+and that its executable's `main` names.
 
 ### The budget
 

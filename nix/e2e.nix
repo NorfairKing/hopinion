@@ -87,7 +87,7 @@ let
   };
 
   # And the same project checked by an executable that is not this one: the
-  # example binary, which calls hopinionWith with a rule of its own beside the
+  # example binary, which runs hopinionWith with a rule of its own beside the
   # shipped ones, which is the whole of what "a repository adds a rule" is.
   withExtraRule = hopinion.internals.projectOutputFor {
     subjects = dirtySubjects;

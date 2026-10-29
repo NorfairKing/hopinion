@@ -6,4 +6,4 @@ twice :: IO () -> IO ()
 twice act = act >> act
 
 main :: IO ()
-main = twice thing
+main = thing

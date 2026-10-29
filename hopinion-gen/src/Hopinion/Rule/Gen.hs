@@ -8,12 +8,13 @@
 module Hopinion.Rule.Gen
   ( shippedRules,
     exampleRule,
-    exampleRules,
+    exampleMain,
   )
 where
 
 import Data.Either (fromRight)
 import qualified Data.Text as T
+import Hopinion (hopinionWith)
 import Hopinion.Comment
 import Hopinion.Facts.Module
 import Hopinion.Rule
@@ -68,5 +69,5 @@ exampleRule =
 
 -- | What the example executable runs: everything hopinion ships, plus the one
 -- the example repository wrote.
-exampleRules :: [Rule]
-exampleRules = builtinRules ++ [exampleRule]
+exampleMain :: IO ()
+exampleMain = hopinionWith (builtinRules ++ [exampleRule])

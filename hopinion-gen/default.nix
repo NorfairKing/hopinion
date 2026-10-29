@@ -15,7 +15,7 @@ mkDerivation {
     base genvalidity genvalidity-aeson genvalidity-containers
     genvalidity-path genvalidity-text hopinion QuickCheck text
   ];
-  executableHaskellDepends = [ base hopinion ];
+  executableHaskellDepends = [ base ];
   testHaskellDepends = [
     autodocodec-yaml base containers filepath genvalidity-sydtest
     genvalidity-sydtest-aeson hopinion hopinion-hie path path-io

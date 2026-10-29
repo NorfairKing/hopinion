@@ -149,10 +149,27 @@ extra-source-files:
     test_resources/Rule/HsAppOnlyMain/bad-a-declaration-beside-main/thing/app/Main.hs
     test_resources/Rule/HsAppOnlyMain/bad-a-declaration-beside-main/thing/src/Thing.hs
     test_resources/Rule/HsAppOnlyMain/bad-a-declaration-beside-main/thing/thing.cabal
+    test_resources/Rule/HsAppOnlyMain/bad-a-module-beside-main.golden
+    test_resources/Rule/HsAppOnlyMain/bad-a-module-beside-main/thing/app/Helper.hs
+    test_resources/Rule/HsAppOnlyMain/bad-a-module-beside-main/thing/app/Main.hs
+    test_resources/Rule/HsAppOnlyMain/bad-a-module-beside-main/thing/src/Thing.hs
+    test_resources/Rule/HsAppOnlyMain/bad-a-module-beside-main/thing/thing.cabal
+    test_resources/Rule/HsAppOnlyMain/bad-main-applies-an-operator.golden
+    test_resources/Rule/HsAppOnlyMain/bad-main-applies-an-operator/thing/app/Main.hs
+    test_resources/Rule/HsAppOnlyMain/bad-main-applies-an-operator/thing/src/Thing.hs
+    test_resources/Rule/HsAppOnlyMain/bad-main-applies-an-operator/thing/thing.cabal
     test_resources/Rule/HsAppOnlyMain/bad-main-does-the-work.golden
     test_resources/Rule/HsAppOnlyMain/bad-main-does-the-work/thing/app/Main.hs
     test_resources/Rule/HsAppOnlyMain/bad-main-does-the-work/thing/src/Thing.hs
     test_resources/Rule/HsAppOnlyMain/bad-main-does-the-work/thing/thing.cabal
+    test_resources/Rule/HsAppOnlyMain/good-parenthesised-name.golden
+    test_resources/Rule/HsAppOnlyMain/good-parenthesised-name/thing/app/Main.hs
+    test_resources/Rule/HsAppOnlyMain/good-parenthesised-name/thing/src/Thing.hs
+    test_resources/Rule/HsAppOnlyMain/good-parenthesised-name/thing/thing.cabal
+    test_resources/Rule/HsAppOnlyMain/good-qualified-name.golden
+    test_resources/Rule/HsAppOnlyMain/good-qualified-name/thing/app/Main.hs
+    test_resources/Rule/HsAppOnlyMain/good-qualified-name/thing/src/Thing.hs
+    test_resources/Rule/HsAppOnlyMain/good-qualified-name/thing/thing.cabal
     test_resources/Rule/HsAppOnlyMain/good.golden
     test_resources/Rule/HsAppOnlyMain/good/thing/app/Main.hs
     test_resources/Rule/HsAppOnlyMain/good/thing/src/Thing.hs
@@ -348,7 +365,6 @@ executable hopinion-example
   ghc-options: -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates -Wpartial-fields -Widentities -Wredundant-constraints -Wcpp-undef -Wunused-packages -threaded -rtsopts -with-rtsopts=-N8
   build-depends:
       base >=4.7 && <5
-    , hopinion
     , hopinion-gen
   default-language: Haskell2010
 

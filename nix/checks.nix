@@ -60,9 +60,9 @@ let
   # The executable these builders run.
   #
   # A package, so a repository with rules of its own passes an executable that
-  # calls `hopinionWith`. A bare path works too. What matters is that all three
-  # derivations of a check run the same one, since they are three processes over
-  # one set of facts.
+  # runs a library function calling `hopinionWith`. A bare path works too. What
+  # matters is that all three derivations of a check run the same one, since
+  # they are three processes over one set of facts.
   exeOf = p: if builtins.isString p then p else lib.getExe p;
 
   # Where the repository says which rules it has decided against.

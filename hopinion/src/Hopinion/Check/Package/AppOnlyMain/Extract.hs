@@ -1,11 +1,9 @@
-{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | Beside the rule rather than in the shared extraction, because nothing else
 -- asks whether an expression does work.
 module Hopinion.Check.Package.AppOnlyMain.Extract (strayAppDeclsOf) where
 
-import Data.Generics (listify)
 import GHC.Hs
 import GHC.Types.SrcLoc (unLoc)
 import Hopinion.Check.Package.AppOnlyMain.Fact
@@ -62,25 +60,19 @@ bindingDoesWork mg = case unLoc (mg_alts mg) of
      in case (unLoc (m_pats m), m_grhss m) of
           ([], GRHSs {grhssGRHSs = [lgrhs], grhssLocalBinds = EmptyLocalBinds _}) ->
             case unLoc lgrhs of
-              GRHS _ [] body -> holdsLogic body
+              GRHS _ [] body -> not (isBareName body)
               GRHS {} -> True
           _ -> True
   _ -> True
 
--- | Whether this expression decides anything, as opposed to naming what to
--- run and what to run it on.
+-- | Whether this expression is one name and nothing else.
 --
--- Anywhere in the expression, however deeply: a do-block inside an argument is
--- as unreachable to a test as one at the top.
-holdsLogic :: LHsExpr GhcPs -> Bool
-holdsLogic body = not (null (listify decides body))
-  where
-    decides :: HsExpr GhcPs -> Bool
-    decides = \case
-      HsDo {} -> True
-      HsLam {} -> True
-      HsCase {} -> True
-      HsIf {} -> True
-      HsMultiIf {} -> True
-      HsLet {} -> True
-      _ -> False
+-- Arguments and operators count as work too, not only control flow: a literal
+-- passed to the real main is a decision a test cannot reach, and @a >> b@ is a
+-- sequence a test cannot reach.
+-- Parentheses around the name do not, because they change nothing.
+isBareName :: LHsExpr GhcPs -> Bool
+isBareName body = case unLoc body of
+  HsVar {} -> True
+  HsPar _ inner -> isBareName inner
+  _ -> False

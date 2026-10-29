@@ -34,9 +34,9 @@ library:
   - text
 
 executables:
-  # What a repository adding a rule of its own writes: an executable that
-  # depends on the library and hands it the rules it wants. The end to end
-  # tests point the check builders at this one, so the path a consuming
+  # What a repository adding a rule of its own writes: a library function that
+  # hands hopinion the rules it wants, and an executable that runs it. The end
+  # to end tests point the check builders at this one, so the path a consuming
   # repository would take is a path something here walks.
   hopinion-example:
     main: Main.hs
@@ -46,7 +46,6 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N8
     dependencies:
-    - hopinion
     - hopinion-gen
 
 tests:

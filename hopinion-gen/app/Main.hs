@@ -1,7 +1,6 @@
 module Main (main) where
 
-import Hopinion (hopinionWith)
-import Hopinion.Rule.Gen (exampleRules)
+import Hopinion.Rule.Gen (exampleMain)
 
 main :: IO ()
-main = hopinionWith exampleRules
+main = exampleMain

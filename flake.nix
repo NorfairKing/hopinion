@@ -124,10 +124,11 @@
         # A real package that generates code, for the one check that has to
         # watch the compiler's answers change the answer.
         generatingPackage = pkgs.haskellPackages.hopinion;
-        # An executable that is not this one: it calls hopinionWith with a rule
-        # of its own beside the shipped ones, which is what a repository adding
-        # a rule writes. Owned by Hopinion.Rule.Gen, so the rule the binary
-        # registers and the rule the checks look for are one value.
+        # An executable that is not this one: its main names a library function
+        # that calls hopinionWith with a rule of its own beside the shipped ones,
+        # which is what a repository adding a rule writes. Owned by
+        # Hopinion.Rule.Gen, so the rule the binary registers and the rule the
+        # checks look for are one value.
         exampleTool = pkgs.haskell.lib.justStaticExecutables pkgs.haskellPackages.hopinion-gen;
       };
       devShells.${system}.default = pkgs.haskellPackages.shellFor {
