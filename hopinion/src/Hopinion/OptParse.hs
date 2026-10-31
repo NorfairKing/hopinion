@@ -49,7 +49,7 @@ data Dispatch
   = DispatchCheck !RawSourceRoot ![SomeBase Dir]
   | DispatchPackage !RawSourceRoot !(SomeBase Dir) !(Maybe (SomeBase Dir)) ![SomeBase Dir] ![Text]
   | DispatchProject ![SomeBase Dir] ![Text] ![RawSourceRoot] !(Maybe (SomeBase Dir)) ![SomeBase Dir]
-  | DispatchModule !(Path Rel File) ![Text] !ComponentKind !DumpComments
+  | DispatchModule !(Path Rel File) ![Text] !ComponentKind !DumpComments ![SomeBase Dir] ![Text] !(Maybe Text)
   | DispatchJudge !(NonEmpty (SomeBase Dir))
   | DispatchListRules
   | DispatchExplain !RuleId
@@ -300,7 +300,31 @@ parseModule = do
         long "dump-comments",
         value DumpCommentsNone
       ]
-  pure (DispatchModule file (map T.pack extensions) component dump)
+  -- What a build said about this one module, for a rule that judges code by
+  -- where it is defined. The name is how the build's file for it is found,
+  -- since this command otherwise has only the file.
+  hieDirs <- parseHieDirectories
+  project <-
+    many
+      ( setting
+          [ help "A package of the project this module belongs to",
+            reader str,
+            option,
+            long "project-package",
+            metavar "NAME"
+          ]
+      )
+  moduleName <-
+    optional
+      ( setting
+          [ help "The module's name, which is how its .hie file is found under a --hie-directory",
+            reader str,
+            option,
+            long "module-name",
+            metavar "NAME"
+          ]
+      )
+  pure (DispatchModule file (map T.pack extensions) component dump hieDirs project moduleName)
 
 parseSourceRoot :: Parser RawSourceRoot
 parseSourceRoot = do
