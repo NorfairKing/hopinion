@@ -64,6 +64,7 @@ tests:
     - bytestring
     - containers
     - filepath
+    - genvalidity-bytestring
     - genvalidity-path
     - genvalidity-sydtest
     - genvalidity-sydtest-aeson

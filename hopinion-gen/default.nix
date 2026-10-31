@@ -1,9 +1,10 @@
 { mkDerivation, autodocodec-yaml, base, bytestring, containers
-, filepath, genvalidity, genvalidity-aeson, genvalidity-containers
-, genvalidity-path, genvalidity-sydtest, genvalidity-sydtest-aeson
-, genvalidity-text, hopinion, hopinion-hie, lib, ormolu, path
-, path-io, persistent, process, QuickCheck, safe-coloured-text
-, sydtest, sydtest-aeson, sydtest-discover, text, yaml
+, filepath, genvalidity, genvalidity-aeson, genvalidity-bytestring
+, genvalidity-containers, genvalidity-path, genvalidity-sydtest
+, genvalidity-sydtest-aeson, genvalidity-text, hopinion
+, hopinion-hie, lib, ormolu, path, path-io, persistent, process
+, QuickCheck, safe-coloured-text, sydtest, sydtest-aeson
+, sydtest-discover, text, yaml
 }:
 mkDerivation {
   pname = "hopinion-gen";
@@ -18,10 +19,10 @@ mkDerivation {
   executableHaskellDepends = [ base ];
   testHaskellDepends = [
     autodocodec-yaml base bytestring containers filepath
-    genvalidity-path genvalidity-sydtest genvalidity-sydtest-aeson
-    genvalidity-text hopinion hopinion-hie path path-io persistent
-    process QuickCheck safe-coloured-text sydtest sydtest-aeson text
-    yaml
+    genvalidity-bytestring genvalidity-path genvalidity-sydtest
+    genvalidity-sydtest-aeson genvalidity-text hopinion hopinion-hie
+    path path-io persistent process QuickCheck safe-coloured-text
+    sydtest sydtest-aeson text yaml
   ];
   testToolDepends = [ ormolu sydtest-discover ];
   license = "unknown";
