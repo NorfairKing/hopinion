@@ -11,6 +11,7 @@ import Data.List (nub)
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import qualified Data.Text as T
+import GHC.Data.FastString (unpackFS)
 import GHC.Hs
 import GHC.Types.SrcLoc (unLoc)
 import qualified GHC.Types.SrcLoc as SrcLoc
@@ -51,6 +52,7 @@ testLiteralsOf rp ref decls ds
             testLiteralOwner = spanOfSrcSpan rp owner
           }
       | l <- listify isLiteral ds,
+        not (isSqlLiteral l),
         let loc = getLocA l,
         within reached loc,
         not (within exempt loc),
@@ -77,7 +79,8 @@ testLiteralsOf rp ref decls ds
           concatMap counterStarts expressions,
           concatMap expectations expressions,
           concatMap offsets expressions,
-          concatMap comparisons expressions
+          concatMap comparisons expressions,
+          concatMap assertionSections expressions
         ]
 
     occurrences :: [(Text, SrcLoc.SrcSpan)]
@@ -179,6 +182,22 @@ bindingsOf ds =
 patternNames :: LPat GhcPs -> [Text]
 patternNames p = [rdrText (unLoc n) | VarPat _ n <- listify (const True :: Pat GhcPs -> Bool) p]
 
+-- | A string literal that is a SQL statement, whatever runs it.
+--
+-- A statement is code in another language rather than a value, the same as one
+-- handed to 'rawSql', and a project's own runner for it is as likely as
+-- persistent's.
+isSqlLiteral :: LHsExpr GhcPs -> Bool
+isSqlLiteral le = case unLoc le of
+  HsLit _ (HsString _ s) -> isSqlText (T.pack (unpackFS s))
+  HsOverLit _ OverLit {ol_val = HsIsString _ s} -> isSqlText (T.pack (unpackFS s))
+  _ -> False
+
+isSqlText :: Text -> Bool
+isSqlText t = case T.words (T.stripStart t) of
+  (keyword : _ : _) -> keyword `elem` ["SELECT", "INSERT", "UPDATE", "DELETE", "WITH", "CREATE", "DROP", "ALTER", "LISTEN", "NOTIFY", "DO", "BEGIN", "COMMIT", "ROLLBACK", "SET", "TRUNCATE", "EXPLAIN"]
+  _ -> False
+
 isLiteral :: LHsExpr GhcPs -> Bool
 isLiteral le = case unLoc le of
   HsLit {} -> True
@@ -211,6 +230,9 @@ isTestName name =
 -- What a golden test renders has to be the same every run, so the values it is
 -- rendered from are fixed by design rather than made up in place of any value.
 -- That holds for a golden helper of a project's own as much as for sydtest's.
+-- How many threads a test runs at once, and how many times it repeats an action
+-- across them, are settings of the test rather than values it runs on.
+--
 -- A raw query is code in another language rather than a value, whether
 -- persistent runs it or postgresql-simple does, after its connection. The key of
 -- a JSON object is fixed by the format it is written in.
@@ -229,7 +251,10 @@ exemptArguments name args
   | name `elem` [".:", ".:?", ".:!"] = drop 1 args
   | name `elem` firstArgumentNames = take 1 args
   | T.isPrefixOf "golden" name || T.isInfixOf "Golden" name = args
-  | T.isPrefixOf "parser" name && T.isSuffixOf "Test" name = args
+  | (T.isPrefixOf "parser" name || T.isInfixOf "Parser" name) && T.isSuffixOf "Test" name = args
+  | name `elem` ["pooledReplicateConcurrentlyN", "pooledReplicateConcurrentlyN_"] = take 2 args
+  | T.isPrefixOf "pooled" name && T.isInfixOf "ConcurrentlyN" name = take 1 args
+  | name `elem` ["replicateConcurrently", "replicateConcurrently_"] = take 1 args
   | any (`T.isPrefixOf` name) ["readFile", "decodeFile", "parse", "decode", "eitherDecode"] = take 1 args
   | name `elem` ["rawExecute", "rawExecuteCount", "rawSql", "rawQuery"] = take 1 args
   | name `elem` ["execute", "execute_", "query", "query_"] = take 1 (drop 1 args)
@@ -300,6 +325,13 @@ comparisons le = case unLoc le of
           (False, True) -> [getLocA r]
           (True, False) -> [getLocA l]
           _ -> []
+  _ -> []
+
+-- | The expected side of an assertion written as a section, as in
+-- @(`shouldBe` 1)@.
+assertionSections :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
+assertionSections le = case unLoc le of
+  SectionR _ op arg | maybe False (T.isPrefixOf "should") (operatorName op) -> [getLocA arg]
   _ -> []
 
 -- | Where an open-ended enumeration starts, as in @zip [0 ..] xs@.

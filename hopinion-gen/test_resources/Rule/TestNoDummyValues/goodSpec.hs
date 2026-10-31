@@ -108,3 +108,11 @@ spec = do
          in [i | (i, row) <- zip [0 :: Int ..] rows, Text.null row]
   it "reports a binding with lets inside once" $
     tableProblems `shouldBe` []
+  it "runs SQL through a runner of the project's own, from many threads at once" $ \pool ->
+    pooledReplicateConcurrentlyN_ 8 32 $
+      runOwnQuery pool "SELECT count(*) FROM users" >>= (`shouldSatisfy` (>= 0))
+  it "checks a settings parser with a helper of the project's own" $
+    settingsParserTest settingsParser ["--name", "alice"] (Settings (UserName "alice"))
+  it "asserts with a section" $
+    forAllValid $ \users ->
+      pure (length users) >>= (`shouldBe` length users)
