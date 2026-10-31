@@ -4,14 +4,19 @@
 module Hopinion.RunSpec (spec) where
 
 import Data.List (sort)
+import Data.Maybe (isNothing)
 import qualified Data.Text as T
-import Hopinion.Rule (renderRuleSetError, withoutRules)
+import qualified Hopinion.Check.Comment.BareTodo.Rule as BareTodo
+import Hopinion.Facts.Gen ()
+import Hopinion.Rule (renderRuleSetError, ruleId, ruleNamed, withoutRules)
 import Hopinion.Rule.Gen (shippedRules)
 import Hopinion.Rule.Id
 import Hopinion.Run
 import Path (Dir, Path, Rel, reldir, relfile, toFilePath, (</>))
 import Path.IO (listDirRel)
+import Test.QuickCheck ((==>))
 import Test.Syd
+import Test.Syd.Validity (forAllValid)
 import Text.Colour (TerminalCapabilities (..), renderChunksText)
 
 spec :: Spec
@@ -35,7 +40,7 @@ spec = describe "explainRule" $ do
   it "explains a rule this run makes" $
     goldenTextFile (toFilePath (resourceDir </> [relfile|runs.golden|])) $
       pure $
-        renderChunksText With8BitColours $ case explainRule shippedRules (RuleId "CommentBareTodo") of
+        renderChunksText With8BitColours $ case explainRule shippedRules (ruleId BareTodo.rule) of
           ExplanationGiven cs -> cs
           ExplanationNoRuleCalled cs -> cs
 
@@ -56,19 +61,25 @@ spec = describe "explainRule" $ do
   -- make.
   it "explains a rule this repository has turned off, and says it is off" $
     goldenTextFile (toFilePath (resourceDir </> [relfile|turned-off.golden|])) $
-      case withoutRules [RuleId "CommentBareTodo"] shippedRules of
+      case withoutRules [ruleId BareTodo.rule] shippedRules of
         Left err -> fail (T.unpack (renderChunksText WithoutColours (renderRuleSetError err)))
         Right rs ->
-          pure $ renderChunksText With8BitColours $ case explainRule rs (RuleId "CommentBareTodo") of
+          pure $ renderChunksText With8BitColours $ case explainRule rs (ruleId BareTodo.rule) of
             ExplanationGiven cs -> cs
             ExplanationNoRuleCalled cs -> cs
 
   -- A name nothing answers to is a question this build cannot answer, so it is
   -- refused rather than answered with prose that reads like an explanation.
   it "refuses a name nothing answers to" $
-    case explainRule shippedRules (RuleId "NoSuchRule") of
-      ExplanationGiven cs -> expectationFailure (unwords ["Explained a rule this build does not have:", show cs])
-      ExplanationNoRuleCalled cs ->
-        renderChunksText WithoutColours cs
-          `shouldBe` "There is no rule called NoSuchRule in this build of hopinion.\n\
-                     \Run list-rules to see the rules this build has.\n"
+    forAllValid $ \rid ->
+      isNothing (ruleNamed shippedRules rid) ==>
+        case explainRule shippedRules rid of
+          ExplanationGiven cs -> expectationFailure (unwords ["Explained a rule this build does not have:", show cs])
+          ExplanationNoRuleCalled cs ->
+            renderChunksText WithoutColours cs
+              `shouldBe` T.concat
+                [ "There is no rule called ",
+                  unRuleId rid,
+                  " in this build of hopinion.\n\
+                  \Run list-rules to see the rules this build has.\n"
+                ]

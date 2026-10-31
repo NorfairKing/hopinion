@@ -53,6 +53,7 @@ spec = do
   -- room for a line. The bound is the column this repository wraps prose at,
   -- and a rule that wants more than it is one saying two things: the second
   -- belongs in the why.
+  -- [allow:TestNoDummyValues] The column this repository wraps prose at.
   it "says what every rule asks for in one line" $
     [(ruleId r, T.length (ruleText r)) | r <- ruleSetRules shippedRules, T.length (ruleText r) > 80]
       `shouldBe` []

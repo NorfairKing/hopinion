@@ -16,7 +16,7 @@ import Hopinion.Facts.Suppression
 import Hopinion.Facts.Version
 import Hopinion.Rule.Id (RuleId)
 import Hopinion.Store
-import Path (File, Path, Rel, relfile, toFilePath, (</>))
+import Path (relfile, toFilePath, (</>))
 import Path.IO (withSystemTempDir)
 import Test.QuickCheck ((==>))
 import Test.Syd
@@ -26,35 +26,19 @@ spec :: Spec
 spec = do
   -- What an exception says, which is as much as these tests look at: the
   -- wording is SQLite's and persistent's rather than this tool's.
+  -- [allow:TestNoDummyValues] What a run that threw nothing renders as, which no assertion here accepts.
   let renderedOf :: Either SomeException a -> Text
       renderedOf = either (T.pack . show) (const "")
 
-  -- One line of a file, which is as much of a span as these tests need.
-  let spanOfLine :: Path Rel File -> Word -> Span
-      spanOfLine file line =
-        Span
-          { spanFile = file,
-            spanStart =
-              Position
-                { positionLine = line,
-                  positionCol = 1
-                },
-            spanEnd =
-              Position
-                { positionLine = line,
-                  positionCol = 2
-                }
-          }
-
   -- A suppression in a module naming a rule, which is all these tests look at.
-  let suppressionOf :: ModuleRef -> RuleId -> AnnotationFact
-      suppressionOf ref rule =
+  let suppressionOf :: ModuleRef -> RuleId -> Span -> AnnotationFact
+      suppressionOf ref rule sp =
         AnnotationFact
           { annotationFactRule = rule,
             annotationFactScope = ScopeKeyOfFile ref,
             annotationFactPrecision = AnnotationPrecisionFile,
             annotationFactReason = ReasonAdoption,
-            annotationFactSpan = spanOfLine [relfile|thing/src/Thing.hs|] 1
+            annotationFactSpan = sp
           }
 
   -- A rule brings its own table, so a store written where a rule existed and
@@ -191,7 +175,7 @@ spec = do
     -- Two packages, so that the query answering with one package's suppressions
     -- is the thing under test rather than an empty table.
     it "writes the suppressions of one module and reads back only that package's" $
-      forAllValid $ \((thing, other), (thingRef, otherRef), (thingRule, otherRule)) ->
+      forAllValid $ \((thing, other), (thingRef, otherRef), (thingRule, otherRule), (thingSpan, otherSpan)) ->
         thing /= other && thingRef /= otherRef ==> do
           stored <- withMemoryStore [] $ do
             writePackageEnvelope thing PackageRoleMain [relfile|thing/thing.cabal|] []
@@ -201,13 +185,13 @@ spec = do
               thingRef
               [relfile|thing/src/Thing.hs|]
               ParseOutcomeOk
-              [suppressionOf thingRef thingRule]
+              [suppressionOf thingRef thingRule thingSpan]
             writeModuleEnvelope
               other
               otherRef
               [relfile|other/src/Other.hs|]
               ParseOutcomeOk
-              [suppressionOf otherRef otherRule]
+              [suppressionOf otherRef otherRule otherSpan]
             annotationsOfPackage thing
           map annotationFactRule stored `shouldBe` [thingRule]
 

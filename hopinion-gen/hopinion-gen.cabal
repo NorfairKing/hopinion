@@ -112,6 +112,8 @@ extra-source-files:
     test_resources/Example/dirty/thing-gen/thing-gen.cabal
     test_resources/Example/dirty/thing/src/Thing.hs
     test_resources/Example/dirty/thing/thing.cabal
+    test_resources/Hie/Fixture.hs
+    test_resources/Hie/Generator.hs
     test_resources/Project/absent-module/thing/src/Thing.hs
     test_resources/Project/absent-module/thing/thing.cabal
     test_resources/Project/absent-source-dir/thing/src/Thing.hs
@@ -404,11 +406,13 @@ test-suite hopinion-test
       QuickCheck
     , autodocodec-yaml
     , base >=4.7 && <5
+    , bytestring
     , containers
     , filepath
     , genvalidity-path
     , genvalidity-sydtest
     , genvalidity-sydtest-aeson
+    , genvalidity-text
     , hopinion
     , hopinion-gen
     , hopinion-hie

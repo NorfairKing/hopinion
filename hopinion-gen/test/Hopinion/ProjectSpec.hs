@@ -81,15 +81,13 @@ spec = do
   -- anybody actually has in a working tree, holds no cabal file to find.
   it "finds a package a repository links in" $
     withSystemTempDir "hopinion-symlink" $ \tmp -> do
-      -- The least a cabal file can say and still name a package.
+      -- [allow:TestNoDummyValues] The least a cabal file can say and still name a package.
       let minimalCabal :: String
           minimalCabal =
-            unlines
-              [ "cabal-version: 1.12",
-                "name:          thing",
-                "version:       0.0.0",
-                "build-type:    Simple"
-              ]
+            "cabal-version: 1.12\n\
+            \name:          thing\n\
+            \version:       0.0.0\n\
+            \build-type:    Simple\n"
       let elsewhere = tmp </> [reldir|elsewhere|]
       createDirIfMissing True (elsewhere </> [reldir|thing|])
       writeFile (toFilePath (elsewhere </> [reldir|thing|] </> [relfile|thing.cabal|])) minimalCabal

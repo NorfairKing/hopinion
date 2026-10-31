@@ -143,6 +143,7 @@ exemptArguments name args
   | any (`T.isPrefixOf` name) ["golden", "pureGolden", "readFile", "decodeFile"] = take 1 args
   | T.isPrefixOf "with" name && T.isInfixOf "Temp" name = take 1 args
   | name `elem` ["readProcess", "readProcessWithExitCode", "callProcess", "proc"] = take 2 args
+  | name `elem` ["readCreateProcess", "readCreateProcessWithExitCode"] = args
   | otherwise = []
 
 -- | Functions whose first argument is a claim or a setting.

@@ -15,63 +15,24 @@
 -- the other.
 module Hopinion.HieSpec (spec) where
 
+import qualified Data.ByteString as SB
+import Data.GenValidity.Text ()
 import qualified Data.Set as S
 import qualified Data.Text as T
+import qualified Data.Text.Encoding as TE
 import Hopinion.Hie
-import Path (Abs, Dir, File, Path, relfile, toFilePath, (</>))
-import Path.IO (withSystemTempDir)
+import Path (Abs, Dir, File, Path, Rel, reldir, relfile, toFilePath, (</>))
+import Path.IO (copyFile, withSystemTempDir)
 import System.Process (CreateProcess (..), proc, readCreateProcess)
 import Test.Syd
+import Test.Syd.Validity (forAllValid)
 
 spec :: Spec
 spec = do
-  -- What the splice is made of. Defined here rather than in the module that
-  -- splices it, because a quotation is resolved where it is written and a
-  -- splice cannot run code from its own module.
-  let generator :: String
-      generator =
-        unlines
-          [ "{-# LANGUAGE TemplateHaskell #-}",
-            "module Generator (Widget (..), Gennable, probe, spliceInstance, spliceCall) where",
-            "",
-            "import Language.Haskell.TH (Dec, Exp, Q)",
-            "",
-            "data Widget = Widget",
-            "",
-            "class Gennable a",
-            "",
-            "probe :: Widget -> ()",
-            "probe _ = ()",
-            "",
-            "spliceInstance :: Q [Dec]",
-            "spliceInstance = [d| instance Gennable Widget |]",
-            "",
-            "spliceCall :: Q Exp",
-            "spliceCall = [| probe Widget |]"
-          ]
-
-  -- Nothing here names @Gennable@, and nothing here names @probe@ at a
-  -- @Widget@. Both are in the compiled module all the same, which is the whole
-  -- reason these files are read.
-  let fixture :: String
-      fixture =
-        unlines
-          [ "{-# LANGUAGE TemplateHaskell #-}",
-            "module Fixture where",
-            "",
-            "import Generator",
-            "",
-            "data Written = Written",
-            "  deriving (Show)",
-            "",
-            "written :: Written",
-            "written = Written",
-            "",
-            "$(spliceInstance)",
-            "",
-            "called :: ()",
-            "called = $(spliceCall)"
-          ]
+  -- Both modules are resources rather than strings here, so that they read as
+  -- the Haskell they are.
+  let resourceDir :: Path Rel Dir
+      resourceDir = [reldir|test_resources/Hie|]
 
   -- Compiled by the @ghc@ on the path, which is the one that built this suite,
   -- so the files under test are ones these readers are supposed to be able to
@@ -83,8 +44,8 @@ spec = do
   -- is a build whose modules 'compiledModuleFile' can tell apart from nothing.
   let withCompiled :: (Path Abs Dir -> IO ()) -> IO ()
       withCompiled act = withSystemTempDir "hopinion-hie" $ \tmp -> do
-        writeFile (toFilePath (tmp </> [relfile|Generator.hs|])) generator
-        writeFile (toFilePath (tmp </> [relfile|Fixture.hs|])) fixture
+        copyFile (resourceDir </> [relfile|Generator.hs|]) (tmp </> [relfile|Generator.hs|])
+        copyFile (resourceDir </> [relfile|Fixture.hs|]) (tmp </> [relfile|Fixture.hs|])
         _ <-
           readCreateProcess
             (proc "ghc" ["-v0", "-fwrite-ide-info", "-outputdir", ".", "-hiedir", ".", "-i.", "Fixture.hs"])
@@ -115,14 +76,12 @@ spec = do
       withCompiled $ \tmp -> do
         compiled <- readingCompiled (tmp </> [relfile|Fixture.hie|])
         compiledModuleName compiled `shouldBe` "Fixture"
-        let together names = S.member "probe" names && S.member "Widget" names
-        any together (compiledModuleGenerated compiled) `shouldBe` True
+        compiledModuleGenerated compiled `shouldSatisfy` any (S.isSubsetOf (S.fromList ["probe", "Widget"]))
 
     it "does not claim two names arrived together when neither was generated" $
       withCompiled $ \tmp -> do
         compiled <- readingCompiled (tmp </> [relfile|Fixture.hie|])
-        let together names = S.member "written" names && S.member "NeverMentioned" names
-        any together (compiledModuleGenerated compiled) `shouldBe` False
+        compiledModuleGenerated compiled `shouldSatisfy` not . any (S.isSubsetOf (S.fromList ["written", "NeverMentioned"]))
 
     it "records the file it was compiled from, which is what tells two Mains apart" $
       withCompiled $ \tmp -> do
@@ -133,13 +92,14 @@ spec = do
         compiledModuleFile compiled `shouldBe` Just [relfile|Fixture.hs|]
 
     it "reports a file that is not a .hie file rather than throwing" $
-      withSystemTempDir "hopinion-hie" $ \tmp -> do
-        let path = tmp </> [relfile|Fixture.hie|]
-        writeFile (toFilePath path) "this is not a hie file"
-        result <- readCompiledModule path
-        case result of
-          Left _ -> pure ()
-          Right compiled -> expectationFailure (unwords ["Read a module out of nothing:", show compiled])
+      forAllValid $ \contents ->
+        withSystemTempDir "hopinion-hie" $ \tmp -> do
+          let path = tmp </> [relfile|Fixture.hie|]
+          SB.writeFile (toFilePath path) (TE.encodeUtf8 contents)
+          result <- readCompiledModule path
+          case result of
+            Left _ -> pure ()
+            Right compiled -> expectationFailure (unwords ["Read a module out of nothing:", show compiled])
 
   describe "readDeclaredInstances" $ do
     -- The made side of an obligation rests on this: an instance that is in the
@@ -148,28 +108,29 @@ spec = do
     it "finds an instance a splice generated" $
       withCompiled $ \tmp -> do
         instances <- readingInstances (tmp </> [relfile|Fixture.hi|])
-        DeclaredInstance
-          { declaredInstanceClass = "Gennable",
-            declaredInstanceType = "Widget"
-          }
-          `elem` instances
-          `shouldBe` True
+        instances
+          `shouldSatisfy` elem
+            DeclaredInstance
+              { declaredInstanceClass = "Gennable",
+                declaredInstanceType = "Widget"
+              }
 
     it "finds one the compiler derived, which is also in no source" $
       withCompiled $ \tmp -> do
         instances <- readingInstances (tmp </> [relfile|Fixture.hi|])
-        DeclaredInstance
-          { declaredInstanceClass = "Show",
-            declaredInstanceType = "Written"
-          }
-          `elem` instances
-          `shouldBe` True
+        instances
+          `shouldSatisfy` elem
+            DeclaredInstance
+              { declaredInstanceClass = "Show",
+                declaredInstanceType = "Written"
+              }
 
     it "reports a file that is not an interface rather than throwing" $
-      withSystemTempDir "hopinion-hie" $ \tmp -> do
-        let path = tmp </> [relfile|Fixture.hi|]
-        writeFile (toFilePath path) "this is not an interface"
-        result <- readDeclaredInstances path
-        case result of
-          Left _ -> pure ()
-          Right instances -> expectationFailure (unwords ["Read instances out of nothing:", show instances])
+      forAllValid $ \contents ->
+        withSystemTempDir "hopinion-hie" $ \tmp -> do
+          let path = tmp </> [relfile|Fixture.hi|]
+          SB.writeFile (toFilePath path) (TE.encodeUtf8 contents)
+          result <- readDeclaredInstances path
+          case result of
+            Left _ -> pure ()
+            Right instances -> expectationFailure (unwords ["Read instances out of nothing:", show instances])
