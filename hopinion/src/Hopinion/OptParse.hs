@@ -47,7 +47,7 @@ data RawSourceRoot = RawSourceRoot
 
 data Dispatch
   = DispatchCheck !RawSourceRoot ![SomeBase Dir]
-  | DispatchPackage !RawSourceRoot !(SomeBase Dir) !(Maybe (SomeBase Dir)) ![SomeBase Dir]
+  | DispatchPackage !RawSourceRoot !(SomeBase Dir) !(Maybe (SomeBase Dir)) ![SomeBase Dir] ![Text]
   | DispatchProject ![SomeBase Dir] ![Text] ![RawSourceRoot] !(Maybe (SomeBase Dir)) ![SomeBase Dir]
   | DispatchModule !(Path Rel File) ![Text] !ComponentKind !DumpComments
   | DispatchJudge !(NonEmpty (SomeBase Dir))
@@ -129,6 +129,20 @@ parsePackage = do
   out <- parseReportOut
   hieDirs <- parseHieDirectories
   root <- parseSourceRoot
+  -- Named rather than found, because a package checked on its own is handed its
+  -- own subtree and cannot see the rest of the repository it belongs to. Which
+  -- packages are the project's is what tells the code under test from the
+  -- libraries it is tested with.
+  project <-
+    many
+      ( setting
+          [ help "A package of the project this one belongs to, its own included. Without any, the packages under the root are the project",
+            reader str,
+            option,
+            long "project-package",
+            metavar "NAME"
+          ]
+      )
   dir <-
     setting
       [ help "The package directory",
@@ -136,7 +150,7 @@ parsePackage = do
         argument,
         metavar "DIR"
       ]
-  pure (DispatchPackage root dir out hieDirs)
+  pure (DispatchPackage root dir out hieDirs project)
 
 -- | Where a build put its @.hie@ output, so that a rule can ask what a splice
 -- generated instead of guessing.

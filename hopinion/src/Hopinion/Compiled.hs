@@ -15,6 +15,7 @@ module Hopinion.Compiled
     uncoveredModules,
     compiledModuleOf,
     declaredInstancesOf,
+    nameOriginsOf,
     couldGenerateUseOf,
     sameSourceFile,
   )
@@ -30,7 +31,7 @@ import qualified Data.Set as S
 import Data.Text (Text)
 import qualified Data.Text as T
 import Hopinion.Facts.Name
-import Hopinion.Hie (CompiledModule (..), DeclaredInstance (..), readCompiledModule, readDeclaredInstances, renderArtifactUnreadable)
+import Hopinion.Hie (CompiledModule (..), DeclaredInstance (..), HiePosition, NameOrigin, readCompiledModule, readDeclaredInstances, readNameOrigins, renderArtifactUnreadable)
 import Path (Abs, Dir, File, Path, Rel, parseRelFile, toFilePath, (</>))
 import Path.IO (forgivingAbsence, getModificationTime)
 import qualified System.FilePath as FP
@@ -74,7 +75,8 @@ data CompiledModules = CompiledModules
 data ModuleArtifacts = ModuleArtifacts
   { moduleArtifactsKey :: !ModuleKey,
     moduleArtifactsCompiled :: !(Memoized (Answer CompiledModule)),
-    moduleArtifactsDeclared :: !(Memoized (Answer [DeclaredInstance]))
+    moduleArtifactsDeclared :: !(Memoized (Answer [DeclaredInstance])),
+    moduleArtifactsNameOrigins :: !(Memoized (Answer (Map HiePosition NameOrigin)))
   }
 
 -- | Three answers, not two: a file that is not there and a file that is there
@@ -133,12 +135,14 @@ compiledModulesFor dirs mks = do
     artifactsFor (mk, rp) = do
       compiled <- memoizeMVar (lookUp dirs mk rp)
       declared <- memoizeMVar (lookUpInterface dirs mk rp)
+      origins <- memoizeMVar (lookUpNameOrigins dirs mk rp)
       pure
         ( rp,
           ModuleArtifacts
             { moduleArtifactsKey = mk,
               moduleArtifactsCompiled = compiled,
-              moduleArtifactsDeclared = declared
+              moduleArtifactsDeclared = declared,
+              moduleArtifactsNameOrigins = origins
             }
         )
 
@@ -192,6 +196,14 @@ compiledModuleOf rp cm = answerFor rp cm moduleArtifactsCompiled
 -- generated or not, which is the question an obligation's made side asks.
 declaredInstancesOf :: Path Rel File -> CompiledModules -> IO (Maybe [DeclaredInstance])
 declaredInstancesOf rp cm = answerFor rp cm moduleArtifactsDeclared
+
+-- | What every name written in this module refers to, by where it is written.
+--
+-- Read out of the same @.hie@ file as 'compiledModuleOf', separately, because
+-- only the rules that care where code is defined need it, and it is most of
+-- the file.
+nameOriginsOf :: Path Rel File -> CompiledModules -> IO (Maybe (Map HiePosition NameOrigin))
+nameOriginsOf rp cm = answerFor rp cm moduleArtifactsNameOrigins
 
 -- | Asking, which is what reads the file, the first time anything asks.
 --
@@ -354,3 +366,28 @@ lookUpInterface (HieDirectories ds) mk rp = case artifactFileOf "hi" mk of
                 (T.pack (unwords [path, "is there and this build of hopinion cannot read it:", T.unpack (renderArtifactUnreadable err)]) : whys)
                 rest
             Just (Right declared) -> pure (Answered declared)
+
+-- | What the names in a module refer to, read from the @.hie@ file that
+-- 'lookUp' settles on, so that both answers are about the same module.
+lookUpNameOrigins :: HieDirectories -> ModuleKey -> Path Rel File -> IO (Answer (Map HiePosition NameOrigin))
+lookUpNameOrigins (HieDirectories ds) mk rp = case artifactFileOf "hie" mk of
+  Nothing -> pure AnswerNothingThere
+  Just relative -> go relative [] ds
+  where
+    go :: Path Rel File -> [Text] -> [Path Abs Dir] -> IO (Answer (Map HiePosition NameOrigin))
+    go _ whys [] = pure (if null whys then AnswerNothingThere else AnswerUnusable (reverse whys))
+    go relative whys (d : rest) = do
+      here <- lookUp (HieDirectories [d]) mk rp
+      case here of
+        AnswerNothingThere -> go relative whys rest
+        AnswerUnusable theirs -> go relative (reverse theirs ++ whys) rest
+        Answered _ -> do
+          let file = d </> relative
+          result <- readNameOrigins file
+          case result of
+            Left err ->
+              go
+                relative
+                (T.pack (unwords [toFilePath file, "is there and this build of hopinion cannot read it:", T.unpack (renderArtifactUnreadable err)]) : whys)
+                rest
+            Right origins -> pure (Answered origins)

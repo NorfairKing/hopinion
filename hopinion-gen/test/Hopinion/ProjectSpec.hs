@@ -81,7 +81,6 @@ spec = do
   -- anybody actually has in a working tree, holds no cabal file to find.
   it "finds a package a repository links in" $
     withSystemTempDir "hopinion-symlink" $ \tmp -> do
-      -- [allow:TestNoDummyValues] The least a cabal file can say and still name a package.
       let minimalCabal :: String
           minimalCabal =
             "cabal-version: 1.12\n\

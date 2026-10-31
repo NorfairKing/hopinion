@@ -28,6 +28,7 @@ import Hopinion.Check.Hs.PrefixNaming.Extract (unprefixedNamesOf)
 import Hopinion.Check.Hs.RecordFieldPerLine.Extract (crowdedRecordsOf)
 import Hopinion.Check.Package.AppOnlyMain.Extract (strayAppDeclsOf)
 import Hopinion.Check.Test.NoDummyValues.Extract (testLiteralsOf)
+import Hopinion.Check.Test.NoDummyValues.Fact (TestLiterals (..))
 import Hopinion.Comment
 import Hopinion.Extract.Ghc
 import Hopinion.Facts.Component
@@ -131,7 +132,11 @@ emptyModuleContext input =
       moduleContextCrowdedRecords = [],
       moduleContextUnprefixedNames = [],
       moduleContextStrayAppDecls = [],
-      moduleContextTestLiterals = [],
+      moduleContextTestLiterals =
+        TestLiterals
+          { testLiteralsLiterals = [],
+            testLiteralsUses = []
+          },
       moduleContextTemplateHaskell = TemplateHaskellUseNone,
       moduleContextOutcome = ParseOutcomeOk
     }

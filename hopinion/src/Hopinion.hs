@@ -21,7 +21,7 @@ import Hopinion.OptParse
 import Hopinion.Project (SourceRoot (..))
 import Hopinion.Report
 import Hopinion.Report.Render
-import Hopinion.Rule (Rule, RuleSet, RuleSetError, renderRuleSetError, ruleSet, withoutRules)
+import Hopinion.Rule (Rule, RuleSet, RuleSetError, noModuleBuild, renderRuleSetError, ruleSet, withoutRules)
 import Hopinion.Rule.Id (RuleId)
 import Hopinion.Rule.Registry (builtinRules)
 import Hopinion.Run
@@ -99,12 +99,12 @@ run rs settings =
       -- The development loop is a decider, because a person running it wants
       -- the shell to know the answer.
       exitWith (verdict report)
-    DispatchPackage root dir out hieDirs -> do
+    DispatchPackage root dir out hieDirs project -> do
       absRoot <- absolutise root
       absDir <- absoluteDir dir
       absOut <- traverse absoluteDir out
       absHie <- hieDirectoriesOf hieDirs
-      report <- runPackageCommand rs absHie absRoot absDir absOut
+      report <- runPackageCommand rs absHie absRoot (map PackageName project) absDir absOut
       _ <- emit rs [absRoot] absOut report
       pure ()
     DispatchProject packageDirs expected sources out hieDirs -> do
@@ -132,7 +132,7 @@ run rs settings =
               }
           ]
           Nothing
-          (runModuleLayer rs facts)
+          =<< runModuleLayer rs noModuleBuild facts
       exitWith (verdict report)
     DispatchJudge dirs -> do
       results <- traverse (absoluteDir >=> readReportFrom) dirs

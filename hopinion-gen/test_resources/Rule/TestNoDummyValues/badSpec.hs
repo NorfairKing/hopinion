@@ -1,50 +1,41 @@
 module BadSpec (spec) where
 
+import qualified Data.Text as Text
 import Test.Syd
+
+-- The code under test. A real test imports it from the project; without a
+-- build, only what a module defines itself is known to be the project's.
+data User = User {userName :: Text, userAge :: Int}
+
+renderUser :: User -> Text
+renderUser = renderUser
+
+renderAge :: Int -> Text
+renderAge = renderAge
+
+renderName :: Text -> Text
+renderName = renderName
+
+renderMaybe :: Maybe Text -> Text
+renderMaybe = renderMaybe
 
 spec :: Spec
 spec = do
-  it "renders a user" $
+  it "renders a user built from made-up values" $
     renderUser User {userName = "alice", userAge = 30} `shouldBe` "alice (30)"
-  it "takes the absolute value of a negative number" (absolute (-5) `shouldBe` 5)
-  describe "a group" $
-    specify "counts characters" $ do
-      let c = 'x'
-      countChar c (replicate 3 c) `shouldBe` 3
-  prop "adds an offset" $ \n ->
-    n + 0.5 `shouldSatisfy` (> n)
-  it "renders a user of any age" $
-    forAllValid $ \age ->
-      renderUser User {userName = "bob", userAge = age} `shouldSatisfy` isInfixOf "bob"
-  describe "bound outside the test" $ do
-    let name = "carol"
-    let user = User {userName = name, userAge = 40}
-    it "renders a user set up for every test" $
-      renderUser user `shouldSatisfy` not . null
-  describe "bound to the result of an action" $ do
-    limit <- runIO (pure 7)
-    it "stays under a limit read at setup" $
-      forAllValid $ \n -> min limit n `shouldSatisfy` (<= limit)
-  modifyMaxSuccess (min 10) $
-    it "runs fewer examples" $
-      forAllValid $ \user ->
-        renderUser user {userName = "dave"} `shouldSatisfy` not . null
-  it "renders every user in a list" $
-    map renderUserName ["erin"] `shouldSatisfy` not . null
-  it "submits a made-up value under a parameter name the handler fixes" $ \yc ->
-    runYesodClientM yc $
-      request $
-        addPostParam "owner" "frank"
-  it "adds two literals" $
-    renderAge (20 + 1) `shouldSatisfy` not . null
-  it "uses a let that holds a made-up value" $ do
-    let greg = "greg"
-    renderUserName greg `shouldSatisfy` not . null
-  let fixtureNames =
-        let first = "hank"
-         in [first, "ivy"]
-  it "uses a binding with a let inside it" $
-    map renderUserName fixtureNames `shouldSatisfy` not . null
-  withTimeout 10_000_000 $
-    it "runs within a timeout on a made-up value" $
-      renderUserName "jack" `shouldSatisfy` not . null
+  it "renders an age worked out from literals by library code" $
+    renderAge (20 + 1) `shouldSatisfy` not . Text.null
+  it "renders a name a library function made" $
+    renderName (Text.pack "bob") `shouldSatisfy` not . Text.null
+  it "renders a value a library constructor holds" $
+    renderMaybe (Just "carol") `shouldSatisfy` not . Text.null
+  describe "a binding outside the test" $ do
+    let name = "dave"
+    it "renders a name bound for every test" $
+      renderName name `shouldSatisfy` not . Text.null
+  withTimeout 1000 $
+    it "renders a made-up name within a timeout" $
+      renderName "erin" `shouldSatisfy` not . Text.null
+  it "renders a made-up name bound inside the test" $ do
+    let frank = "frank"
+    renderName frank `shouldSatisfy` not . Text.null

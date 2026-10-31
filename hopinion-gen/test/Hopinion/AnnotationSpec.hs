@@ -374,7 +374,7 @@ spec = do
               let name = unPackageName (packageModelName pm)
               dir <- (tmp </>) <$> parseRelDir (T.unpack name)
               ensureDir dir
-              report <- runPackageCommand withEverything noHieDirectories root (packageModelDir pm) (Just dir)
+              report <- runPackageCommand withEverything noHieDirectories root [] (packageModelDir pm) (Just dir)
               (sources, _) <- sourcesForReport [root] report
               writeReportTo withEverything dir sources report
               pure (name, dir)

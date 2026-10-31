@@ -6,16 +6,15 @@
 -- and that comes from 'Hopinion.Extract.Ghc'.
 module Hopinion.Check.Test.NoDummyValues.Extract (testLiteralsOf) where
 
-import Data.Data (Data)
+import Data.Foldable (toList)
 import Data.Generics (listify)
-import Data.List (nub)
+import Data.List (nub, sortBy)
+import qualified Data.Map.Strict as M
 import Data.Maybe (fromMaybe)
+import qualified Data.Set as S
 import Data.Text (Text)
 import qualified Data.Text as T
-import GHC.Data.FastString (unpackFS)
 import GHC.Hs
-import GHC.Types.Name.Reader (RdrName)
-import GHC.Types.SourceText (IntegralLit (..))
 import GHC.Types.SrcLoc (unLoc)
 import qualified GHC.Types.SrcLoc as SrcLoc
 import GHC.Utils.Outputable (showPprUnsafe)
@@ -23,11 +22,11 @@ import Hopinion.Check.Test.NoDummyValues.Fact
 import Hopinion.Extract.Ghc
 import Hopinion.Facts.Decl
 import Hopinion.Facts.Module (isSpecFilePath)
+import Hopinion.Facts.Name (DeclName (..))
 import Hopinion.Facts.Place
-import Language.Haskell.Syntax.Pat (LHsRecUpdField)
 import Path (File, Path, Rel)
 
--- | Every literal a test runs on.
+-- | Every literal a test may run on, and what receives each one.
 --
 -- That is a literal in the body of a test, which is the argument after the
 -- description, or in any binding of this module the body names, followed for
@@ -36,8 +35,10 @@ import Path (File, Path, Rel)
 -- A literal in the description is the test's name, and one that no test reaches
 -- is not a value any test runs on.
 --
--- A literal in an argument that 'exemptArguments' names is not a value the
--- test runs on either, and a name written there is not followed.
+-- Whether a literal is made up depends on what receives it, which is a question
+-- about where that code is defined, so it is left to the rule with the build in
+-- hand. What is decided here is what the source alone settles: a literal a
+-- table maps a constructor to is a specification of that constructor.
 --
 -- Names are followed by spelling rather than by what they resolve to, because
 -- resolving them is renaming. A local that shadows another name drags that
@@ -45,71 +46,87 @@ import Path (File, Path, Rel)
 --
 -- Nothing outside a test file, because nothing else asks and this is the most
 -- expensive reading of a module there is.
-testLiteralsOf :: Path Rel File -> ModuleRef -> [DeclFact] -> [LHsDecl GhcPs] -> [TestLiteral]
+testLiteralsOf :: Path Rel File -> ModuleRef -> [DeclFact] -> [LHsDecl GhcPs] -> TestLiterals
 testLiteralsOf rp ref decls ds
-  | not (isSpecFilePath rp) = []
+  | not (isSpecFilePath rp) =
+      TestLiterals
+        { testLiteralsLiterals = [],
+          testLiteralsUses = []
+        }
   | otherwise =
-      [ TestLiteral
-          { testLiteralText = T.pack (showPprUnsafe (unLoc l)),
-            testLiteralSpan = sp,
-            testLiteralScope = declScopeOf ref decls sp,
-            testLiteralOwner = spanOfSrcSpan rp owner
-          }
-      | l <- listify isLiteral ds,
-        not (isSqlLiteral l),
-        let loc = getLocA l,
-        within reached loc,
-        not (within exempt loc),
-        not (within unnamedLets loc),
-        Just owner <- [ownerOf loc],
-        let sp = spanOfSrcSpan rp loc
-      ]
+      TestLiterals
+        { testLiteralsLiterals =
+            [ TestLiteral
+                { testLiteralText = T.pack (showPprUnsafe (unLoc l)),
+                  testLiteralSpan = sp,
+                  testLiteralScope = declScopeOf ref decls sp,
+                  testLiteralOwner = spanOfSrcSpan rp owner,
+                  testLiteralConsumers = consumersAt loc
+                }
+            | l <- listify isLiteral ds,
+              let loc = getLocA l,
+              within reached loc,
+              not (within tables loc),
+              let sp = spanOfSrcSpan rp loc,
+              Just owner <- [ownerOf loc]
+            ],
+          testLiteralsUses =
+            [ BindingUse
+                { bindingUseName = name,
+                  bindingUseConsumers = consumersAt loc
+                }
+            | (name, loc) <- occurrences,
+              name `S.member` boundNames,
+              within reached loc
+            ]
+        }
   where
     expressions :: [LHsExpr GhcPs]
     expressions = listify (const True :: LHsExpr GhcPs -> Bool) ds
 
-    applications :: [(Text, [SrcLoc.SrcSpan])]
-    applications = concatMap applicationsAt expressions
+    calls :: [Call]
+    calls = nub (concatMap callsAt expressions ++ recordCalls ds)
 
     bodies :: [SrcLoc.SrcSpan]
-    bodies = [body | (name, _ : body : _) <- applications, isTestName name]
+    -- One body per test, the whole of it. The parser nests an infix spine to
+    -- the left, so a test written with a $ is also seen once per operator
+    -- after it, each time with only part of its body.
+    bodies =
+      M.elems
+        ( M.fromListWith
+            (\a b -> if a `SrcLoc.isSubspanOf` b then b else a)
+            [ (spanOfSrcSpan rp headLoc, body)
+            | Call {callHead = (name, headLoc), callArguments = _ : (body, _) : _} <- calls,
+              isTestName name
+            ]
+        )
 
-    exempt :: [SrcLoc.SrcSpan]
-    exempt =
-      concat
-        [ concatMap (uncurry exemptArguments) applications,
-          concatMap mappedSpecimens expressions,
-          concatMap pairKeys expressions,
-          concatMap counterStarts expressions,
-          concatMap expectations expressions,
-          concatMap offsets expressions,
-          concatMap comparisons expressions,
-          concatMap sectionsAndCounters expressions,
-          protocolFieldKeys ds,
-          constructorTables ds
+    bindings :: [(Text, SrcLoc.SrcSpan)]
+    bindings = bindingsOf ds
+
+    boundNames :: S.Set Text
+    boundNames = S.fromList (map fst bindings)
+
+    definedHere :: S.Set Text
+    definedHere =
+      S.unions
+        [ boundNames,
+          S.fromList (map (unDeclName . declFactName) decls),
+          S.fromList [rdrText (unLoc n) | ConDeclH98 {con_name = n} <- listify (const True :: ConDecl GhcPs -> Bool) ds],
+          S.fromList [rdrText (unLoc n) | ConDeclGADT {con_names = ns} <- listify (const True :: ConDecl GhcPs -> Bool) ds, n <- toList ns]
         ]
 
     occurrences :: [(Text, SrcLoc.SrcSpan)]
     occurrences = [(rdrText (unLoc n), getLocA e) | e <- expressions, HsVar _ n <- [unLoc e]]
 
     reached :: [SrcLoc.SrcSpan]
-    reached = reachedFrom (bindingsOf ds) occurrences exempt letsInTests bodies
+    reached = reachedFrom bindings occurrences bodies
 
-    -- A let inside a test runs only if something uses it, so what it holds is
-    -- only run on once a name outside an exempt position reaches it. One that
-    -- only an exempt position names, as in @let ctx = ... in context ctx@, is
-    -- as exempt as that position. A name bound to an action's result is not
-    -- one of these, because the action runs whether or not the name is used.
-    letsInTests :: [SrcLoc.SrcSpan]
-    letsInTests =
-      nub
-        [ getLocA lb
-        | lb <- listify (const True :: LHsBind GhcPs -> Bool) ds,
-          any (\b -> getLocA lb `SrcLoc.isSubspanOf` b && getLocA lb /= b) bodies
-        ]
+    tables :: [SrcLoc.SrcSpan]
+    tables = constructorTables ds
 
-    unnamedLets :: [SrcLoc.SrcSpan]
-    unnamedLets = [l | l <- letsInTests, l `notElem` reached]
+    blocks :: [SrcLoc.SrcSpan]
+    blocks = [getLocA e | e <- expressions, isBlock (unLoc e)]
 
     -- The innermost test a literal is in, and the outermost binding it was
     -- reached through when it is in none, so that a binding with lets or a
@@ -118,6 +135,69 @@ testLiteralsOf rp ref decls ds
     ownerOf loc = case innermost [b | b <- bodies, loc `SrcLoc.isSubspanOf` b] of
       Just body -> Just body
       Nothing -> outermost [r | r <- reached, loc `SrcLoc.isSubspanOf` r]
+
+    -- What receives a value written here, innermost first, up to the test or
+    -- the binding it is written in, or to the lambda or @do@ block it is
+    -- written in if that is nearer. A binding ends the list with its own name,
+    -- because what receives the value from there is wherever that name is used.
+    --
+    -- A lambda or a @do@ block stops it because what is written in one is not
+    -- what that block is handed to: a literal in a step of a @do@ block passed
+    -- to a helper is given to that step, not to the helper.
+    consumersAt :: SrcLoc.SrcSpan -> [Consumer]
+    consumersAt loc =
+      let region = innermost [r | r <- bodies ++ map snd bindings, loc `SrcLoc.isSubspanOf` r]
+          boundary = innermost [b | b <- blocks, loc `SrcLoc.isSubspanOf` b, maybe True (b `SrcLoc.isSubspanOf`) region]
+          -- Strictly inside the block: an argument that is the block itself is what
+          -- the block is handed to, which is beyond it.
+          inRegion arg = maybe True (arg `SrcLoc.isSubspanOf`) region && maybe True (\b -> arg `SrcLoc.isSubspanOf` b && arg /= b) boundary
+          enclosing =
+            sortBy
+              innerFirst
+              [ (arg, call)
+              | call <- calls,
+                (arg, _) <- callArguments call,
+                loc `SrcLoc.isSubspanOf` arg,
+                inRegion arg
+              ]
+          callConsumers =
+            nub
+              [ ConsumerCall (nameAt (callHead call)) [nameAt n | (other, Just n) <- callArguments call, other /= arg]
+              | (arg, call) <- enclosing
+              ]
+          bindingConsumer =
+            [ ConsumerBinding name
+            | Nothing <- [boundary],
+              Just r <- [region],
+              (name, s) <- bindings,
+              s == r
+            ]
+       in callConsumers ++ take 1 bindingConsumer
+
+    nameAt :: (Text, SrcLoc.SrcSpan) -> NameAt
+    nameAt (name, loc) =
+      NameAt
+        { nameAtText = name,
+          nameAtPosition = spanStart (spanOfSrcSpan rp loc),
+          nameAtDefinition = if name `S.member` definedHere then DefinitionHere else DefinitionElsewhere
+        }
+
+-- | One place a name is applied, and its arguments: where each is written, and
+-- the name it is when it is a bare name.
+data Call = Call
+  { callHead :: !(Text, SrcLoc.SrcSpan),
+    callArguments :: ![(SrcLoc.SrcSpan, Maybe (Text, SrcLoc.SrcSpan))]
+  }
+  deriving (Eq)
+
+-- | The smaller of two regions that both contain one point first, which is the
+-- one written closer to it.
+innerFirst :: (SrcLoc.SrcSpan, a) -> (SrcLoc.SrcSpan, a) -> Ordering
+innerFirst (a, _) (b, _)
+  | a == b = EQ
+  | a `SrcLoc.isSubspanOf` b = LT
+  | b `SrcLoc.isSubspanOf` a = GT
+  | otherwise = EQ
 
 -- | The region that contains every other one of these, given regions that all
 -- contain one point and so nest.
@@ -139,30 +219,14 @@ within regions loc = any (loc `SrcLoc.isSubspanOf`) regions
 -- | The regions a test runs: the ones it starts from, and every binding a name
 -- in one of them refers to, until no new binding is named.
 --
--- A let it is given is inside a region already, and is run only once a name
--- reaches it, so until then nothing written in it names anything.
---
 -- Terminates because a region is only added once and there are finitely many
 -- bindings.
-reachedFrom ::
-  [(Text, SrcLoc.SrcSpan)] ->
-  [(Text, SrcLoc.SrcSpan)] ->
-  [SrcLoc.SrcSpan] ->
-  [SrcLoc.SrcSpan] ->
-  [SrcLoc.SrcSpan] ->
-  [SrcLoc.SrcSpan]
-reachedFrom bindings occurrences exempt lets = go
+reachedFrom :: [(Text, SrcLoc.SrcSpan)] -> [(Text, SrcLoc.SrcSpan)] -> [SrcLoc.SrcSpan] -> [SrcLoc.SrcSpan]
+reachedFrom bindings occurrences = go
   where
     go :: [SrcLoc.SrcSpan] -> [SrcLoc.SrcSpan]
     go regions =
-      let unnamed = [l | l <- lets, l `notElem` regions]
-          named =
-            [ n
-            | (n, loc) <- occurrences,
-              within regions loc,
-              not (within exempt loc),
-              not (within unnamed loc)
-            ]
+      let named = [n | (n, loc) <- occurrences, within regions loc]
           new = nub [s | (n, s) <- bindings, n `elem` named, s `notElem` regions]
        in if null new then regions else go (regions ++ new)
 
@@ -188,20 +252,12 @@ bindingsOf ds =
 patternNames :: LPat GhcPs -> [Text]
 patternNames p = [rdrText (unLoc n) | VarPat _ n <- listify (const True :: Pat GhcPs -> Bool) p]
 
--- | A string literal that is a SQL statement, whatever runs it.
---
--- A statement is code in another language rather than a value, the same as one
--- handed to 'rawSql', and a project's own runner for it is as likely as
--- persistent's.
-isSqlLiteral :: LHsExpr GhcPs -> Bool
-isSqlLiteral le = case unLoc le of
-  HsLit _ (HsString _ s) -> isSqlText (T.pack (unpackFS s))
-  HsOverLit _ OverLit {ol_val = HsIsString _ s} -> isSqlText (T.pack (unpackFS s))
-  _ -> False
-
-isSqlText :: Text -> Bool
-isSqlText t = case T.words (T.stripStart t) of
-  (keyword : _ : _) -> keyword `elem` ["SELECT", "INSERT", "UPDATE", "DELETE", "WITH", "CREATE", "DROP", "ALTER", "LISTEN", "NOTIFY", "DO", "BEGIN", "COMMIT", "ROLLBACK", "SET", "TRUNCATE", "EXPLAIN"]
+-- | A lambda or a @do@ block, which is where what a value is handed to stops
+-- being what it is written in.
+isBlock :: HsExpr GhcPs -> Bool
+isBlock = \case
+  HsLam {} -> True
+  HsDo {} -> True
   _ -> False
 
 isLiteral :: LHsExpr GhcPs -> Bool
@@ -210,7 +266,8 @@ isLiteral le = case unLoc le of
   HsOverLit {} -> True
   _ -> False
 
--- | The sydtest functions that take a description and then a test.
+-- | The sydtest functions that take a description and then a test, which is
+-- what a test is.
 isTestName :: Text -> Bool
 isTestName name =
   fromMaybe name (T.stripPrefix "x" name)
@@ -220,77 +277,6 @@ isTestName name =
                    variant <- ["", "WithOuter", "WithBoth", "WithAll"]
                  ]
            )
-
--- | The arguments of a function that hold no value the test runs on.
---
--- What a test asserts is the claim rather than an input to it, so the expected
--- side of an assertion is one of these. So is a generator's definition, which
--- is the replacement this rule asks for, and so is anything that configures
--- the test rather than feeding it: a failure message, how many examples to
--- run, which file a fixture is read from, how long to wait, what a temporary
--- directory is called, which program to run with which flags.
---
--- A value written to be invalid is chosen for being invalid rather than
--- standing in for any value, so it is not a dummy either.
---
--- A local assertion helper named for what it asserts, like
--- @runStatusShouldBe now run expected@, takes what it expects last.
---
--- What a golden test renders has to be the same every run, so the values it is
--- rendered from are fixed by design rather than made up in place of any value.
--- That holds for a golden helper of a project's own as much as for sydtest's.
--- A timeout is its duration, and what it wraps is a test like any other.
---
--- How many threads a test runs at once, and how many times it repeats an action
--- across them, are settings of the test rather than values it runs on.
---
--- A raw query is code in another language rather than a value, whether
--- persistent runs it or postgresql-simple does, after its connection. The key of
--- a JSON object is fixed by the format it is written in.
---
--- An opt-env-conf parser test is given a specimen and the value it should
--- parse to, so neither half is made up.
---
--- What a parser is given is a specimen of the format it reads, which the test is
--- about and which the expected value is worked out from, so it is no more a
--- dummy than the expected value is.
-exemptArguments :: Text -> [SrcLoc.SrcSpan] -> [SrcLoc.SrcSpan]
-exemptArguments name args
-  | name `elem` wholeCallNames = args
-  | T.isPrefixOf "should" name = drop 1 args
-  | name == ".=" = take 1 args
-  | name `elem` [".:", ".:?", ".:!"] = drop 1 args
-  | name `elem` firstArgumentNames = take 1 args
-  | T.isPrefixOf "golden" name || T.isInfixOf "Golden" name = args
-  | T.isInfixOf "Timeout" name || T.isInfixOf "timeout" name = take 1 args
-  | any (`T.isSuffixOf` name) ["ShouldBe", "ShouldNotBe", "ShouldContain", "ShouldNotContain", "ShouldReturn", "ShouldSatisfy"] = drop (length args - 1) args
-  | (T.isPrefixOf "parser" name || T.isInfixOf "Parser" name) && T.isSuffixOf "Test" name = args
-  | name `elem` ["pooledReplicateConcurrentlyN", "pooledReplicateConcurrentlyN_"] = take 2 args
-  | T.isPrefixOf "pooled" name && T.isInfixOf "ConcurrentlyN" name = take 1 args
-  | name `elem` ["replicateConcurrently", "replicateConcurrently_"] = take 1 args
-  | any (`T.isPrefixOf` name) ["readFile", "decodeFile", "parse", "decode", "eitherDecode"] = take 1 args
-  | name `elem` ["rawExecute", "rawExecuteCount", "rawSql", "rawQuery"] = take 1 args
-  | name `elem` ["execute", "execute_", "query", "query_"] = take 1 (drop 1 args)
-  | T.isPrefixOf "with" name && T.isInfixOf "Temp" name = take 1 args
-  | name `elem` ["readProcess", "readProcessWithExitCode", "callProcess", "proc"] = take 2 args
-  | name `elem` ["readCreateProcess", "readCreateProcessWithExitCode"] = args
-  | otherwise = []
-
--- | The keys of the pairs a JSON object or an environment is built from.
---
--- A key in either is fixed by the format or by the program that reads it, the
--- same as a key written with @.=@, while what it is paired with can still be
--- made up.
-pairKeys :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
-pairKeys le = case namedApplicationOf le of
-  Just (name, args)
-    | name == "object" || T.isPrefixOf "parserEnv" name || isProtocolPairName name ->
-        [ getLocA key
-        | arg <- args,
-          tuple <- listify (const True :: LHsExpr GhcPs -> Bool) arg,
-          ExplicitTuple _ (Present _ key : _) _ <- [unLoc tuple]
-        ]
-  _ -> []
 
 -- | The literals a table from constructors to values maps to, as in a @\\case@
 -- giving each constructor of a sum type its protocol code.
@@ -321,293 +307,77 @@ constructorTables ds =
       ParPat _ p -> isConstructorPattern (unLoc p)
       _ -> False
 
--- | Whether a name says it holds HTTP headers or a query string, whose pairs
--- start with a name the protocol or the handler fixes.
-isProtocolPairName :: Text -> Bool
-isProtocolPairName name = any (`T.isInfixOf` name) ["Header", "header", "QueryString", "queryString"]
-
--- | The names in the pairs a record field of headers or a query string is set
--- to, as in @request {requestHeaders = [("Accept", value)]}@.
-protocolFieldKeys :: [LHsDecl GhcPs] -> [SrcLoc.SrcSpan]
-protocolFieldKeys ds =
-  concat
-    [ [keySpan | field <- listify (const True :: HsFieldBind (LFieldOcc GhcPs) (LHsExpr GhcPs) -> Bool) ds, labelled (hfbLHS field), keySpan <- keysIn (hfbRHS field)],
-      [keySpan | field <- map unLoc (listify (const True :: LHsRecUpdField GhcPs GhcPs -> Bool) ds), labelled (hfbLHS field), keySpan <- keysIn (hfbRHS field)]
-    ]
-  where
-    labelled :: (Data a) => a -> Bool
-    labelled lhs = any (isProtocolPairName . rdrText) (listify (const True :: RdrName -> Bool) lhs)
-
-    keysIn :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
-    keysIn value =
-      [ getLocA key
-      | tuple <- listify (const True :: LHsExpr GhcPs -> Bool) value,
-        ExplicitTuple _ (Present _ key : _) _ <- [unLoc tuple]
-      ]
-
--- | What a test names as expected: a constructor, a function or a record field
--- whose name says so, which is a claim the same way the expected side of an
--- assertion is.
-expectations :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
-expectations le = case unLoc le of
-  RecordCon {rcon_con = con, rcon_flds = HsRecFields {rec_flds = fields}}
-    | isExpectationName (rdrText (unLoc con)) -> [getLocA le]
-    | otherwise ->
-        [ getLocA (hfbRHS (unLoc field))
-        | field <- fields,
-          isExpectationName (rdrText (unLoc (foLabel (unLoc (hfbLHS (unLoc field))))))
-        ]
-  _ -> case namedApplication le of
-    Just (name, args) | isExpectationName name -> args
-    _ -> []
-
-isExpectationName :: Text -> Bool
-isExpectationName name = T.isPrefixOf "expected" name || T.isPrefixOf "Expected" name
-
--- | A literal added to or taken from something that is not one, as in
--- @threshold + 1@ or @length xs - 1@.
+-- | Every named function or constructor applied at this node, by juxtaposition,
+-- with a @$@ before its last argument, or as an infix operator.
 --
--- That states where a value is relative to another, which is a claim about the
--- other value rather than a value made up in its place.
-offsets :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
-offsets le = case unLoc le of
-  OpApp _ l op r
-    | operatorName op `elem` [Just "+", Just "-", Just "*"] ->
-        case (isLiteral (peelExpr l), isLiteral (peelExpr r)) of
-          (False, True) -> [getLocA r]
-          (True, False) -> [getLocA l]
-          _ -> []
-  _ -> []
-
--- | A literal compared with something that is not one, as in @length xs > 1@.
---
--- That is a claim about the other value, the way an offset from it is, rather
--- than a value the test runs on.
-comparisons :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
-comparisons le = case unLoc le of
-  OpApp _ l op r
-    | operatorName op `elem` map Just [">", "<", ">=", "<=", "==", "/="] ->
-        case (isLiteral (peelExpr l), isLiteral (peelExpr r)) of
-          (False, True) -> [getLocA r]
-          (True, False) -> [getLocA l]
-          _ -> []
-  _ -> []
-
--- | The expected side of an assertion written as a section, as in
--- @(`shouldBe` 1)@, the step of an increment written as one, as in @(+ 1)@,
--- and the zero a counter starts at.
-sectionsAndCounters :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
-sectionsAndCounters le = case unLoc le of
-  SectionR _ op arg
-    | maybe False (T.isPrefixOf "should") (operatorName op) -> [getLocA arg]
-    | operatorName op `elem` [Just "+", Just "-", Just "*"] -> [getLocA arg]
-  SectionL _ arg op
-    | operatorName op `elem` [Just "+", Just "-", Just "*"] -> [getLocA arg]
-  _ -> case namedApplicationOf le of
-    Just (name, [start])
-      | name `elem` ["newIORef", "newTVar", "newTVarIO", "newMVar", "newSTRef"] && isZero start -> [getLocA start]
-    _ -> []
-
--- | Whether this is the literal zero, which is where a counter starts.
-isZero :: LHsExpr GhcPs -> Bool
-isZero e = case unLoc (peelExpr e) of
-  HsOverLit _ OverLit {ol_val = HsIntegral il} -> il_value il == 0
-  _ -> False
-
--- | Where an open-ended enumeration starts, as in @zip [0 ..] xs@.
---
--- That is the base of a count rather than data: nothing is made up by numbering
--- from zero or one.
-counterStarts :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
-counterStarts le = case unLoc le of
-  ArithSeq _ _ (From start) -> [getLocA start]
-  _ -> []
-
--- | The list a function is mapped over, when what that function is given is
--- exempt.
---
--- A parser mapped over a list of specimens is given each of them in turn, so
--- they are as much specimens as one written directly after it. Written as a
--- list, they would otherwise be one statement holding several findings, which
--- no single suppression can answer for.
-mappedSpecimens :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
-mappedSpecimens le =
+-- The parser leaves fixity unresolved, so the last two are read off the infix
+-- spine, which is in source order. Everything after a @$@ is its argument,
+-- because nothing binds looser; an operator\'s other operands are the ones
+-- written beside it.
+callsAt :: LHsExpr GhcPs -> [Call]
+callsAt le =
   let (leftmost, rest) = spineOf le
-      prefix = case namedApplicationOf le of
-        Just (name, f : xs : _) | isMapper name && takesSpecimens f -> [getLocA xs]
-        _ -> []
-      infix' =
-        [ getLocA y
-        | (x, (op, y)) <- zip (leftmost : map snd rest) rest,
-          operatorName op `elem` [Just "<$>", Just "<&>"],
-          takesSpecimens x
-        ]
-   in prefix ++ infix'
-  where
-    isMapper :: Text -> Bool
-    isMapper name = name `elem` ["map", "fmap", "traverse", "traverse_", "mapM", "mapM_", "concatMap"]
+   in maybe [] pure (prefixCall le) ++ infixCalls (leftmost : map snd rest) (map fst rest)
 
-    takesSpecimens :: LHsExpr GhcPs -> Bool
-    takesSpecimens f = case namedApplication f of
-      Just (name, []) -> not (null (exemptArguments name [SrcLoc.noSrcSpan]))
-      _ -> False
-
--- | Functions whose first argument is a claim or a setting.
---
--- The needle of a search is what a test claims is in its output, and so is the
--- key of a lookup: it names something the output should hold, or repeats a
--- value written into the input, where that value is reported already. A
--- separator or a prefix describes the format a value is taken apart by. A
--- selector names a part of a page, and a form or query parameter's name is
--- fixed by the handler it is sent to.
---
--- The generator a property is quantified over is the replacement this rule
--- asks for. A QuickCheck setting or a retry delay is its first argument alone,
--- because what it wraps is a test or a policy like any other.
-firstArgumentNames :: [Text]
-firstArgumentNames =
-  [ "expectationFailure",
-    "error",
-    "errorWithoutStackTrace",
-    "userError",
-    "fail",
-    "throwString",
-    "context",
-    "generate",
-    "forAll",
-    "forAllShrink",
-    "forAllShow",
-    "forAllShrinkShow",
-    "forAllBlind",
-    "threadDelay",
-    "timeout",
-    "isInfixOf",
-    "isPrefixOf",
-    "isSuffixOf",
-    "splitOn",
-    "breakOn",
-    "breakOnEnd",
-    "count",
-    "stripPrefix",
-    "stripSuffix",
-    "replace",
-    "lookup",
-    "member",
-    "notMember",
-    "htmlQuery",
-    "addPostParam",
-    "addGetParam",
-    "byLabelExact",
-    "byLabelContain",
-    "bySelectorLabelContain",
-    "fileByLabelExact",
-    "fileByLabelContain",
-    "capDelay",
-    "withMaxSuccess",
-    "modifyMaxSuccess",
-    "modifyMaxSize",
-    "modifyMaxShrinks",
-    "modifyMaxDiscardRatio",
-    "within"
-  ]
-
--- | Functions whose every argument is a claim or a setting.
---
--- The assertions of yesod-test, which take nothing but what they assert, the
--- parts of a request that the protocol fixes, and retry policies, which are
--- settings.
-wholeCallNames :: [Text]
-wholeCallNames =
-  [ "shouldBeInvalid",
-    "parseMaybe",
-    "parseEither",
-    "parseFail",
-    "mkStatus",
-    "tupleToHostAddress",
-    "SockAddrInet",
-    "setSocketOption",
-    "listen",
-    "subtract",
-    "setMethod",
-    "addRequestHeader",
-    "statusIs",
-    "bodyContains",
-    "bodyNotContains",
-    "bodyEquals",
-    "htmlCount",
-    "htmlAllContain",
-    "htmlAnyContain",
-    "htmlNoneContain",
-    "assertHeader",
-    "assertNoHeader",
-    "limitRetries",
-    "constantDelay",
-    "exponentialBackoff",
-    "fullJitterBackoff"
-  ]
-
--- | Every named function applied at this node, with where each of its arguments
--- is written.
---
--- By juxtaposition, with a @$@ before its last argument, and as an infix
--- operator. The parser leaves fixity unresolved, so the last two are read off
--- the infix spine, which is in source order.
-applicationsAt :: LHsExpr GhcPs -> [(Text, [SrcLoc.SrcSpan])]
-applicationsAt le =
-  let (leftmost, rest) = spineOf le
-   in maybe [] pure (namedApplication le)
-        ++ infixApplications (leftmost : map snd rest) (map fst rest)
-
--- | Operands and the operators between them, which is one more operand than
--- operators.
---
--- The right operand of an operator reaches as far as the next operator that
--- binds no tighter than it could. Everything after a @$@ is its argument,
--- because nothing binds looser.
-infixApplications :: [LHsExpr GhcPs] -> [LHsExpr GhcPs] -> [(Text, [SrcLoc.SrcSpan])]
-infixApplications operands ops = case (operands, ops) of
+infixCalls :: [LHsExpr GhcPs] -> [LHsExpr GhcPs] -> [Call]
+infixCalls operands ops = case (operands, ops) of
   (x : after@(y : ys), op : ops') ->
-    let rightOperand stops = rightOperandFrom stops y (zip ops' ys)
-        here = case operatorName op of
-          Just "$" ->
-            [ (name, args ++ [rightOperand (const False)])
-            | Just (name, args) <- [namedApplication x]
-            ]
-          Just name -> [(name, [getLocA x, rightOperand isLoose])]
-          Nothing -> []
-     in here ++ infixApplications after ops'
+    let here = case unLoc op of
+          HsVar _ n
+            | rdrText (unLoc n) == "$" ->
+                [ call {callArguments = callArguments call ++ [(foldl' SrcLoc.combineSrcSpans (getLocA y) (map getLocA ys), Nothing)]}
+                | Just call <- [prefixCall x]
+                ]
+            | otherwise ->
+                [ Call
+                    { callHead = (rdrText (unLoc n), getLocA n),
+                      callArguments = [argument x, argument y]
+                    }
+                ]
+          _ -> []
+     in here ++ infixCalls after ops'
   _ -> []
 
-rightOperandFrom :: (Text -> Bool) -> LHsExpr GhcPs -> [(LHsExpr GhcPs, LHsExpr GhcPs)] -> SrcLoc.SrcSpan
-rightOperandFrom stops first rest =
-  foldl'
-    SrcLoc.combineSrcSpans
-    (getLocA first)
-    (map (getLocA . snd) (takeWhile (not . maybe False stops . operatorName . fst) rest))
-
--- | The operators an assertion's right operand ends at: those of the lowest
--- two precedences, which is where the assertions are themselves.
-isLoose :: Text -> Bool
-isLoose name =
-  name `elem` ["$", "$!", "seq", ">>", ">>=", "=<<", "&"]
-    || T.isPrefixOf "should" name
-
-operatorName :: LHsExpr GhcPs -> Maybe Text
-operatorName op = case unLoc op of
-  HsVar _ n -> Just (rdrText (unLoc n))
-  _ -> Nothing
-
--- | A name applied to arguments by juxtaposition, and where each argument is.
-namedApplication :: LHsExpr GhcPs -> Maybe (Text, [SrcLoc.SrcSpan])
-namedApplication = fmap (fmap (map getLocA)) . namedApplicationOf
-
--- | A name applied to arguments by juxtaposition, and the arguments.
-namedApplicationOf :: LHsExpr GhcPs -> Maybe (Text, [LHsExpr GhcPs])
-namedApplicationOf = go []
+-- | A name applied to arguments by juxtaposition.
+prefixCall :: LHsExpr GhcPs -> Maybe Call
+prefixCall = go []
   where
-    go :: [LHsExpr GhcPs] -> LHsExpr GhcPs -> Maybe (Text, [LHsExpr GhcPs])
+    go :: [LHsExpr GhcPs] -> LHsExpr GhcPs -> Maybe Call
     go acc le = case unLoc (peelExpr le) of
       HsApp _ f x -> go (x : acc) f
       HsAppType _ f _ -> go acc f
-      HsVar _ n -> Just (rdrText (unLoc n), acc)
+      HsVar _ n ->
+        Just
+          Call
+            { callHead = (rdrText (unLoc n), getLocA n),
+              callArguments = map argument acc
+            }
       _ -> Nothing
+
+-- | Where an argument is written, and the name it is when it is a bare name.
+argument :: LHsExpr GhcPs -> (SrcLoc.SrcSpan, Maybe (Text, SrcLoc.SrcSpan))
+argument arg =
+  ( getLocA arg,
+    case unLoc (peelExpr arg) of
+      HsVar _ n -> Just (rdrText (unLoc n), getLocA n)
+      _ -> Nothing
+  )
+
+-- | A record built, as a call: its constructor applied to every field it is
+-- given.
+--
+-- A field set in an update is not a call, any more than a constructor is one
+-- that decides anything: setting a field builds a value and runs no code.
+recordCalls :: [LHsDecl GhcPs] -> [Call]
+recordCalls ds =
+  [ Call
+      { callHead = (rdrText (unLoc con), getLocA con),
+        callArguments = [argument (hfbRHS (unLoc field)) | field <- fields]
+      }
+  | RecordCon {rcon_con = con, rcon_flds = HsRecFields {rec_flds = fields}} <- listify isRecordCon ds
+  ]
+  where
+    isRecordCon :: HsExpr GhcPs -> Bool
+    isRecordCon = \case
+      RecordCon {} -> True
+      _ -> False

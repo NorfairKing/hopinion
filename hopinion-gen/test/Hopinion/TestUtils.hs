@@ -188,9 +188,10 @@ moduleScenario rid file
             T.pack
               <$> readProcess "ormolu" ["--stdin-input-file", toFilePath file] (T.unpack original)
           facts <- factsForSource shippedRules file [] ComponentKindLib formatted
+          report <- runModuleLayer shippedRules noModuleBuild facts
           let after' =
                 [ findingMessage f
-                | f <- complaintsFindings (runModuleLayer shippedRules facts),
+                | f <- complaintsFindings report,
                   findingRule f == rid
                 ]
           after' `shouldBe` before'
@@ -343,7 +344,7 @@ writeOne tmp root pm = do
   let name = unPackageName (packageModelName pm)
   dir <- (tmp </>) <$> parseRelDir (T.unpack name)
   ensureDir dir
-  report <- runPackageCommand shippedRules noHieDirectories root (packageModelDir pm) (Just dir)
+  report <- runPackageCommand shippedRules noHieDirectories root [] (packageModelDir pm) (Just dir)
   (sources, _) <- sourcesForReport [root] report
   writeReportTo shippedRules dir sources report
   pure (name, dir)

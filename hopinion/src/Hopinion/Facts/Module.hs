@@ -61,7 +61,7 @@ data ModuleContext = ModuleContext
     moduleContextCrowdedRecords :: ![CrowdedRecord],
     moduleContextUnprefixedNames :: ![UnprefixedName],
     moduleContextStrayAppDecls :: ![StrayAppDecl],
-    moduleContextTestLiterals :: ![TestLiteral],
+    moduleContextTestLiterals :: !TestLiterals,
     moduleContextTemplateHaskell :: !TemplateHaskellUse,
     moduleContextOutcome :: !ParseOutcome
   }

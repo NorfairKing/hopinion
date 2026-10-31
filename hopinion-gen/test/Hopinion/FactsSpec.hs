@@ -40,7 +40,6 @@ spec = do
     -- A suppression is @[allow:RuleId] reason@, and the bracket is meant to be
     -- able to grow a second colon-separated field later. That only stays
     -- possible while no rule id contains a colon of its own.
-    -- [allow:TestNoDummyValues] The one character besides letters and digits an id may hold.
     it "is PascalCase, so a rule id can never be mistaken for anything else" $
       forAllValid $ \r ->
         let isPascalCase :: Text -> Bool

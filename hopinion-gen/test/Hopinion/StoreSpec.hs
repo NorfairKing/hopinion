@@ -26,7 +26,6 @@ spec :: Spec
 spec = do
   -- What an exception says, which is as much as these tests look at: the
   -- wording is SQLite's and persistent's rather than this tool's.
-  -- [allow:TestNoDummyValues] What a run that threw nothing renders as, which no assertion here accepts.
   let renderedOf :: Either SomeException a -> Text
       renderedOf = either (T.pack . show) (const "")
 

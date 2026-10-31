@@ -12,6 +12,8 @@ module Hopinion.Rule
   ( Finding (..),
     CheckResult (..),
     ModuleCheck (..),
+    ModuleBuild (..),
+    noModuleBuild,
     moduleCheckFindings,
     PackageCheck (..),
     ProjectCheck (..),
@@ -131,13 +133,37 @@ data RuleImpl
 -- everything it reads has become a finding by the time the module phase
 -- returns.
 --
--- Pure, over the source alone. A module rule wanting what the compiler wrote
--- down would take it as a second argument; nothing does yet. Package and
--- project rules are unaffected, since those already run in IO.
-newtype ModuleCheck = ModuleCheckFromSource (ModuleContext -> CheckResult)
+-- Pure over the source for most rules. One that needs what the compiler wrote
+-- down about the module is handed the build as well, and runs in IO because
+-- reading it does.
+data ModuleCheck
+  = ModuleCheckFromSource (ModuleContext -> CheckResult)
+  | ModuleCheckFromBuild (ModuleBuild -> ModuleContext -> IO CheckResult)
 
-moduleCheckFindings :: ModuleCheck -> ModuleContext -> CheckResult
-moduleCheckFindings (ModuleCheckFromSource f) = f
+-- | What a module rule may ask beyond the source: what the build wrote about
+-- each module, and which packages are this project's own.
+--
+-- Which packages are the project's is a question about the repository rather
+-- than about the module, and the answer is what tells code under test from
+-- the libraries it is tested with.
+data ModuleBuild = ModuleBuild
+  { moduleBuildProjectPackages :: ![PackageName],
+    moduleBuildCompiled :: !CompiledModules
+  }
+
+-- | No build at all, which is what the module command and a check over an
+-- uncompiled tree have.
+noModuleBuild :: ModuleBuild
+noModuleBuild =
+  ModuleBuild
+    { moduleBuildProjectPackages = [],
+      moduleBuildCompiled = mempty
+    }
+
+moduleCheckFindings :: ModuleCheck -> ModuleBuild -> ModuleContext -> IO CheckResult
+moduleCheckFindings mc build ctx = case mc of
+  ModuleCheckFromSource f -> pure (f ctx)
+  ModuleCheckFromBuild f -> f build ctx
 
 data PackageCheck = PackageCheck
   { packageCheckMigration :: Migration,
