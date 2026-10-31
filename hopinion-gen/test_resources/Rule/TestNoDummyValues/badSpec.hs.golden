@@ -34,12 +34,12 @@
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 8 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestNoDummyValues][0m: A literal in a test: "-5".
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@9:46-9:50[0m
+[0;91;1m[error TestNoDummyValues][0m: A literal in a test: 5.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@9:66-9:67[0m
      [0;90;1m│[0m
-[0;90;1m   9 │[0m [0;97m [0m[0;97m [0m[0;97mi[0m[0;97mt[0m[0;97m [0m[0;97m"[0m[0;97mp[0m[0;97ma[0m[0;97mr[0m[0;97ms[0m[0;97me[0m[0;97ms[0m[0;97m [0m[0;97ma[0m[0;97m [0m[0;97mn[0m[0;97me[0m[0;97mg[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97mv[0m[0;97me[0m[0;97m [0m[0;97mn[0m[0;97mu[0m[0;97mm[0m[0;97mb[0m[0;97me[0m[0;97mr[0m[0;97m"[0m[0;97m [0m[0;97m([0m[0;97mp[0m[0;97ma[0m[0;97mr[0m[0;97ms[0m[0;97me[0m[0;97mN[0m[0;97mu[0m[0;97mm[0m[0;97mb[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1m"[0m[0;91;1m-[0m[0;91;1m5[0m[0;91;1m"[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mB[0m[0;97me[0m[0;97m`[0m[0;97m [0m[0;97mJ[0m[0;97mu[0m[0;97ms[0m[0;97mt[0m[0;97m [0m[0;97m([0m[0;97m-[0m[0;97m5[0m[0;97m)[0m[0;97m)[0m
-     [0;90;1m•[0m                                              [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
-     [0;90;1m•[0m                                              [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
+[0;90;1m   9 │[0m [0;97m [0m[0;97m [0m[0;97mi[0m[0;97mt[0m[0;97m [0m[0;97m"[0m[0;97mt[0m[0;97ma[0m[0;97mk[0m[0;97me[0m[0;97ms[0m[0;97m [0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97m [0m[0;97ma[0m[0;97mb[0m[0;97ms[0m[0;97mo[0m[0;97ml[0m[0;97mu[0m[0;97mt[0m[0;97me[0m[0;97m [0m[0;97mv[0m[0;97ma[0m[0;97ml[0m[0;97mu[0m[0;97me[0m[0;97m [0m[0;97mo[0m[0;97mf[0m[0;97m [0m[0;97ma[0m[0;97m [0m[0;97mn[0m[0;97me[0m[0;97mg[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97mv[0m[0;97me[0m[0;97m [0m[0;97mn[0m[0;97mu[0m[0;97mm[0m[0;97mb[0m[0;97me[0m[0;97mr[0m[0;97m"[0m[0;97m [0m[0;97m([0m[0;97ma[0m[0;97mb[0m[0;97ms[0m[0;97mo[0m[0;97ml[0m[0;97mu[0m[0;97mt[0m[0;97me[0m[0;97m [0m[0;97m([0m[0;97m-[0m[0;91;1m5[0m[0;97m)[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mB[0m[0;97me[0m[0;97m`[0m[0;97m [0m[0;97m5[0m[0;97m)[0m
+     [0;90;1m•[0m                                                                  [0;91m┬[0m 
+     [0;90;1m•[0m                                                                  [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mNote: A made-up value tests one input and reads as if it tested all of them.
      [0;90;1m│[0;96m       The ideal replacement is a property test: quantify over the value with

@@ -6,7 +6,7 @@ spec :: Spec
 spec = do
   it "renders a user" $
     renderUser User {userName = "alice", userAge = 30} `shouldBe` "alice (30)"
-  it "parses a negative number" (parseNumber "-5" `shouldBe` Just (-5))
+  it "takes the absolute value of a negative number" (absolute (-5) `shouldBe` 5)
   describe "a group" $
     specify "counts characters" $ do
       let c = 'x'
