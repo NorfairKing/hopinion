@@ -54,7 +54,7 @@ check build ctx
       origins <- nameOriginsOf (moduleContextPath ctx) (moduleBuildCompiled build)
       let facts = moduleContextTestLiterals ctx
       let ownership = ownershipOf (moduleBuildProjectPackages build) origins
-      let madeUp = reachesProject ownership facts . testLiteralConsumers
+      let madeUp = reachesProject ownership (binderOfIn origins) facts . testLiteralConsumers
       pure $
         findingsResult
           [ Finding
@@ -100,13 +100,27 @@ data Followability
 -- taken for a library.
 ownershipOf :: [PackageName] -> Maybe (M.Map HiePosition NameOrigin) -> NameAt -> Ownership
 ownershipOf project origins name = case origins >>= M.lookup (hiePositionOf (nameAtPosition name)) of
-  Just NameOriginThisModule -> OwnershipThisModule
+  Just (NameOriginThisModule _) -> OwnershipThisModule
   Just (NameOriginUnit unit)
     | any (`isUnitOf` unit) project -> OwnershipProject
     | otherwise -> OwnershipLibrary
   Nothing -> case nameAtDefinition name of
     DefinitionHere -> OwnershipThisModule
     DefinitionElsewhere -> OwnershipLibrary
+
+-- | The binder a name written here refers to, when the build says, as a
+-- position the source would give it.
+binderOfIn :: Maybe (M.Map HiePosition NameOrigin) -> Position -> Maybe Position
+binderOfIn origins use = case origins >>= M.lookup (hiePositionOf use) of
+  Just (NameOriginThisModule (Just binder)) ->
+    Just
+      Position
+        { positionLine = hiePositionLine binder,
+          positionCol = hiePositionCol binder
+        }
+  Just (NameOriginThisModule Nothing) -> Nothing
+  Just (NameOriginUnit _) -> Nothing
+  Nothing -> Nothing
 
 hiePositionOf :: Position -> HiePosition
 hiePositionOf p =
@@ -142,17 +156,17 @@ isUnitOf pkg unit =
 -- when what the function returns does further out. One whose parameters this
 -- module does not name, such as one written point-free, cannot be followed
 -- and is taken for the code under test.
-reachesProject :: (NameAt -> Ownership) -> TestLiterals -> [Consumer] -> Bool
-reachesProject owner facts = go PassageDirect S.empty S.empty
+reachesProject :: (NameAt -> Ownership) -> (Position -> Maybe Position) -> TestLiterals -> [Consumer] -> Bool
+reachesProject owner binderOf facts = go PassageDirect S.empty S.empty
   where
-    go :: Passage -> S.Set Text -> S.Set (Text, Word) -> [Consumer] -> Bool
+    go :: Passage -> S.Set Position -> S.Set (Text, Word) -> [Consumer] -> Bool
     go passage bindings parameters = \case
       [] -> False
       ConsumerCall callee index : rest
         | isConstructorName (nameAtText callee) -> go passage bindings parameters rest
         | otherwise -> case owner callee of
-            OwnershipThisModule -> case followable (nameAtText callee) index of
-              FollowabilityNamed -> intoFunction bindings parameters (nameAtText callee) index || go passage bindings parameters rest
+            OwnershipThisModule -> case followable callee index of
+              FollowabilityNamed -> intoFunction bindings parameters callee index || go passage bindings parameters rest
               FollowabilityUnknown -> True
             OwnershipProject -> True
             OwnershipLibrary -> go PassageThroughLibrary bindings parameters rest
@@ -163,31 +177,54 @@ reachesProject owner facts = go PassageDirect S.empty S.empty
         -- for later, it is not.
         PassageThroughLibrary -> False
         PassageDirect
-          | name `S.member` bindings -> False
+          | nameAtPosition name `S.member` bindings -> False
           | otherwise ->
               any
-                (go PassageDirect (S.insert name bindings) parameters . bindingUseConsumers)
-                [u | u <- testLiteralsUses facts, bindingUseName u == name]
+                (go PassageDirect (S.insert (nameAtPosition name) bindings) parameters . bindingUseConsumers)
+                [ u
+                | u <- testLiteralsUses facts,
+                  bindingUseName u == nameAtText name,
+                  refersTo (bindingUseAt u) (nameAtPosition name)
+                ]
 
     -- Inside the function, where the value is a parameter. What the function
     -- returns is followed by the caller, so the function's own name ends the
     -- path here rather than leading on to its uses.
-    intoFunction :: S.Set Text -> S.Set (Text, Word) -> Text -> Word -> Bool
-    intoFunction bindings parameters function index
-      | (function, index) `S.member` parameters = False
+    intoFunction :: S.Set Position -> S.Set (Text, Word) -> NameAt -> Word -> Bool
+    intoFunction bindings parameters callee index
+      | (nameAtText callee, index) `S.member` parameters = False
       | otherwise =
           any
-            (go PassageDirect (S.insert function bindings) (S.insert (function, index) parameters) . parameterUseConsumers)
+            (go PassageDirect (S.union (S.fromList (map functionArityAt (aritiesOf callee))) bindings) (S.insert (nameAtText callee, index) parameters) . parameterUseConsumers)
             [ u
             | u <- testLiteralsParameters facts,
-              parameterUseFunction u == function,
-              parameterUseIndex u == index
+              parameterUseFunction u == nameAtText callee,
+              definedAt callee (parameterUseFunctionAt u),
+              parameterUseIndex u == index,
+              refersTo (parameterUseAt u) (parameterUseBinderAt u)
             ]
 
-    followable :: Text -> Word -> Followability
-    followable function index
-      | any (\a -> functionArityName a == function && index < functionArityParameters a) (testLiteralsArities facts) = FollowabilityNamed
+    followable :: NameAt -> Word -> Followability
+    followable callee index
+      | any (\a -> index < functionArityParameters a) (aritiesOf callee) = FollowabilityNamed
       | otherwise = FollowabilityUnknown
+
+    aritiesOf :: NameAt -> [FunctionArity]
+    aritiesOf callee =
+      [ a
+      | a <- testLiteralsArities facts,
+        functionArityName a == nameAtText callee,
+        definedAt callee (functionArityAt a)
+      ]
+
+    -- Whether a name written at one place refers to the binder written at
+    -- another. The build says which binder each name refers to; without one
+    -- the spelling is all there is, and it has already matched.
+    refersTo :: Position -> Position -> Bool
+    refersTo use binder = maybe True (== binder) (binderOf use)
+
+    definedAt :: NameAt -> Position -> Bool
+    definedAt name = refersTo (nameAtPosition name)
 
 isConstructorName :: Text -> Bool
 isConstructorName name = case T.uncons name of

@@ -75,6 +75,7 @@ testLiteralsOf rp ref decls ds
           testLiteralsUses =
             [ BindingUse
                 { bindingUseName = name,
+                  bindingUseAt = spanStart (spanOfSrcSpan rp loc),
                   bindingUseConsumers = consumersAt loc
                 }
             | (name, loc) <- occurrences,
@@ -85,14 +86,17 @@ testLiteralsOf rp ref decls ds
           testLiteralsParameters =
             [ ParameterUse
                 { parameterUseFunction = rdrText (unLoc name),
+                  parameterUseFunctionAt = spanStart (spanOfSrcSpan rp (getLocA name)),
                   parameterUseIndex = index,
+                  parameterUseBinderAt = spanStart (spanOfSrcSpan rp binderAt),
+                  parameterUseAt = spanStart (spanOfSrcSpan rp loc),
                   parameterUseConsumers = consumersAt loc
                 }
             | lb <- listify (const True :: LHsBind GhcPs -> Bool) ds,
               FunBind {fun_id = name, fun_matches = mg} <- [unLoc lb],
               m <- map unLoc (unLoc (mg_alts mg)),
               (index, p) <- zip [0 ..] (unLoc (m_pats m)),
-              parameter <- patternNames p,
+              (parameter, binderAt) <- patternBinders p,
               (used, loc) <- occurrences,
               used == parameter,
               loc `SrcLoc.isSubspanOf` getLocA lb,
@@ -101,6 +105,7 @@ testLiteralsOf rp ref decls ds
           testLiteralsArities =
             [ FunctionArity
                 { functionArityName = rdrText (unLoc name),
+                  functionArityAt = spanStart (spanOfSrcSpan rp (getLocA name)),
                   functionArityParameters = foldl' max 0 (map (genericLength . unLoc . m_pats . unLoc) (unLoc (mg_alts mg)))
                 }
             | lb <- listify (const True :: LHsBind GhcPs -> Bool) ds,
@@ -128,8 +133,11 @@ testLiteralsOf rp ref decls ds
             ]
         )
 
+    binders :: [Binding]
+    binders = bindingsOf ds
+
     bindings :: [(Text, SrcLoc.SrcSpan)]
-    bindings = bindingsOf ds
+    bindings = [(bindingName b, bindingRegion b) | b <- binders]
 
     boundNames :: S.Set Text
     boundNames = S.fromList (map fst bindings)
@@ -218,11 +226,11 @@ testLiteralsOf rp ref decls ds
               | (_, (index, call)) <- enclosing
               ]
           bindingConsumer =
-            [ ConsumerBinding name
+            [ ConsumerBinding (nameAt (bindingName b, bindingBinder b))
             | Nothing <- [boundary],
               Just r <- [region],
-              (name, s) <- bindings,
-              s == r
+              b <- binders,
+              bindingRegion b == r
             ]
        in callConsumers ++ take 1 bindingConsumer
 
@@ -285,24 +293,33 @@ reachedFrom bindings occurrences = go
 -- | Every name this module binds, anywhere, and where what it is bound to is
 -- written: a function or a pattern binding at any depth, and a name bound in a
 -- @do@ block to the result of an action.
-bindingsOf :: [LHsDecl GhcPs] -> [(Text, SrcLoc.SrcSpan)]
+bindingsOf :: [LHsDecl GhcPs] -> [Binding]
 bindingsOf ds =
   [ binding
   | lb <- listify (const True :: LHsBind GhcPs -> Bool) ds,
     binding <- case unLoc lb of
-      FunBind {fun_id = n} -> [(rdrText (unLoc n), getLocA lb)]
-      PatBind {pat_lhs = p} -> [(name, getLocA lb) | name <- patternNames p]
+      FunBind {fun_id = n} -> [Binding (rdrText (unLoc n)) (getLocA n) (getLocA lb)]
+      PatBind {pat_lhs = p} -> [Binding name at (getLocA lb) | (name, at) <- patternBinders p]
       VarBind {} -> []
       PatSynBind {} -> []
   ]
-    ++ [ (name, getLocA body)
+    ++ [ Binding name at (getLocA body)
        | stmt <- listify (const True :: ExprLStmt GhcPs -> Bool) ds,
          BindStmt _ p body <- [unLoc stmt],
-         name <- patternNames p
+         (name, at) <- patternBinders p
        ]
 
-patternNames :: LPat GhcPs -> [Text]
-patternNames p = [rdrText (unLoc n) | VarPat _ n <- listify (const True :: Pat GhcPs -> Bool) p]
+-- | A name a module binds: its spelling, where its binder is written, and
+-- where what it is bound to is written.
+data Binding = Binding
+  { bindingName :: !Text,
+    bindingBinder :: !SrcLoc.SrcSpan,
+    bindingRegion :: !SrcLoc.SrcSpan
+  }
+
+-- | The names a pattern binds, and where each is written.
+patternBinders :: LPat GhcPs -> [(Text, SrcLoc.SrcSpan)]
+patternBinders p = [(rdrText (unLoc n), getLocA n) | VarPat _ n <- listify (const True :: Pat GhcPs -> Bool) p]
 
 -- | A lambda or a @do@ block, which is where what a value is handed to stops
 -- being what it is written in.

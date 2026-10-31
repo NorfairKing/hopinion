@@ -114,6 +114,8 @@ extra-source-files:
     test_resources/Example/dirty/thing/thing.cabal
     test_resources/Hie/Fixture.hs
     test_resources/Hie/Generator.hs
+    test_resources/NoDummyValues/ShadowSpec.hs
+    test_resources/NoDummyValues/Stub.hs
     test_resources/Project/absent-module/thing/src/Thing.hs
     test_resources/Project/absent-module/thing/thing.cabal
     test_resources/Project/absent-source-dir/thing/src/Thing.hs
@@ -388,6 +390,7 @@ test-suite hopinion-test
       Hopinion.Facts.ModuleSpec
       Hopinion.FactsSpec
       Hopinion.HieSpec
+      Hopinion.NoDummyValuesSpec
       Hopinion.ProjectSpec
       Hopinion.ReportSpec
       Hopinion.RuleSpec

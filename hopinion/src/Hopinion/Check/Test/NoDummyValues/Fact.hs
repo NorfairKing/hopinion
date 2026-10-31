@@ -64,7 +64,7 @@ data Consumer
     ConsumerCall !NameAt !Word
   | -- | The binding the value is the whole or a part of. What receives it from
     -- there is wherever that name is used.
-    ConsumerBinding !Text
+    ConsumerBinding !NameAt
   deriving stock (Show, Eq, Generic)
 
 instance Validity Consumer
@@ -95,6 +95,8 @@ instance Validity Definition
 -- | One place a binding is used, and what receives it there.
 data BindingUse = BindingUse
   { bindingUseName :: !Text,
+    -- | Where the use is written, which the build can say the binder of.
+    bindingUseAt :: !Position,
     bindingUseConsumers :: ![Consumer]
   }
   deriving stock (Show, Eq, Generic)
@@ -105,8 +107,14 @@ instance Validity BindingUse
 -- that function, and what receives it there.
 data ParameterUse = ParameterUse
   { parameterUseFunction :: !Text,
+    -- | Where the function's binder is written.
+    parameterUseFunctionAt :: !Position,
     -- | Which parameter, counting from nought.
     parameterUseIndex :: !Word,
+    -- | Where the parameter's binder is written, and where this use of it is,
+    -- so that a use of another name spelled the same is told apart.
+    parameterUseBinderAt :: !Position,
+    parameterUseAt :: !Position,
     parameterUseConsumers :: ![Consumer]
   }
   deriving stock (Show, Eq, Generic)
@@ -116,6 +124,7 @@ instance Validity ParameterUse
 -- | A function this module defines and how many parameters it names.
 data FunctionArity = FunctionArity
   { functionArityName :: !Text,
+    functionArityAt :: !Position,
     functionArityParameters :: !Word
   }
   deriving stock (Show, Eq, Generic)

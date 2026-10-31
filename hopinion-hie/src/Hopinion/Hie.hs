@@ -53,10 +53,10 @@ import GHC.Iface.Syntax (IfaceClsInst (..))
 import GHC.Iface.Type (IfaceTyCon (..))
 import GHC.Platform (genericPlatform)
 import GHC.Platform.Profile (Profile (..))
-import GHC.Types.Name (nameModule_maybe, nameOccName)
+import GHC.Types.Name (nameModule_maybe, nameOccName, nameSrcSpan)
 import GHC.Types.Name.Cache (initNameCache)
 import GHC.Types.Name.Occurrence (occNameString)
-import GHC.Types.SrcLoc (srcSpanStartCol, srcSpanStartLine)
+import GHC.Types.SrcLoc (SrcSpan (..), srcSpanStartCol, srcSpanStartLine)
 import GHC.Unit.Module (moduleName, moduleNameString, moduleUnit)
 import GHC.Unit.Module.ModIface (mi_insts)
 import GHC.Unit.Types (unitString)
@@ -228,12 +228,14 @@ instance Validity HiePosition
 
 -- | Where the thing a name refers to is defined.
 --
--- This module, for anything it defines itself, top-level or local, and
--- otherwise the unit the defining module was compiled into, by its id. Which
+-- This module, for anything it defines itself, top-level or local, with where
+-- its binder is written when the compiler recorded one, and otherwise the unit
+-- the defining module was compiled into, by its id. The binder's position is
+-- what tells two local names spelled the same apart. Which
 -- of those units are one's own project is not something a @.hie@ file knows,
 -- so it is left to whoever does.
 data NameOrigin
-  = NameOriginThisModule
+  = NameOriginThisModule !(Maybe HiePosition)
   | NameOriginUnit !Text
   deriving (Show, Eq, Generic)
 
@@ -247,10 +249,18 @@ readNameOrigins path = do
     cache <- initNameCache 'z' []
     file <- hie_file_result <$> readHieFile cache (toFilePath path)
     let here = hie_module file
+    let binderOf n = case nameSrcSpan n of
+          RealSrcSpan s _ ->
+            Just
+              HiePosition
+                { hiePositionLine = intToWord (srcSpanStartLine s),
+                  hiePositionCol = intToWord (srcSpanStartCol s)
+                }
+          UnhelpfulSpan _ -> Nothing
     let originOf n = case nameModule_maybe n of
-          Nothing -> NameOriginThisModule
+          Nothing -> NameOriginThisModule (binderOf n)
           Just m
-            | m == here -> NameOriginThisModule
+            | m == here -> NameOriginThisModule (binderOf n)
             | otherwise -> NameOriginUnit (T.pack (unitString (moduleUnit m)))
     let origins =
           M.fromListWith
