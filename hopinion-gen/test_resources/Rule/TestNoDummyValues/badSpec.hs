@@ -29,3 +29,5 @@ spec = do
     it "runs fewer examples" $
       forAllValid $ \user ->
         renderUser user {userName = "dave"} `shouldSatisfy` not . null
+  it "renders every user in a list" $
+    map renderUserName ["erin"] `shouldSatisfy` not . null

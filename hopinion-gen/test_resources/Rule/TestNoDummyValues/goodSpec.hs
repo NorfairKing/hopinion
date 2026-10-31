@@ -49,3 +49,7 @@ spec = do
     parseDuration "2w" `shouldBe` Right (Duration 1209600)
   it "decodes a specimen of the format" $
     eitherDecode "{\"name\":\"alice\"}" `shouldBe` Right (Person "alice")
+  it "parses every specimen in a list" $
+    map parseState ["active", "inactive"] `shouldBe` [StateActive, StateInactive]
+  it "parses every specimen in a list, mapped infix" $
+    (parseState <$> ["active", "inactive"]) `shouldBe` [StateActive, StateInactive]

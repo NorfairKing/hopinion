@@ -65,7 +65,7 @@ testLiteralsOf rp ref decls ds
     bodies = [body | (name, _ : body : _) <- applications, isTestName name]
 
     exempt :: [SrcLoc.SrcSpan]
-    exempt = concatMap (uncurry exemptArguments) applications
+    exempt = concatMap (uncurry exemptArguments) applications ++ concatMap mappedSpecimens expressions
 
     occurrences :: [(Text, SrcLoc.SrcSpan)]
     occurrences = [(rdrText (unLoc n), getLocA e) | e <- expressions, HsVar _ n <- [unLoc e]]
@@ -161,6 +161,35 @@ exemptArguments name args
   | name `elem` ["readProcess", "readProcessWithExitCode", "callProcess", "proc"] = take 2 args
   | name `elem` ["readCreateProcess", "readCreateProcessWithExitCode"] = args
   | otherwise = []
+
+-- | The list a function is mapped over, when what that function is given is
+-- exempt.
+--
+-- A parser mapped over a list of specimens is given each of them in turn, so
+-- they are as much specimens as one written directly after it. Written as a
+-- list, they would otherwise be one statement holding several findings, which
+-- no single suppression can answer for.
+mappedSpecimens :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
+mappedSpecimens le =
+  let (leftmost, rest) = spineOf le
+      prefix = case namedApplicationOf le of
+        Just (name, f : xs : _) | isMapper name && takesSpecimens f -> [getLocA xs]
+        _ -> []
+      infix' =
+        [ getLocA y
+        | (x, (op, y)) <- zip (leftmost : map snd rest) rest,
+          operatorName op `elem` [Just "<$>", Just "<&>"],
+          takesSpecimens x
+        ]
+   in prefix ++ infix'
+  where
+    isMapper :: Text -> Bool
+    isMapper name = name `elem` ["map", "fmap", "traverse", "traverse_", "mapM", "mapM_", "concatMap"]
+
+    takesSpecimens :: LHsExpr GhcPs -> Bool
+    takesSpecimens f = case namedApplication f of
+      Just (name, []) -> not (null (exemptArguments name [SrcLoc.noSrcSpan]))
+      _ -> False
 
 -- | Functions whose first argument is a claim or a setting.
 --
@@ -265,11 +294,15 @@ operatorName op = case unLoc op of
 
 -- | A name applied to arguments by juxtaposition, and where each argument is.
 namedApplication :: LHsExpr GhcPs -> Maybe (Text, [SrcLoc.SrcSpan])
-namedApplication = go []
+namedApplication = fmap (fmap (map getLocA)) . namedApplicationOf
+
+-- | A name applied to arguments by juxtaposition, and the arguments.
+namedApplicationOf :: LHsExpr GhcPs -> Maybe (Text, [LHsExpr GhcPs])
+namedApplicationOf = go []
   where
-    go :: [SrcLoc.SrcSpan] -> LHsExpr GhcPs -> Maybe (Text, [SrcLoc.SrcSpan])
+    go :: [LHsExpr GhcPs] -> LHsExpr GhcPs -> Maybe (Text, [LHsExpr GhcPs])
     go acc le = case unLoc (peelExpr le) of
-      HsApp _ f x -> go (getLocA x : acc) f
+      HsApp _ f x -> go (x : acc) f
       HsAppType _ f _ -> go acc f
       HsVar _ n -> Just (rdrText (unLoc n), acc)
       _ -> Nothing
