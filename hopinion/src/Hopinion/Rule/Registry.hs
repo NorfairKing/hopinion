@@ -22,6 +22,7 @@ import qualified Hopinion.Check.Package.AppOnlyMain.Rule as AppOnlyMain
 import qualified Hopinion.Check.Package.GenValidInGenPackage.Rule as GenValidInGenPackage
 import qualified Hopinion.Check.Project.GenValidSpecPerGenValid.Rule as GenValidSpecPerGenValid
 import qualified Hopinion.Check.Project.JsonSpecPerJsonType.Rule as JsonSpecPerJsonType
+import qualified Hopinion.Check.Test.NoDummyValues.Rule as NoDummyValues
 import qualified Hopinion.Check.Test.NoTestHelpers.Rule as NoTestHelpers
 import Hopinion.Rule (Rule)
 
@@ -37,6 +38,7 @@ builtinRules =
     NoCustomEq.rule,
     NoCustomOrd.rule,
     NoCustomShowRead.rule,
+    NoDummyValues.rule,
     NoFilePath.rule,
     NoSemigroupOnText.rule,
     NoStringError.rule,

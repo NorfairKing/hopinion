@@ -18,6 +18,7 @@ import Hopinion.Check.Hs.NoStringError.Fact
 import Hopinion.Check.Hs.PrefixNaming.Fact
 import Hopinion.Check.Hs.RecordFieldPerLine.Fact
 import Hopinion.Check.Package.AppOnlyMain.Fact
+import Hopinion.Check.Test.NoDummyValues.Fact
 import Hopinion.Comment (CommentFact (..))
 import Hopinion.Facts.Component
 import Hopinion.Facts.Decl
@@ -60,6 +61,7 @@ data ModuleContext = ModuleContext
     moduleContextCrowdedRecords :: ![CrowdedRecord],
     moduleContextUnprefixedNames :: ![UnprefixedName],
     moduleContextStrayAppDecls :: ![StrayAppDecl],
+    moduleContextTestLiterals :: ![TestLiteral],
     moduleContextTemplateHaskell :: !TemplateHaskellUse,
     moduleContextOutcome :: !ParseOutcome
   }
