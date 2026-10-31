@@ -19,6 +19,12 @@ levelCode = levelCode
 withRenderer :: User -> IO () -> IO ()
 withRenderer = withRenderer
 
+renderAge :: Int -> Text
+renderAge = renderAge
+
+genAge :: Int -> Int -> Gen Int
+genAge = genAge
+
 spec :: Spec
 spec = do
   describe "a description is not a value" $
@@ -67,3 +73,17 @@ spec = do
       withRenderer user $ do
         threadDelay 10
         setLocale "C"
+  it "renders an age one past a generated one" $
+    forAllValid $ \age ->
+      renderAge (age + 1) `shouldSatisfy` not . Text.null
+  it "generates ages with the project's own generator" $
+    forAll (genAge 18 99) $ \age ->
+      renderAge age `shouldSatisfy` not . Text.null
+  describe "a helper of this file's own" $ do
+    let rendersAs user expected = renderUser user `shouldBe` expected
+    let notEmpty text = text `shouldSatisfy` not . Text.null
+    it "hands a helper the value it expects" $
+      forAllValid $ \user ->
+        rendersAs user "an expected rendering"
+    it "hands a helper a value only a library receives" $
+      notEmpty "a value only an assertion receives"

@@ -8,6 +8,8 @@ module Hopinion.Check.Test.NoDummyValues.Fact
     NameAt (..),
     Definition (..),
     BindingUse (..),
+    ParameterUse (..),
+    FunctionArity (..),
   )
 where
 
@@ -22,7 +24,14 @@ data TestLiterals = TestLiterals
   { testLiteralsLiterals :: ![TestLiteral],
     -- | Every place a binding that holds a literal is used, so that what
     -- receives the binding can be asked about as well.
-    testLiteralsUses :: ![BindingUse]
+    testLiteralsUses :: ![BindingUse],
+    -- | What receives each parameter of the functions this module defines, so
+    -- that a value handed to one can be followed into it.
+    testLiteralsParameters :: ![ParameterUse],
+    -- | How many parameters each function this module defines takes, so that
+    -- one a value is handed to but never used is known to be unused rather
+    -- than unknown.
+    testLiteralsArities :: ![FunctionArity]
   }
   deriving stock (Show, Eq, Generic)
 
@@ -50,10 +59,11 @@ instance Validity TestLiteral
 -- | One thing a value is handed to on its way out of the expression it is
 -- written in.
 data Consumer
-  = -- | A function or constructor it is an argument of, and the bare names
-    -- among that call's other arguments: a library function handed one of the
-    -- project's own functions hands the value on to it.
-    ConsumerCall !NameAt ![NameAt]
+  = -- | A function or constructor it is an argument of, which argument it is
+    -- counting from nought, and the bare names among that call's other
+    -- arguments: a library function handed one of the project's own functions
+    -- hands the value on to it.
+    ConsumerCall !NameAt !Word ![NameAt]
   | -- | The binding the value is the whole or a part of. What receives it from
     -- there is wherever that name is used.
     ConsumerBinding !Text
@@ -92,3 +102,24 @@ data BindingUse = BindingUse
   deriving stock (Show, Eq, Generic)
 
 instance Validity BindingUse
+
+-- | One place a parameter of a function this module defines is used inside
+-- that function, and what receives it there.
+data ParameterUse = ParameterUse
+  { parameterUseFunction :: !Text,
+    -- | Which parameter, counting from nought.
+    parameterUseIndex :: !Word,
+    parameterUseConsumers :: ![Consumer]
+  }
+  deriving stock (Show, Eq, Generic)
+
+instance Validity ParameterUse
+
+-- | A function this module defines and how many parameters it names.
+data FunctionArity = FunctionArity
+  { functionArityName :: !Text,
+    functionArityParameters :: !Word
+  }
+  deriving stock (Show, Eq, Generic)
+
+instance Validity FunctionArity

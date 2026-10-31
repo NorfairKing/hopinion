@@ -8,7 +8,7 @@ module Hopinion.Check.Test.NoDummyValues.Extract (testLiteralsOf) where
 
 import Data.Foldable (toList)
 import Data.Generics (listify)
-import Data.List (nub, sortBy)
+import Data.List (genericLength, nub, sortBy)
 import qualified Data.Map.Strict as M
 import Data.Maybe (fromMaybe)
 import qualified Data.Set as S
@@ -51,7 +51,9 @@ testLiteralsOf rp ref decls ds
   | not (isSpecFilePath rp) =
       TestLiterals
         { testLiteralsLiterals = [],
-          testLiteralsUses = []
+          testLiteralsUses = [],
+          testLiteralsParameters = [],
+          testLiteralsArities = []
         }
   | otherwise =
       TestLiterals
@@ -66,7 +68,7 @@ testLiteralsOf rp ref decls ds
             | l <- listify isLiteral ds,
               let loc = getLocA l,
               within reached loc,
-              not (within tables loc),
+              not (within exempt loc),
               let sp = spanOfSrcSpan rp loc,
               Just owner <- [ownerOf loc]
             ],
@@ -77,7 +79,32 @@ testLiteralsOf rp ref decls ds
                 }
             | (name, loc) <- occurrences,
               name `S.member` boundNames,
+              not (within exempt loc),
               within reached loc
+            ],
+          testLiteralsParameters =
+            [ ParameterUse
+                { parameterUseFunction = rdrText (unLoc name),
+                  parameterUseIndex = index,
+                  parameterUseConsumers = consumersAt loc
+                }
+            | lb <- listify (const True :: LHsBind GhcPs -> Bool) ds,
+              FunBind {fun_id = name, fun_matches = mg} <- [unLoc lb],
+              m <- map unLoc (unLoc (mg_alts mg)),
+              (index, p) <- zip [0 ..] (unLoc (m_pats m)),
+              parameter <- patternNames p,
+              (used, loc) <- occurrences,
+              used == parameter,
+              loc `SrcLoc.isSubspanOf` getLocA lb,
+              not (within exempt loc)
+            ],
+          testLiteralsArities =
+            [ FunctionArity
+                { functionArityName = rdrText (unLoc name),
+                  functionArityParameters = foldl' max 0 (map (genericLength . unLoc . m_pats . unLoc) (unLoc (mg_alts mg)))
+                }
+            | lb <- listify (const True :: LHsBind GhcPs -> Bool) ds,
+              FunBind {fun_id = name, fun_matches = mg} <- [unLoc lb]
             ]
         }
   where
@@ -125,6 +152,12 @@ testLiteralsOf rp ref decls ds
     tables :: [SrcLoc.SrcSpan]
     tables = constructorTables ds
 
+    -- What the source alone settles, whoever receives it: a table from
+    -- constructors, an offset from a value that is not a literal, and how a
+    -- property generates its values.
+    exempt :: [SrcLoc.SrcSpan]
+    exempt = tables ++ concatMap offsetsAt expressions ++ generatorArguments calls
+
     blocks :: [SrcLoc.SrcSpan]
     blocks = [getLocA e | e <- expressions, isBlock (unLoc e)]
 
@@ -154,16 +187,16 @@ testLiteralsOf rp ref decls ds
           enclosing =
             sortBy
               innerFirst
-              [ (arg, call)
+              [ (arg, (index, call))
               | call <- calls,
-                (arg, _) <- callArguments call,
+                (index, (arg, _)) <- zip [0 ..] (callArguments call),
                 loc `SrcLoc.isSubspanOf` arg,
                 inRegion arg
               ]
           callConsumers =
             nub
-              [ ConsumerCall (nameAt (callHead call)) [nameAt n | (other, Just n) <- callArguments call, other /= arg]
-              | (arg, call) <- enclosing
+              [ ConsumerCall (nameAt (callHead call)) index [nameAt n | (other, Just n) <- callArguments call, other /= arg]
+              | (arg, (index, call)) <- enclosing
               ]
           bindingConsumer =
             [ ConsumerBinding name
@@ -277,6 +310,38 @@ isTestName name =
                    variant <- ["", "WithOuter", "WithBoth", "WithAll"]
                  ]
            )
+
+-- | A literal added to, taken from, multiplied with or compared with something
+-- that is not a literal, as in @index + 1@ or @length xs > 1@, or written as
+-- one side of such a section, as in @(+ 1)@.
+--
+-- That states where a value is relative to another, which is a claim about the
+-- other value rather than a value made up in its place.
+offsetsAt :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
+offsetsAt le = case unLoc le of
+  OpApp _ l op r
+    | isRelation op -> case (isLiteral (peelExpr l), isLiteral (peelExpr r)) of
+        (False, True) -> [getLocA r]
+        (True, False) -> [getLocA l]
+        _ -> []
+  SectionL _ arg op | isRelation op -> [getLocA arg]
+  SectionR _ op arg | isRelation op -> [getLocA arg]
+  _ -> []
+  where
+    isRelation :: LHsExpr GhcPs -> Bool
+    isRelation op = case unLoc op of
+      HsVar _ n -> rdrText (unLoc n) `elem` ["+", "-", "*", ">", "<", ">=", "<=", "==", "/="]
+      _ -> False
+
+-- | Every argument of a @forAll@ function but the property, which is how the
+-- values the property runs on are generated rather than values of their own.
+generatorArguments :: [Call] -> [SrcLoc.SrcSpan]
+generatorArguments calls =
+  [ arg
+  | Call {callHead = (name, _), callArguments = args} <- calls,
+    T.isPrefixOf "forAll" name,
+    (arg, _) <- take (length args - 1) args
+  ]
 
 -- | The literals a table from constructors to values maps to, as in a @\\case@
 -- giving each constructor of a sum type its protocol code.

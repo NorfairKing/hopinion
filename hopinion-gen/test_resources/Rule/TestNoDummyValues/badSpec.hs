@@ -39,3 +39,10 @@ spec = do
   it "renders a made-up name bound inside the test" $ do
     let frank = "frank"
     renderName frank `shouldSatisfy` not . Text.null
+  describe "a helper of this file's own" $ do
+    let mk name = User {userName = name, userAge = 30}
+    let renders user = renderUser user `shouldSatisfy` not . Text.null
+    it "renders a user a helper builds from a made-up name" $
+      renderUser (mk "gina") `shouldSatisfy` not . Text.null
+    it "hands a helper a made-up value it gives the code under test" $
+      renders User {userName = "hal", userAge = 2}
