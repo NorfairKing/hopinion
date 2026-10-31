@@ -193,10 +193,15 @@ mappedSpecimens le =
 
 -- | Functions whose first argument is a claim or a setting.
 --
--- The needle of a search is what a test claims is in its output, and the
--- generator a property is quantified over is the replacement this rule asks for.
--- A QuickCheck setting is its first argument alone, because what it wraps is a
--- test like any other.
+-- The needle of a search is what a test claims is in its output, and so is the
+-- key of a lookup: it names something the output should hold, or repeats a
+-- value written into the input, where that value is reported already. A
+-- selector names a part of a page, and a form or query parameter's name is
+-- fixed by the handler it is sent to.
+--
+-- The generator a property is quantified over is the replacement this rule
+-- asks for. A QuickCheck setting or a retry delay is its first argument alone,
+-- because what it wraps is a test or a policy like any other.
 firstArgumentNames :: [Text]
 firstArgumentNames =
   [ "expectationFailure",
@@ -212,6 +217,18 @@ firstArgumentNames =
     "isInfixOf",
     "isPrefixOf",
     "isSuffixOf",
+    "lookup",
+    "member",
+    "notMember",
+    "htmlQuery",
+    "addPostParam",
+    "addGetParam",
+    "byLabelExact",
+    "byLabelContain",
+    "bySelectorLabelContain",
+    "fileByLabelExact",
+    "fileByLabelContain",
+    "capDelay",
     "withMaxSuccess",
     "modifyMaxSuccess",
     "modifyMaxSize",
@@ -222,8 +239,9 @@ firstArgumentNames =
 
 -- | Functions whose every argument is a claim or a setting.
 --
--- The assertions of yesod-test, which take nothing but what they assert, and
--- the parts of a request that the protocol fixes.
+-- The assertions of yesod-test, which take nothing but what they assert, the
+-- parts of a request that the protocol fixes, and retry policies, which are
+-- settings.
 wholeCallNames :: [Text]
 wholeCallNames =
   [ "shouldBeInvalid",
@@ -238,7 +256,11 @@ wholeCallNames =
     "htmlAnyContain",
     "htmlNoneContain",
     "assertHeader",
-    "assertNoHeader"
+    "assertNoHeader",
+    "limitRetries",
+    "constantDelay",
+    "exponentialBackoff",
+    "fullJitterBackoff"
   ]
 
 -- | Every named function applied at this node, with where each of its arguments

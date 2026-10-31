@@ -53,3 +53,17 @@ spec = do
     map parseState ["active", "inactive"] `shouldBe` [StateActive, StateInactive]
   it "parses every specimen in a list, mapped infix" $
     (parseState <$> ["active", "inactive"]) `shouldBe` [StateActive, StateInactive]
+  it "submits a form and looks at the page it renders" $ \yc ->
+    runYesodClientM yc $ do
+      forAllValid' $ \owner -> do
+        request $ do
+          setMethod "POST"
+          addPostParam "owner" owner
+          addGetParam "page" (renderPage firstPage)
+        rows <- htmlQuery "tbody tr"
+        headers <- responseHeaders <$> requireResponse
+        lookup "Content-Type" headers `shouldBe` Just "text/html"
+        rows `shouldSatisfy` not . null
+  it "retries a few times" $
+    forAllValid $ \request' ->
+      runWithRetries (limitRetries 3 <> capDelay 1_000 (constantDelay 10)) request' `shouldReturn` ()

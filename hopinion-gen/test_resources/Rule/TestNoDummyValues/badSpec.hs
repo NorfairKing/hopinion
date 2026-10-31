@@ -31,3 +31,7 @@ spec = do
         renderUser user {userName = "dave"} `shouldSatisfy` not . null
   it "renders every user in a list" $
     map renderUserName ["erin"] `shouldSatisfy` not . null
+  it "submits a made-up value under a parameter name the handler fixes" $ \yc ->
+    runYesodClientM yc $
+      request $
+        addPostParam "owner" "frank"
