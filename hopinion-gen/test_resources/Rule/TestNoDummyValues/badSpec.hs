@@ -37,3 +37,6 @@ spec = do
         addPostParam "owner" "frank"
   it "adds two literals" $
     renderAge (20 + 1) `shouldSatisfy` not . null
+  it "uses a let that holds a made-up value" $ do
+    let greg = "greg"
+    renderUserName greg `shouldSatisfy` not . null

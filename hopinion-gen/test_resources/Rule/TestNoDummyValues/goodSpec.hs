@@ -87,3 +87,16 @@ spec = do
   it "goes one past a generated value" $
     forAllValid $ \users ->
       lookupUser (length users + 1) users `shouldBe` Nothing
+  it "says why it fails through a let that only the message uses" $
+    forAllValid $ \user ->
+      let message = unwords ["Rendered", show user, "as nothing"]
+       in context message $ renderUser user `shouldSatisfy` not . null
+  it "parses its settings from the arguments the program takes" $
+    parserArgsTest settingsParser ["--name", "alice"] (Settings (UserName "alice"))
+  it "runs a query as postgresql-simple writes one" $ \conn -> do
+    _ <- execute_ conn "LISTEN channel"
+    rows <- query_ conn "SELECT 1"
+    rows `shouldSatisfy` not . null
+  it "fails with a message nothing reads" $
+    forAllValid $ \user ->
+      (renderOrFail user >>= maybe (throwIO (userError "no render")) pure) `shouldReturn` renderUser user

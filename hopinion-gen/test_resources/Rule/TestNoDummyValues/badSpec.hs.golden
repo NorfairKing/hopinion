@@ -206,3 +206,22 @@
      [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 39 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
+
+[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "greg".
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@41:16-41:22[0m
+     [0;90;1m│[0m
+[0;90;1m  41 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97ml[0m[0;97me[0m[0;97mt[0m[0;97m [0m[0;97mg[0m[0;97mr[0m[0;97me[0m[0;97mg[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m"[0m[0;91;1mg[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1mg[0m[0;91;1m"[0m
+     [0;90;1m•[0m                [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m                [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A made-up value tests one input and reads as if it tested all of them.
+     [0;90;1m│[0;96m       The ideal replacement is a property test: quantify over the value with
+     [0;90;1m│[0;96m       forAllValid, so the test states the claim it is making and the
+     [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
+     [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
+     [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
+     [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
+     [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
+     [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 41 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
+[0;90;1m─────╯[0m

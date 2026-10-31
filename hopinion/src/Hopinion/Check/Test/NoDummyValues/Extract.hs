@@ -54,6 +54,7 @@ testLiteralsOf rp ref decls ds
         let loc = getLocA l,
         within reached loc,
         not (within exempt loc),
+        not (within unnamedLets loc),
         Just owner <- [ownerOf loc],
         let sp = spanOfSrcSpan rp loc
       ]
@@ -82,7 +83,23 @@ testLiteralsOf rp ref decls ds
     occurrences = [(rdrText (unLoc n), getLocA e) | e <- expressions, HsVar _ n <- [unLoc e]]
 
     reached :: [SrcLoc.SrcSpan]
-    reached = reachedFrom (bindingsOf ds) occurrences exempt bodies
+    reached = reachedFrom (bindingsOf ds) occurrences exempt letsInTests bodies
+
+    -- A let inside a test runs only if something uses it, so what it holds is
+    -- only run on once a name outside an exempt position reaches it. One that
+    -- only an exempt position names, as in @let ctx = ... in context ctx@, is
+    -- as exempt as that position. A name bound to an action's result is not
+    -- one of these, because the action runs whether or not the name is used.
+    letsInTests :: [SrcLoc.SrcSpan]
+    letsInTests =
+      nub
+        [ getLocA lb
+        | lb <- listify (const True :: LHsBind GhcPs -> Bool) ds,
+          any (\b -> getLocA lb `SrcLoc.isSubspanOf` b && getLocA lb /= b) bodies
+        ]
+
+    unnamedLets :: [SrcLoc.SrcSpan]
+    unnamedLets = [l | l <- letsInTests, l `notElem` reached]
 
     -- The innermost test a literal is in, and the innermost binding it was
     -- reached through when it is in none.
@@ -104,14 +121,30 @@ within regions loc = any (loc `SrcLoc.isSubspanOf`) regions
 -- | The regions a test runs: the ones it starts from, and every binding a name
 -- in one of them refers to, until no new binding is named.
 --
+-- A let it is given is inside a region already, and is run only once a name
+-- reaches it, so until then nothing written in it names anything.
+--
 -- Terminates because a region is only added once and there are finitely many
 -- bindings.
-reachedFrom :: [(Text, SrcLoc.SrcSpan)] -> [(Text, SrcLoc.SrcSpan)] -> [SrcLoc.SrcSpan] -> [SrcLoc.SrcSpan] -> [SrcLoc.SrcSpan]
-reachedFrom bindings occurrences exempt = go
+reachedFrom ::
+  [(Text, SrcLoc.SrcSpan)] ->
+  [(Text, SrcLoc.SrcSpan)] ->
+  [SrcLoc.SrcSpan] ->
+  [SrcLoc.SrcSpan] ->
+  [SrcLoc.SrcSpan] ->
+  [SrcLoc.SrcSpan]
+reachedFrom bindings occurrences exempt lets = go
   where
     go :: [SrcLoc.SrcSpan] -> [SrcLoc.SrcSpan]
     go regions =
-      let named = [n | (n, loc) <- occurrences, within regions loc, not (within exempt loc)]
+      let unnamed = [l | l <- lets, l `notElem` regions]
+          named =
+            [ n
+            | (n, loc) <- occurrences,
+              within regions loc,
+              not (within exempt loc),
+              not (within unnamed loc)
+            ]
           new = nub [s | (n, s) <- bindings, n `elem` named, s `notElem` regions]
        in if null new then regions else go (regions ++ new)
 
@@ -172,6 +205,9 @@ isTestName name =
 -- A raw query is code in another language rather than a value, and the key of
 -- a JSON object is fixed by the format it is written in.
 --
+-- An opt-env-conf parser test is given a specimen and the value it should
+-- parse to, so neither half is made up.
+--
 -- What a parser is given is a specimen of the format it reads, which the test is
 -- about and which the expected value is worked out from, so it is no more a
 -- dummy than the expected value is.
@@ -184,7 +220,8 @@ exemptArguments name args
   | name `elem` firstArgumentNames = take 1 args
   | T.isPrefixOf "golden" name || T.isInfixOf "Golden" name = args
   | any (`T.isPrefixOf` name) ["readFile", "decodeFile", "parse", "decode", "eitherDecode"] = take 1 args
-  | name `elem` ["rawExecute", "rawExecuteCount", "rawSql", "rawQuery"] = take 1 args
+  | name `elem` ["rawExecute", "rawExecuteCount", "rawSql", "rawQuery", "execute", "execute_", "query", "query_"] = take 1 args
+  | T.isPrefixOf "parser" name && T.isSuffixOf "Test" name = args
   | T.isPrefixOf "with" name && T.isInfixOf "Temp" name = take 1 args
   | name `elem` ["readProcess", "readProcessWithExitCode", "callProcess", "proc"] = take 2 args
   | name `elem` ["readCreateProcess", "readCreateProcessWithExitCode"] = args
@@ -292,6 +329,11 @@ mappedSpecimens le =
 firstArgumentNames :: [Text]
 firstArgumentNames =
   [ "expectationFailure",
+    "error",
+    "errorWithoutStackTrace",
+    "userError",
+    "fail",
+    "throwString",
     "context",
     "generate",
     "forAll",
