@@ -37,14 +37,13 @@ spec = do
     -- account for a module that was read. At the point of use this is
     -- indistinguishable from the case above, since both say nothing, which is
     -- why it is caught here instead.
+    -- [allow:TestNoDummyValues] One module the files are written for, and one they are not.
     it "names a module the directories do not account for" $
       forAllValid $ \contents ->
         withSystemTempDir "hopinion-hie" $ \dir -> do
           SB.writeFile (toFilePath (dir </> [relfile|Thing.hie|])) contents
           SB.writeFile (toFilePath (dir </> [relfile|Thing.hi|])) contents
-          -- [allow:TestNoDummyValues] The module the files above were written for.
           let thing = ModuleKey "Thing"
-          -- [allow:TestNoDummyValues] A module no file above was written for.
           let other = ModuleKey "Other"
           compiled <-
             compiledModulesFor
@@ -73,6 +72,7 @@ spec = do
 
     -- A.B.C is A/B/C.hie, which is the layout the collection has to produce and
     -- the reason it is rooted where a module's own path starts.
+    -- [allow:TestNoDummyValues] A top-level module and a dotted one, named for the files written for them.
     it "says nothing about a build that accounts for every module" $
       forAllValid $ \contents ->
         withSystemTempDir "hopinion-hie" $ \dir -> do
@@ -81,9 +81,7 @@ spec = do
           ensureDir (dir </> [reldir|Deep/Down|])
           SB.writeFile (toFilePath (dir </> [relfile|Deep/Down/Other.hie|])) contents
           SB.writeFile (toFilePath (dir </> [relfile|Deep/Down/Other.hi|])) contents
-          -- [allow:TestNoDummyValues] The module the top-level files were written for.
           let thing = ModuleKey "Thing"
-          -- [allow:TestNoDummyValues] The dotted name whose layout is under test.
           let deepOther = ModuleKey "Deep.Down.Other"
           compiled <-
             compiledModulesFor

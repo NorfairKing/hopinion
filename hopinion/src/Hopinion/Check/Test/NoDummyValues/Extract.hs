@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | Beside the rule rather than in the shared extraction, because nothing else
@@ -46,12 +47,14 @@ testLiteralsOf rp ref decls ds
       [ TestLiteral
           { testLiteralText = T.pack (showPprUnsafe (unLoc l)),
             testLiteralSpan = sp,
-            testLiteralScope = declScopeOf ref decls sp
+            testLiteralScope = declScopeOf ref decls sp,
+            testLiteralOwner = spanOfSrcSpan rp owner
           }
       | l <- listify isLiteral ds,
         let loc = getLocA l,
         within reached loc,
         not (within exempt loc),
+        Just owner <- [ownerOf loc],
         let sp = spanOfSrcSpan rp loc
       ]
   where
@@ -80,6 +83,20 @@ testLiteralsOf rp ref decls ds
 
     reached :: [SrcLoc.SrcSpan]
     reached = reachedFrom (bindingsOf ds) occurrences exempt bodies
+
+    -- The innermost test a literal is in, and the innermost binding it was
+    -- reached through when it is in none.
+    ownerOf :: SrcLoc.SrcSpan -> Maybe SrcLoc.SrcSpan
+    ownerOf loc = case innermost [b | b <- bodies, loc `SrcLoc.isSubspanOf` b] of
+      Just body -> Just body
+      Nothing -> innermost [r | r <- reached, loc `SrcLoc.isSubspanOf` r]
+
+-- | The region every other one of these contains, given regions that all
+-- contain one point and so nest.
+innermost :: [SrcLoc.SrcSpan] -> Maybe SrcLoc.SrcSpan
+innermost = \case
+  [] -> Nothing
+  (r : rs) -> Just (foldl' (\inner s -> if s `SrcLoc.isSubspanOf` inner then s else inner) r rs)
 
 within :: [SrcLoc.SrcSpan] -> SrcLoc.SrcSpan -> Bool
 within regions loc = any (loc `SrcLoc.isSubspanOf`) regions

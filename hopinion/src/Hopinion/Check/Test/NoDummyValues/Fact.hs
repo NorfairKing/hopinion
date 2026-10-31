@@ -14,7 +14,11 @@ data TestLiteral = TestLiteral
     -- which of several on one line it is about.
     testLiteralText :: !Text,
     testLiteralSpan :: !Span,
-    testLiteralScope :: !ScopeKey
+    testLiteralScope :: !ScopeKey,
+    -- | The test it is in, or the binding outside every test that it is in.
+    -- Literals are reported one owner at a time, so that one suppression above
+    -- a test answers for everything made up in it.
+    testLiteralOwner :: !Span
   }
   deriving stock (Show, Eq, Generic)
 

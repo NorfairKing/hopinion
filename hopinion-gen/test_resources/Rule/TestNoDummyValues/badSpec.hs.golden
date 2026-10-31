@@ -1,4 +1,4 @@
-[0;91;1m[error TestNoDummyValues][0m: A literal in a test: "alice".
+[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "alice", 30.
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@8:33-8:40[0m
      [0;90;1m│[0m
 [0;90;1m   8 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m{[0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m"[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m"[0m[0;97m,[0m[0;97m [0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97m3[0m[0;97m0[0m[0;97m}[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mB[0m[0;97me[0m[0;97m`[0m[0;97m [0m[0;97m"[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97mc[0m[0;97me[0m[0;97m [0m[0;97m([0m[0;97m3[0m[0;97m0[0m[0;97m)[0m[0;97m"[0m
@@ -11,30 +11,13 @@
      [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
      [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
      [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
-     [0;90;1m│[0;96m       When the literal is the point of the test, such as a regression input or
-     [0;90;1m│[0;96m       the edge case a bug was found at, suppress it and say which one it is.[0m
+     [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
+     [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
+     [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 8 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestNoDummyValues][0m: A literal in a test: 30.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@8:52-8:54[0m
-     [0;90;1m│[0m
-[0;90;1m   8 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m{[0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97m"[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97mc[0m[0;97me[0m[0;97m"[0m[0;97m,[0m[0;97m [0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m3[0m[0;91;1m0[0m[0;97m}[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mB[0m[0;97me[0m[0;97m`[0m[0;97m [0m[0;97m"[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97mc[0m[0;97me[0m[0;97m [0m[0;97m([0m[0;97m3[0m[0;97m0[0m[0;97m)[0m[0;97m"[0m
-     [0;90;1m•[0m                                                    [0;91m┬[0m[0;91m─[0m 
-     [0;90;1m•[0m                                                    [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
-     [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A made-up value tests one input and reads as if it tested all of them.
-     [0;90;1m│[0;96m       The ideal replacement is a property test: quantify over the value with
-     [0;90;1m│[0;96m       forAllValid, so the test states the claim it is making and the
-     [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
-     [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
-     [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
-     [0;90;1m│[0;96m       When the literal is the point of the test, such as a regression input or
-     [0;90;1m│[0;96m       the edge case a bug was found at, suppress it and say which one it is.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 8 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
-[0;90;1m─────╯[0m
-
-[0;91;1m[error TestNoDummyValues][0m: A literal in a test: 5.
+[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: 5.
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@9:66-9:67[0m
      [0;90;1m│[0m
 [0;90;1m   9 │[0m [0;97m [0m[0;97m [0m[0;97mi[0m[0;97mt[0m[0;97m [0m[0;97m"[0m[0;97mt[0m[0;97ma[0m[0;97mk[0m[0;97me[0m[0;97ms[0m[0;97m [0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97m [0m[0;97ma[0m[0;97mb[0m[0;97ms[0m[0;97mo[0m[0;97ml[0m[0;97mu[0m[0;97mt[0m[0;97me[0m[0;97m [0m[0;97mv[0m[0;97ma[0m[0;97ml[0m[0;97mu[0m[0;97me[0m[0;97m [0m[0;97mo[0m[0;97mf[0m[0;97m [0m[0;97ma[0m[0;97m [0m[0;97mn[0m[0;97me[0m[0;97mg[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97mv[0m[0;97me[0m[0;97m [0m[0;97mn[0m[0;97mu[0m[0;97mm[0m[0;97mb[0m[0;97me[0m[0;97mr[0m[0;97m"[0m[0;97m [0m[0;97m([0m[0;97ma[0m[0;97mb[0m[0;97ms[0m[0;97mo[0m[0;97ml[0m[0;97mu[0m[0;97mt[0m[0;97me[0m[0;97m [0m[0;97m([0m[0;97m-[0m[0;91;1m5[0m[0;97m)[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mB[0m[0;97me[0m[0;97m`[0m[0;97m [0m[0;97m5[0m[0;97m)[0m
@@ -47,12 +30,13 @@
      [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
      [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
      [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
-     [0;90;1m│[0;96m       When the literal is the point of the test, such as a regression input or
-     [0;90;1m│[0;96m       the edge case a bug was found at, suppress it and say which one it is.[0m
+     [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
+     [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
+     [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 9 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestNoDummyValues][0m: A literal in a test: 'x'.
+[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: 'x', 3.
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@12:15-12:18[0m
      [0;90;1m│[0m
 [0;90;1m  12 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97ml[0m[0;97me[0m[0;97mt[0m[0;97m [0m[0;97mc[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m'[0m[0;91;1mx[0m[0;91;1m'[0m
@@ -65,30 +49,13 @@
      [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
      [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
      [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
-     [0;90;1m│[0;96m       When the literal is the point of the test, such as a regression input or
-     [0;90;1m│[0;96m       the edge case a bug was found at, suppress it and say which one it is.[0m
+     [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
+     [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
+     [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 12 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestNoDummyValues][0m: A literal in a test: 3.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@13:30-13:31[0m
-     [0;90;1m│[0m
-[0;90;1m  13 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mc[0m[0;97mo[0m[0;97mu[0m[0;97mn[0m[0;97mt[0m[0;97mC[0m[0;97mh[0m[0;97ma[0m[0;97mr[0m[0;97m [0m[0;97mc[0m[0;97m [0m[0;97m([0m[0;97mr[0m[0;97me[0m[0;97mp[0m[0;97ml[0m[0;97mi[0m[0;97mc[0m[0;97ma[0m[0;97mt[0m[0;97me[0m[0;97m [0m[0;91;1m3[0m[0;97m [0m[0;97mc[0m[0;97m)[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mB[0m[0;97me[0m[0;97m`[0m[0;97m [0m[0;97m3[0m
-     [0;90;1m•[0m                              [0;91m┬[0m 
-     [0;90;1m•[0m                              [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
-     [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A made-up value tests one input and reads as if it tested all of them.
-     [0;90;1m│[0;96m       The ideal replacement is a property test: quantify over the value with
-     [0;90;1m│[0;96m       forAllValid, so the test states the claim it is making and the
-     [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
-     [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
-     [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
-     [0;90;1m│[0;96m       When the literal is the point of the test, such as a regression input or
-     [0;90;1m│[0;96m       the edge case a bug was found at, suppress it and say which one it is.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 13 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
-[0;90;1m─────╯[0m
-
-[0;91;1m[error TestNoDummyValues][0m: A literal in a test: "bob".
+[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "bob".
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@18:35-18:40[0m
      [0;90;1m│[0m
 [0;90;1m  18 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m{[0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m"[0m[0;91;1mb[0m[0;91;1mo[0m[0;91;1mb[0m[0;91;1m"[0m[0;97m,[0m[0;97m [0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97ma[0m[0;97mg[0m[0;97me[0m[0;97m}[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mS[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97ms[0m[0;97mf[0m[0;97my[0m[0;97m`[0m[0;97m [0m[0;97mi[0m[0;97ms[0m[0;97mI[0m[0;97mn[0m[0;97mf[0m[0;97mi[0m[0;97mx[0m[0;97mO[0m[0;97mf[0m[0;97m [0m[0;97m"[0m[0;97mb[0m[0;97mo[0m[0;97mb[0m[0;97m"[0m
@@ -101,12 +68,13 @@
      [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
      [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
      [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
-     [0;90;1m│[0;96m       When the literal is the point of the test, such as a regression input or
-     [0;90;1m│[0;96m       the edge case a bug was found at, suppress it and say which one it is.[0m
+     [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
+     [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
+     [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 18 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestNoDummyValues][0m: A literal in a test: "carol".
+[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "carol".
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@20:16-20:23[0m
      [0;90;1m│[0m
 [0;90;1m  20 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97ml[0m[0;97me[0m[0;97mt[0m[0;97m [0m[0;97mn[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m"[0m[0;91;1mc[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1mo[0m[0;91;1ml[0m[0;91;1m"[0m
@@ -119,12 +87,13 @@
      [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
      [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
      [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
-     [0;90;1m│[0;96m       When the literal is the point of the test, such as a regression input or
-     [0;90;1m│[0;96m       the edge case a bug was found at, suppress it and say which one it is.[0m
+     [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
+     [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
+     [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 20 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestNoDummyValues][0m: A literal in a test: 40.
+[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: 40.
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@21:49-21:51[0m
      [0;90;1m│[0m
 [0;90;1m  21 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97ml[0m[0;97me[0m[0;97mt[0m[0;97m [0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m{[0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mn[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m,[0m[0;97m [0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m4[0m[0;91;1m0[0m[0;97m}[0m
@@ -137,12 +106,13 @@
      [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
      [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
      [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
-     [0;90;1m│[0;96m       When the literal is the point of the test, such as a regression input or
-     [0;90;1m│[0;96m       the edge case a bug was found at, suppress it and say which one it is.[0m
+     [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
+     [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
+     [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 21 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestNoDummyValues][0m: A literal in a test: 7.
+[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: 7.
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@25:26-25:27[0m
      [0;90;1m│[0m
 [0;90;1m  25 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97ml[0m[0;97mi[0m[0;97mm[0m[0;97mi[0m[0;97mt[0m[0;97m [0m[0;97m<[0m[0;97m-[0m[0;97m [0m[0;97mr[0m[0;97mu[0m[0;97mn[0m[0;97mI[0m[0;97mO[0m[0;97m [0m[0;97m([0m[0;97mp[0m[0;97mu[0m[0;97mr[0m[0;97me[0m[0;97m [0m[0;91;1m7[0m[0;97m)[0m
@@ -155,12 +125,13 @@
      [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
      [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
      [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
-     [0;90;1m│[0;96m       When the literal is the point of the test, such as a regression input or
-     [0;90;1m│[0;96m       the edge case a bug was found at, suppress it and say which one it is.[0m
+     [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
+     [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
+     [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 25 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestNoDummyValues][0m: A literal in a test: "dave".
+[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "dave".
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@31:37-31:43[0m
      [0;90;1m│[0m
 [0;90;1m  31 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m{[0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m"[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mv[0m[0;91;1me[0m[0;91;1m"[0m[0;97m}[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mS[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97ms[0m[0;97mf[0m[0;97my[0m[0;97m`[0m[0;97m [0m[0;97mn[0m[0;97mo[0m[0;97mt[0m[0;97m [0m[0;97m.[0m[0;97m [0m[0;97mn[0m[0;97mu[0m[0;97ml[0m[0;97ml[0m
@@ -173,12 +144,13 @@
      [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
      [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
      [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
-     [0;90;1m│[0;96m       When the literal is the point of the test, such as a regression input or
-     [0;90;1m│[0;96m       the edge case a bug was found at, suppress it and say which one it is.[0m
+     [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
+     [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
+     [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 31 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestNoDummyValues][0m: A literal in a test: "erin".
+[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "erin".
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@33:25-33:31[0m
      [0;90;1m│[0m
 [0;90;1m  33 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mm[0m[0;97ma[0m[0;97mp[0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m[[0m[0;91;1m"[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1m"[0m[0;97m][0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mS[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97ms[0m[0;97mf[0m[0;97my[0m[0;97m`[0m[0;97m [0m[0;97mn[0m[0;97mo[0m[0;97mt[0m[0;97m [0m[0;97m.[0m[0;97m [0m[0;97mn[0m[0;97mu[0m[0;97ml[0m[0;97ml[0m
@@ -191,12 +163,13 @@
      [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
      [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
      [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
-     [0;90;1m│[0;96m       When the literal is the point of the test, such as a regression input or
-     [0;90;1m│[0;96m       the edge case a bug was found at, suppress it and say which one it is.[0m
+     [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
+     [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
+     [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 33 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestNoDummyValues][0m: A literal in a test: "frank".
+[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "frank".
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@37:30-37:37[0m
      [0;90;1m│[0m
 [0;90;1m  37 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97ma[0m[0;97md[0m[0;97md[0m[0;97mP[0m[0;97mo[0m[0;97ms[0m[0;97mt[0m[0;97mP[0m[0;97ma[0m[0;97mr[0m[0;97ma[0m[0;97mm[0m[0;97m [0m[0;97m"[0m[0;97mo[0m[0;97mw[0m[0;97mn[0m[0;97me[0m[0;97mr[0m[0;97m"[0m[0;97m [0m[0;91;1m"[0m[0;91;1mf[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mk[0m[0;91;1m"[0m
@@ -209,12 +182,13 @@
      [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
      [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
      [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
-     [0;90;1m│[0;96m       When the literal is the point of the test, such as a regression input or
-     [0;90;1m│[0;96m       the edge case a bug was found at, suppress it and say which one it is.[0m
+     [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
+     [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
+     [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 37 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestNoDummyValues][0m: A literal in a test: 20.
+[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: 20, 1.
      [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@39:16-39:18[0m
      [0;90;1m│[0m
 [0;90;1m  39 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m([0m[0;91;1m2[0m[0;91;1m0[0m[0;97m [0m[0;97m+[0m[0;97m [0m[0;97m1[0m[0;97m)[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mS[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97ms[0m[0;97mf[0m[0;97my[0m[0;97m`[0m[0;97m [0m[0;97mn[0m[0;97mo[0m[0;97mt[0m[0;97m [0m[0;97m.[0m[0;97m [0m[0;97mn[0m[0;97mu[0m[0;97ml[0m[0;97ml[0m
@@ -227,25 +201,8 @@
      [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
      [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
      [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
-     [0;90;1m│[0;96m       When the literal is the point of the test, such as a regression input or
-     [0;90;1m│[0;96m       the edge case a bug was found at, suppress it and say which one it is.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 39 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
-[0;90;1m─────╯[0m
-
-[0;91;1m[error TestNoDummyValues][0m: A literal in a test: 1.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@39:21-39:22[0m
-     [0;90;1m│[0m
-[0;90;1m  39 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m([0m[0;97m2[0m[0;97m0[0m[0;97m [0m[0;97m+[0m[0;97m [0m[0;91;1m1[0m[0;97m)[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mS[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97ms[0m[0;97mf[0m[0;97my[0m[0;97m`[0m[0;97m [0m[0;97mn[0m[0;97mo[0m[0;97mt[0m[0;97m [0m[0;97m.[0m[0;97m [0m[0;97mn[0m[0;97mu[0m[0;97ml[0m[0;97ml[0m
-     [0;90;1m•[0m                     [0;91m┬[0m 
-     [0;90;1m•[0m                     [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
-     [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A made-up value tests one input and reads as if it tested all of them.
-     [0;90;1m│[0;96m       The ideal replacement is a property test: quantify over the value with
-     [0;90;1m│[0;96m       forAllValid, so the test states the claim it is making and the
-     [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
-     [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
-     [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
-     [0;90;1m│[0;96m       When the literal is the point of the test, such as a regression input or
-     [0;90;1m│[0;96m       the edge case a bug was found at, suppress it and say which one it is.[0m
+     [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
+     [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
+     [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 39 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
