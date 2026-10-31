@@ -18,9 +18,9 @@ import Hopinion.Rule.Id (RuleId)
 import Hopinion.Store
 import Path (relfile, toFilePath, (</>))
 import Path.IO (withSystemTempDir)
-import Test.QuickCheck ((==>))
+import Test.QuickCheck (forAll, suchThat)
 import Test.Syd
-import Test.Syd.Validity (forAllValid)
+import Test.Syd.Validity (GenValid (..), forAllValid)
 
 spec :: Spec
 spec = do
@@ -102,29 +102,27 @@ spec = do
       other <- withMemoryStore [] writtenByAnotherVersion
       other `shouldBe` False
     it "says yes about a store stamped with another format version" $
-      forAllValid $ \format ->
-        format /= currentFormatVersion ==> do
-          other <- withMemoryStore [] $ do
-            insertKey (StoredMetaKey (unFormatVersion format)) StoredMeta {storedMetaFormatVersion = unFormatVersion format}
-            writtenByAnotherVersion
-          other `shouldBe` True
+      forAll (genValid `suchThat` (/= currentFormatVersion)) $ \format -> do
+        other <- withMemoryStore [] $ do
+          insertKey (StoredMetaKey (unFormatVersion format)) StoredMeta {storedMetaFormatVersion = unFormatVersion format}
+          writtenByAnotherVersion
+        other `shouldBe` True
     -- Through the merge, which is the only path that ever puts a foreign stamp
     -- in a store, and the path a tool version beside the format could not
     -- survive: keyed on the format, a second store's row at this same format is
     -- dropped by the insert.
     modifyMaxSuccess (min 10) $
       it "says yes about a store merged from one written in another format" $
-        forAllValid $ \format ->
-          format /= currentFormatVersion ==>
-            withSystemTempDir "hopinion-store" $ \tmp -> do
-              let foreign' = tmp </> [relfile|foreign.db|]
-              withStore [] (StoreLocationOnDisk foreign') $
-                insertKey (StoredMetaKey (unFormatVersion format)) StoredMeta {storedMetaFormatVersion = unFormatVersion format}
-              other <- withMemoryStore [] $ do
-                writeMeta
-                _ <- mergeStore foreign'
-                writtenByAnotherVersion
-              other `shouldBe` True
+        forAll (genValid `suchThat` (/= currentFormatVersion)) $ \format ->
+          withSystemTempDir "hopinion-store" $ \tmp -> do
+            let foreign' = tmp </> [relfile|foreign.db|]
+            withStore [] (StoreLocationOnDisk foreign') $
+              insertKey (StoredMetaKey (unFormatVersion format)) StoredMeta {storedMetaFormatVersion = unFormatVersion format}
+            other <- withMemoryStore [] $ do
+              writeMeta
+              _ <- mergeStore foreign'
+              writtenByAnotherVersion
+            other `shouldBe` True
 
   -- The envelope is what a package writes about itself before any rule writes
   -- a row: which package it is, which modules it was held to covering, and
@@ -175,25 +173,26 @@ spec = do
     -- Two packages, so that the query answering with one package's suppressions
     -- is the thing under test rather than an empty table.
     it "writes the suppressions of one module and reads back only that package's" $
-      forAllValid $ \((thing, other), (thingRef, otherRef), (thingRule, otherRule), (thingSpan, otherSpan)) ->
-        thing /= other && thingRef /= otherRef ==> do
-          stored <- withMemoryStore [] $ do
-            writePackageEnvelope thing PackageRoleMain [relfile|thing/thing.cabal|] []
-            writePackageEnvelope other PackageRoleMain [relfile|other/other.cabal|] []
-            writeModuleEnvelope
-              thing
-              thingRef
-              [relfile|thing/src/Thing.hs|]
-              ParseOutcomeOk
-              [suppressionOf thingRef thingRule thingSpan]
-            writeModuleEnvelope
-              other
-              otherRef
-              [relfile|other/src/Other.hs|]
-              ParseOutcomeOk
-              [suppressionOf otherRef otherRule otherSpan]
-            annotationsOfPackage thing
-          map annotationFactRule stored `shouldBe` [thingRule]
+      forAll (genValid `suchThat` uncurry (/=)) $ \(thing, other) ->
+        forAll (genValid `suchThat` uncurry (/=)) $ \(thingRef, otherRef) ->
+          forAllValid $ \((thingRule, otherRule), (thingSpan, otherSpan)) -> do
+            stored <- withMemoryStore [] $ do
+              writePackageEnvelope thing PackageRoleMain [relfile|thing/thing.cabal|] []
+              writePackageEnvelope other PackageRoleMain [relfile|other/other.cabal|] []
+              writeModuleEnvelope
+                thing
+                thingRef
+                [relfile|thing/src/Thing.hs|]
+                ParseOutcomeOk
+                [suppressionOf thingRef thingRule thingSpan]
+              writeModuleEnvelope
+                other
+                otherRef
+                [relfile|other/src/Other.hs|]
+                ParseOutcomeOk
+                [suppressionOf otherRef otherRule otherSpan]
+              annotationsOfPackage thing
+            map annotationFactRule stored `shouldBe` [thingRule]
 
     it "refuses a second module under one reference" $
       forAllValid $ \(name, ref) -> do

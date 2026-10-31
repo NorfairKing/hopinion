@@ -14,9 +14,9 @@ import Hopinion.Rule.Id
 import Hopinion.Run
 import Path (Dir, Path, Rel, reldir, relfile, toFilePath, (</>))
 import Path.IO (listDirRel)
-import Test.QuickCheck ((==>))
+import Test.QuickCheck (forAll, suchThat)
 import Test.Syd
-import Test.Syd.Validity (forAllValid)
+import Test.Syd.Validity (GenValid (..))
 import Text.Colour (TerminalCapabilities (..), renderChunksText)
 
 spec :: Spec
@@ -71,15 +71,14 @@ spec = describe "explainRule" $ do
   -- A name nothing answers to is a question this build cannot answer, so it is
   -- refused rather than answered with prose that reads like an explanation.
   it "refuses a name nothing answers to" $
-    forAllValid $ \rid ->
-      isNothing (ruleNamed shippedRules rid) ==>
-        case explainRule shippedRules rid of
-          ExplanationGiven cs -> expectationFailure (unwords ["Explained a rule this build does not have:", show cs])
-          ExplanationNoRuleCalled cs ->
-            renderChunksText WithoutColours cs
-              `shouldBe` T.concat
-                [ "There is no rule called ",
-                  unRuleId rid,
-                  " in this build of hopinion.\n\
-                  \Run list-rules to see the rules this build has.\n"
-                ]
+    forAll (genValid `suchThat` (isNothing . ruleNamed shippedRules)) $ \rid ->
+      case explainRule shippedRules rid of
+        ExplanationGiven cs -> expectationFailure (unwords ["Explained a rule this build does not have:", show cs])
+        ExplanationNoRuleCalled cs ->
+          renderChunksText WithoutColours cs
+            `shouldBe` T.concat
+              [ "There is no rule called ",
+                unRuleId rid,
+                " in this build of hopinion.\n\
+                \Run list-rules to see the rules this build has.\n"
+              ]

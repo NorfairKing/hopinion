@@ -24,9 +24,9 @@ import Hopinion.Rule.Registry (builtinRules)
 import Hopinion.Run
 import Path (Dir, Path, Rel, parseRelDir, reldir, relfile, toFilePath, (</>))
 import Path.IO (ensureDir, listDirRel, makeAbsolute, withSystemTempDir)
-import Test.QuickCheck (discard, (==>))
+import Test.QuickCheck (forAll, suchThat)
 import Test.Syd
-import Test.Syd.Validity (forAllValid)
+import Test.Syd.Validity (GenValid (..), forAllValid)
 import Text.Colour (TerminalCapabilities (..), renderChunksText)
 
 spec :: Spec
@@ -83,6 +83,13 @@ spec = do
               commentFactText = text,
               commentFactAttachment = attachment
             }
+
+  -- A reason a suppression is read back as written: one with no space around
+  -- it to strip, and not the one that means the suppression came with adoption.
+  let isPlainReason :: NonEmptyText -> Bool
+      isPlainReason r =
+        let t = nonEmptyTextText r
+         in T.strip t == t && t /= adoptionReasonText
 
   -- The same span on another line, for the tests that are about which line is
   -- nearest which.
@@ -168,20 +175,17 @@ spec = do
           `shouldBe` Left AnnotationErrorAttachedToNothing
     -- [allow:TestNoDummyValues] The marker and the rule, which the reason follows.
     it "accepts a rule and a reason" $
-      forAllValid $ \(mk, sp, d, written) ->
-        case nonEmptyText (T.strip (nonEmptyTextText written)) of
-          Nothing -> discard
-          Just reason ->
-            nonEmptyTextText reason /= adoptionReasonText ==>
-              parsedWith mk sp (AttachmentToDecl d) CommentStyleLine (T.concat ["[allow:CommentBareTodo] ", nonEmptyTextText written])
-                `shouldBe` Right
-                  AnnotationFact
-                    { annotationFactRule = RuleId "CommentBareTodo",
-                      annotationFactScope = ScopeKeyOfDecl mk d,
-                      annotationFactPrecision = AnnotationPrecisionDecl,
-                      annotationFactReason = ReasonGiven reason,
-                      annotationFactSpan = sp
-                    }
+      forAllValid $ \(mk, sp, d) ->
+        forAll (genValid `suchThat` isPlainReason) $ \reason ->
+          parsedWith mk sp (AttachmentToDecl d) CommentStyleLine (T.concat ["[allow:CommentBareTodo] ", nonEmptyTextText reason])
+            `shouldBe` Right
+              AnnotationFact
+                { annotationFactRule = RuleId "CommentBareTodo",
+                  annotationFactScope = ScopeKeyOfDecl mk d,
+                  annotationFactPrecision = AnnotationPrecisionDecl,
+                  annotationFactReason = ReasonGiven reason,
+                  annotationFactSpan = sp
+                }
     -- [allow:TestNoDummyValues] The marker and the rule, which the reason follows.
     it "records the adoption reason as its own case" $
       forAllValid $ \(mk, sp, d) ->
@@ -259,8 +263,8 @@ spec = do
   -- and a generated instance has a declaration scope and no line to point at.
   describe "suppressionFor" $ do
     it "is site-scoped for a finding about code" $
-      forAllValid $ \(f, mk, d, reason) ->
-        not (isWholeFileSpan (findingSpan f)) ==>
+      forAll (genValid `suchThat` (not . isWholeFileSpan . findingSpan)) $ \f ->
+        forAllValid $ \(mk, d, reason) ->
           suppressionFor f {findingScope = ScopeKeyOfDecl mk d} reason
             `shouldBe` T.concat ["-- [allow:", unRuleId (findingRule f), "] ", reason]
     it "is file-scoped for a finding about a whole file" $
@@ -316,21 +320,22 @@ spec = do
     -- 'Word': the distance cannot be a subtraction, because one taken from the
     -- other is not a small negative but a number larger than any file.
     it "pairs each suppression with the finding nearest it" $
-      forAllValid $ \(a, f, g, top) ->
-        case [top ..] of
-          (aboveLine : firstLine : secondLine : belowLine : _) ->
-            let declared = a {annotationFactPrecision = AnnotationPrecisionDecl}
-                above = declared {annotationFactSpan = onLine aboveLine (annotationFactSpan a)}
-                below = declared {annotationFactSpan = onLine belowLine (annotationFactSpan a)}
-                first = (answeredBy declared f) {findingSpan = onLine firstLine (findingSpan f)}
-                second = (answeredBy declared g) {findingSpan = onLine secondLine (findingSpan g)}
-             in applySuppression [above, below] [first, second]
-                  `shouldBe` Suppression
-                    { suppressionRemaining = [],
-                      suppressionUnused = [],
-                      suppressionOverBroad = []
-                    }
-          _ -> discard
+      forAllValid $ \(a, f, g) ->
+        forAll (genValid `suchThat` (< maxBound - 3)) $ \top ->
+          case [top ..] of
+            (aboveLine : firstLine : secondLine : belowLine : _) ->
+              let declared = a {annotationFactPrecision = AnnotationPrecisionDecl}
+                  above = declared {annotationFactSpan = onLine aboveLine (annotationFactSpan a)}
+                  below = declared {annotationFactSpan = onLine belowLine (annotationFactSpan a)}
+                  first = (answeredBy declared f) {findingSpan = onLine firstLine (findingSpan f)}
+                  second = (answeredBy declared g) {findingSpan = onLine secondLine (findingSpan g)}
+               in applySuppression [above, below] [first, second]
+                    `shouldBe` Suppression
+                      { suppressionRemaining = [],
+                        suppressionUnused = [],
+                        suppressionOverBroad = []
+                      }
+            _ -> expectationFailure "Four lines in a row were asked for where there are not four."
 
   -- Written suppressions, read back and matched against the findings they
   -- answer for. Between them the modules cover both forms: the site-scoped one
