@@ -67,3 +67,6 @@ spec = do
   it "retries a few times" $
     forAllValid $ \request' ->
       runWithRetries (limitRetries 3 <> capDelay 1_000 (constantDelay 10)) request' `shouldReturn` ()
+  it "reads a value from under the keys the format fixes" $
+    forAllValid $ \user ->
+      userFromObject (object ["name" .= userName user, "age" .= userAge user]) `shouldBe` Just user

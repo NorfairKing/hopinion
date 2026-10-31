@@ -144,7 +144,8 @@ isTestName name =
 -- What a golden test renders has to be the same every run, so the values it is
 -- rendered from are fixed by design rather than made up in place of any value.
 -- That holds for a golden helper of a project's own as much as for sydtest's.
--- A raw query is code in another language rather than a value.
+-- A raw query is code in another language rather than a value, and the key of
+-- a JSON object is fixed by the format it is written in.
 --
 -- What a parser is given is a specimen of the format it reads, which the test is
 -- about and which the expected value is worked out from, so it is no more a
@@ -153,6 +154,8 @@ exemptArguments :: Text -> [SrcLoc.SrcSpan] -> [SrcLoc.SrcSpan]
 exemptArguments name args
   | name `elem` wholeCallNames = args
   | T.isPrefixOf "should" name = drop 1 args
+  | name == ".=" = take 1 args
+  | name `elem` [".:", ".:?", ".:!"] = drop 1 args
   | name `elem` firstArgumentNames = take 1 args
   | T.isPrefixOf "golden" name || T.isInfixOf "Golden" name = args
   | any (`T.isPrefixOf` name) ["readFile", "decodeFile", "parse", "decode", "eitherDecode"] = take 1 args
