@@ -53,7 +53,7 @@ check build ctx
   | otherwise = do
       origins <- nameOriginsOf (moduleContextPath ctx) (moduleBuildCompiled build)
       let facts = moduleContextTestLiterals ctx
-      let ownership = ownershipOf (moduleBuildProjectPackages build) origins
+      let ownership = ownershipOf (moduleBuildProjectPackages build) (S.fromList (testLiteralsBinders facts)) origins
       let madeUp = reachesProject ownership (binderOfIn origins) facts . testLiteralConsumers
       pure $
         findingsResult
@@ -98,9 +98,18 @@ data Followability
 -- else is a library. Without a build there is only the source to go on, and
 -- the source says only what this module defines itself, so everything else is
 -- taken for a library.
-ownershipOf :: [PackageName] -> Maybe (M.Map HiePosition NameOrigin) -> NameAt -> Ownership
-ownershipOf project origins name = case origins >>= M.lookup (hiePositionOf (nameAtPosition name)) of
-  Just (NameOriginThisModule _) -> OwnershipThisModule
+--
+-- A name the build says is local is this module's code only when this module
+-- binds it. Otherwise it is a parameter, and a function handed to the test,
+-- such as a library's callback, is that library's.
+ownershipOf :: [PackageName] -> S.Set Position -> Maybe (M.Map HiePosition NameOrigin) -> NameAt -> Ownership
+ownershipOf project binders origins name = case origins >>= M.lookup (hiePositionOf (nameAtPosition name)) of
+  Just (NameOriginThisModule (Just binder))
+    | positionOf binder `S.member` binders -> OwnershipThisModule
+    | otherwise -> OwnershipLibrary
+  Just (NameOriginThisModule Nothing) -> case nameAtDefinition name of
+    DefinitionHere -> OwnershipThisModule
+    DefinitionElsewhere -> OwnershipLibrary
   Just (NameOriginUnit unit)
     | any (`isUnitOf` unit) project -> OwnershipProject
     | otherwise -> OwnershipLibrary
@@ -112,15 +121,17 @@ ownershipOf project origins name = case origins >>= M.lookup (hiePositionOf (nam
 -- position the source would give it.
 binderOfIn :: Maybe (M.Map HiePosition NameOrigin) -> Position -> Maybe Position
 binderOfIn origins use = case origins >>= M.lookup (hiePositionOf use) of
-  Just (NameOriginThisModule (Just binder)) ->
-    Just
-      Position
-        { positionLine = hiePositionLine binder,
-          positionCol = hiePositionCol binder
-        }
+  Just (NameOriginThisModule (Just binder)) -> Just (positionOf binder)
   Just (NameOriginThisModule Nothing) -> Nothing
   Just (NameOriginUnit _) -> Nothing
   Nothing -> Nothing
+
+positionOf :: HiePosition -> Position
+positionOf p =
+  Position
+    { positionLine = hiePositionLine p,
+      positionCol = hiePositionCol p
+    }
 
 hiePositionOf :: Position -> HiePosition
 hiePositionOf p =

@@ -21,3 +21,5 @@ spec = do
   describe "a helper spelled the same that only compares" $ do
     let check n = n == "hal"
     it "checks a name" $ check "ivan"
+  describe "a function a library hands the test" $
+    it "hands it a literal" $ withCallback (\respond -> respond "jill")

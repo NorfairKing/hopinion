@@ -40,9 +40,10 @@ import Path (File, Path, Rel)
 -- hand. What is decided here is what the source alone settles: a literal a
 -- table maps a constructor to is a specification of that constructor.
 --
--- Names are followed by spelling rather than by what they resolve to, because
--- resolving them is renaming. A local that shadows another name drags that
--- name's binding in as well, which errs towards reporting.
+-- Names are recorded by spelling and by where they are written, because
+-- resolving them is renaming. The rule resolves them with the build when it
+-- has one; without one, a local that shadows another name drags that name's
+-- binding in as well, which errs towards reporting.
 --
 -- Nothing outside a test file, because nothing else asks and this is the most
 -- expensive reading of a module there is.
@@ -53,7 +54,8 @@ testLiteralsOf rp ref decls ds
         { testLiteralsLiterals = [],
           testLiteralsUses = [],
           testLiteralsParameters = [],
-          testLiteralsArities = []
+          testLiteralsArities = [],
+          testLiteralsBinders = []
         }
   | otherwise =
       TestLiterals
@@ -92,7 +94,7 @@ testLiteralsOf rp ref decls ds
                   parameterUseAt = spanStart (spanOfSrcSpan rp loc),
                   parameterUseConsumers = consumersAt loc
                 }
-            | lb <- listify (const True :: LHsBind GhcPs -> Bool) ds,
+            | lb <- valueBindsOf ds,
               FunBind {fun_id = name, fun_matches = mg} <- [unLoc lb],
               m <- map unLoc (unLoc (mg_alts mg)),
               (index, p) <- zip [0 ..] (unLoc (m_pats m)),
@@ -108,9 +110,10 @@ testLiteralsOf rp ref decls ds
                   functionArityAt = spanStart (spanOfSrcSpan rp (getLocA name)),
                   functionArityParameters = foldl' max 0 (map (genericLength . unLoc . m_pats . unLoc) (unLoc (mg_alts mg)))
                 }
-            | lb <- listify (const True :: LHsBind GhcPs -> Bool) ds,
+            | lb <- valueBindsOf ds,
               FunBind {fun_id = name, fun_matches = mg} <- [unLoc lb]
-            ]
+            ],
+          testLiteralsBinders = [spanStart (spanOfSrcSpan rp (bindingBinder b)) | b <- binders]
         }
   where
     expressions :: [LHsExpr GhcPs]
@@ -296,7 +299,7 @@ reachedFrom bindings occurrences = go
 bindingsOf :: [LHsDecl GhcPs] -> [Binding]
 bindingsOf ds =
   [ binding
-  | lb <- listify (const True :: LHsBind GhcPs -> Bool) ds,
+  | lb <- valueBindsOf ds,
     binding <- case unLoc lb of
       FunBind {fun_id = n} -> [Binding (rdrText (unLoc n)) (getLocA n) (getLocA lb)]
       PatBind {pat_lhs = p} -> [Binding name at (getLocA lb) | (name, at) <- patternBinders p]
@@ -308,6 +311,13 @@ bindingsOf ds =
          BindStmt _ p body <- [unLoc stmt],
          (name, at) <- patternBinders p
        ]
+
+-- | Every value binding in these declarations, at any depth.
+--
+-- A declaration at the top of a module holds its binding without a location
+-- of its own, so a search for located bindings finds only the nested ones.
+valueBindsOf :: [LHsDecl GhcPs] -> [LHsBind GhcPs]
+valueBindsOf ds = [SrcLoc.L l b | SrcLoc.L l (ValD _ b) <- ds] ++ listify (const True :: LHsBind GhcPs -> Bool) ds
 
 -- | A name a module binds: its spelling, where its binder is written, and
 -- where what it is bound to is written.

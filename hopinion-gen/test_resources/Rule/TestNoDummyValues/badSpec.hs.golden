@@ -1,7 +1,29 @@
-[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "alice", 30.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@25:33-25:40[0m
+[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "kim".
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@23:15-23:20[0m
      [0;90;1m│[0m
-[0;90;1m  25 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m{[0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m"[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m"[0m[0;97m,[0m[0;97m [0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97m3[0m[0;97m0[0m[0;97m}[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mB[0m[0;97me[0m[0;97m`[0m[0;97m [0m[0;97m"[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97mc[0m[0;97me[0m[0;97m [0m[0;97m([0m[0;97m3[0m[0;97m0[0m[0;97m)[0m[0;97m"[0m
+[0;90;1m  23 │[0m [0;97md[0m[0;97me[0m[0;97mf[0m[0;97ma[0m[0;97mu[0m[0;97ml[0m[0;97mt[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m"[0m[0;91;1mk[0m[0;91;1mi[0m[0;91;1mm[0m[0;91;1m"[0m
+     [0;90;1m•[0m               [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m               [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A made-up value tests one input and reads as if it tested all of them.
+     [0;90;1m│[0;96m       The ideal replacement is a property test: quantify over the value with
+     [0;90;1m│[0;96m       forAllValid, so the test states the claim it is making and the
+     [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
+     [0;90;1m│[0;96m       A literal counts when it is handed to this project's own code, the code
+     [0;90;1m│[0;96m       under test. One handed to a library configures that library instead,
+     [0;90;1m│[0;96m       like a timeout, a header name or the expected side of an assertion.
+     [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
+     [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
+     [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
+     [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
+     [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 23 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "alice", 30.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@28:33-28:40[0m
+     [0;90;1m│[0m
+[0;90;1m  28 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m{[0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m"[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m"[0m[0;97m,[0m[0;97m [0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97m3[0m[0;97m0[0m[0;97m}[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mB[0m[0;97me[0m[0;97m`[0m[0;97m [0m[0;97m"[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97mc[0m[0;97me[0m[0;97m [0m[0;97m([0m[0;97m3[0m[0;97m0[0m[0;97m)[0m[0;97m"[0m
      [0;90;1m•[0m                                 [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                                 [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
      [0;90;1m•[0m
@@ -17,13 +39,13 @@
      [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
      [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
      [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 25 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 28 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: 20, 1.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@27:16-27:18[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@30:16-30:18[0m
      [0;90;1m│[0m
-[0;90;1m  27 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m([0m[0;91;1m2[0m[0;91;1m0[0m[0;97m [0m[0;97m+[0m[0;97m [0m[0;97m1[0m[0;97m)[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mS[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97ms[0m[0;97mf[0m[0;97my[0m[0;97m`[0m[0;97m [0m[0;97mn[0m[0;97mo[0m[0;97mt[0m[0;97m [0m[0;97m.[0m[0;97m [0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m.[0m[0;97mn[0m[0;97mu[0m[0;97ml[0m[0;97ml[0m
+[0;90;1m  30 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m([0m[0;91;1m2[0m[0;91;1m0[0m[0;97m [0m[0;97m+[0m[0;97m [0m[0;97m1[0m[0;97m)[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mS[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97ms[0m[0;97mf[0m[0;97my[0m[0;97m`[0m[0;97m [0m[0;97mn[0m[0;97mo[0m[0;97mt[0m[0;97m [0m[0;97m.[0m[0;97m [0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m.[0m[0;97mn[0m[0;97mu[0m[0;97ml[0m[0;97ml[0m
      [0;90;1m•[0m                [0;91m┬[0m[0;91m─[0m 
      [0;90;1m•[0m                [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
      [0;90;1m•[0m
@@ -39,13 +61,13 @@
      [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
      [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
      [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 27 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 30 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "bob".
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@29:27-29:32[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@32:27-32:32[0m
      [0;90;1m│[0m
-[0;90;1m  29 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m([0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m.[0m[0;97mp[0m[0;97ma[0m[0;97mc[0m[0;97mk[0m[0;97m [0m[0;91;1m"[0m[0;91;1mb[0m[0;91;1mo[0m[0;91;1mb[0m[0;91;1m"[0m[0;97m)[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mS[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97ms[0m[0;97mf[0m[0;97my[0m[0;97m`[0m[0;97m [0m[0;97mn[0m[0;97mo[0m[0;97mt[0m[0;97m [0m[0;97m.[0m[0;97m [0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m.[0m[0;97mn[0m[0;97mu[0m[0;97ml[0m[0;97ml[0m
+[0;90;1m  32 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m([0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m.[0m[0;97mp[0m[0;97ma[0m[0;97mc[0m[0;97mk[0m[0;97m [0m[0;91;1m"[0m[0;91;1mb[0m[0;91;1mo[0m[0;91;1mb[0m[0;91;1m"[0m[0;97m)[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mS[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97ms[0m[0;97mf[0m[0;97my[0m[0;97m`[0m[0;97m [0m[0;97mn[0m[0;97mo[0m[0;97mt[0m[0;97m [0m[0;97m.[0m[0;97m [0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m.[0m[0;97mn[0m[0;97mu[0m[0;97ml[0m[0;97ml[0m
      [0;90;1m•[0m                           [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                           [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
      [0;90;1m•[0m
@@ -61,13 +83,13 @@
      [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
      [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
      [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 29 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 32 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "carol".
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@31:23-31:30[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@34:23-34:30[0m
      [0;90;1m│[0m
-[0;90;1m  31 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mM[0m[0;97ma[0m[0;97my[0m[0;97mb[0m[0;97me[0m[0;97m [0m[0;97m([0m[0;97mJ[0m[0;97mu[0m[0;97ms[0m[0;97mt[0m[0;97m [0m[0;91;1m"[0m[0;91;1mc[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1mo[0m[0;91;1ml[0m[0;91;1m"[0m[0;97m)[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mS[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97ms[0m[0;97mf[0m[0;97my[0m[0;97m`[0m[0;97m [0m[0;97mn[0m[0;97mo[0m[0;97mt[0m[0;97m [0m[0;97m.[0m[0;97m [0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m.[0m[0;97mn[0m[0;97mu[0m[0;97ml[0m[0;97ml[0m
+[0;90;1m  34 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mM[0m[0;97ma[0m[0;97my[0m[0;97mb[0m[0;97me[0m[0;97m [0m[0;97m([0m[0;97mJ[0m[0;97mu[0m[0;97ms[0m[0;97mt[0m[0;97m [0m[0;91;1m"[0m[0;91;1mc[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1mo[0m[0;91;1ml[0m[0;91;1m"[0m[0;97m)[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mS[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97ms[0m[0;97mf[0m[0;97my[0m[0;97m`[0m[0;97m [0m[0;97mn[0m[0;97mo[0m[0;97mt[0m[0;97m [0m[0;97m.[0m[0;97m [0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m.[0m[0;97mn[0m[0;97mu[0m[0;97ml[0m[0;97ml[0m
      [0;90;1m•[0m                       [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                       [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
      [0;90;1m•[0m
@@ -83,13 +105,13 @@
      [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
      [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
      [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 31 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 34 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "dave".
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@33:16-33:22[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@36:16-36:22[0m
      [0;90;1m│[0m
-[0;90;1m  33 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97ml[0m[0;97me[0m[0;97mt[0m[0;97m [0m[0;97mn[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m"[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mv[0m[0;91;1me[0m[0;91;1m"[0m
+[0;90;1m  36 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97ml[0m[0;97me[0m[0;97mt[0m[0;97m [0m[0;97mn[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m"[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mv[0m[0;91;1me[0m[0;91;1m"[0m
      [0;90;1m•[0m                [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m                [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
      [0;90;1m•[0m
@@ -105,13 +127,13 @@
      [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
      [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
      [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 33 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 36 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "erin".
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@38:18-38:24[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@41:18-41:24[0m
      [0;90;1m│[0m
-[0;90;1m  38 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;91;1m"[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1m"[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mS[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97ms[0m[0;97mf[0m[0;97my[0m[0;97m`[0m[0;97m [0m[0;97mn[0m[0;97mo[0m[0;97mt[0m[0;97m [0m[0;97m.[0m[0;97m [0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m.[0m[0;97mn[0m[0;97mu[0m[0;97ml[0m[0;97ml[0m
+[0;90;1m  41 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;91;1m"[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1m"[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mS[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97ms[0m[0;97mf[0m[0;97my[0m[0;97m`[0m[0;97m [0m[0;97mn[0m[0;97mo[0m[0;97mt[0m[0;97m [0m[0;97m.[0m[0;97m [0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m.[0m[0;97mn[0m[0;97mu[0m[0;97ml[0m[0;97ml[0m
      [0;90;1m•[0m                  [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                  [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
      [0;90;1m•[0m
@@ -127,37 +149,15 @@
      [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
      [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
      [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 38 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 41 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "frank".
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@40:17-40:24[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@43:17-43:24[0m
      [0;90;1m│[0m
-[0;90;1m  40 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97ml[0m[0;97me[0m[0;97mt[0m[0;97m [0m[0;97mf[0m[0;97mr[0m[0;97ma[0m[0;97mn[0m[0;97mk[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m"[0m[0;91;1mf[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mk[0m[0;91;1m"[0m
+[0;90;1m  43 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97ml[0m[0;97me[0m[0;97mt[0m[0;97m [0m[0;97mf[0m[0;97mr[0m[0;97ma[0m[0;97mn[0m[0;97mk[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m"[0m[0;91;1mf[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mk[0m[0;91;1m"[0m
      [0;90;1m•[0m                 [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m                 [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
-     [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A made-up value tests one input and reads as if it tested all of them.
-     [0;90;1m│[0;96m       The ideal replacement is a property test: quantify over the value with
-     [0;90;1m│[0;96m       forAllValid, so the test states the claim it is making and the
-     [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
-     [0;90;1m│[0;96m       A literal counts when it is handed to this project's own code, the code
-     [0;90;1m│[0;96m       under test. One handed to a library configures that library instead,
-     [0;90;1m│[0;96m       like a timeout, a header name or the expected side of an assertion.
-     [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
-     [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
-     [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
-     [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
-     [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 40 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
-[0;90;1m─────╯[0m
-
-[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: 30.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@43:52-43:54[0m
-     [0;90;1m│[0m
-[0;90;1m  43 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97ml[0m[0;97me[0m[0;97mt[0m[0;97m [0m[0;97mm[0m[0;97mk[0m[0;97m [0m[0;97mn[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m{[0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mn[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m,[0m[0;97m [0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m3[0m[0;91;1m0[0m[0;97m}[0m
-     [0;90;1m•[0m                                                    [0;91m┬[0m[0;91m─[0m 
-     [0;90;1m•[0m                                                    [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mNote: A made-up value tests one input and reads as if it tested all of them.
      [0;90;1m│[0;96m       The ideal replacement is a property test: quantify over the value with
@@ -174,12 +174,12 @@
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 43 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "gina".
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@46:22-46:28[0m
+[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: 30.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@46:52-46:54[0m
      [0;90;1m│[0m
-[0;90;1m  46 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m([0m[0;97mm[0m[0;97mk[0m[0;97m [0m[0;91;1m"[0m[0;91;1mg[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1ma[0m[0;91;1m"[0m[0;97m)[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mS[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97ms[0m[0;97mf[0m[0;97my[0m[0;97m`[0m[0;97m [0m[0;97mn[0m[0;97mo[0m[0;97mt[0m[0;97m [0m[0;97m.[0m[0;97m [0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m.[0m[0;97mn[0m[0;97mu[0m[0;97ml[0m[0;97ml[0m
-     [0;90;1m•[0m                      [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
-     [0;90;1m•[0m                      [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
+[0;90;1m  46 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97ml[0m[0;97me[0m[0;97mt[0m[0;97m [0m[0;97mm[0m[0;97mk[0m[0;97m [0m[0;97mn[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m{[0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mn[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m,[0m[0;97m [0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m3[0m[0;91;1m0[0m[0;97m}[0m
+     [0;90;1m•[0m                                                    [0;91m┬[0m[0;91m─[0m 
+     [0;90;1m•[0m                                                    [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mNote: A made-up value tests one input and reads as if it tested all of them.
      [0;90;1m│[0;96m       The ideal replacement is a property test: quantify over the value with
@@ -196,10 +196,32 @@
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 46 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "hal", 2.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@48:32-48:37[0m
+[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "gina".
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@49:22-49:28[0m
      [0;90;1m│[0m
-[0;90;1m  48 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97ms[0m[0;97m [0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m{[0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m"[0m[0;91;1mh[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1m"[0m[0;97m,[0m[0;97m [0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97m2[0m[0;97m}[0m
+[0;90;1m  49 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m([0m[0;97mm[0m[0;97mk[0m[0;97m [0m[0;91;1m"[0m[0;91;1mg[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1ma[0m[0;91;1m"[0m[0;97m)[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mS[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97ms[0m[0;97mf[0m[0;97my[0m[0;97m`[0m[0;97m [0m[0;97mn[0m[0;97mo[0m[0;97mt[0m[0;97m [0m[0;97m.[0m[0;97m [0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m.[0m[0;97mn[0m[0;97mu[0m[0;97ml[0m[0;97ml[0m
+     [0;90;1m•[0m                      [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                      [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A made-up value tests one input and reads as if it tested all of them.
+     [0;90;1m│[0;96m       The ideal replacement is a property test: quantify over the value with
+     [0;90;1m│[0;96m       forAllValid, so the test states the claim it is making and the
+     [0;90;1m│[0;96m       generator finds the inputs nobody thought to write down.
+     [0;90;1m│[0;96m       A literal counts when it is handed to this project's own code, the code
+     [0;90;1m│[0;96m       under test. One handed to a library configures that library instead,
+     [0;90;1m│[0;96m       like a timeout, a header name or the expected side of an assertion.
+     [0;90;1m│[0;96m       Binding the literal somewhere else does not make it less made up, so a
+     [0;90;1m│[0;96m       value is followed into every binding of this module the test uses.
+     [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
+     [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
+     [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 49 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "hal", 2.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@51:32-51:37[0m
+     [0;90;1m│[0m
+[0;90;1m  51 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97ms[0m[0;97m [0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m{[0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m"[0m[0;91;1mh[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1m"[0m[0;97m,[0m[0;97m [0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97m2[0m[0;97m}[0m
      [0;90;1m•[0m                                [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                                [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
      [0;90;1m•[0m
@@ -215,13 +237,13 @@
      [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
      [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
      [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 48 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 51 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error TestNoDummyValues][0m: Literals a test runs on: "ivan".
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@52:19-52:25[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@55:19-55:25[0m
      [0;90;1m│[0m
-[0;90;1m  52 │[0m [0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97ms[0m[0;97mN[0m[0;97mo[0m[0;97mn[0m[0;97mE[0m[0;97mm[0m[0;97mp[0m[0;97mt[0m[0;97my[0m[0;97m [0m[0;91;1m"[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1m"[0m
+[0;90;1m  55 │[0m [0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97ms[0m[0;97mN[0m[0;97mo[0m[0;97mn[0m[0;97mE[0m[0;97mm[0m[0;97mp[0m[0;97mt[0m[0;97my[0m[0;97m [0m[0;91;1m"[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1m"[0m
      [0;90;1m•[0m                   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m                   [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
      [0;90;1m•[0m
@@ -237,5 +259,5 @@
      [0;90;1m│[0;96m       When the literals are the point of the test, such as a regression input
      [0;90;1m│[0;96m       or the edge case a bug was found at, suppress it and say why: one
      [0;90;1m│[0;96m       suppression above a test answers for every literal in it.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 52 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 55 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m

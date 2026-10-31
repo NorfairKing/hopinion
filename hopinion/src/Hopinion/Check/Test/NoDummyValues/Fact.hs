@@ -31,7 +31,11 @@ data TestLiterals = TestLiterals
     -- | How many parameters each function this module defines takes, so that
     -- one a value is handed to but never used is known to be unused rather
     -- than unknown.
-    testLiteralsArities :: ![FunctionArity]
+    testLiteralsArities :: ![FunctionArity],
+    -- | Where each name this module binds is written, so that a name the build
+    -- says is local can be told apart from a parameter: a function the test is
+    -- handed, as in a library's callback, is no code of this module's.
+    testLiteralsBinders :: ![Position]
   }
   deriving stock (Show, Eq, Generic)
 

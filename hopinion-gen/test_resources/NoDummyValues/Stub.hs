@@ -3,7 +3,7 @@
 --
 -- A module of their own, because what a spec defines itself counts as code
 -- under test.
-module Stub (Spec, describe, it) where
+module Stub (Spec, describe, it, withCallback) where
 
 type Spec = IO ()
 
@@ -12,3 +12,6 @@ describe _ s = s
 
 it :: String -> Bool -> Spec
 it _ _ = pure ()
+
+withCallback :: ((String -> Bool) -> Bool) -> Bool
+withCallback f = f null

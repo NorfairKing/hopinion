@@ -19,6 +19,9 @@ renderName = renderName
 renderMaybe :: Maybe Text -> Text
 renderMaybe = renderMaybe
 
+defaultName :: Text
+defaultName = "kim"
+
 spec :: Spec
 spec = do
   it "renders a user built from made-up values" $
@@ -50,3 +53,5 @@ spec = do
         it "renders a name a helper is handed" $
           renderName name `shouldSatisfy` not . Text.null
   rendersNonEmpty "ivan"
+  it "renders a name bound beside the spec" $
+    renderName defaultName `shouldSatisfy` not . Text.null
