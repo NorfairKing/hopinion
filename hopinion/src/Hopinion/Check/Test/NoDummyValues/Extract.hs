@@ -202,7 +202,8 @@ isTestName name =
 -- What a golden test renders has to be the same every run, so the values it is
 -- rendered from are fixed by design rather than made up in place of any value.
 -- That holds for a golden helper of a project's own as much as for sydtest's.
--- A raw query is code in another language rather than a value, and the key of
+-- A raw query is code in another language rather than a value, whether
+-- persistent runs it or postgresql-simple does, after its connection. The key of
 -- a JSON object is fixed by the format it is written in.
 --
 -- An opt-env-conf parser test is given a specimen and the value it should
@@ -219,9 +220,10 @@ exemptArguments name args
   | name `elem` [".:", ".:?", ".:!"] = drop 1 args
   | name `elem` firstArgumentNames = take 1 args
   | T.isPrefixOf "golden" name || T.isInfixOf "Golden" name = args
-  | any (`T.isPrefixOf` name) ["readFile", "decodeFile", "parse", "decode", "eitherDecode"] = take 1 args
-  | name `elem` ["rawExecute", "rawExecuteCount", "rawSql", "rawQuery", "execute", "execute_", "query", "query_"] = take 1 args
   | T.isPrefixOf "parser" name && T.isSuffixOf "Test" name = args
+  | any (`T.isPrefixOf` name) ["readFile", "decodeFile", "parse", "decode", "eitherDecode"] = take 1 args
+  | name `elem` ["rawExecute", "rawExecuteCount", "rawSql", "rawQuery"] = take 1 args
+  | name `elem` ["execute", "execute_", "query", "query_"] = take 1 (drop 1 args)
   | T.isPrefixOf "with" name && T.isInfixOf "Temp" name = take 1 args
   | name `elem` ["readProcess", "readProcessWithExitCode", "callProcess", "proc"] = take 2 args
   | name `elem` ["readCreateProcess", "readCreateProcessWithExitCode"] = args
