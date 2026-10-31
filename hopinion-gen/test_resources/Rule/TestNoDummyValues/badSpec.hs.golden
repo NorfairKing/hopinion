@@ -63,3 +63,14 @@
      [0;90;1m│[0m [0;96mNote: A made-up value tests one input and says it tests all of them. A generator tests the claim the test is making, and finds the inputs nobody thought to write down. Generate the value with forAllValid or genValid instead. A literal can still be the point of a test, like a regression input or the edge case a bug was found at: suppress it and say which one it is.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 15 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
 [0;90;1m─────╯[0m
+
+[0;91;1m[error TestNoDummyValues][0m: A literal in a test: "bob".
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/TestNoDummyValues/badSpec.hs@18:35-18:40[0m
+     [0;90;1m│[0m
+[0;90;1m  18 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97mr[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97mU[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m{[0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mN[0m[0;97ma[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m"[0m[0;91;1mb[0m[0;91;1mo[0m[0;91;1mb[0m[0;91;1m"[0m[0;97m,[0m[0;97m [0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97mr[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97ma[0m[0;97mg[0m[0;97me[0m[0;97m}[0m[0;97m [0m[0;97m`[0m[0;97ms[0m[0;97mh[0m[0;97mo[0m[0;97mu[0m[0;97ml[0m[0;97md[0m[0;97mS[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97ms[0m[0;97mf[0m[0;97my[0m[0;97m`[0m[0;97m [0m[0;97mi[0m[0;97ms[0m[0;97mI[0m[0;97mn[0m[0;97mf[0m[0;97mi[0m[0;97mx[0m[0;97mO[0m[0;97mf[0m[0;97m [0m[0;97m"[0m[0;97mb[0m[0;97mo[0m[0;97mb[0m[0;97m"[0m
+     [0;90;1m•[0m                                   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                                   [0;91m╰╸[0m [0;91mA test runs on generated values, not on literals made up for it.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mNote: A made-up value tests one input and says it tests all of them. A generator tests the claim the test is making, and finds the inputs nobody thought to write down. Generate the value with forAllValid or genValid instead. A literal can still be the point of a test, like a regression input or the edge case a bug was found at: suppress it and say which one it is.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 18 of test_resources/Rule/TestNoDummyValues/badSpec.hs, and say why: -- [allow:TestNoDummyValues] <reason>[0m
+[0;90;1m─────╯[0m

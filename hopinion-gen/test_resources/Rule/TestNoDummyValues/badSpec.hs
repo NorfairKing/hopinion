@@ -13,3 +13,6 @@ spec = do
       countChar c (replicate 3 c) `shouldBe` 3
   prop "adds an offset" $ \n ->
     n + 0.5 `shouldSatisfy` (> n)
+  it "renders a user of any age" $
+    forAllValid $ \age ->
+      renderUser User {userName = "bob", userAge = age} `shouldSatisfy` isInfixOf "bob"

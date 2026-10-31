@@ -401,7 +401,8 @@ test-suite hopinion-test
       ormolu:ormolu
     , sydtest-discover:sydtest-discover
   build-depends:
-      autodocodec-yaml
+      QuickCheck
+    , autodocodec-yaml
     , base >=4.7 && <5
     , containers
     , filepath

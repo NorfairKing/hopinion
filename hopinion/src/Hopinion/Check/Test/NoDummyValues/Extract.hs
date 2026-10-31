@@ -84,19 +84,25 @@ exemptArguments name args
   | name `elem` wholeCallNames = args
   | T.isPrefixOf "should" name = drop 1 args
   | name `elem` firstArgumentNames = take 1 args
-  | any (`T.isPrefixOf` name) ["golden", "pureGolden", "forAll", "readFile", "decodeFile"] = take 1 args
+  | any (`T.isPrefixOf` name) ["golden", "pureGolden", "readFile", "decodeFile"] = take 1 args
   | T.isPrefixOf "with" name && T.isInfixOf "Temp" name = take 1 args
   | name `elem` ["readProcess", "readProcessWithExitCode", "callProcess", "proc"] = take 2 args
   | otherwise = []
 
 -- | Functions whose first argument is a claim or a setting.
 --
--- The needle of a search is what a test claims is in its output.
+-- The needle of a search is what a test claims is in its output, and the
+-- generator a property is quantified over is the replacement this rule asks for.
 firstArgumentNames :: [Text]
 firstArgumentNames =
   [ "expectationFailure",
     "context",
     "generate",
+    "forAll",
+    "forAllShrink",
+    "forAllShow",
+    "forAllShrinkShow",
+    "forAllBlind",
     "threadDelay",
     "timeout",
     "isInfixOf",
