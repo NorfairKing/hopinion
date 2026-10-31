@@ -25,3 +25,7 @@ spec = do
     limit <- runIO (pure 7)
     it "stays under a limit read at setup" $
       forAllValid $ \n -> min limit n `shouldSatisfy` (<= limit)
+  modifyMaxSuccess (min 10) $
+    it "runs fewer examples" $
+      forAllValid $ \user ->
+        renderUser user {userName = "dave"} `shouldSatisfy` not . null

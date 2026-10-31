@@ -18,6 +18,7 @@ import GHC.Utils.Outputable (showPprUnsafe)
 import Hopinion.Check.Test.NoDummyValues.Fact
 import Hopinion.Extract.Ghc
 import Hopinion.Facts.Decl
+import Hopinion.Facts.Module (isSpecFilePath)
 import Hopinion.Facts.Place
 import Path (File, Path, Rel)
 
@@ -36,19 +37,24 @@ import Path (File, Path, Rel)
 -- Names are followed by spelling rather than by what they resolve to, because
 -- resolving them is renaming. A local that shadows another name drags that
 -- name's binding in as well, which errs towards reporting.
+--
+-- Nothing outside a test file, because nothing else asks and this is the most
+-- expensive reading of a module there is.
 testLiteralsOf :: Path Rel File -> ModuleRef -> [DeclFact] -> [LHsDecl GhcPs] -> [TestLiteral]
-testLiteralsOf rp ref decls ds =
-  [ TestLiteral
-      { testLiteralText = T.pack (showPprUnsafe (unLoc l)),
-        testLiteralSpan = sp,
-        testLiteralScope = declScopeOf ref decls sp
-      }
-  | l <- listify isLiteral ds,
-    let loc = getLocA l,
-    within reached loc,
-    not (within exempt loc),
-    let sp = spanOfSrcSpan rp loc
-  ]
+testLiteralsOf rp ref decls ds
+  | not (isSpecFilePath rp) = []
+  | otherwise =
+      [ TestLiteral
+          { testLiteralText = T.pack (showPprUnsafe (unLoc l)),
+            testLiteralSpan = sp,
+            testLiteralScope = declScopeOf ref decls sp
+          }
+      | l <- listify isLiteral ds,
+        let loc = getLocA l,
+        within reached loc,
+        not (within exempt loc),
+        let sp = spanOfSrcSpan rp loc
+      ]
   where
     expressions :: [LHsExpr GhcPs]
     expressions = listify (const True :: LHsExpr GhcPs -> Bool) ds
@@ -150,6 +156,8 @@ exemptArguments name args
 --
 -- The needle of a search is what a test claims is in its output, and the
 -- generator a property is quantified over is the replacement this rule asks for.
+-- A QuickCheck setting is its first argument alone, because what it wraps is a
+-- test like any other.
 firstArgumentNames :: [Text]
 firstArgumentNames =
   [ "expectationFailure",
@@ -164,13 +172,19 @@ firstArgumentNames =
     "timeout",
     "isInfixOf",
     "isPrefixOf",
-    "isSuffixOf"
+    "isSuffixOf",
+    "withMaxSuccess",
+    "modifyMaxSuccess",
+    "modifyMaxSize",
+    "modifyMaxShrinks",
+    "modifyMaxDiscardRatio",
+    "within"
   ]
 
 -- | Functions whose every argument is a claim or a setting.
 --
--- The assertions of yesod-test, which take nothing but what they assert, the
--- parts of a request that the protocol fixes, and the QuickCheck settings.
+-- The assertions of yesod-test, which take nothing but what they assert, and
+-- the parts of a request that the protocol fixes.
 wholeCallNames :: [Text]
 wholeCallNames =
   [ "shouldBeInvalid",
@@ -185,13 +199,7 @@ wholeCallNames =
     "htmlAnyContain",
     "htmlNoneContain",
     "assertHeader",
-    "assertNoHeader",
-    "withMaxSuccess",
-    "modifyMaxSuccess",
-    "modifyMaxSize",
-    "modifyMaxShrinks",
-    "modifyMaxDiscardRatio",
-    "within"
+    "assertNoHeader"
   ]
 
 -- | Every named function applied at this node, with where each of its arguments

@@ -8,7 +8,7 @@ import Data.Validity
 import GHC.Generics (Generic)
 import Hopinion.Facts.Place
 
--- | A literal written in the body of a test.
+-- | A literal a test runs on: written in its body, or in a binding it uses.
 data TestLiteral = TestLiteral
   { -- | The literal as the parser prints it back, so that a finding can say
     -- which of several on one line it is about.
