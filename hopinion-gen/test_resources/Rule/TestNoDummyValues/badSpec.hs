@@ -16,3 +16,12 @@ spec = do
   it "renders a user of any age" $
     forAllValid $ \age ->
       renderUser User {userName = "bob", userAge = age} `shouldSatisfy` isInfixOf "bob"
+  describe "bound outside the test" $ do
+    let name = "carol"
+    let user = User {userName = name, userAge = 40}
+    it "renders a user set up for every test" $
+      renderUser user `shouldSatisfy` not . null
+  describe "bound to the result of an action" $ do
+    limit <- runIO (pure 7)
+    it "stays under a limit read at setup" $
+      forAllValid $ \n -> min limit n `shouldSatisfy` (<= limit)

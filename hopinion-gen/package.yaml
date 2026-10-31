@@ -63,6 +63,7 @@ tests:
     - autodocodec-yaml
     - containers
     - filepath
+    - genvalidity-path
     - genvalidity-sydtest
     - genvalidity-sydtest-aeson
     - hopinion

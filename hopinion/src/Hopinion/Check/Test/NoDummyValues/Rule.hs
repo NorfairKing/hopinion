@@ -14,12 +14,14 @@ rule =
     { ruleId = RuleId "TestNoDummyValues",
       ruleText = "A test runs on generated values, not on literals made up for it.",
       ruleWhy =
-        "A made-up value tests one input and says it tests all of them. \
-        \A generator tests the claim the test is making, and finds the inputs \
-        \nobody thought to write down. \
-        \Generate the value with forAllValid or genValid instead. \
-        \A literal can still be the point of a test, like a regression input or \
-        \the edge case a bug was found at: suppress it and say which one it is.",
+        "A made-up value tests one input and reads as if it tested all of them.\n\
+        \The ideal replacement is a property test: quantify over the value with\n\
+        \forAllValid, so the test states the claim it is making and the\n\
+        \generator finds the inputs nobody thought to write down.\n\
+        \Binding the literal somewhere else does not make it less made up, so a\n\
+        \value is followed into every binding of this module the test uses.\n\
+        \When the literal is the point of the test, such as a regression input or\n\
+        \the edge case a bug was found at, suppress it and say which one it is.",
       ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 

@@ -7,6 +7,7 @@
 module Hopinion.Check.Test.NoDummyValues.Extract (testLiteralsOf) where
 
 import Data.Generics (listify)
+import Data.List (nub)
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import qualified Data.Text as T
@@ -20,14 +21,21 @@ import Hopinion.Facts.Decl
 import Hopinion.Facts.Place
 import Path (File, Path, Rel)
 
--- | Every literal written in the body of a test that the test runs on.
+-- | Every literal a test runs on.
 --
--- The body only, which is the argument after the description: a literal in the
--- description is the test's name, and one written outside every test is setup
--- that this rule has no view on.
+-- That is a literal in the body of a test, which is the argument after the
+-- description, or in any binding of this module the body names, followed for
+-- as long as there are names to follow. Where a value is bound does not change
+-- whether it was made up, so moving one out of the test does not hide it.
+-- A literal in the description is the test's name, and one that no test reaches
+-- is not a value any test runs on.
 --
--- Within the body, a literal in an argument that 'exemptArguments' names is not
--- a value the test runs on, so it is not one of these either.
+-- A literal in an argument that 'exemptArguments' names is not a value the
+-- test runs on either, and a name written there is not followed.
+--
+-- Names are followed by spelling rather than by what they resolve to, because
+-- resolving them is renaming. A local that shadows another name drags that
+-- name's binding in as well, which errs towards reporting.
 testLiteralsOf :: Path Rel File -> ModuleRef -> [DeclFact] -> [LHsDecl GhcPs] -> [TestLiteral]
 testLiteralsOf rp ref decls ds =
   [ TestLiteral
@@ -37,19 +45,67 @@ testLiteralsOf rp ref decls ds =
       }
   | l <- listify isLiteral ds,
     let loc = getLocA l,
-    any (loc `SrcLoc.isSubspanOf`) bodies,
-    not (any (loc `SrcLoc.isSubspanOf`) exempt),
+    within reached loc,
+    not (within exempt loc),
     let sp = spanOfSrcSpan rp loc
   ]
   where
+    expressions :: [LHsExpr GhcPs]
+    expressions = listify (const True :: LHsExpr GhcPs -> Bool) ds
+
     applications :: [(Text, [SrcLoc.SrcSpan])]
-    applications = concatMap applicationsAt (listify (const True :: LHsExpr GhcPs -> Bool) ds)
+    applications = concatMap applicationsAt expressions
 
     bodies :: [SrcLoc.SrcSpan]
     bodies = [body | (name, _ : body : _) <- applications, isTestName name]
 
     exempt :: [SrcLoc.SrcSpan]
     exempt = concatMap (uncurry exemptArguments) applications
+
+    occurrences :: [(Text, SrcLoc.SrcSpan)]
+    occurrences = [(rdrText (unLoc n), getLocA e) | e <- expressions, HsVar _ n <- [unLoc e]]
+
+    reached :: [SrcLoc.SrcSpan]
+    reached = reachedFrom (bindingsOf ds) occurrences exempt bodies
+
+within :: [SrcLoc.SrcSpan] -> SrcLoc.SrcSpan -> Bool
+within regions loc = any (loc `SrcLoc.isSubspanOf`) regions
+
+-- | The regions a test runs: the ones it starts from, and every binding a name
+-- in one of them refers to, until no new binding is named.
+--
+-- Terminates because a region is only added once and there are finitely many
+-- bindings.
+reachedFrom :: [(Text, SrcLoc.SrcSpan)] -> [(Text, SrcLoc.SrcSpan)] -> [SrcLoc.SrcSpan] -> [SrcLoc.SrcSpan] -> [SrcLoc.SrcSpan]
+reachedFrom bindings occurrences exempt = go
+  where
+    go :: [SrcLoc.SrcSpan] -> [SrcLoc.SrcSpan]
+    go regions =
+      let named = [n | (n, loc) <- occurrences, within regions loc, not (within exempt loc)]
+          new = nub [s | (n, s) <- bindings, n `elem` named, s `notElem` regions]
+       in if null new then regions else go (regions ++ new)
+
+-- | Every name this module binds, anywhere, and where what it is bound to is
+-- written: a function or a pattern binding at any depth, and a name bound in a
+-- @do@ block to the result of an action.
+bindingsOf :: [LHsDecl GhcPs] -> [(Text, SrcLoc.SrcSpan)]
+bindingsOf ds =
+  [ binding
+  | lb <- listify (const True :: LHsBind GhcPs -> Bool) ds,
+    binding <- case unLoc lb of
+      FunBind {fun_id = n} -> [(rdrText (unLoc n), getLocA lb)]
+      PatBind {pat_lhs = p} -> [(name, getLocA lb) | name <- patternNames p]
+      VarBind {} -> []
+      PatSynBind {} -> []
+  ]
+    ++ [ (name, getLocA body)
+       | stmt <- listify (const True :: ExprLStmt GhcPs -> Bool) ds,
+         BindStmt _ p body <- [unLoc stmt],
+         name <- patternNames p
+       ]
+
+patternNames :: LPat GhcPs -> [Text]
+patternNames p = [rdrText (unLoc n) | VarPat _ n <- listify (const True :: Pat GhcPs -> Bool) p]
 
 isLiteral :: LHsExpr GhcPs -> Bool
 isLiteral le = case unLoc le of

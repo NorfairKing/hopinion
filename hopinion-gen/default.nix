@@ -17,10 +17,10 @@ mkDerivation {
   ];
   executableHaskellDepends = [ base ];
   testHaskellDepends = [
-    autodocodec-yaml base containers filepath genvalidity-sydtest
-    genvalidity-sydtest-aeson hopinion hopinion-hie path path-io
-    persistent process QuickCheck safe-coloured-text sydtest
-    sydtest-aeson text yaml
+    autodocodec-yaml base containers filepath genvalidity-path
+    genvalidity-sydtest genvalidity-sydtest-aeson hopinion hopinion-hie
+    path path-io persistent process QuickCheck safe-coloured-text
+    sydtest sydtest-aeson text yaml
   ];
   testToolDepends = [ ormolu sydtest-discover ];
   license = "unknown";

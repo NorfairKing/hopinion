@@ -406,6 +406,7 @@ test-suite hopinion-test
     , base >=4.7 && <5
     , containers
     , filepath
+    , genvalidity-path
     , genvalidity-sydtest
     , genvalidity-sydtest-aeson
     , hopinion
