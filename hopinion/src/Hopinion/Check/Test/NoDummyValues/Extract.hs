@@ -350,22 +350,33 @@ isTestName name =
 -- | A literal added to, taken from, multiplied with or compared with something
 -- that is not a literal, as in @index + 1@ or @length xs > 1@, or written as
 -- one side of such a section, as in @(+ 1)@, or where an open-ended count
--- starts, as in @zip [0 ..] xs@.
+-- starts, as in @zip [0 ..] xs@, or the literal end of a range whose other
+-- end is not one, as in @[0 .. n - 1]@. A minus sign does not change that a
+-- literal is one, as in @(-1) * nominalDay@.
 --
 -- That states where a value is relative to another, which is a claim about the
 -- other value rather than a value made up in its place.
 offsetsAt :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
 offsetsAt le = case unLoc le of
   ArithSeq _ _ (From start) -> [getLocA start]
-  OpApp _ l op r
-    | isRelation op -> case (isLiteral (peelExpr l), isLiteral (peelExpr r)) of
-        (False, True) -> [getLocA r]
-        (True, False) -> [getLocA l]
-        _ -> []
+  ArithSeq _ _ (FromTo start end) -> literalBeside start end
+  OpApp _ l op r | isRelation op -> literalBeside l r
   SectionL _ arg op | isRelation op -> [getLocA arg]
   SectionR _ op arg | isRelation op -> [getLocA arg]
   _ -> []
   where
+    literalBeside :: LHsExpr GhcPs -> LHsExpr GhcPs -> [SrcLoc.SrcSpan]
+    literalBeside l r = case (isSignedLiteral l, isSignedLiteral r) of
+      (False, True) -> [getLocA r]
+      (True, False) -> [getLocA l]
+      (True, True) -> []
+      (False, False) -> []
+
+    isSignedLiteral :: LHsExpr GhcPs -> Bool
+    isSignedLiteral e = case unLoc (peelExpr e) of
+      NegApp _ n _ -> isLiteral (peelExpr n)
+      _ -> isLiteral (peelExpr e)
+
     isRelation :: LHsExpr GhcPs -> Bool
     isRelation op = case unLoc op of
       HsVar _ n -> rdrText (unLoc n) `elem` ["+", "-", "*", ">", "<", ">=", "<=", "==", "/="]

@@ -105,3 +105,9 @@ spec = do
   it "numbers what it renders from nought" $
     forAllValid $ \users ->
       map fst (zip [0 :: Int ..] (map renderUser users)) `shouldBe` take (length users) [0 ..]
+  it "renders the age a year before a generated one" $
+    forAllValid $ \age ->
+      renderAge ((-1) + age) `shouldSatisfy` not . Text.null
+  it "renders every age up to a generated one" $
+    forAllValid $ \age ->
+      renderName (Text.pack (show [0 .. age - 1])) `shouldSatisfy` not . Text.null
