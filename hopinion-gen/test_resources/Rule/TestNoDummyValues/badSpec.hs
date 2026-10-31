@@ -45,3 +45,6 @@ spec = do
          in [first, "ivy"]
   it "uses a binding with a let inside it" $
     map renderUserName fixtureNames `shouldSatisfy` not . null
+  withTimeout 10_000_000 $
+    it "runs within a timeout on a made-up value" $
+      renderUserName "jack" `shouldSatisfy` not . null

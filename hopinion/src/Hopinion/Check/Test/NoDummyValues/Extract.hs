@@ -85,7 +85,8 @@ testLiteralsOf rp ref decls ds
           concatMap offsets expressions,
           concatMap comparisons expressions,
           concatMap sectionsAndCounters expressions,
-          protocolFieldKeys ds
+          protocolFieldKeys ds,
+          constructorTables ds
         ]
 
     occurrences :: [(Text, SrcLoc.SrcSpan)]
@@ -232,9 +233,14 @@ isTestName name =
 -- A value written to be invalid is chosen for being invalid rather than
 -- standing in for any value, so it is not a dummy either.
 --
+-- A local assertion helper named for what it asserts, like
+-- @runStatusShouldBe now run expected@, takes what it expects last.
+--
 -- What a golden test renders has to be the same every run, so the values it is
 -- rendered from are fixed by design rather than made up in place of any value.
 -- That holds for a golden helper of a project's own as much as for sydtest's.
+-- A timeout is its duration, and what it wraps is a test like any other.
+--
 -- How many threads a test runs at once, and how many times it repeats an action
 -- across them, are settings of the test rather than values it runs on.
 --
@@ -256,7 +262,8 @@ exemptArguments name args
   | name `elem` [".:", ".:?", ".:!"] = drop 1 args
   | name `elem` firstArgumentNames = take 1 args
   | T.isPrefixOf "golden" name || T.isInfixOf "Golden" name = args
-  | T.isInfixOf "Timeout" name || T.isInfixOf "timeout" name = args
+  | T.isInfixOf "Timeout" name || T.isInfixOf "timeout" name = take 1 args
+  | any (`T.isSuffixOf` name) ["ShouldBe", "ShouldNotBe", "ShouldContain", "ShouldNotContain", "ShouldReturn", "ShouldSatisfy"] = drop (length args - 1) args
   | (T.isPrefixOf "parser" name || T.isInfixOf "Parser" name) && T.isSuffixOf "Test" name = args
   | name `elem` ["pooledReplicateConcurrentlyN", "pooledReplicateConcurrentlyN_"] = take 2 args
   | T.isPrefixOf "pooled" name && T.isInfixOf "ConcurrentlyN" name = take 1 args
@@ -284,6 +291,35 @@ pairKeys le = case namedApplicationOf le of
           ExplicitTuple _ (Present _ key : _) _ <- [unLoc tuple]
         ]
   _ -> []
+
+-- | The literals a table from constructors to values maps to, as in a @\\case@
+-- giving each constructor of a sum type its protocol code.
+--
+-- A mapping that takes every case apart by its constructor is a specification
+-- of what each one means, written down once, rather than a value made up for a
+-- test.
+constructorTables :: [LHsDecl GhcPs] -> [SrcLoc.SrcSpan]
+constructorTables ds =
+  [ getLocA body
+  | mg <- listify (const True :: MatchGroup GhcPs (LHsExpr GhcPs) -> Bool) ds,
+    let alternatives = map unLoc (unLoc (mg_alts mg)),
+    length alternatives > 1,
+    Just bodies <- [traverse constructorToLiteral alternatives],
+    body <- bodies
+  ]
+  where
+    constructorToLiteral :: Match GhcPs (LHsExpr GhcPs) -> Maybe (LHsExpr GhcPs)
+    constructorToLiteral m = case (map unLoc (unLoc (m_pats m)), m_grhss m) of
+      ([p], GRHSs {grhssGRHSs = [lgrhs]}) | isConstructorPattern p -> case unLoc lgrhs of
+        GRHS _ [] body | isLiteral (peelExpr body) -> Just body
+        _ -> Nothing
+      _ -> Nothing
+
+    isConstructorPattern :: Pat GhcPs -> Bool
+    isConstructorPattern = \case
+      ConPat {} -> True
+      ParPat _ p -> isConstructorPattern (unLoc p)
+      _ -> False
 
 -- | Whether a name says it holds HTTP headers or a query string, whose pairs
 -- start with a name the protocol or the handler fixes.

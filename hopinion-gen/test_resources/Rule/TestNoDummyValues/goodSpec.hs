@@ -137,3 +137,15 @@ spec = do
     parseMaybe parseJSON (String "x") `shouldBe` Just (String "x")
   it "renders a status the protocol fixes" $
     statusMessage (mkStatus 429 "Too Many Requests") `shouldBe` "Too Many Requests"
+  it "asserts with a helper of the project's own" $
+    forAllValid $ \user ->
+      renderedShouldContain user "("
+  it "maps every constructor to the code the protocol gives it" $
+    forAllValid $ \level ->
+      ( \case
+          LevelError -> 0
+          LevelWarn -> 1
+          LevelInfo -> 3
+      )
+        level
+        `shouldBe` levelCode level
