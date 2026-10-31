@@ -76,7 +76,8 @@ testLiteralsOf rp ref decls ds
           concatMap pairKeys expressions,
           concatMap counterStarts expressions,
           concatMap expectations expressions,
-          concatMap offsets expressions
+          concatMap offsets expressions,
+          concatMap comparisons expressions
         ]
 
     occurrences :: [(Text, SrcLoc.SrcSpan)]
@@ -101,12 +102,20 @@ testLiteralsOf rp ref decls ds
     unnamedLets :: [SrcLoc.SrcSpan]
     unnamedLets = [l | l <- letsInTests, l `notElem` reached]
 
-    -- The innermost test a literal is in, and the innermost binding it was
-    -- reached through when it is in none.
+    -- The innermost test a literal is in, and the outermost binding it was
+    -- reached through when it is in none, so that a binding with lets or a
+    -- comprehension inside it is still one thing to answer for.
     ownerOf :: SrcLoc.SrcSpan -> Maybe SrcLoc.SrcSpan
     ownerOf loc = case innermost [b | b <- bodies, loc `SrcLoc.isSubspanOf` b] of
       Just body -> Just body
-      Nothing -> innermost [r | r <- reached, loc `SrcLoc.isSubspanOf` r]
+      Nothing -> outermost [r | r <- reached, loc `SrcLoc.isSubspanOf` r]
+
+-- | The region that contains every other one of these, given regions that all
+-- contain one point and so nest.
+outermost :: [SrcLoc.SrcSpan] -> Maybe SrcLoc.SrcSpan
+outermost = \case
+  [] -> Nothing
+  (r : rs) -> Just (foldl' (\outer s -> if outer `SrcLoc.isSubspanOf` s then s else outer) r rs)
 
 -- | The region every other one of these contains, given regions that all
 -- contain one point and so nest.
@@ -279,6 +288,20 @@ offsets le = case unLoc le of
           _ -> []
   _ -> []
 
+-- | A literal compared with something that is not one, as in @length xs > 1@.
+--
+-- That is a claim about the other value, the way an offset from it is, rather
+-- than a value the test runs on.
+comparisons :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
+comparisons le = case unLoc le of
+  OpApp _ l op r
+    | operatorName op `elem` map Just [">", "<", ">=", "<=", "==", "/="] ->
+        case (isLiteral (peelExpr l), isLiteral (peelExpr r)) of
+          (False, True) -> [getLocA r]
+          (True, False) -> [getLocA l]
+          _ -> []
+  _ -> []
+
 -- | Where an open-ended enumeration starts, as in @zip [0 ..] xs@.
 --
 -- That is the base of a count rather than data: nothing is made up by numbering
@@ -322,6 +345,7 @@ mappedSpecimens le =
 -- The needle of a search is what a test claims is in its output, and so is the
 -- key of a lookup: it names something the output should hold, or repeats a
 -- value written into the input, where that value is reported already. A
+-- separator or a prefix describes the format a value is taken apart by. A
 -- selector names a part of a page, and a form or query parameter's name is
 -- fixed by the handler it is sent to.
 --
@@ -348,6 +372,13 @@ firstArgumentNames =
     "isInfixOf",
     "isPrefixOf",
     "isSuffixOf",
+    "splitOn",
+    "breakOn",
+    "breakOnEnd",
+    "count",
+    "stripPrefix",
+    "stripSuffix",
+    "replace",
     "lookup",
     "member",
     "notMember",

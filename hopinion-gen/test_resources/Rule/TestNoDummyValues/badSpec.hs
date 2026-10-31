@@ -40,3 +40,8 @@ spec = do
   it "uses a let that holds a made-up value" $ do
     let greg = "greg"
     renderUserName greg `shouldSatisfy` not . null
+  let fixtureNames =
+        let first = "hank"
+         in [first, "ivy"]
+  it "uses a binding with a let inside it" $
+    map renderUserName fixtureNames `shouldSatisfy` not . null

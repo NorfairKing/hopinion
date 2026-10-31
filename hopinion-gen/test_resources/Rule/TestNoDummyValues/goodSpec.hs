@@ -100,3 +100,11 @@ spec = do
   it "fails with a message nothing reads" $
     forAllValid $ \user ->
       (renderOrFail user >>= maybe (throwIO (userError "no render")) pure) `shouldReturn` renderUser user
+  it "takes a rendering apart at its separator, and expects more than one piece" $
+    forAllValid $ \users ->
+      length (Text.splitOn "\n" (renderUsers users)) >= 1 `shouldBe` True
+  let tableProblems =
+        let rows = [row | row <- Text.lines rendered, Text.count "|" row > 1]
+         in [i | (i, row) <- zip [0 :: Int ..] rows, Text.null row]
+  it "reports a binding with lets inside once" $
+    tableProblems `shouldBe` []
