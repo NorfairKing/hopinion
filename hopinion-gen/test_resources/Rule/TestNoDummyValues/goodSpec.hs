@@ -116,3 +116,24 @@ spec = do
   it "asserts with a section" $
     forAllValid $ \users ->
       pure (length users) >>= (`shouldBe` length users)
+  it "sends and reads headers and a query string under the names the protocol fixes" $
+    forAllValid $ \(token, page) -> do
+      let request' = defaultRequest {requestHeaders = [("Authorization", token)], queryString = [("page", Just page)]}
+      response <- handle request'
+      responseHeaders response `shouldSatisfy` any ((== "Content-Type") . fst)
+  it "counts from zero, in steps of one, and scales by units" $
+    forAllValid $ \(seconds :: Word) -> do
+      counter <- newIORef (0 :: Int)
+      modifyIORef' counter (+ 1)
+      readIORef counter `shouldReturn` 1
+      toNanos seconds `shouldBe` seconds * 1_000_000_000
+  it "listens on an ephemeral port on loopback" $ do
+    sock <- socket AF_INET Stream defaultProtocol
+    setSocketOption sock ReuseAddr 1
+    bind sock (SockAddrInet 0 (tupleToHostAddress (127, 0, 0, 1)))
+    listen sock 5
+    setGracefulShutdownTimeout (Just 20) settings `shouldSatisfy` const True
+  it "parses the value aeson is given" $
+    parseMaybe parseJSON (String "x") `shouldBe` Just (String "x")
+  it "renders a status the protocol fixes" $
+    statusMessage (mkStatus 429 "Too Many Requests") `shouldBe` "Too Many Requests"

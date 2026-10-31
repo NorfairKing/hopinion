@@ -6,6 +6,7 @@
 -- and that comes from 'Hopinion.Extract.Ghc'.
 module Hopinion.Check.Test.NoDummyValues.Extract (testLiteralsOf) where
 
+import Data.Data (Data)
 import Data.Generics (listify)
 import Data.List (nub)
 import Data.Maybe (fromMaybe)
@@ -13,6 +14,8 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import GHC.Data.FastString (unpackFS)
 import GHC.Hs
+import GHC.Types.Name.Reader (RdrName)
+import GHC.Types.SourceText (IntegralLit (..))
 import GHC.Types.SrcLoc (unLoc)
 import qualified GHC.Types.SrcLoc as SrcLoc
 import GHC.Utils.Outputable (showPprUnsafe)
@@ -21,6 +24,7 @@ import Hopinion.Extract.Ghc
 import Hopinion.Facts.Decl
 import Hopinion.Facts.Module (isSpecFilePath)
 import Hopinion.Facts.Place
+import Language.Haskell.Syntax.Pat (LHsRecUpdField)
 import Path (File, Path, Rel)
 
 -- | Every literal a test runs on.
@@ -80,7 +84,8 @@ testLiteralsOf rp ref decls ds
           concatMap expectations expressions,
           concatMap offsets expressions,
           concatMap comparisons expressions,
-          concatMap assertionSections expressions
+          concatMap sectionsAndCounters expressions,
+          protocolFieldKeys ds
         ]
 
     occurrences :: [(Text, SrcLoc.SrcSpan)]
@@ -251,6 +256,7 @@ exemptArguments name args
   | name `elem` [".:", ".:?", ".:!"] = drop 1 args
   | name `elem` firstArgumentNames = take 1 args
   | T.isPrefixOf "golden" name || T.isInfixOf "Golden" name = args
+  | T.isInfixOf "Timeout" name || T.isInfixOf "timeout" name = args
   | (T.isPrefixOf "parser" name || T.isInfixOf "Parser" name) && T.isSuffixOf "Test" name = args
   | name `elem` ["pooledReplicateConcurrentlyN", "pooledReplicateConcurrentlyN_"] = take 2 args
   | T.isPrefixOf "pooled" name && T.isInfixOf "ConcurrentlyN" name = take 1 args
@@ -271,13 +277,37 @@ exemptArguments name args
 pairKeys :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
 pairKeys le = case namedApplicationOf le of
   Just (name, args)
-    | name == "object" || T.isPrefixOf "parserEnv" name ->
+    | name == "object" || T.isPrefixOf "parserEnv" name || isProtocolPairName name ->
         [ getLocA key
         | arg <- args,
           tuple <- listify (const True :: LHsExpr GhcPs -> Bool) arg,
           ExplicitTuple _ (Present _ key : _) _ <- [unLoc tuple]
         ]
   _ -> []
+
+-- | Whether a name says it holds HTTP headers or a query string, whose pairs
+-- start with a name the protocol or the handler fixes.
+isProtocolPairName :: Text -> Bool
+isProtocolPairName name = any (`T.isInfixOf` name) ["Header", "header", "QueryString", "queryString"]
+
+-- | The names in the pairs a record field of headers or a query string is set
+-- to, as in @request {requestHeaders = [("Accept", value)]}@.
+protocolFieldKeys :: [LHsDecl GhcPs] -> [SrcLoc.SrcSpan]
+protocolFieldKeys ds =
+  concat
+    [ [keySpan | field <- listify (const True :: HsFieldBind (LFieldOcc GhcPs) (LHsExpr GhcPs) -> Bool) ds, labelled (hfbLHS field), keySpan <- keysIn (hfbRHS field)],
+      [keySpan | field <- map unLoc (listify (const True :: LHsRecUpdField GhcPs GhcPs -> Bool) ds), labelled (hfbLHS field), keySpan <- keysIn (hfbRHS field)]
+    ]
+  where
+    labelled :: (Data a) => a -> Bool
+    labelled lhs = any (isProtocolPairName . rdrText) (listify (const True :: RdrName -> Bool) lhs)
+
+    keysIn :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
+    keysIn value =
+      [ getLocA key
+      | tuple <- listify (const True :: LHsExpr GhcPs -> Bool) value,
+        ExplicitTuple _ (Present _ key : _) _ <- [unLoc tuple]
+      ]
 
 -- | What a test names as expected: a constructor, a function or a record field
 -- whose name says so, which is a claim the same way the expected side of an
@@ -306,7 +336,7 @@ isExpectationName name = T.isPrefixOf "expected" name || T.isPrefixOf "Expected"
 offsets :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
 offsets le = case unLoc le of
   OpApp _ l op r
-    | operatorName op `elem` [Just "+", Just "-"] ->
+    | operatorName op `elem` [Just "+", Just "-", Just "*"] ->
         case (isLiteral (peelExpr l), isLiteral (peelExpr r)) of
           (False, True) -> [getLocA r]
           (True, False) -> [getLocA l]
@@ -328,11 +358,25 @@ comparisons le = case unLoc le of
   _ -> []
 
 -- | The expected side of an assertion written as a section, as in
--- @(`shouldBe` 1)@.
-assertionSections :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
-assertionSections le = case unLoc le of
-  SectionR _ op arg | maybe False (T.isPrefixOf "should") (operatorName op) -> [getLocA arg]
-  _ -> []
+-- @(`shouldBe` 1)@, the step of an increment written as one, as in @(+ 1)@,
+-- and the zero a counter starts at.
+sectionsAndCounters :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
+sectionsAndCounters le = case unLoc le of
+  SectionR _ op arg
+    | maybe False (T.isPrefixOf "should") (operatorName op) -> [getLocA arg]
+    | operatorName op `elem` [Just "+", Just "-", Just "*"] -> [getLocA arg]
+  SectionL _ arg op
+    | operatorName op `elem` [Just "+", Just "-", Just "*"] -> [getLocA arg]
+  _ -> case namedApplicationOf le of
+    Just (name, [start])
+      | name `elem` ["newIORef", "newTVar", "newTVarIO", "newMVar", "newSTRef"] && isZero start -> [getLocA start]
+    _ -> []
+
+-- | Whether this is the literal zero, which is where a counter starts.
+isZero :: LHsExpr GhcPs -> Bool
+isZero e = case unLoc (peelExpr e) of
+  HsOverLit _ OverLit {ol_val = HsIntegral il} -> il_value il == 0
+  _ -> False
 
 -- | Where an open-ended enumeration starts, as in @zip [0 ..] xs@.
 --
@@ -439,6 +483,15 @@ firstArgumentNames =
 wholeCallNames :: [Text]
 wholeCallNames =
   [ "shouldBeInvalid",
+    "parseMaybe",
+    "parseEither",
+    "parseFail",
+    "mkStatus",
+    "tupleToHostAddress",
+    "SockAddrInet",
+    "setSocketOption",
+    "listen",
+    "subtract",
     "setMethod",
     "addRequestHeader",
     "statusIs",
