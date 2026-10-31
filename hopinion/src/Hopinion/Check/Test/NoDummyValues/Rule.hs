@@ -80,6 +80,12 @@ data Ownership
   | OwnershipProject
   | OwnershipLibrary
 
+-- | How a value got where it is: written there, or returned by a library
+-- function it was handed to.
+data Passage
+  = PassageDirect
+  | PassageThroughLibrary
+
 -- | Whether a function this module defines can be followed into at a
 -- parameter, which it can when it names that parameter.
 data Followability
@@ -121,8 +127,10 @@ isUnitOf pkg unit =
 -- It does when any function among them is the project's: whatever library code
 -- it passes through on the way, a value handed on to the project's code is an
 -- input to it. One that only library functions receive configures those
--- libraries instead, unless a library function is also handed one of the
--- project's own functions defined elsewhere, which it hands the value on to.
+-- libraries instead. A library function handed one of the project's functions
+-- alongside the value, as in @map f xs@, may hand the value on to it, but
+-- telling such a function from a value of the project's needs types, so it is
+-- not followed.
 --
 -- A constructor decides nothing, the project's included, because building a
 -- value runs no code: what decides is what the value is then handed to, so the
@@ -135,25 +143,31 @@ isUnitOf pkg unit =
 -- module does not name, such as one written point-free, cannot be followed
 -- and is taken for the code under test.
 reachesProject :: (NameAt -> Ownership) -> TestLiterals -> [Consumer] -> Bool
-reachesProject owner facts = go S.empty S.empty
+reachesProject owner facts = go PassageDirect S.empty S.empty
   where
-    go :: S.Set Text -> S.Set (Text, Word) -> [Consumer] -> Bool
-    go bindings parameters = \case
+    go :: Passage -> S.Set Text -> S.Set (Text, Word) -> [Consumer] -> Bool
+    go passage bindings parameters = \case
       [] -> False
-      ConsumerCall callee index others : rest
-        | isConstructorName (nameAtText callee) -> go bindings parameters rest
+      ConsumerCall callee index : rest
+        | isConstructorName (nameAtText callee) -> go passage bindings parameters rest
         | otherwise -> case owner callee of
             OwnershipThisModule -> case followable (nameAtText callee) index of
-              FollowabilityNamed -> intoFunction bindings parameters (nameAtText callee) index || go bindings parameters rest
+              FollowabilityNamed -> intoFunction bindings parameters (nameAtText callee) index || go passage bindings parameters rest
               FollowabilityUnknown -> True
             OwnershipProject -> True
-            OwnershipLibrary -> any handsOnTo others || go bindings parameters rest
-      ConsumerBinding name : _
-        | name `S.member` bindings -> False
-        | otherwise ->
-            any
-              (go (S.insert name bindings) parameters . bindingUseConsumers)
-              [u | u <- testLiteralsUses facts, bindingUseName u == name]
+            OwnershipLibrary -> go PassageThroughLibrary bindings parameters rest
+      ConsumerBinding name : _ -> case passage of
+        -- What a library returns is its own value, which the argument may or
+        -- may not be part of: the path to a file is not what was read from it.
+        -- Handed straight on as an argument it is followed; bound to a name
+        -- for later, it is not.
+        PassageThroughLibrary -> False
+        PassageDirect
+          | name `S.member` bindings -> False
+          | otherwise ->
+              any
+                (go PassageDirect (S.insert name bindings) parameters . bindingUseConsumers)
+                [u | u <- testLiteralsUses facts, bindingUseName u == name]
 
     -- Inside the function, where the value is a parameter. What the function
     -- returns is followed by the caller, so the function's own name ends the
@@ -163,7 +177,7 @@ reachesProject owner facts = go S.empty S.empty
       | (function, index) `S.member` parameters = False
       | otherwise =
           any
-            (go (S.insert function bindings) (S.insert (function, index) parameters) . parameterUseConsumers)
+            (go PassageDirect (S.insert function bindings) (S.insert (function, index) parameters) . parameterUseConsumers)
             [ u
             | u <- testLiteralsParameters facts,
               parameterUseFunction u == function,
@@ -174,15 +188,6 @@ reachesProject owner facts = go S.empty S.empty
     followable function index
       | any (\a -> functionArityName a == function && index < functionArityParameters a) (testLiteralsArities facts) = FollowabilityNamed
       | otherwise = FollowabilityUnknown
-
-    -- Only a name defined in another module of the project, because a name
-    -- this module binds is as likely to be a value a test compares against as
-    -- a function it hands on to.
-    handsOnTo :: NameAt -> Bool
-    handsOnTo name = case owner name of
-      OwnershipThisModule -> False
-      OwnershipProject -> True
-      OwnershipLibrary -> False
 
 isConstructorName :: Text -> Bool
 isConstructorName name = case T.uncons name of

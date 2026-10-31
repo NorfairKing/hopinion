@@ -46,3 +46,7 @@ spec = do
       renderUser (mk "gina") `shouldSatisfy` not . Text.null
     it "hands a helper a made-up value it gives the code under test" $
       renders User {userName = "hal", userAge = 2}
+  let rendersNonEmpty name =
+        it "renders a name a helper is handed" $
+          renderName name `shouldSatisfy` not . Text.null
+  rendersNonEmpty "ivan"

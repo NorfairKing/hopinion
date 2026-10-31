@@ -133,7 +133,6 @@ spec = do
 
     -- The case the whole check exists for. Two test suites, two files, one module
     -- name, and one .hie file surviving the collection.
-    -- [allow:TestNoDummyValues] The path one test suite's Main is compiled from.
     it "tells one component's Main from another's" $ do
       let compiled = parseRelFile "testa/Main.hs"
       sameSourceFile compiled [relfile|thing-gen/testa/Main.hs|] `shouldBe` True
@@ -151,7 +150,6 @@ spec = do
     -- so: Main.hs ends the path of every component that has a main-is, so
     -- accepting it would let one test suite's compiled module be read as
     -- another's, which is the whole reason the file is checked at all.
-    -- [allow:TestNoDummyValues] The bare file name every component's Main ends in.
     it "refuses a bare file name, which would match every component's Main" $ do
       let compiled = parseRelFile "Main.hs"
       sameSourceFile compiled [relfile|thing-gen/testa/Main.hs|] `shouldBe` False

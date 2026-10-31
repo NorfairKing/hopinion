@@ -22,6 +22,9 @@ withRenderer = withRenderer
 renderAge :: Int -> Text
 renderAge = renderAge
 
+renderName :: Text -> Text
+renderName = renderName
+
 genAge :: Int -> Int -> Gen Int
 genAge = genAge
 
@@ -87,3 +90,18 @@ spec = do
         rendersAs user "an expected rendering"
     it "hands a helper a value only a library receives" $
       notEmpty "a value only an assertion receives"
+  it "renders what a library read from a fixture file" $ do
+    contents <- readFile "test_resources/name.txt"
+    renderName (Text.pack contents) `shouldSatisfy` not . Text.null
+  it "renders a value a failure message stands beside" $
+    forAllValid $ \maybeUser -> do
+      user <- case maybeUser of
+        Nothing -> expectationFailure "There was no user."
+        Just u -> pure u
+      renderUser user `shouldSatisfy` not . Text.null
+  it "expects as many codes as there are levels" $
+    forAllValid $ \level ->
+      replicate 2 level `shouldBe` [level, level]
+  it "numbers what it renders from nought" $
+    forAllValid $ \users ->
+      map fst (zip [0 :: Int ..] (map renderUser users)) `shouldBe` take (length users) [0 ..]

@@ -147,7 +147,26 @@ testLiteralsOf rp ref decls ds
     occurrences = [(rdrText (unLoc n), getLocA e) | e <- expressions, HsVar _ n <- [unLoc e]]
 
     reached :: [SrcLoc.SrcSpan]
-    reached = reachedFrom bindings occurrences bodies
+    reached = reachedFrom bindings occurrences (bodies ++ testHelperArguments)
+
+    -- What a function of this file that writes tests is handed, as in
+    -- @parsesAs "release/*" ...@ at the top of a spec: those values reach the
+    -- tests it writes, by its parameters.
+    testHelperArguments :: [SrcLoc.SrcSpan]
+    testHelperArguments =
+      [ arg
+      | Call {callHead = (name, _), callArguments = args} <- calls,
+        name `S.member` testWriters,
+        (arg, _) <- args
+      ]
+
+    testWriters :: S.Set Text
+    testWriters =
+      S.fromList
+        [ functionName
+        | (functionName, s) <- bindings,
+          any (`SrcLoc.isSubspanOf` s) bodies
+        ]
 
     tables :: [SrcLoc.SrcSpan]
     tables = constructorTables ds
@@ -195,8 +214,8 @@ testLiteralsOf rp ref decls ds
               ]
           callConsumers =
             nub
-              [ ConsumerCall (nameAt (callHead call)) index [nameAt n | (other, Just n) <- callArguments call, other /= arg]
-              | (arg, (index, call)) <- enclosing
+              [ ConsumerCall (nameAt (callHead call)) index
+              | (_, (index, call)) <- enclosing
               ]
           bindingConsumer =
             [ ConsumerBinding name
@@ -313,12 +332,14 @@ isTestName name =
 
 -- | A literal added to, taken from, multiplied with or compared with something
 -- that is not a literal, as in @index + 1@ or @length xs > 1@, or written as
--- one side of such a section, as in @(+ 1)@.
+-- one side of such a section, as in @(+ 1)@, or where an open-ended count
+-- starts, as in @zip [0 ..] xs@.
 --
 -- That states where a value is relative to another, which is a claim about the
 -- other value rather than a value made up in its place.
 offsetsAt :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
 offsetsAt le = case unLoc le of
+  ArithSeq _ _ (From start) -> [getLocA start]
   OpApp _ l op r
     | isRelation op -> case (isLiteral (peelExpr l), isLiteral (peelExpr r)) of
         (False, True) -> [getLocA r]

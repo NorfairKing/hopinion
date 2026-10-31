@@ -59,11 +59,9 @@ instance Validity TestLiteral
 -- | One thing a value is handed to on its way out of the expression it is
 -- written in.
 data Consumer
-  = -- | A function or constructor it is an argument of, which argument it is
-    -- counting from nought, and the bare names among that call's other
-    -- arguments: a library function handed one of the project's own functions
-    -- hands the value on to it.
-    ConsumerCall !NameAt !Word ![NameAt]
+  = -- | A function or constructor it is an argument of, and which argument it
+    -- is, counting from nought.
+    ConsumerCall !NameAt !Word
   | -- | The binding the value is the whole or a part of. What receives it from
     -- there is wherever that name is used.
     ConsumerBinding !Text

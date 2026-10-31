@@ -93,7 +93,6 @@ spec = do
         -- rewrites a trailing @-- ^@ on a record field into a leading @-- |@,
         -- which changes the comment without changing what it is about.
         unless (filename path `elem` formatSensitive) $
-          -- [allow:TestNoDummyValues] The formatter and the flag that tells it which file it is reading, whose output the test reads back.
           it "attaches the same way after ormolu" $ do
             before' <- subjects <$> factsForFile shippedRules path [] ComponentKindLib
             original <- TIO.readFile (toFilePath path)
