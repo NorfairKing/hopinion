@@ -34,3 +34,18 @@ spec = do
       -- [allow:TestNoDummyValues] The input from the bug report.
       let reported = user {userName = "Robert'); DROP TABLE users;--"}
       renderUser reported `shouldSatisfy` not . null
+  it "renders a fixed user into a golden file, which has to be the same every run" $
+    pureGoldenTextFile "test_resources/fixed-user.txt" $
+      renderUser User {userName = "alice", userAge = 30}
+  it "renders through a golden helper of the project's own" $
+    explainGoldenTest pool "user/by-name" $ \now ->
+      selectUserNamed now "alice"
+  it "writes a table with a raw query" $
+    forAllValid $ \pool -> do
+      runSqlPool (rawExecute "CREATE TABLE users (name VARCHAR NOT NULL)" []) pool
+      tables <- runSqlPool (rawSql "SELECT name FROM sqlite_master WHERE type = 'table'" []) pool
+      tables `shouldSatisfy` not . null
+  it "parses a specimen of the format" $
+    parseDuration "2w" `shouldBe` Right (Duration 1209600)
+  it "decodes a specimen of the format" $
+    eitherDecode "{\"name\":\"alice\"}" `shouldBe` Right (Person "alice")

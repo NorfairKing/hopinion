@@ -51,24 +51,19 @@ spec = do
 
     -- What an empty file means is what the codec says an empty mapping means,
     -- rather than an answer written out beside it.
-    -- [allow:TestNoDummyValues] The empty file is the case under test.
     it "reads a file holding nothing as the codec reads a file holding no settings" $
       parseChoices "" `shouldBe` parseChoices "{}\n"
 
-    -- [allow:TestNoDummyValues] The smallest file that decides something.
     it "reads the rules a repository has decided against" $
       parseChoices "disabled-rules:\n  - CommentBareTodo\n"
         `shouldBe` Right (Choices {unChoices = [RuleId "CommentBareTodo"]})
 
-    -- [allow:TestNoDummyValues] The empty file is the case under test.
     it "reads a file holding nothing as nothing decided" $
       parseChoices "" `shouldBe` Right noChoices
 
-    -- [allow:TestNoDummyValues] A file holding a comment and nothing else.
     it "reads a file holding only comments as nothing decided" $
       parseChoices "# nothing yet\n" `shouldBe` Right noChoices
 
-    -- [allow:TestNoDummyValues] The empty list is the case under test.
     it "reads an empty list as nothing decided" $
       parseChoices "disabled-rules: []\n" `shouldBe` Right noChoices
 
@@ -76,7 +71,6 @@ spec = do
     -- every run still makes, which is what a name that is not a rule id would be,
     -- one line up. The keys it does know are the codec's, so this message names
     -- them without anybody writing them down twice.
-    -- [allow:TestNoDummyValues] The misspelling of the one key there is.
     it "refuses a key it does not know, rather than ignoring it" $
       parseChoices "disabled_rules:\n  - CommentBareTodo\n"
         `shouldBe` Left (ChoicesErrorSettingsNobodyKnows ("disabled_rules" :| []))
@@ -91,11 +85,9 @@ spec = do
                    \file does not know is a decision nothing acts on, so it is refused rather \
                    \than ignored. It knows: disabled-rules"
 
-    -- [allow:TestNoDummyValues] A list where a mapping belongs.
     it "refuses something that is not a set of settings" $
       parseChoices "- CommentBareTodo\n" `shouldBe` Left ChoicesErrorNotASetOfSettings
 
-    -- [allow:TestNoDummyValues] A name that cannot be an id, because it has spaces in it.
     it "refuses a name that is not a rule id" $
       parseChoices "disabled-rules:\n  - not an id\n"
         `shouldSatisfy` either (const True) (const False)

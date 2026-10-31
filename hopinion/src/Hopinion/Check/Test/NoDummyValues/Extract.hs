@@ -134,18 +134,29 @@ isTestName name =
 -- What a test asserts is the claim rather than an input to it, so the expected
 -- side of an assertion is one of these. So is a generator's definition, which
 -- is the replacement this rule asks for, and so is anything that configures
--- the test rather than feeding it: a golden file's path, a failure message, how
--- many examples to run, which file a fixture is read from, how long to wait,
--- what a temporary directory is called, which program to run with which flags.
+-- the test rather than feeding it: a failure message, how many examples to
+-- run, which file a fixture is read from, how long to wait, what a temporary
+-- directory is called, which program to run with which flags.
 --
 -- A value written to be invalid is chosen for being invalid rather than
 -- standing in for any value, so it is not a dummy either.
+--
+-- What a golden test renders has to be the same every run, so the values it is
+-- rendered from are fixed by design rather than made up in place of any value.
+-- That holds for a golden helper of a project's own as much as for sydtest's.
+-- A raw query is code in another language rather than a value.
+--
+-- What a parser is given is a specimen of the format it reads, which the test is
+-- about and which the expected value is worked out from, so it is no more a
+-- dummy than the expected value is.
 exemptArguments :: Text -> [SrcLoc.SrcSpan] -> [SrcLoc.SrcSpan]
 exemptArguments name args
   | name `elem` wholeCallNames = args
   | T.isPrefixOf "should" name = drop 1 args
   | name `elem` firstArgumentNames = take 1 args
-  | any (`T.isPrefixOf` name) ["golden", "pureGolden", "readFile", "decodeFile"] = take 1 args
+  | T.isPrefixOf "golden" name || T.isInfixOf "Golden" name = args
+  | any (`T.isPrefixOf` name) ["readFile", "decodeFile", "parse", "decode", "eitherDecode"] = take 1 args
+  | name `elem` ["rawExecute", "rawExecuteCount", "rawSql", "rawQuery"] = take 1 args
   | T.isPrefixOf "with" name && T.isInfixOf "Temp" name = take 1 args
   | name `elem` ["readProcess", "readProcessWithExitCode", "callProcess", "proc"] = take 2 args
   | name `elem` ["readCreateProcess", "readCreateProcessWithExitCode"] = args

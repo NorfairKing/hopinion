@@ -129,23 +129,19 @@ spec = do
     -- the directory it built in has nothing to do with the repository the module
     -- is named against. So it reads as a different file, which is the safe
     -- direction: the rule that asked learns nothing rather than the wrong thing.
-    -- [allow:TestNoDummyValues] The absolute path a build directory outside the repository records.
     it "does not match a path from a build directory the repository knows nothing about" $
       sameSourceFile (parseRelFile "/build/thing-0.0.0/src/Thing.hs") [relfile|thing/src/Thing.hs|] `shouldBe` False
 
     -- The case the whole check exists for. Two test suites, two files, one module
     -- name, and one .hie file surviving the collection.
     it "tells one component's Main from another's" $ do
-      -- [allow:TestNoDummyValues] The path one test suite's Main is compiled from.
       let compiled = parseRelFile "testa/Main.hs"
       sameSourceFile compiled [relfile|thing-gen/testa/Main.hs|] `shouldBe` True
       sameSourceFile compiled [relfile|thing-gen/testb/Main.hs|] `shouldBe` False
 
-    -- [allow:TestNoDummyValues] A path that shares only its file name with the module.
     it "does not match a different module that happens to end the same way" $
       sameSourceFile (parseRelFile "src/Other/Thing.hs") [relfile|thing/src/Thing.hs|] `shouldBe` False
 
-    -- [allow:TestNoDummyValues] The leading dot is what is under test.
     it "ignores a leading dot, which is how a build often names its own directory" $
       sameSourceFile (parseRelFile "./src/Thing.hs") [relfile|thing/src/Thing.hs|] `shouldBe` True
 
@@ -154,7 +150,6 @@ spec = do
     -- accepting it would let one test suite's compiled module be read as
     -- another's, which is the whole reason the file is checked at all.
     it "refuses a bare file name, which would match every component's Main" $ do
-      -- [allow:TestNoDummyValues] The bare file name every component's Main ends in.
       let compiled = parseRelFile "Main.hs"
       sameSourceFile compiled [relfile|thing-gen/testa/Main.hs|] `shouldBe` False
       sameSourceFile compiled [relfile|thing-gen/testb/Main.hs|] `shouldBe` False

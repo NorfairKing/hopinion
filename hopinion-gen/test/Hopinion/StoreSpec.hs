@@ -57,9 +57,7 @@ spec = do
         -- and this is about a table this build has never heard of, which is
         -- what an executable with a rule this one lacks leaves behind.
         withStore [] (StoreLocationOnDisk foreign') $ do
-          -- [allow:TestNoDummyValues] The table no rule of this build has, which the message names.
           rawExecute "CREATE TABLE \"a_rule_we_do_not_have\" (\"id\" INTEGER PRIMARY KEY, \"what\" VARCHAR NOT NULL)" []
-          -- [allow:TestNoDummyValues] A row in that table, so that there is something to merge.
           rawExecute "INSERT INTO \"a_rule_we_do_not_have\" (\"what\") VALUES ('something')" []
         unmergeable <- withMemoryStore [] (mergeStore foreign')
         unmergeable
@@ -216,7 +214,6 @@ spec = do
           try
             ( withMemoryStore [] $ do
                 writePackageEnvelope name PackageRoleMain [relfile|thing/thing.cabal|] []
-                -- [allow:TestNoDummyValues] The column holds this instead of a fact, and the message has to name it.
                 rawExecute
                   "INSERT INTO stored_annotation (package, module_ref, annotation) VALUES (?, ?, 'not a fact')"
                   [toPersistValue name, toPersistValue (ref :: ModuleRef)]

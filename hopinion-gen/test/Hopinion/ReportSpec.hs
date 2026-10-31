@@ -102,7 +102,6 @@ spec = do
 
   -- A failure is what the tool could not do rather than what is wrong with the
   -- code, so it has no position and nothing to show underneath.
-  -- [allow:TestNoDummyValues] The golden shows this name, so it has to be the same every run.
   it "shows a failure with no code under it" $
     pureGoldenTextFile (toFilePath (resourceDir </> [relfile|failure.golden|])) $
       renderReportColoured
