@@ -65,7 +65,15 @@ testLiteralsOf rp ref decls ds
     bodies = [body | (name, _ : body : _) <- applications, isTestName name]
 
     exempt :: [SrcLoc.SrcSpan]
-    exempt = concatMap (uncurry exemptArguments) applications ++ concatMap mappedSpecimens expressions
+    exempt =
+      concat
+        [ concatMap (uncurry exemptArguments) applications,
+          concatMap mappedSpecimens expressions,
+          concatMap pairKeys expressions,
+          concatMap counterStarts expressions,
+          concatMap expectations expressions,
+          concatMap offsets expressions
+        ]
 
     occurrences :: [(Text, SrcLoc.SrcSpan)]
     occurrences = [(rdrText (unLoc n), getLocA e) | e <- expressions, HsVar _ n <- [unLoc e]]
@@ -164,6 +172,65 @@ exemptArguments name args
   | name `elem` ["readProcess", "readProcessWithExitCode", "callProcess", "proc"] = take 2 args
   | name `elem` ["readCreateProcess", "readCreateProcessWithExitCode"] = args
   | otherwise = []
+
+-- | The keys of the pairs a JSON object or an environment is built from.
+--
+-- A key in either is fixed by the format or by the program that reads it, the
+-- same as a key written with @.=@, while what it is paired with can still be
+-- made up.
+pairKeys :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
+pairKeys le = case namedApplicationOf le of
+  Just (name, args)
+    | name == "object" || T.isPrefixOf "parserEnv" name ->
+        [ getLocA key
+        | arg <- args,
+          tuple <- listify (const True :: LHsExpr GhcPs -> Bool) arg,
+          ExplicitTuple _ (Present _ key : _) _ <- [unLoc tuple]
+        ]
+  _ -> []
+
+-- | What a test names as expected: a constructor, a function or a record field
+-- whose name says so, which is a claim the same way the expected side of an
+-- assertion is.
+expectations :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
+expectations le = case unLoc le of
+  RecordCon {rcon_con = con, rcon_flds = HsRecFields {rec_flds = fields}}
+    | isExpectationName (rdrText (unLoc con)) -> [getLocA le]
+    | otherwise ->
+        [ getLocA (hfbRHS (unLoc field))
+        | field <- fields,
+          isExpectationName (rdrText (unLoc (foLabel (unLoc (hfbLHS (unLoc field))))))
+        ]
+  _ -> case namedApplication le of
+    Just (name, args) | isExpectationName name -> args
+    _ -> []
+
+isExpectationName :: Text -> Bool
+isExpectationName name = T.isPrefixOf "expected" name || T.isPrefixOf "Expected" name
+
+-- | A literal added to or taken from something that is not one, as in
+-- @threshold + 1@ or @length xs - 1@.
+--
+-- That states where a value is relative to another, which is a claim about the
+-- other value rather than a value made up in its place.
+offsets :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
+offsets le = case unLoc le of
+  OpApp _ l op r
+    | operatorName op `elem` [Just "+", Just "-"] ->
+        case (isLiteral (peelExpr l), isLiteral (peelExpr r)) of
+          (False, True) -> [getLocA r]
+          (True, False) -> [getLocA l]
+          _ -> []
+  _ -> []
+
+-- | Where an open-ended enumeration starts, as in @zip [0 ..] xs@.
+--
+-- That is the base of a count rather than data: nothing is made up by numbering
+-- from zero or one.
+counterStarts :: LHsExpr GhcPs -> [SrcLoc.SrcSpan]
+counterStarts le = case unLoc le of
+  ArithSeq _ _ (From start) -> [getLocA start]
+  _ -> []
 
 -- | The list a function is mapped over, when what that function is given is
 -- exempt.

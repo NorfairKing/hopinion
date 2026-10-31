@@ -35,3 +35,5 @@ spec = do
     runYesodClientM yc $
       request $
         addPostParam "owner" "frank"
+  it "adds two literals" $
+    renderAge (20 + 1) `shouldSatisfy` not . null

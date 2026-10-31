@@ -70,3 +70,20 @@ spec = do
   it "reads a value from under the keys the format fixes" $
     forAllValid $ \user ->
       userFromObject (object ["name" .= userName user, "age" .= userAge user]) `shouldBe` Just user
+  it "numbers what it renders" $
+    forAllValid $ \users ->
+      map fst (zip [0 :: Int ..] (map renderUser users)) `shouldBe` take (length users) [0 ..]
+  it "reads its settings from the environment and from a JSON object under the names the program fixes" $
+    forAllValid $ \(user, url) -> do
+      parserEnvTest settingsParser [("USER_NAME", userName user), ("BASE_URL", url)] (Settings user url)
+      settingsFromObject (object [("name", toJSON (userName user)), ("url", toJSON url)]) `shouldBe` Just (Settings user url)
+  it "says what it expects in a value named for it" $
+    forAllValid $ \user ->
+      runScenario
+        Scenario
+          { scenarioInput = user,
+            scenarioExpected = ExpectedRender {expectedText = "(", expectedLines = 1}
+          }
+  it "goes one past a generated value" $
+    forAllValid $ \users ->
+      lookupUser (length users + 1) users `shouldBe` Nothing
