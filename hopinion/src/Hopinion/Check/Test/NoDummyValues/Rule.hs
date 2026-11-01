@@ -170,6 +170,8 @@ isUnitOf pkg unit =
 -- project's needs types. Only an element is followed, because what a library
 -- hands a lambda beside a value that is not in a list is usually something it
 -- made of it, like a directory made from a template.
+-- What a function returns from a list is no element of it, so the list ends at
+-- the first function it is handed to, unless that function hands it on.
 --
 -- A constructor decides nothing, the project's included, because building a
 -- value runs no code: what decides is what the value is then handed to, so the
@@ -201,11 +203,15 @@ reachesProject owner binderOf facts consumers =
         | isConstructorName (nameAtText callee) -> go passage containment inside rest
         | otherwise -> case owner callee of
             OwnershipThisModule -> case followable callee index of
-              FollowabilityNamed -> intoFunction containment inside callee index `orM` go passage containment inside rest
+              -- Inside the function the parameter is the list itself; what the
+              -- function returns is something else.
+              FollowabilityNamed -> intoFunction containment inside callee index `orM` go passage ContainmentNone inside rest
               FollowabilityUnknown -> pure True
             OwnershipProject -> pure True
+            -- What a library returns is not the list it was handed, so its
+            -- result is no element of it.
             OwnershipLibrary ->
-              go PassageThroughLibrary containment inside rest `orM` case containment of
+              go PassageThroughLibrary ContainmentNone inside rest `orM` case containment of
                 ContainmentElement -> elementsHandedOn inside callee
                 ContainmentNone -> pure False
       ConsumerBinding name : _ -> case passage of

@@ -1,5 +1,6 @@
 module GoodSpec (spec) where
 
+import qualified Data.Map.Strict as Map
 import qualified Data.Text as Text
 import Path.IO (withSystemTempDir)
 import Test.Syd
@@ -118,3 +119,12 @@ spec = do
   let names = ["sam"]
   it "counts the names a binding holds" $
     length names `shouldBe` 1
+  let rendersEveryAgeLabelled label =
+        it (unwords ["renders every age, labelled", label]) $ \age ->
+          renderAge age `shouldSatisfy` not . Text.null
+  rendersEveryAgeLabelled "as in the overview"
+  let element attrs = Map.fromList attrs
+  let wrap offset age = (element [("unit", "years")], renderAge (age + offset))
+  it "renders every age beside its unit" $
+    forAllValid $ \ages ->
+      length (zipWith wrap [0 ..] ages) `shouldBe` length ages
