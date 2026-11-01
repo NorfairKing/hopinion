@@ -3,6 +3,7 @@
 
 module Hopinion.Check.Test.NoDummyValues.Rule (rule) where
 
+import Control.Monad.State.Strict (State, evalState, gets, modify')
 import Data.Char (isDigit, isUpper)
 import Data.List (sortOn)
 import Data.List.NonEmpty (NonEmpty (..))
@@ -91,6 +92,7 @@ data Passage
 data Containment
   = ContainmentNone
   | ContainmentElement
+  deriving (Eq, Ord)
 
 -- | Whether a function this module defines can be followed into at a
 -- parameter, which it can when it names that parameter.
@@ -180,70 +182,92 @@ isUnitOf pkg unit =
 -- module does not name, such as one written point-free, cannot be followed
 -- and is taken for the code under test.
 reachesProject :: (NameAt -> Ownership) -> (Position -> Maybe Position) -> TestLiterals -> [Consumer] -> Bool
-reachesProject owner binderOf facts = go PassageDirect ContainmentNone S.empty S.empty
+reachesProject owner binderOf facts consumers =
+  evalState
+    (go PassageDirect ContainmentNone S.empty consumers)
+    Searched
+      { searchedBindings = S.empty,
+        searchedParameters = S.empty,
+        searchedHandoffs = S.empty
+      }
   where
-    go :: Passage -> Containment -> S.Set Position -> S.Set (Text, Word) -> [Consumer] -> Bool
-    go passage containment bindings parameters = \case
-      [] -> False
-      ConsumerElement : rest -> go passage ContainmentElement bindings parameters rest
+    -- Inside the functions whose binders are here, so that a function's own
+    -- name ends a path that started at one of its parameters.
+    go :: Passage -> Containment -> S.Set Position -> [Consumer] -> State Searched Bool
+    go passage containment inside = \case
+      [] -> pure False
+      ConsumerElement : rest -> go passage ContainmentElement inside rest
       ConsumerCall callee index : rest
-        | isConstructorName (nameAtText callee) -> go passage containment bindings parameters rest
+        | isConstructorName (nameAtText callee) -> go passage containment inside rest
         | otherwise -> case owner callee of
             OwnershipThisModule -> case followable callee index of
-              FollowabilityNamed -> intoFunction containment bindings parameters callee index || go passage containment bindings parameters rest
-              FollowabilityUnknown -> True
-            OwnershipProject -> True
+              FollowabilityNamed -> intoFunction containment inside callee index `orM` go passage containment inside rest
+              FollowabilityUnknown -> pure True
+            OwnershipProject -> pure True
             OwnershipLibrary ->
-              go PassageThroughLibrary containment bindings parameters rest || case containment of
-                ContainmentElement -> elementsHandedOn bindings parameters callee
-                ContainmentNone -> False
+              go PassageThroughLibrary containment inside rest `orM` case containment of
+                ContainmentElement -> elementsHandedOn inside callee
+                ContainmentNone -> pure False
       ConsumerBinding name : _ -> case passage of
         -- What a library returns is its own value, which the argument may or
         -- may not be part of: the path to a file is not what was read from it.
         -- Handed straight on as an argument it is followed; bound to a name
         -- for later, it is not.
-        PassageThroughLibrary -> False
+        PassageThroughLibrary -> pure False
         PassageDirect
-          | nameAtPosition name `S.member` bindings -> False
+          | nameAtPosition name `S.member` inside -> pure False
           | otherwise ->
-              any
-                (go PassageDirect containment (S.insert (nameAtPosition name) bindings) parameters . bindingUseConsumers)
-                [ u
-                | u <- testLiteralsUses facts,
-                  bindingUseName u == nameAtText name,
-                  refersTo (bindingUseAt u) (nameAtPosition name)
-                ]
+              firstVisit
+                (nameAtPosition name, containment, inside)
+                searchedBindings
+                (\k s -> s {searchedBindings = S.insert k (searchedBindings s)})
+                ( anyM
+                    (go PassageDirect containment inside . bindingUseConsumers)
+                    [ u
+                    | u <- testLiteralsUses facts,
+                      bindingUseName u == nameAtText name,
+                      refersTo (bindingUseAt u) (nameAtPosition name)
+                    ]
+                )
 
     -- Into the functions a library call is handed beside a list, as one of its
     -- elements.
-    elementsHandedOn :: S.Set Position -> S.Set (Text, Word) -> NameAt -> Bool
-    elementsHandedOn bindings parameters callee =
-      any
-        (go PassageDirect ContainmentNone bindings parameters . lambdaUseConsumers)
-        [ u
-        | u <- testLiteralsLambdaUses facts,
-          lambdaUseCallAt u == nameAtPosition callee,
-          refersTo (lambdaUseAt u) (lambdaUseBinderAt u)
-        ]
-        || or
-          [ intoFunction ContainmentNone bindings parameters function index
-          | h <- testLiteralsHandedNames facts,
-            handedNameCallAt h == nameAtPosition callee,
-            let function = handedNameName h,
-            OwnershipThisModule <- [owner function],
-            arity <- map functionArityParameters (aritiesOf function),
-            index <- [0 .. arity - 1]
-          ]
+    elementsHandedOn :: S.Set Position -> NameAt -> State Searched Bool
+    elementsHandedOn inside callee =
+      firstVisit
+        (nameAtPosition callee, inside)
+        searchedHandoffs
+        (\k s -> s {searchedHandoffs = S.insert k (searchedHandoffs s)})
+        ( anyM
+            (go PassageDirect ContainmentNone inside . lambdaUseConsumers)
+            [ u
+            | u <- testLiteralsLambdaUses facts,
+              lambdaUseCallAt u == nameAtPosition callee,
+              refersTo (lambdaUseAt u) (lambdaUseBinderAt u)
+            ]
+            `orM` anyM
+              (uncurry (intoFunction ContainmentNone inside))
+              [ (function, index)
+              | h <- testLiteralsHandedNames facts,
+                handedNameCallAt h == nameAtPosition callee,
+                let function = handedNameName h,
+                OwnershipThisModule <- [owner function],
+                arity <- map functionArityParameters (aritiesOf function),
+                index <- takeWhile (< arity) [0 ..]
+              ]
+        )
 
     -- Inside the function, where the value is a parameter. What the function
     -- returns is followed by the caller, so the function's own name ends the
     -- path here rather than leading on to its uses.
-    intoFunction :: Containment -> S.Set Position -> S.Set (Text, Word) -> NameAt -> Word -> Bool
-    intoFunction containment bindings parameters callee index
-      | (nameAtText callee, index) `S.member` parameters = False
-      | otherwise =
-          any
-            (go PassageDirect containment (S.union (S.fromList (map functionArityAt (aritiesOf callee))) bindings) (S.insert (nameAtText callee, index) parameters) . parameterUseConsumers)
+    intoFunction :: Containment -> S.Set Position -> NameAt -> Word -> State Searched Bool
+    intoFunction containment inside callee index =
+      firstVisit
+        (nameAtText callee, index, containment, inside)
+        searchedParameters
+        (\k s -> s {searchedParameters = S.insert k (searchedParameters s)})
+        ( anyM
+            (go PassageDirect containment (S.union (S.fromList (map functionArityAt (aritiesOf callee))) inside) . parameterUseConsumers)
             [ u
             | u <- testLiteralsParameters facts,
               parameterUseFunction u == nameAtText callee,
@@ -251,6 +275,7 @@ reachesProject owner binderOf facts = go PassageDirect ContainmentNone S.empty S
               parameterUseIndex u == index,
               refersTo (parameterUseAt u) (parameterUseBinderAt u)
             ]
+        )
 
     followable :: NameAt -> Word -> Followability
     followable callee index
@@ -273,6 +298,40 @@ reachesProject owner binderOf facts = go PassageDirect ContainmentNone S.empty S
 
     definedAt :: NameAt -> Position -> Bool
     definedAt name = refersTo (nameAtPosition name)
+
+-- | What a search for the project has already been through, so that it goes
+-- through each once: whether a value reaches the project is whether any path
+-- does, and a place already searched from has already given its answer.
+--
+-- Keyed by the functions the search is inside as well, because those end a
+-- path, so a place reached from inside different functions can answer
+-- differently.
+data Searched = Searched
+  { searchedBindings :: !(S.Set (Position, Containment, S.Set Position)),
+    searchedParameters :: !(S.Set (Text, Word, Containment, S.Set Position)),
+    searchedHandoffs :: !(S.Set (Position, S.Set Position))
+  }
+
+-- | Runs a search from a place unless it has been searched from already, in
+-- which case its answer is already known and was not the project.
+firstVisit :: (Ord k) => k -> (Searched -> S.Set k) -> (k -> Searched -> Searched) -> State Searched Bool -> State Searched Bool
+firstVisit key seen record search = do
+  already <- gets (S.member key . seen)
+  if already
+    then pure False
+    else do
+      modify' (record key)
+      search
+
+anyM :: (a -> State s Bool) -> [a] -> State s Bool
+anyM f = \case
+  [] -> pure False
+  x : xs -> f x `orM` anyM f xs
+
+orM :: State s Bool -> State s Bool -> State s Bool
+orM a b = do
+  r <- a
+  if r then pure True else b
 
 isConstructorName :: Text -> Bool
 isConstructorName name = case T.uncons name of

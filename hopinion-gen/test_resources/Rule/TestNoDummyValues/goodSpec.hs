@@ -115,3 +115,6 @@ spec = do
   it "renders a name under a directory made from a template" $
     withSystemTempDir "renders" $ \dir ->
       renderName (Text.pack (show dir)) `shouldSatisfy` not . Text.null
+  let names = ["sam"]
+  it "counts the names a binding holds" $
+    length names `shouldBe` 1

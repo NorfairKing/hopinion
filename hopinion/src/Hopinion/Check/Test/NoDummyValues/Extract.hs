@@ -101,8 +101,7 @@ testLiteralsOf rp ref decls ds
               m <- map unLoc (unLoc (mg_alts mg)),
               (index, p) <- zip [0 ..] (unLoc (m_pats m)),
               (parameter, binderAt) <- patternBinders p,
-              (used, loc) <- occurrences,
-              used == parameter,
+              loc <- M.findWithDefault [] parameter occurrencesByName,
               loc `SrcLoc.isSubspanOf` getLocA lb,
               not (within exempt loc)
             ],
@@ -125,14 +124,11 @@ testLiteralsOf rp ref decls ds
                 }
             | call <- calls,
               (arg, Nothing) <- callArguments call,
-              lambda <- expressions,
-              getLocA lambda == arg,
-              HsLam _ _ mg <- [unLoc (peelExpr lambda)],
+              Just mg <- [M.lookup (spanOfSrcSpan rp arg) lambdas],
               m <- map unLoc (unLoc (mg_alts mg)),
               p <- unLoc (m_pats m),
               (parameter, binderAt) <- patternBinders p,
-              (used, loc) <- occurrences,
-              used == parameter,
+              loc <- M.findWithDefault [] parameter occurrencesByName,
               loc `SrcLoc.isSubspanOf` arg,
               not (within exempt loc)
             ],
@@ -186,6 +182,16 @@ testLiteralsOf rp ref decls ds
 
     occurrences :: [(Text, SrcLoc.SrcSpan)]
     occurrences = [(rdrText (unLoc n), getLocA e) | e <- expressions, HsVar _ n <- [unLoc e]]
+
+    occurrencesByName :: M.Map Text [SrcLoc.SrcSpan]
+    occurrencesByName = M.fromListWith (++) [(name, [loc]) | (name, loc) <- occurrences]
+
+    -- By where each is written, parentheses included, as an argument is.
+    lambdas :: M.Map Span (MatchGroup GhcPs (LHsExpr GhcPs))
+    lambdas = M.fromList [(spanOfSrcSpan rp (getLocA e), mg) | e <- expressions, HsLam _ _ mg <- [unLoc (peelExpr e)]]
+
+    lists :: [SrcLoc.SrcSpan]
+    lists = [getLocA e | e <- expressions, ExplicitList {} <- [unLoc e]]
 
     reached :: [SrcLoc.SrcSpan]
     reached = reachedFrom bindings occurrences (bodies ++ testHelperArguments)
@@ -249,11 +255,10 @@ testLiteralsOf rp ref decls ds
           enclosing =
             sortBy
               innerFirst
-              ( [ (getLocA e, ConsumerElement)
-                | e <- expressions,
-                  loc `SrcLoc.isSubspanOf` getLocA e,
-                  inRegion (getLocA e),
-                  ExplicitList {} <- [unLoc e]
+              ( [ (list, ConsumerElement)
+                | list <- lists,
+                  loc `SrcLoc.isSubspanOf` list,
+                  inRegion list
                 ]
                   ++ [ (arg, ConsumerCall (nameAt (callHead call)) index)
                      | call <- calls,
