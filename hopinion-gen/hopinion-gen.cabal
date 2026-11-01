@@ -112,6 +112,10 @@ extra-source-files:
     test_resources/Example/dirty/thing-gen/thing-gen.cabal
     test_resources/Example/dirty/thing/src/Thing.hs
     test_resources/Example/dirty/thing/thing.cabal
+    test_resources/Hie/Fixture.hs
+    test_resources/Hie/Generator.hs
+    test_resources/NoDummyValues/ShadowSpec.hs
+    test_resources/NoDummyValues/Stub.hs
     test_resources/Project/absent-module/thing/src/Thing.hs
     test_resources/Project/absent-module/thing/thing.cabal
     test_resources/Project/absent-source-dir/thing/src/Thing.hs
@@ -324,6 +328,12 @@ extra-source-files:
     test_resources/Rule/TestJsonSpecPerJsonType/good/thing-gen/thing-gen.cabal
     test_resources/Rule/TestJsonSpecPerJsonType/good/thing/src/Thing.hs
     test_resources/Rule/TestJsonSpecPerJsonType/good/thing/thing.cabal
+    test_resources/Rule/TestNoDummyValues/badSpec.hs
+    test_resources/Rule/TestNoDummyValues/badSpec.hs.golden
+    test_resources/Rule/TestNoDummyValues/goodNotATestFile.hs
+    test_resources/Rule/TestNoDummyValues/goodNotATestFile.hs.golden
+    test_resources/Rule/TestNoDummyValues/goodSpec.hs
+    test_resources/Rule/TestNoDummyValues/goodSpec.hs.golden
     test_resources/Rule/TestNoTestHelpers/badSpec.hs
     test_resources/Rule/TestNoTestHelpers/badSpec.hs.golden
     test_resources/Rule/TestNoTestHelpers/goodATypeInATestFileSpec.hs
@@ -380,6 +390,7 @@ test-suite hopinion-test
       Hopinion.Facts.ModuleSpec
       Hopinion.FactsSpec
       Hopinion.HieSpec
+      Hopinion.NoDummyValuesSpec
       Hopinion.ProjectSpec
       Hopinion.ReportSpec
       Hopinion.RuleSpec
@@ -395,12 +406,17 @@ test-suite hopinion-test
       ormolu:ormolu
     , sydtest-discover:sydtest-discover
   build-depends:
-      autodocodec-yaml
+      QuickCheck
+    , autodocodec-yaml
     , base >=4.7 && <5
+    , bytestring
     , containers
     , filepath
+    , genvalidity-bytestring
+    , genvalidity-path
     , genvalidity-sydtest
     , genvalidity-sydtest-aeson
+    , genvalidity-text
     , hopinion
     , hopinion-gen
     , hopinion-hie

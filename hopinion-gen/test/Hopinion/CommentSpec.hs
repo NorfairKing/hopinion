@@ -7,7 +7,6 @@ module Hopinion.CommentSpec (spec) where
 
 import Control.Monad (unless)
 import Data.Maybe (isJust)
-import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import Hopinion.Comment
@@ -49,16 +48,15 @@ spec = do
           [relfile|30-above-an-ann-pragma-for-another-name.hs|]
         ]
 
-  let subjectOf :: Attachment -> Text
+  -- A statement is the one attachment that carries a position, so it is the one
+  -- that loses it.
+  let subjectOf :: Attachment -> Either Attachment DeclName
       subjectOf = \case
-        AttachmentToDecl d -> T.concat ["decl ", unDeclName d]
-        AttachmentToStatement d _ -> T.concat ["statement in ", unDeclName d]
-        AttachmentToFile -> "file"
-        AttachmentToExportList -> "export list"
-        AttachmentToNothing -> "unattached"
+        AttachmentToStatement d _ -> Right d
+        other -> Left other
 
   -- What each comment is about, in order, with the positions left out.
-  let subjects :: ModuleContext -> [Text]
+  let subjects :: ModuleContext -> [Either Attachment DeclName]
       subjects mf = map (subjectOf . commentFactAttachment) (moduleContextComments mf)
 
   describe "RawComment" $ genValidSpec @RawComment

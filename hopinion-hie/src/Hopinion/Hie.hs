@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 -- | What the compiler wrote down about a module: the @.hie@ file for what it
@@ -18,6 +19,9 @@ module Hopinion.Hie
     readCompiledModule,
     DeclaredInstance (..),
     readDeclaredInstances,
+    HiePosition (..),
+    NameOrigin (..),
+    readNameOrigins,
   )
 where
 
@@ -36,8 +40,10 @@ import GHC.Generics (Generic)
 import GHC.Iface.Binary (CheckHiWay (..), TraceBinIFace (..), readBinIface)
 import GHC.Iface.Ext.Binary (hie_file_result, readHieFile)
 import GHC.Iface.Ext.Types
-  ( HieAST (..),
+  ( ContextInfo (..),
+    HieAST (..),
     HieFile (..),
+    IdentifierDetails (..),
     NodeInfo (..),
     getAsts,
     getSourcedNodeInfo,
@@ -47,11 +53,13 @@ import GHC.Iface.Syntax (IfaceClsInst (..))
 import GHC.Iface.Type (IfaceTyCon (..))
 import GHC.Platform (genericPlatform)
 import GHC.Platform.Profile (Profile (..))
-import GHC.Types.Name (nameOccName)
+import GHC.Types.Name (nameModule_maybe, nameOccName, nameSrcSpan)
 import GHC.Types.Name.Cache (initNameCache)
 import GHC.Types.Name.Occurrence (occNameString)
-import GHC.Unit.Module (moduleName, moduleNameString)
+import GHC.Types.SrcLoc (SrcSpan (..), srcSpanStartCol, srcSpanStartLine)
+import GHC.Unit.Module (moduleName, moduleNameString, moduleUnit)
 import GHC.Unit.Module.ModIface (mi_insts)
+import GHC.Unit.Types (unitString)
 import Path (Abs, File, Path, Rel, parseRelFile, toFilePath)
 
 -- | What one module's @.hie@ file is worth to a rule, which is what its
@@ -204,3 +212,91 @@ declaredInstanceOf inst = case reverse (ifInstTys inst) of
           declaredInstanceType = T.pack (occNameString (nameOccName (ifaceTyConName tycon)))
         }
   _ -> Nothing
+
+-- | Where a name is written, as the line and column it starts at.
+--
+-- The start alone, because an occurrence of a name is one token: where it
+-- starts is where it is, and what a parser reading the same file reports for
+-- that token starts there too.
+data HiePosition = HiePosition
+  { hiePositionLine :: !Word,
+    hiePositionCol :: !Word
+  }
+  deriving (Show, Eq, Ord, Generic)
+
+instance Validity HiePosition
+
+-- | Where the thing a name refers to is defined.
+--
+-- This module, for anything it defines itself, top-level or local, with where
+-- its binder is written when the compiler recorded one, and otherwise the unit
+-- the defining module was compiled into, by its id. The binder's position is
+-- what tells two local names spelled the same apart. Which
+-- of those units are one's own project is not something a @.hie@ file knows,
+-- so it is left to whoever does.
+data NameOrigin
+  = NameOriginThisModule !(Maybe HiePosition)
+  | NameOriginUnit !Text
+  deriving (Show, Eq, Generic)
+
+instance Validity NameOrigin
+
+-- | What every name written in one module refers to, by where it is written,
+-- or why the @.hie@ file could not be read.
+readNameOrigins :: Path Abs File -> IO (Either ArtifactUnreadable (M.Map HiePosition NameOrigin))
+readNameOrigins path = do
+  result <- try $ do
+    cache <- initNameCache 'z' []
+    file <- hie_file_result <$> readHieFile cache (toFilePath path)
+    let here = hie_module file
+    let binderOf n = case nameSrcSpan n of
+          RealSrcSpan s _ ->
+            Just
+              HiePosition
+                { hiePositionLine = intToWord (srcSpanStartLine s),
+                  hiePositionCol = intToWord (srcSpanStartCol s)
+                }
+          UnhelpfulSpan _ -> Nothing
+    let originOf n = case nameModule_maybe n of
+          Nothing -> NameOriginThisModule (binderOf n)
+          Just m
+            | m == here -> NameOriginThisModule (binderOf n)
+            | otherwise -> NameOriginUnit (T.pack (unitString (moduleUnit m)))
+    let origins =
+          M.fromListWith
+            const
+            [ ( HiePosition
+                  { hiePositionLine = intToWord (srcSpanStartLine (nodeSpan ast)),
+                    hiePositionCol = intToWord (srcSpanStartCol (nodeSpan ast))
+                  },
+                originOf n
+              )
+            | top <- M.elems (getAsts (hie_asts file)),
+              ast <- nodesOf top,
+              info <- M.elems (getSourcedNodeInfo (sourcedNodeInfo ast)),
+              (Right n, details) <- M.toList (nodeIdentifiers info),
+              any isWritten (identInfo details)
+            ]
+    -- Forced inside the catch, for the reason the other reads are.
+    _ <- evaluate (M.size origins)
+    pure origins
+  pure $ case result of
+    Left (e :: SomeException) -> Left (reason e)
+    Right origins -> Right origins
+  where
+    -- A name the source writes, which is a use or a field it sets. The
+    -- compiler also records names nobody wrote, such as the dictionary a
+    -- string literal is converted with, at the same position as the code they
+    -- are inserted into, and those are about something else.
+    isWritten :: ContextInfo -> Bool
+    isWritten = \case
+      Use -> True
+      RecField _ _ -> True
+      _ -> False
+
+    nodesOf :: HieAST a -> [HieAST a]
+    nodesOf ast = ast : concatMap nodesOf (nodeChildren ast)
+
+    -- A line or a column is never negative, so this only changes the type.
+    intToWord :: Int -> Word
+    intToWord = toEnum . max 0

@@ -14,6 +14,7 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import Hopinion.Choices (ChoicesFileError, noChoices, readChoicesFrom, renderChoicesFileError, unChoices)
 import Hopinion.Comment
+import Hopinion.Compiled (compiledModulesFor)
 import Hopinion.Facts.Module
 import Hopinion.Facts.Name
 import Hopinion.Facts.Place
@@ -21,7 +22,7 @@ import Hopinion.OptParse
 import Hopinion.Project (SourceRoot (..))
 import Hopinion.Report
 import Hopinion.Report.Render
-import Hopinion.Rule (Rule, RuleSet, RuleSetError, renderRuleSetError, ruleSet, withoutRules)
+import Hopinion.Rule (ModuleBuild (..), Rule, RuleSet, RuleSetError, renderRuleSetError, ruleSet, withoutRules)
 import Hopinion.Rule.Id (RuleId)
 import Hopinion.Rule.Registry (builtinRules)
 import Hopinion.Run
@@ -99,12 +100,12 @@ run rs settings =
       -- The development loop is a decider, because a person running it wants
       -- the shell to know the answer.
       exitWith (verdict report)
-    DispatchPackage root dir out hieDirs -> do
+    DispatchPackage root dir out hieDirs project -> do
       absRoot <- absolutise root
       absDir <- absoluteDir dir
       absOut <- traverse absoluteDir out
       absHie <- hieDirectoriesOf hieDirs
-      report <- runPackageCommand rs absHie absRoot absDir absOut
+      report <- runPackageCommand rs absHie absRoot (map PackageName project) absDir absOut
       _ <- emit rs [absRoot] absOut report
       pure ()
     DispatchProject packageDirs expected sources out hieDirs -> do
@@ -115,8 +116,17 @@ run rs settings =
       report <- runProjectCommand rs absHie absPackageDirs expected absOut
       _ <- emit rs roots absOut report
       pure ()
-    DispatchModule relFile extensions component dump -> do
+    DispatchModule relFile extensions component dump hieDirs project moduleName -> do
       facts <- factsForFile rs relFile extensions component
+      absHie <- hieDirectoriesOf hieDirs
+      compiled <- case moduleName of
+        Just name -> compiledModulesFor absHie [(ModuleKey name, relFile)]
+        Nothing -> pure mempty
+      let build =
+            ModuleBuild
+              { moduleBuildProjectPackages = map PackageName project,
+                moduleBuildCompiled = compiled
+              }
       case dump of
         DumpCommentsNone -> pure ()
         DumpComments -> mapM_ (TIO.putStrLn . renderComment) (moduleContextComments facts)
@@ -132,7 +142,7 @@ run rs settings =
               }
           ]
           Nothing
-          (runModuleLayer rs facts)
+          =<< runModuleLayer rs build facts
       exitWith (verdict report)
     DispatchJudge dirs -> do
       results <- traverse (absoluteDir >=> readReportFrom) dirs

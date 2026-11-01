@@ -1,6 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
-{-# LANGUAGE TemplateHaskell #-}
 
 module Hopinion.AnnotationSpec (spec) where
 
@@ -9,7 +8,9 @@ import Data.List (sort)
 import Data.Text (Text)
 import qualified Data.Text as T
 import Hopinion.Annotation
+import qualified Hopinion.Check.Comment.BareTodo.Rule as BareTodo
 import Hopinion.Comment
+import Hopinion.Facts.Gen ()
 import Hopinion.Facts.Name
 import Hopinion.Facts.Place
 import Hopinion.Facts.Suppression
@@ -21,9 +22,11 @@ import Hopinion.Rule.Gen (shippedRules)
 import Hopinion.Rule.Id
 import Hopinion.Rule.Registry (builtinRules)
 import Hopinion.Run
-import Path (Dir, File, Path, Rel, mkRelFile, parseRelDir, reldir, relfile, toFilePath, (</>))
+import Path (Dir, Path, Rel, parseRelDir, reldir, relfile, toFilePath, (</>))
 import Path.IO (ensureDir, listDirRel, makeAbsolute, withSystemTempDir)
+import Test.QuickCheck (forAll, suchThat)
 import Test.Syd
+import Test.Syd.Validity (GenValid (..), forAllValid)
 import Text.Colour (TerminalCapabilities (..), renderChunksText)
 
 spec :: Spec
@@ -59,84 +62,55 @@ spec = do
         (sources, missing) <- sourcesForReport [root] report
         pure (renderReportColoured shippedRules sources (report <> missing))
 
-  -- A path spelled out here rather than parsed, so that a spec asserting on a
-  -- span is not also asserting that the parser works.
-  let exampleFile :: Path Rel File
-      exampleFile = $(mkRelFile "thing/src/Thing.hs")
-
-  let exampleModule :: ModuleRef
-      exampleModule =
-        ModuleRef
-          { moduleRefComponent = ComponentName "lib",
-            moduleRefModule = ModuleKey "Thing"
-          }
-
-  -- A span of a whole line, which is the shape a real one has: GHC gives an
-  -- extent, and a span that starts and ends in one place is the encoding of a
-  -- whole file rather than of anything in one. See 'isWholeFileSpan'.
-  let spanAt :: Word -> Span
-      spanAt line =
-        Span
-          { spanFile = exampleFile,
-            spanStart =
-              Position
-                { positionLine = line,
-                  positionCol = 1
-                },
-            spanEnd =
-              Position
-                { positionLine = line,
-                  positionCol = 40
-                }
-          }
-
-  -- A line comment carrying this text, attached to a declaration.
-  let commentSaying :: Text -> CommentFact
-      commentSaying text =
-        CommentFact
-          { commentFactSpan = spanAt 3,
-            commentFactStyle = CommentStyleLine,
+  -- A comment with this text in it, written as a line comment above a
+  -- declaration, which is the one place every suppression here can attach.
+  let lineCommentSaying :: DeclName -> Text -> CommentFact -> CommentFact
+      lineCommentSaying d text cf =
+        cf
+          { commentFactStyle = CommentStyleLine,
             commentFactText = text,
-            commentFactAttachment = AttachmentToDecl (DeclName "loose")
+            commentFactAttachment = AttachmentToDecl d
           }
 
-  let todoFinding :: Finding
-      todoFinding =
-        Finding
-          { findingRule = RuleId "CommentBareTodo",
-            findingScope = ScopeKeyOfDecl exampleModule (DeclName "loose"),
-            findingSpan = spanAt 3,
-            findingMessage = "a bare marker"
-          }
-
-  -- The reasons here are written as literals, so a failure is a test that
-  -- spells an empty one rather than anything about the tool.
-  let givenReason :: Text -> IO NonEmptyText
-      givenReason t =
-        maybe (expectationFailure (unwords ["Empty reason in this spec:", T.unpack t])) pure (nonEmptyText t)
-
-  let parsedWith :: Attachment -> CommentStyle -> Text -> Either AnnotationError AnnotationFact
-      parsedWith attachment style text =
+  let parsedWith :: ModuleRef -> Span -> Attachment -> CommentStyle -> Text -> Either AnnotationError AnnotationFact
+      parsedWith mk sp attachment style text =
         parseAnnotation
           shippedRules
-          exampleModule
+          mk
           CommentFact
-            { commentFactSpan = spanAt 1,
+            { commentFactSpan = sp,
               commentFactStyle = style,
               commentFactText = text,
               commentFactAttachment = attachment
             }
 
-  let parsedIn :: CommentStyle -> Text -> Either AnnotationError AnnotationFact
-      parsedIn = parsedWith (AttachmentToDecl (DeclName "loose"))
+  -- A reason a suppression is read back as written: one with no space around
+  -- it to strip, and not the one that means the suppression came with adoption.
+  let isPlainReason :: NonEmptyText -> Bool
+      isPlainReason r =
+        let t = nonEmptyTextText r
+         in T.strip t == t && t /= adoptionReasonText
 
-  let parsed :: Text -> Either AnnotationError AnnotationFact
-      parsed = parsedIn CommentStyleLine
+  -- The same span on another line, for the tests that are about which line is
+  -- nearest which.
+  let onLine :: Word -> Span -> Span
+      onLine line sp =
+        sp
+          { spanStart = (spanStart sp) {positionLine = line},
+            spanEnd = (spanEnd sp) {positionLine = line}
+          }
 
-  let withParsed :: Text -> (AnnotationFact -> IO ()) -> IO ()
-      withParsed text act = case parsed text of
-        Left err -> expectationFailure (T.unpack (renderAnnotationError err))
-        Right a -> act a
+  -- A finding this annotation answers for, whatever its precision is.
+  let answeredBy :: AnnotationFact -> Finding -> Finding
+      answeredBy a f =
+        f
+          { findingRule = annotationFactRule a,
+            findingScope = annotationFactScope a,
+            findingSpan = case annotationFactPrecision a of
+              AnnotationPrecisionStatement sp -> sp
+              AnnotationPrecisionDecl -> annotationFactSpan a
+              AnnotationPrecisionFile -> annotationFactSpan a
+          }
 
   it "has a project for each of the three states a suppression can be in" $ do
     (dirs, files) <- listDirRel resourceDir
@@ -155,98 +129,130 @@ spec = do
   -- rule; a word that merely starts the same way is not one, and reporting it
   -- would fail a run over an ordinary comment.
   describe "annotationsOf" $ do
+    -- [allow:TestNoDummyValues] The bare marker is the case under test.
     it "reads a bare marker as a suppression that is missing its rule" $
-      let (facts, problems) = annotationsOf shippedRules exampleModule [commentSaying "[allow] because"]
-       in (length facts, map annotationProblemMessage problems)
-            `shouldBe` (0, [renderAnnotationError AnnotationErrorNoRuleNamed])
+      forAllValid $ \(mk, d, cf) ->
+        let (facts, problems) = annotationsOf shippedRules mk [lineCommentSaying d "[allow] because" cf]
+         in (length facts, map annotationProblemMessage problems)
+              `shouldBe` (0, [renderAnnotationError AnnotationErrorNoRuleNamed])
 
+    -- [allow:TestNoDummyValues] A word that starts like the marker is the case under test.
     it "leaves a comment that merely starts like the marker alone" $
-      annotationsOf shippedRules exampleModule [commentSaying "[allowlist] the hosts we permit"]
-        `shouldBe` ([], [])
+      forAllValid $ \(mk, d, cf) ->
+        annotationsOf shippedRules mk [lineCommentSaying d "[allowlist] the hosts we permit" cf]
+          `shouldBe` ([], [])
 
   describe "parseAnnotation" $ do
+    -- [allow:TestNoDummyValues] The bare marker is the case under test.
     it "rejects a bare marker with no rule" $
-      parsed "[allow] because"
-        `shouldBe` Left AnnotationErrorNoRuleNamed
+      forAllValid $ \(mk, sp, d) ->
+        parsedWith mk sp (AttachmentToDecl d) CommentStyleLine "[allow] because"
+          `shouldBe` Left AnnotationErrorNoRuleNamed
+    -- [allow:TestNoDummyValues] A rule id no rule has.
     it "rejects an unknown rule" $
-      parsed "[allow:NoSuchRule] because"
-        `shouldBe` Left (AnnotationErrorUnknownRuleId "NoSuchRule")
+      forAllValid $ \(mk, sp, d) ->
+        parsedWith mk sp (AttachmentToDecl d) CommentStyleLine "[allow:NoSuchRule] because"
+          `shouldBe` Left (AnnotationErrorUnknownRuleId "NoSuchRule")
+    -- [allow:TestNoDummyValues] A suppression with its reason left out.
     it "rejects a suppression with no reason" $
-      parsed "[allow:CommentBareTodo]"
-        `shouldBe` Left AnnotationErrorNoReason
+      forAllValid $ \(mk, sp, d) ->
+        parsedWith mk sp (AttachmentToDecl d) CommentStyleLine "[allow:CommentBareTodo]"
+          `shouldBe` Left AnnotationErrorNoReason
+    -- [allow:TestNoDummyValues] Two rules where one belongs.
     it "rejects a comma list of rules" $
-      parsed "[allow:CommentBareTodo,HsGenValidInGenPackage] because"
-        `shouldBe` Left AnnotationErrorTwoRulesAtOneSite
+      forAllValid $ \(mk, sp, d) ->
+        parsedWith mk sp (AttachmentToDecl d) CommentStyleLine "[allow:CommentBareTodo,HsGenValidInGenPackage] because"
+          `shouldBe` Left AnnotationErrorTwoRulesAtOneSite
+    -- [allow:TestNoDummyValues] A suppression that would parse anywhere it is allowed.
     it "refuses to sit in a documentation comment" $
-      parsedIn CommentStyleHaddockNext "[allow:CommentBareTodo] because"
-        `shouldBe` Left AnnotationErrorInHaddock
+      forAllValid $ \(mk, sp, d) ->
+        parsedWith mk sp (AttachmentToDecl d) CommentStyleHaddockNext "[allow:CommentBareTodo] because"
+          `shouldBe` Left AnnotationErrorInHaddock
+    -- [allow:TestNoDummyValues] A suppression that would parse anywhere it is allowed.
     it "refuses to be unattached" $
-      parsedWith AttachmentToNothing CommentStyleLine "[allow:CommentBareTodo] because"
-        `shouldBe` Left AnnotationErrorAttachedToNothing
-    it "accepts a rule and a reason" $ do
-      reason <- givenReason "because it is fine"
-      parsed "[allow:CommentBareTodo] because it is fine"
-        `shouldBe` Right
-          AnnotationFact
-            { annotationFactRule = RuleId "CommentBareTodo",
-              annotationFactScope = ScopeKeyOfDecl exampleModule (DeclName "loose"),
-              annotationFactPrecision = AnnotationPrecisionDecl,
-              annotationFactReason = ReasonGiven reason,
-              annotationFactSpan = spanAt 1
-            }
+      forAllValid $ \(mk, sp) ->
+        parsedWith mk sp AttachmentToNothing CommentStyleLine "[allow:CommentBareTodo] because"
+          `shouldBe` Left AnnotationErrorAttachedToNothing
+    -- [allow:TestNoDummyValues] The marker and the rule, which the reason follows.
+    it "accepts a rule and a reason" $
+      forAllValid $ \(mk, sp, d) ->
+        forAll (genValid `suchThat` isPlainReason) $ \reason ->
+          parsedWith mk sp (AttachmentToDecl d) CommentStyleLine (T.concat ["[allow:CommentBareTodo] ", nonEmptyTextText reason])
+            `shouldBe` Right
+              AnnotationFact
+                { annotationFactRule = RuleId "CommentBareTodo",
+                  annotationFactScope = ScopeKeyOfDecl mk d,
+                  annotationFactPrecision = AnnotationPrecisionDecl,
+                  annotationFactReason = ReasonGiven reason,
+                  annotationFactSpan = sp
+                }
+    -- [allow:TestNoDummyValues] The marker and the rule, which the reason follows.
     it "records the adoption reason as its own case" $
-      parsed (T.concat ["[allow:CommentBareTodo] ", adoptionReasonText])
-        `shouldBe` Right
-          AnnotationFact
-            { annotationFactRule = RuleId "CommentBareTodo",
-              annotationFactScope = ScopeKeyOfDecl exampleModule (DeclName "loose"),
-              annotationFactPrecision = AnnotationPrecisionDecl,
-              annotationFactReason = ReasonAdoption,
-              annotationFactSpan = spanAt 1
-            }
+      forAllValid $ \(mk, sp, d) ->
+        parsedWith mk sp (AttachmentToDecl d) CommentStyleLine (T.concat ["[allow:CommentBareTodo] ", adoptionReasonText])
+          `shouldBe` Right
+            AnnotationFact
+              { annotationFactRule = RuleId "CommentBareTodo",
+                annotationFactScope = ScopeKeyOfDecl mk d,
+                annotationFactPrecision = AnnotationPrecisionDecl,
+                annotationFactReason = ReasonAdoption,
+                annotationFactSpan = sp
+              }
 
   -- A rule that is never run over a file reports nothing in it, so every
   -- suppression written in one answers for nothing. The verdict is the same one
   -- 'applySuppression' reaches, and these assert that it is reached by the same
   -- steps: what counts as a suppression, and what counts as naming a rule.
   describe "unreadSuppressionsIn" $ do
+    -- [allow:TestNoDummyValues] A file holding one suppression, on a line of its own.
     it "reports a suppression naming a rule as unused, from its marker to the end of the line" $
-      unreadSuppressionsIn shippedRules exampleFile "module Thing where\n\n-- [allow:CommentBareTodo] because\n"
-        `shouldBe` ( [ Unused
-                         { unusedRule = RuleId "CommentBareTodo",
-                           unusedSpan =
-                             Span
-                               { spanFile = exampleFile,
-                                 spanStart =
-                                   Position
-                                     { positionLine = 3,
-                                       positionCol = 4
-                                     },
-                                 spanEnd =
-                                   Position
-                                     { positionLine = 3,
-                                       positionCol = 35
-                                     }
-                               }
-                         }
-                     ],
-                     []
-                   )
+      forAllValid $ \file ->
+        unreadSuppressionsIn shippedRules file "module Thing where\n\n-- [allow:CommentBareTodo] because\n"
+          `shouldBe` ( [ Unused
+                           { unusedRule = RuleId "CommentBareTodo",
+                             unusedSpan =
+                               Span
+                                 { spanFile = file,
+                                   spanStart =
+                                     Position
+                                       { positionLine = 3,
+                                         positionCol = 4
+                                       },
+                                   spanEnd =
+                                     Position
+                                       { positionLine = 3,
+                                         positionCol = 35
+                                       }
+                                 }
+                           }
+                       ],
+                       []
+                     )
+    -- [allow:TestNoDummyValues] A file holding two suppressions with code between them.
     it "reports each of two suppressions rather than the file holding them" $
-      map (positionLine . spanStart . unusedSpan) (fst (unreadSuppressionsIn shippedRules exampleFile "-- [allow:CommentBareTodo] one\nx = 1\n-- [allow:HsNoFilePath] two\n"))
-        `shouldBe` [1, 3]
+      forAllValid $ \file ->
+        map (positionLine . spanStart . unusedSpan) (fst (unreadSuppressionsIn shippedRules file "-- [allow:CommentBareTodo] one\nx = 1\n-- [allow:HsNoFilePath] two\n"))
+          `shouldBe` [1, 3]
+    -- [allow:TestNoDummyValues] The bare marker is the case under test.
     it "reports one that names no rule as broken, exactly as a file that is read would" $
-      map annotationProblemMessage (snd (unreadSuppressionsIn shippedRules exampleFile "-- [allow] because\n"))
-        `shouldBe` [renderAnnotationError AnnotationErrorNoRuleNamed]
+      forAllValid $ \file ->
+        map annotationProblemMessage (snd (unreadSuppressionsIn shippedRules file "-- [allow] because\n"))
+          `shouldBe` [renderAnnotationError AnnotationErrorNoRuleNamed]
+    -- [allow:TestNoDummyValues] A rule id no rule has.
     it "reports one that names a rule nothing answers to as broken" $
-      map annotationProblemMessage (snd (unreadSuppressionsIn shippedRules exampleFile "-- [allow:NoSuchRule] because\n"))
-        `shouldBe` [renderAnnotationError (AnnotationErrorUnknownRuleId "NoSuchRule")]
+      forAllValid $ \file ->
+        map annotationProblemMessage (snd (unreadSuppressionsIn shippedRules file "-- [allow:NoSuchRule] because\n"))
+          `shouldBe` [renderAnnotationError (AnnotationErrorUnknownRuleId "NoSuchRule")]
+    -- [allow:TestNoDummyValues] A word that starts like the marker is the case under test.
     it "leaves a file that merely mentions a word starting the same way alone" $
-      unreadSuppressionsIn shippedRules exampleFile "module Thing where\n\n-- the [allowlist] of hosts we permit\n"
-        `shouldBe` ([], [])
+      forAllValid $ \file ->
+        unreadSuppressionsIn shippedRules file "module Thing where\n\n-- the [allowlist] of hosts we permit\n"
+          `shouldBe` ([], [])
+    -- [allow:TestNoDummyValues] A word that starts like the marker, and then a suppression.
     it "passes over such a word to the suppression written after it" $
-      map (positionCol . spanStart . unusedSpan) (fst (unreadSuppressionsIn shippedRules exampleFile "-- the [allowlist], and [allow:CommentBareTodo] because\n"))
-        `shouldBe` [25]
+      forAllValid $ \file ->
+        map (positionCol . spanStart . unusedSpan) (fst (unreadSuppressionsIn shippedRules file "-- the [allowlist], and [allow:CommentBareTodo] because\n"))
+          `shouldBe` [25]
 
   -- The text the report offers a reader comes from here, so a suppression this
   -- suggests and 'parseAnnotation' then rejects would be worse than no
@@ -257,39 +263,44 @@ spec = do
   -- and a generated instance has a declaration scope and no line to point at.
   describe "suppressionFor" $ do
     it "is site-scoped for a finding about code" $
-      suppressionFor todoFinding {findingSpan = spanAt 7} "because"
-        `shouldBe` "-- [allow:CommentBareTodo] because"
+      forAll (genValid `suchThat` (not . isWholeFileSpan . findingSpan)) $ \f ->
+        forAllValid $ \(mk, d, reason) ->
+          suppressionFor f {findingScope = ScopeKeyOfDecl mk d} reason
+            `shouldBe` T.concat ["-- [allow:", unRuleId (findingRule f), "] ", reason]
     it "is file-scoped for a finding about a whole file" $
-      suppressionFor todoFinding {findingSpan = wholeFileSpan exampleFile} "because"
-        `shouldBe` "-- [allow:file:CommentBareTodo] because"
+      forAllValid $ \(f, file, reason) ->
+        suppressionFor f {findingSpan = wholeFileSpan file} reason
+          `shouldBe` T.concat ["-- [allow:file:", unRuleId (findingRule f), "] ", reason]
     it "is file-scoped for a finding whose comment attaches to no declaration" $
-      suppressionFor todoFinding {findingScope = ScopeKeyOfFile exampleModule} "because"
-        `shouldBe` "-- [allow:file:CommentBareTodo] because"
+      forAllValid $ \(f, mk, reason) ->
+        suppressionFor f {findingScope = ScopeKeyOfFile mk} reason
+          `shouldBe` T.concat ["-- [allow:file:", unRuleId (findingRule f), "] ", reason]
 
   describe "applySuppression" $ do
     it "leaves an unannotated finding alone" $
-      applySuppression [] [todoFinding]
-        `shouldBe` Suppression
-          { suppressionRemaining = [todoFinding],
-            suppressionUnused = [],
-            suppressionOverBroad = []
-          }
+      forAllValid $ \f ->
+        applySuppression [] [f]
+          `shouldBe` Suppression
+            { suppressionRemaining = [f],
+              suppressionUnused = [],
+              suppressionOverBroad = []
+            }
     it "reports an annotation that suppresses nothing" $
-      withParsed "[allow:CommentBareTodo] because" $ \a ->
+      forAllValid $ \a ->
         applySuppression [a] []
           `shouldBe` Suppression
             { suppressionRemaining = [],
               suppressionUnused =
                 [ Unused
-                    { unusedRule = RuleId "CommentBareTodo",
+                    { unusedRule = annotationFactRule a,
                       unusedSpan = annotationFactSpan a
                     }
                 ],
               suppressionOverBroad = []
             }
     it "reports an annotation that suppresses more than one finding" $
-      withParsed "[allow:CommentBareTodo] because" $ \a ->
-        applySuppression [a] [todoFinding, todoFinding]
+      forAllValid $ \(a, f, g) ->
+        applySuppression [a] [answeredBy a f, answeredBy a g]
           `shouldBe` Suppression
             { suppressionRemaining = [],
               suppressionUnused = [],
@@ -301,25 +312,30 @@ spec = do
                 ]
             }
 
-    -- Two suppressions and two findings, each suppression nearest one finding.
-    -- Both answer for something, so neither is unused and neither is over-broad.
+    -- Two suppressions and two findings on four lines in a row, each suppression
+    -- nearest one finding. Both answer for something, so neither is unused and
+    -- neither is over-broad.
     --
     -- The nearest one has to win for that to come out, and a line number is a
     -- 'Word': the distance cannot be a subtraction, because one taken from the
     -- other is not a small negative but a number larger than any file.
-    it "pairs each suppression with the finding nearest it" $ do
-      let annotationAt line = (\a -> a {annotationFactSpan = spanAt line}) <$> parsed "[allow:CommentBareTodo] because"
-      case (annotationAt 9, annotationAt 12) of
-        (Right above, Right below) ->
-          applySuppression
-            [above, below]
-            [todoFinding {findingSpan = spanAt 10}, todoFinding {findingSpan = spanAt 11}]
-            `shouldBe` Suppression
-              { suppressionRemaining = [],
-                suppressionUnused = [],
-                suppressionOverBroad = []
-              }
-        _ -> expectationFailure "The spec's own annotations do not parse."
+    it "pairs each suppression with the finding nearest it" $
+      forAllValid $ \(a, f, g) ->
+        forAll (genValid `suchThat` (< maxBound - 3)) $ \top ->
+          case [top ..] of
+            (aboveLine : firstLine : secondLine : belowLine : _) ->
+              let declared = a {annotationFactPrecision = AnnotationPrecisionDecl}
+                  above = declared {annotationFactSpan = onLine aboveLine (annotationFactSpan a)}
+                  below = declared {annotationFactSpan = onLine belowLine (annotationFactSpan a)}
+                  first = (answeredBy declared f) {findingSpan = onLine firstLine (findingSpan f)}
+                  second = (answeredBy declared g) {findingSpan = onLine secondLine (findingSpan g)}
+               in applySuppression [above, below] [first, second]
+                    `shouldBe` Suppression
+                      { suppressionRemaining = [],
+                        suppressionUnused = [],
+                        suppressionOverBroad = []
+                      }
+            _ -> expectationFailure "Four lines in a row were asked for where there are not four."
 
   -- Written suppressions, read back and matched against the findings they
   -- answer for. Between them the modules cover both forms: the site-scoped one
@@ -349,7 +365,7 @@ spec = do
           either
             (expectationFailure . T.unpack . renderChunksText WithoutColours . renderRuleSetError)
             pure
-            (ruleSet builtinRules [RuleId "CommentBareTodo"])
+            (ruleSet builtinRules [ruleId BareTodo.rule])
         eModels <- discoverPackages root (sourceRootDir root)
         case eModels of
           Left err -> expectationFailure (T.unpack (renderDiscoveryError err))
@@ -358,7 +374,7 @@ spec = do
               let name = unPackageName (packageModelName pm)
               dir <- (tmp </>) <$> parseRelDir (T.unpack name)
               ensureDir dir
-              report <- runPackageCommand withEverything noHieDirectories root (packageModelDir pm) (Just dir)
+              report <- runPackageCommand withEverything noHieDirectories root [] (packageModelDir pm) (Just dir)
               (sources, _) <- sourcesForReport [root] report
               writeReportTo withEverything dir sources report
               pure (name, dir)
@@ -372,7 +388,7 @@ spec = do
             [t | ComplaintFailure t <- unComplaints report]
               `shouldBe` replicate
                 3
-                (FailureFactsIncomplete (StoreProblemSuppressionNamesRuleNotRun (RuleId "CommentBareTodo")))
+                (FailureFactsIncomplete (StoreProblemSuppressionNamesRuleNotRun (ruleId BareTodo.rule)))
 
   -- The keystone. On-by-default with unlimited local escapes is only safe while
   -- a suppression cannot outlive its reason, so every way one can stop being

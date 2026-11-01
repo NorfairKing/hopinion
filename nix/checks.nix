@@ -93,11 +93,16 @@ let
   # own modules already yielded, and the facts the rules that can see further
   # asked to carry. There is no separate facts-only build, because this one
   # succeeds whatever it found.
-  packageOutputFor = { name, src, hieRoots ? [ ], exe ? hopinion, choices ? null }:
+  #
+  # A package is told which packages make up its project, since it is handed
+  # its own subtree and cannot see the others. Which code is the project's is
+  # what tells the code under test from the libraries it is tested with.
+  packageOutputFor = { name, src, hieRoots ? [ ], exe ? hopinion, choices ? null, projectPackages ? [ ] }:
     runCommand "${name}-hopinion" { } ''
       ${hieArguments hieRoots}
       ${toolCall { inherit exe choices; }} package \
         --root ${src} \
+        ${lib.concatMapStringsSep " " (p: "--project-package ${p}") projectPackages} \
         --rel-prefix ${name} \
         $hieArgs \
         --out $out \
@@ -121,7 +126,7 @@ let
     runCommand "hopinion-project" { } ''
       ${hieArguments (lib.concatMap (s: s.hieRoots or [ ]) subjects)}
       ${toolCall { inherit exe choices; }} project \
-        ${lib.concatMapStringsSep " " (s: "--package ${packageOutputFor (s // { inherit exe choices; })}") subjects} \
+        ${lib.concatMapStringsSep " " (s: "--package ${packageOutputFor (s // { inherit exe choices; projectPackages = map (t: t.name) subjects; })}") subjects} \
         ${lib.concatMapStringsSep " " (s: "--source ${s.name}=${s.src}") subjects} \
         $hieArgs \
         --expect-packages ${lib.concatStringsSep "," (map (s: s.name) subjects)} \

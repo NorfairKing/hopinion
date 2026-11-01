@@ -61,10 +61,14 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - autodocodec-yaml
+    - bytestring
     - containers
     - filepath
+    - genvalidity-bytestring
+    - genvalidity-path
     - genvalidity-sydtest
     - genvalidity-sydtest-aeson
+    - genvalidity-text
     - hopinion
     - hopinion-hie
     - hopinion-gen
@@ -72,6 +76,7 @@ tests:
     - path-io
     - persistent
     - process
+    - QuickCheck
     - safe-coloured-text
     - sydtest
     - sydtest-aeson

@@ -105,7 +105,7 @@ runCheckWithoutChoices rs hieDirs root =
     withPackages root $ \models ->
       withMemoryStore (storeMigrations rs) $ do
         writeMeta
-        written <- traverse (writePackage rs hieDirs root) models
+        written <- traverse (writePackage rs hieDirs root (map packageModelName models)) models
         -- One value per module, handed to each phase at its own scope, so a
         -- module is read once for all three and never if nothing asks.
         let byPackage = M.fromList (zip (map packageModelName models) (map snd written))
@@ -114,17 +114,25 @@ runCheckWithoutChoices rs hieDirs root =
         projectReport <- projectReportFor rs names (mconcat (map snd written))
         pure (mconcat (map fst written) <> mconcat packageReports <> projectReport)
 
-runPackageCommand :: RuleSet -> HieDirectories -> SourceRoot -> Path Abs Dir -> Maybe (Path Abs Dir) -> IO Complaints
-runPackageCommand rs hieDirs root dir mOut = reportingArtifactProblems $ do
+runPackageCommand :: RuleSet -> HieDirectories -> SourceRoot -> [PackageName] -> Path Abs Dir -> Maybe (Path Abs Dir) -> IO Complaints
+runPackageCommand rs hieDirs root named dir mOut = reportingArtifactProblems $ do
   eModels <- discoverPackages root dir
   case eModels of
     Left err -> pure (failureComplaints [FailureRepositoryUnreadable (renderDiscoveryError err)])
     Right [] -> pure (failureComplaints [FailureRepositoryUnreadable (renderDiscoveryError (DiscoveryErrorNoCabalFileUnder dir))])
     Right (pm : _) -> do
       traverse_ ensureDir mOut
+      -- Every package in the repository rather than this one, because that is
+      -- what the code under test is: a test in one package tests another's code
+      -- as often as its own. Named by the caller when it has them, since a
+      -- package checked on its own sees only its own subtree.
+      project <-
+        if null named
+          then either (const [packageModelName pm]) (map packageModelName) <$> discoverPackages root (sourceRootDir root)
+          else pure (nub (packageModelName pm : named))
       withStore (storeMigrations rs) (storeAt mOut) $ do
         writeMeta
-        (moduleReport, compiled) <- writePackage rs hieDirs root pm
+        (moduleReport, compiled) <- writePackage rs hieDirs root project pm
         packageReport <- runPackagePhase rs (packageModelName pm) compiled
         pure (moduleReport <> packageReport)
 
@@ -224,7 +232,7 @@ projectReportFor rs expected compiled = case NE.nonEmpty (nub (sort expected)) o
 -- discover anything.
 runModuleCommand :: RuleSet -> Path Rel File -> [Text] -> ComponentKind -> IO Complaints
 runModuleCommand rs file extensions component =
-  runModuleLayer rs <$> factsForFile rs file extensions component
+  runModuleLayer rs noModuleBuild =<< factsForFile rs file extensions component
 
 -- | One file's facts, with the file standing in for the module name. Used by
 -- the module command and by the tests, so neither reaches around the extraction
@@ -334,8 +342,8 @@ withPackages root act = do
 --
 -- What a build said comes back with it, since the package phase is about to
 -- want all of it.
-writePackage :: RuleSet -> HieDirectories -> SourceRoot -> PackageModel -> Query (Complaints, CompiledModules)
-writePackage rs hieDirs root pm = do
+writePackage :: RuleSet -> HieDirectories -> SourceRoot -> [PackageName] -> PackageModel -> Query (Complaints, CompiledModules)
+writePackage rs hieDirs root project pm = do
   contexts <- liftIO (readModules rs (packageModelComponents pm))
   -- One deferred read per module, shared by all three scopes.
   compiled <-
@@ -346,6 +354,19 @@ writePackage rs hieDirs root pm = do
           | ctx <- contexts,
             ParseOutcomeOk <- [moduleContextOutcome ctx]
           ]
+      )
+  moduleReport <-
+    liftIO
+      ( mconcat
+          <$> traverse
+            ( runModuleLayer
+                rs
+                ModuleBuild
+                  { moduleBuildProjectPackages = project,
+                    moduleBuildCompiled = compiled
+                  }
+            )
+            contexts
       )
   unread <- liftIO (unreadSuppressionsOf rs root pm)
   writePackageEnvelope
@@ -361,7 +382,7 @@ writePackage rs hieDirs root pm = do
     ]
   mapM_ writeContext contexts
   pure
-    ( mconcat (map (runModuleLayer rs) contexts) <> unread,
+    ( moduleReport <> unread,
       compiled
     )
   where
@@ -437,18 +458,20 @@ layerComplaints rs level result inScope =
 -- A module that did not parse is a failure of the run rather than a module with
 -- nothing wrong in it. One whose source is a preprocessor's input holds no
 -- Haskell, so no rule runs over it and there is nothing to say about it.
-runModuleLayer :: RuleSet -> ModuleContext -> Complaints
-runModuleLayer rs mf =
-  layerComplaints rs LevelModule (resultFor (moduleContextOutcome mf)) (moduleContextAnnotations mf)
-    <> complaintsOf
-      ( map ComplaintProblem (moduleContextAnnotationProblems mf)
-          ++ map ComplaintFailure (failures (moduleContextOutcome mf))
-      )
+runModuleLayer :: RuleSet -> ModuleBuild -> ModuleContext -> IO Complaints
+runModuleLayer rs build mf = do
+  result <- resultFor (moduleContextOutcome mf)
+  pure $
+    layerComplaints rs LevelModule result (moduleContextAnnotations mf)
+      <> complaintsOf
+        ( map ComplaintProblem (moduleContextAnnotationProblems mf)
+            ++ map ComplaintFailure (failures (moduleContextOutcome mf))
+        )
   where
     resultFor = \case
-      ParseOutcomeOk -> foldMap (\c -> c mf) (moduleChecks rs)
-      ParseOutcomeFailed _ _ -> noResult
-      ParseOutcomeNotHaskellSource -> noResult
+      ParseOutcomeOk -> mconcat <$> traverse (\c -> moduleCheckFindings c build mf) (moduleChecks rs)
+      ParseOutcomeFailed _ _ -> pure noResult
+      ParseOutcomeNotHaskellSource -> pure noResult
 
     failures = \case
       ParseOutcomeOk -> []
@@ -544,8 +567,8 @@ storeProblems rs expected uncovered = do
         ]
     )
 
-moduleChecks :: RuleSet -> [ModuleContext -> CheckResult]
-moduleChecks rs = [moduleCheckFindings c | r <- rulesAtLevel rs LevelModule, RuleImplModule c <- [ruleImpl r]]
+moduleChecks :: RuleSet -> [ModuleCheck]
+moduleChecks rs = [c | r <- rulesAtLevel rs LevelModule, RuleImplModule c <- [ruleImpl r]]
 
 -- | Each level judges exactly the annotations naming its own rules, which keeps
 -- unused-annotation detection sound without a global pass. A rule this set does
