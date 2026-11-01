@@ -1,6 +1,7 @@
 module GoodSpec (spec) where
 
 import qualified Data.Text as Text
+import Path.IO (withSystemTempDir)
 import Test.Syd
 import Test.Syd.Validity
 
@@ -111,3 +112,6 @@ spec = do
   it "renders every age up to a generated one" $
     forAllValid $ \age ->
       renderName (Text.pack (show [0 .. age - 1])) `shouldSatisfy` not . Text.null
+  it "renders a name under a directory made from a template" $
+    withSystemTempDir "renders" $ \dir ->
+      renderName (Text.pack (show dir)) `shouldSatisfy` not . Text.null

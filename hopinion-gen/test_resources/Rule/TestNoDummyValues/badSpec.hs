@@ -1,5 +1,7 @@
 module BadSpec (spec) where
 
+import Control.Monad (forM_)
+import Data.Foldable (for_)
 import qualified Data.Text as Text
 import Test.Syd
 
@@ -55,3 +57,16 @@ spec = do
   rendersNonEmpty "ivan"
   it "renders a name bound beside the spec" $
     renderName defaultName `shouldSatisfy` not . Text.null
+  it "renders every made-up name in a list" $
+    forM_ ["lena", "mo"] $ \name ->
+      renderName name `shouldSatisfy` not . Text.null
+  let rendersEach names =
+        for_ names $ \name ->
+          it "renders a name from a table" $
+            renderName name `shouldSatisfy` not . Text.null
+  rendersEach ["nina", "otto"]
+  it "renders every name a library function is handed" $
+    for_ ["pia"] (\name -> renderName name `shouldSatisfy` not . Text.null)
+  let check name = renderName name `shouldSatisfy` not . Text.null
+  it "hands a list of names to a helper of this file's own" $
+    mapM_ check ["quinn"]

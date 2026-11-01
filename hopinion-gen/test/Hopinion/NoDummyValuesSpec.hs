@@ -27,10 +27,10 @@ spec = do
   -- components of the path the compiler was handed.
   let source = [relfile|test/ShadowSpec.hs|]
 
-  describe "bindings and helpers spelled the same in different scopes" $ do
+  describe "the names in a module" $ do
     -- [allow:TestNoDummyValues] The module name is the fixture's, which the
     -- build is looked up by.
-    it "are told apart by the build" $
+    it "are resolved by the build" $
       withSystemTempDir "hopinion-no-dummy-values" $ \tmp -> do
         ensureDir (tmp </> [reldir|test|])
         copyFile [relfile|test_resources/NoDummyValues/ShadowSpec.hs|] (tmp </> source)
@@ -57,7 +57,8 @@ spec = do
             findingRule f == RuleId "TestNoDummyValues"
           ]
           `shouldBe` [ "Literals a test runs on: \"erin\".",
-                       "Literals a test runs on: \"gina\"."
+                       "Literals a test runs on: \"gina\".",
+                       "Literals a test runs on: \"ruth\"."
                      ]
 
     it "are matched by spelling without one" $ do
@@ -71,5 +72,6 @@ spec = do
         `shouldBe` [ "Literals a test runs on: \"erin\".",
                      "Literals a test runs on: \"frank\".",
                      "Literals a test runs on: \"gina\".",
-                     "Literals a test runs on: \"ivan\"."
+                     "Literals a test runs on: \"ivan\".",
+                     "Literals a test runs on: \"ruth\"."
                    ]

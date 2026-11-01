@@ -86,6 +86,12 @@ data Passage
   = PassageDirect
   | PassageThroughLibrary
 
+-- | Whether a value has been put in a list on its way, so that what a library
+-- hands a function beside it may be one of its elements.
+data Containment
+  = ContainmentNone
+  | ContainmentElement
+
 -- | Whether a function this module defines can be followed into at a
 -- parameter, which it can when it names that parameter.
 data Followability
@@ -152,10 +158,16 @@ isUnitOf pkg unit =
 -- It does when any function among them is the project's: whatever library code
 -- it passes through on the way, a value handed on to the project's code is an
 -- input to it. One that only library functions receive configures those
--- libraries instead. A library function handed one of the project's functions
--- alongside the value, as in @map f xs@, may hand the value on to it, but
--- telling such a function from a value of the project's needs types, so it is
--- not followed.
+-- libraries instead.
+--
+-- A library function handed a list may hand each element on to a function it
+-- is handed beside the list, as in @for_ names (\\name -> ...)@, so an element
+-- is followed into a lambda handed to the same call, and into a function this
+-- module defines that is. A function of the project's handed alongside, as in
+-- @map f xs@, is not followed, because telling it from a value of the
+-- project's needs types. Only an element is followed, because what a library
+-- hands a lambda beside a value that is not in a list is usually something it
+-- made of it, like a directory made from a template.
 --
 -- A constructor decides nothing, the project's included, because building a
 -- value runs no code: what decides is what the value is then handed to, so the
@@ -168,19 +180,23 @@ isUnitOf pkg unit =
 -- module does not name, such as one written point-free, cannot be followed
 -- and is taken for the code under test.
 reachesProject :: (NameAt -> Ownership) -> (Position -> Maybe Position) -> TestLiterals -> [Consumer] -> Bool
-reachesProject owner binderOf facts = go PassageDirect S.empty S.empty
+reachesProject owner binderOf facts = go PassageDirect ContainmentNone S.empty S.empty
   where
-    go :: Passage -> S.Set Position -> S.Set (Text, Word) -> [Consumer] -> Bool
-    go passage bindings parameters = \case
+    go :: Passage -> Containment -> S.Set Position -> S.Set (Text, Word) -> [Consumer] -> Bool
+    go passage containment bindings parameters = \case
       [] -> False
+      ConsumerElement : rest -> go passage ContainmentElement bindings parameters rest
       ConsumerCall callee index : rest
-        | isConstructorName (nameAtText callee) -> go passage bindings parameters rest
+        | isConstructorName (nameAtText callee) -> go passage containment bindings parameters rest
         | otherwise -> case owner callee of
             OwnershipThisModule -> case followable callee index of
-              FollowabilityNamed -> intoFunction bindings parameters callee index || go passage bindings parameters rest
+              FollowabilityNamed -> intoFunction containment bindings parameters callee index || go passage containment bindings parameters rest
               FollowabilityUnknown -> True
             OwnershipProject -> True
-            OwnershipLibrary -> go PassageThroughLibrary bindings parameters rest
+            OwnershipLibrary ->
+              go PassageThroughLibrary containment bindings parameters rest || case containment of
+                ContainmentElement -> elementsHandedOn bindings parameters callee
+                ContainmentNone -> False
       ConsumerBinding name : _ -> case passage of
         -- What a library returns is its own value, which the argument may or
         -- may not be part of: the path to a file is not what was read from it.
@@ -191,22 +207,43 @@ reachesProject owner binderOf facts = go PassageDirect S.empty S.empty
           | nameAtPosition name `S.member` bindings -> False
           | otherwise ->
               any
-                (go PassageDirect (S.insert (nameAtPosition name) bindings) parameters . bindingUseConsumers)
+                (go PassageDirect containment (S.insert (nameAtPosition name) bindings) parameters . bindingUseConsumers)
                 [ u
                 | u <- testLiteralsUses facts,
                   bindingUseName u == nameAtText name,
                   refersTo (bindingUseAt u) (nameAtPosition name)
                 ]
 
+    -- Into the functions a library call is handed beside a list, as one of its
+    -- elements.
+    elementsHandedOn :: S.Set Position -> S.Set (Text, Word) -> NameAt -> Bool
+    elementsHandedOn bindings parameters callee =
+      any
+        (go PassageDirect ContainmentNone bindings parameters . lambdaUseConsumers)
+        [ u
+        | u <- testLiteralsLambdaUses facts,
+          lambdaUseCallAt u == nameAtPosition callee,
+          refersTo (lambdaUseAt u) (lambdaUseBinderAt u)
+        ]
+        || or
+          [ intoFunction ContainmentNone bindings parameters function index
+          | h <- testLiteralsHandedNames facts,
+            handedNameCallAt h == nameAtPosition callee,
+            let function = handedNameName h,
+            OwnershipThisModule <- [owner function],
+            arity <- map functionArityParameters (aritiesOf function),
+            index <- [0 .. arity - 1]
+          ]
+
     -- Inside the function, where the value is a parameter. What the function
     -- returns is followed by the caller, so the function's own name ends the
     -- path here rather than leading on to its uses.
-    intoFunction :: S.Set Position -> S.Set (Text, Word) -> NameAt -> Word -> Bool
-    intoFunction bindings parameters callee index
+    intoFunction :: Containment -> S.Set Position -> S.Set (Text, Word) -> NameAt -> Word -> Bool
+    intoFunction containment bindings parameters callee index
       | (nameAtText callee, index) `S.member` parameters = False
       | otherwise =
           any
-            (go PassageDirect (S.union (S.fromList (map functionArityAt (aritiesOf callee))) bindings) (S.insert (nameAtText callee, index) parameters) . parameterUseConsumers)
+            (go PassageDirect containment (S.union (S.fromList (map functionArityAt (aritiesOf callee))) bindings) (S.insert (nameAtText callee, index) parameters) . parameterUseConsumers)
             [ u
             | u <- testLiteralsParameters facts,
               parameterUseFunction u == nameAtText callee,

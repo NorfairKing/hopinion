@@ -1,5 +1,5 @@
--- | Names spelled the same in different scopes, which only a build can tell
--- apart.
+-- | Names the build resolves: some spelled the same in different scopes, a
+-- parameter that is a library's callback, and a lambda a list is handed to.
 module ShadowSpec (spec) where
 
 import Stub
@@ -23,3 +23,5 @@ spec = do
     it "checks a name" $ check "ivan"
   describe "a function a library hands the test" $
     it "hands it a literal" $ withCallback (\respond -> respond "jill")
+  describe "a list a library hands on element by element" $
+    it "renders each" $ all (\y -> renderName y == "") ["ruth"]

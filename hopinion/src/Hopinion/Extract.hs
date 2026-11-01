@@ -138,7 +138,9 @@ emptyModuleContext input =
             testLiteralsUses = [],
             testLiteralsParameters = [],
             testLiteralsArities = [],
-            testLiteralsBinders = []
+            testLiteralsBinders = [],
+            testLiteralsLambdaUses = [],
+            testLiteralsHandedNames = []
           },
       moduleContextTemplateHaskell = TemplateHaskellUseNone,
       moduleContextOutcome = ParseOutcomeOk

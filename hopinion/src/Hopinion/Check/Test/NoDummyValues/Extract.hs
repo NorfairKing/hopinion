@@ -55,7 +55,9 @@ testLiteralsOf rp ref decls ds
           testLiteralsUses = [],
           testLiteralsParameters = [],
           testLiteralsArities = [],
-          testLiteralsBinders = []
+          testLiteralsBinders = [],
+          testLiteralsLambdaUses = [],
+          testLiteralsHandedNames = []
         }
   | otherwise =
       TestLiterals
@@ -113,7 +115,35 @@ testLiteralsOf rp ref decls ds
             | lb <- valueBindsOf ds,
               FunBind {fun_id = name, fun_matches = mg} <- [unLoc lb]
             ],
-          testLiteralsBinders = [spanStart (spanOfSrcSpan rp (bindingBinder b)) | b <- binders]
+          testLiteralsBinders = [spanStart (spanOfSrcSpan rp (bindingBinder b)) | b <- binders],
+          testLiteralsLambdaUses =
+            [ LambdaUse
+                { lambdaUseCallAt = spanStart (spanOfSrcSpan rp (snd (callHead call))),
+                  lambdaUseBinderAt = spanStart (spanOfSrcSpan rp binderAt),
+                  lambdaUseAt = spanStart (spanOfSrcSpan rp loc),
+                  lambdaUseConsumers = consumersAt loc
+                }
+            | call <- calls,
+              (arg, Nothing) <- callArguments call,
+              lambda <- expressions,
+              getLocA lambda == arg,
+              HsLam _ _ mg <- [unLoc (peelExpr lambda)],
+              m <- map unLoc (unLoc (mg_alts mg)),
+              p <- unLoc (m_pats m),
+              (parameter, binderAt) <- patternBinders p,
+              (used, loc) <- occurrences,
+              used == parameter,
+              loc `SrcLoc.isSubspanOf` arg,
+              not (within exempt loc)
+            ],
+          testLiteralsHandedNames =
+            [ HandedName
+                { handedNameCallAt = spanStart (spanOfSrcSpan rp (snd (callHead call))),
+                  handedNameName = nameAt handed
+                }
+            | call <- calls,
+              (_, Just handed) <- callArguments call
+            ]
         }
   where
     expressions :: [LHsExpr GhcPs]
@@ -214,20 +244,25 @@ testLiteralsOf rp ref decls ds
           -- Strictly inside the block: an argument that is the block itself is what
           -- the block is handed to, which is beyond it.
           inRegion arg = maybe True (arg `SrcLoc.isSubspanOf`) region && maybe True (\b -> arg `SrcLoc.isSubspanOf` b && arg /= b) boundary
+          -- A list before a call written around it, so that where the two
+          -- are written alike the element comes first.
           enclosing =
             sortBy
               innerFirst
-              [ (arg, (index, call))
-              | call <- calls,
-                (index, (arg, _)) <- zip [0 ..] (callArguments call),
-                loc `SrcLoc.isSubspanOf` arg,
-                inRegion arg
-              ]
-          callConsumers =
-            nub
-              [ ConsumerCall (nameAt (callHead call)) index
-              | (_, (index, call)) <- enclosing
-              ]
+              ( [ (getLocA e, ConsumerElement)
+                | e <- expressions,
+                  loc `SrcLoc.isSubspanOf` getLocA e,
+                  inRegion (getLocA e),
+                  ExplicitList {} <- [unLoc e]
+                ]
+                  ++ [ (arg, ConsumerCall (nameAt (callHead call)) index)
+                     | call <- calls,
+                       (index, (arg, _)) <- zip [0 ..] (callArguments call),
+                       loc `SrcLoc.isSubspanOf` arg,
+                       inRegion arg
+                     ]
+              )
+          callConsumers = nub (map snd enclosing)
           bindingConsumer =
             [ ConsumerBinding (nameAt (bindingName b, bindingBinder b))
             | Nothing <- [boundary],

@@ -10,6 +10,8 @@ module Hopinion.Check.Test.NoDummyValues.Fact
     BindingUse (..),
     ParameterUse (..),
     FunctionArity (..),
+    LambdaUse (..),
+    HandedName (..),
   )
 where
 
@@ -35,7 +37,13 @@ data TestLiterals = TestLiterals
     -- | Where each name this module binds is written, so that a name the build
     -- says is local can be told apart from a parameter: a function the test is
     -- handed, as in a library's callback, is no code of this module's.
-    testLiteralsBinders :: ![Position]
+    testLiteralsBinders :: ![Position],
+    -- | Every use, inside a lambda handed to a function, of a name the
+    -- lambda's parameters bind, so that what a list is handed on to element
+    -- by element can be followed.
+    testLiteralsLambdaUses :: ![LambdaUse],
+    -- | Every bare name handed to a function as an argument, for the same.
+    testLiteralsHandedNames :: ![HandedName]
   }
   deriving stock (Show, Eq, Generic)
 
@@ -66,6 +74,9 @@ data Consumer
   = -- | A function or constructor it is an argument of, and which argument it
     -- is, counting from nought.
     ConsumerCall !NameAt !Word
+  | -- | A list the value is an element of. A function handed to the same call
+    -- as the list may be handed each element in turn.
+    ConsumerElement
   | -- | The binding the value is the whole or a part of. What receives it from
     -- there is wherever that name is used.
     ConsumerBinding !NameAt
@@ -124,6 +135,29 @@ data ParameterUse = ParameterUse
   deriving stock (Show, Eq, Generic)
 
 instance Validity ParameterUse
+
+-- | One use of a lambda's parameter, in a lambda that is an argument of a
+-- call.
+data LambdaUse = LambdaUse
+  { -- | Where the head of the call the lambda is an argument of is written.
+    lambdaUseCallAt :: !Position,
+    lambdaUseBinderAt :: !Position,
+    lambdaUseAt :: !Position,
+    lambdaUseConsumers :: ![Consumer]
+  }
+  deriving stock (Show, Eq, Generic)
+
+instance Validity LambdaUse
+
+-- | A bare name that is an argument of a call.
+data HandedName = HandedName
+  { -- | Where the head of the call is written.
+    handedNameCallAt :: !Position,
+    handedNameName :: !NameAt
+  }
+  deriving stock (Show, Eq, Generic)
+
+instance Validity HandedName
 
 -- | A function this module defines and how many parameters it names.
 data FunctionArity = FunctionArity
