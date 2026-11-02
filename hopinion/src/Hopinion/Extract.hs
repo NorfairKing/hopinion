@@ -26,13 +26,10 @@ import Hopinion.Comment
 import Hopinion.Extract.Ghc
 import Hopinion.Facts.Component
 import Hopinion.Facts.Decl
-import Hopinion.Facts.Export
 import Hopinion.Facts.Instance
 import Hopinion.Facts.Module
 import Hopinion.Facts.Name
-import Hopinion.Facts.Occurrence
 import Hopinion.Facts.Place
-import Hopinion.Facts.TemplateHaskell
 import Hopinion.Parse
 import Hopinion.Rule (RuleSet)
 import Path (File, Path, Rel)
@@ -73,14 +70,10 @@ extractModuleContext input parsed =
           moduleContextComponent = extractInputComponent input,
           moduleContextComponentName = extractInputComponentName input,
           moduleContextDecls = decls,
-          moduleContextExports = exportListOf rp (unLoc (parsedModuleAst parsed)),
           moduleContextInstances = concatMap (instanceFactsOf rp ref) (hsmodDecls (unLoc (parsedModuleAst parsed))),
-          moduleContextNames = map (nameFactOf ref decls) (parsedModuleNames parsed),
           moduleContextComments = attached,
           moduleContextAnnotations = annotations,
           moduleContextAnnotationProblems = annotationProblems,
-          moduleContextTypeApps = parsedModuleTypeApps parsed,
-          moduleContextTemplateHaskell = parsedModuleTemplateHaskell parsed,
           moduleContextSyntax = ModuleSyntaxParsed parsed
         }
 
@@ -102,23 +95,11 @@ emptyModuleContext input syntax =
       moduleContextComponent = extractInputComponent input,
       moduleContextComponentName = extractInputComponentName input,
       moduleContextDecls = [],
-      moduleContextExports = ExportListNone,
       moduleContextInstances = [],
-      moduleContextNames = [],
       moduleContextComments = [],
       moduleContextAnnotations = [],
       moduleContextAnnotationProblems = [],
-      moduleContextTypeApps = [],
-      moduleContextTemplateHaskell = TemplateHaskellUseNone,
       moduleContextSyntax = syntax
-    }
-
-nameFactOf :: ModuleRef -> [DeclFact] -> NameOccurrence -> NameFact
-nameFactOf ref decls occ =
-  NameFact
-    { nameFactText = nameOccurrenceText occ,
-      nameFactSpan = nameOccurrenceSpan occ,
-      nameFactScope = declScopeOf ref decls (nameOccurrenceSpan occ)
     }
 
 -- | The name an instance declaration is known by, shared by the declaration
@@ -205,47 +186,6 @@ dataOrNewtype defn = case dd_cons defn of
 
 dropWildCard :: LHsSigWcType GhcPs -> LHsSigType GhcPs
 dropWildCard = hswc_body
-
--- | The export list, and the entries in it.
---
--- Documentation is not an entry: a section heading or a paragraph in an export
--- list exports nothing, so a list holding one and a name exports one thing.
-exportListOf :: Path Rel File -> HsModule GhcPs -> ExportList
-exportListOf rp m = case hsmodExports m of
-  Nothing -> ExportListNone
-  Just lies ->
-    ExportList
-      (spanOfSrcSpan rp (getLocA lies))
-      (mapMaybe (exportedText . unLoc) (unLoc lies))
-
-exportedText :: IE GhcPs -> Maybe Text
-exportedText = \case
-  IEVar _ n _ -> Just (wrappedText (unLoc n))
-  IEThingAbs _ n _ -> Just (wrappedText (unLoc n))
-  IEThingAll _ n _ -> Just (subordinates (wrappedText (unLoc n)) [".."])
-  IEThingWith _ n wildcard ns _ ->
-    Just
-      ( subordinates
-          (wrappedText (unLoc n))
-          (case wildcard of NoIEWildcard -> map (wrappedText . unLoc) ns; IEWildcard _ -> [".."])
-      )
-  IEModuleContents _ name -> Just (T.pack (unwords ["module", moduleNameString (unLoc name)]))
-  IEGroup {} -> Nothing
-  IEDoc {} -> Nothing
-  IEDocNamed {} -> Nothing
-
-subordinates :: Text -> [Text] -> Text
-subordinates name children = T.concat [name, "(", T.intercalate ", " children, ")"]
-
-wrappedText :: IEWrappedName GhcPs -> Text
-wrappedText = \case
-  IEName _ n -> rdrText (unLoc n)
-  IEDefault _ n -> adorned "default" n
-  IEPattern _ n -> adorned "pattern" n
-  IEType _ n -> adorned "type" n
-  where
-    adorned :: String -> LIdP GhcPs -> Text
-    adorned keyword n = T.pack (unwords [keyword, T.unpack (rdrText (unLoc n))])
 
 instanceFactsOf :: Path Rel File -> ModuleRef -> LHsDecl GhcPs -> [InstanceFact]
 instanceFactsOf rp ref ldecl =

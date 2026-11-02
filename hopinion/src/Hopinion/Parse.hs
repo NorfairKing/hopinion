@@ -3,16 +3,18 @@
 
 -- | Extension resolution and the two passes over a module's text.
 --
--- Comments, type applications and Template Haskell use come from the token
--- stream, because that is a flat, complete list with exact spans and no
--- dependence on where exact-print annotations chose to hang a comment.
+-- Comments come from the token stream, because that is a flat, complete list
+-- with exact spans and no dependence on where exact-print annotations chose to
+-- hang a comment.
+-- The tokens are kept for the rules, which read from them whatever is easier
+-- to tell apart there than in the tree.
 -- Declarations and instances come from the parse tree, which is the only place
 -- they exist.
 module Hopinion.Parse
   ( ParseInput (..),
     ParsedModule (..),
     parsedModuleDecls,
-    NameOccurrence (..),
+    SourceToken (..),
     parseHaskellModule,
   )
 where
@@ -20,7 +22,7 @@ where
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import qualified Data.Text as T
-import GHC.Data.FastString (FastString, mkFastString, unpackFS)
+import GHC.Data.FastString (mkFastString)
 import qualified GHC.Data.StringBuffer as SB
 import GHC.Driver.Config.Parser (initParserOpts)
 import GHC.Driver.Session
@@ -50,10 +52,7 @@ import GHC.Types.SrcLoc
   )
 import qualified GHC.Types.SrcLoc as SrcLoc
 import Hopinion.Comment (RawComment (..))
-import Hopinion.Facts.Name
 import Hopinion.Facts.Place
-import Hopinion.Facts.TemplateHaskell
-import Hopinion.Facts.TypeApp
 import qualified Language.Haskell.GhclibParserEx.GHC.Driver.Session as ExSession
 import qualified Language.Haskell.GhclibParserEx.GHC.Parser as ExParser
 import Language.Haskell.GhclibParserEx.GHC.Settings.Config (fakeSettings)
@@ -77,28 +76,26 @@ data ParsedModule = ParsedModule
     -- | The text the spans in here refer to, which is the module's own source
     -- unless it uses CPP.
     parsedModuleSource :: !Text,
+    -- | Every token the lexer produced, comments included, in source order.
+    parsedModuleTokens :: ![SourceToken],
     parsedModuleComments :: ![RawComment],
-    parsedModuleTypeApps :: ![TypeAppFact],
-    parsedModuleTemplateHaskell :: !TemplateHaskellUse,
     -- | The line the @module@ keyword is on, if there is a header.
     parsedModuleHeaderLine :: !(Maybe Word),
     -- | The parenthesised export list, from its opening paren to its closing
     -- paren, which is what tells a legitimate section header from a stray one.
-    parsedModuleExportListSpan :: !(Maybe Span),
-    parsedModuleNames :: ![NameOccurrence]
+    parsedModuleExportListSpan :: !(Maybe Span)
+  }
+
+-- | One token, and where it is in the source the spans refer to.
+data SourceToken = SourceToken
+  { sourceTokenToken :: !Token,
+    sourceTokenSpan :: !Span
   }
 
 -- | Every top-level declaration, as the parser saw it, which is where a rule
 -- reading the parse tree for a fact of its own starts.
 parsedModuleDecls :: ParsedModule -> [LHsDecl GhcPs]
 parsedModuleDecls = hsmodDecls . SrcLoc.unLoc . parsedModuleAst
-
--- | A capitalised name the module writes, before anything has worked out which
--- declaration it is inside.
-data NameOccurrence = NameOccurrence
-  { nameOccurrenceText :: !Text,
-    nameOccurrenceSpan :: !Span
-  }
 
 parseHaskellModule :: ParseInput -> IO (Either (Position, Text) ParsedModule)
 parseHaskellModule input = do
@@ -135,12 +132,16 @@ parseHaskellModule input = do
                     ParsedModule
                       { parsedModuleAst = ast,
                         parsedModuleSource = maybe (parseInputSource input) T.pack preprocessed,
+                        parsedModuleTokens =
+                          [ SourceToken
+                              { sourceTokenToken = t,
+                                sourceTokenSpan = sp
+                              }
+                          | (t, sp) <- located
+                          ],
                         parsedModuleComments = commentsOf located,
-                        parsedModuleTypeApps = typeAppsOf located,
-                        parsedModuleTemplateHaskell = templateHaskellOf located,
                         parsedModuleHeaderLine = headerLineOf located,
-                        parsedModuleExportListSpan = exportListSpanOf located,
-                        parsedModuleNames = namesOf located
+                        parsedModuleExportListSpan = exportListSpanOf located
                       }
                 )
 
@@ -236,81 +237,6 @@ commentText = \case
   ITlineComment s _ -> Just s
   ITblockComment s _ -> Just s
   _ -> Nothing
-
--- | Every capitalised name the module writes, which is every @conid@ token.
---
--- The token stream is what makes this answerable at all: the same word in a
--- comment or in a string literal is a different token, and a qualified name is
--- one token holding both halves, so a bare name here is one the code wrote and
--- not the tail of a module name.
-namesOf :: [(Token, Span)] -> [NameOccurrence]
-namesOf toks =
-  [ NameOccurrence
-      { nameOccurrenceText = fsText s,
-        nameOccurrenceSpan = sp
-      }
-  | (ITconid s, sp) <- toks
-  ]
-
--- | A splice or a quasiquote, and which, since the obligation engine reads the
--- two differently. GHC's whitespace-sensitive lexing separates the prefix @$@
--- of a splice from the @$@ operator, so this does not fire on ordinary
--- application.
-templateHaskellOf :: [(Token, Span)] -> TemplateHaskellUse
-templateHaskellOf toks
-  | any (isSplice . fst) toks = TemplateHaskellUseSplices
-  | any (isQuasiQuote . fst) toks = TemplateHaskellUseQuasiQuotes
-  | otherwise = TemplateHaskellUseNone
-  where
-    isSplice :: Token -> Bool
-    isSplice = \case
-      ITdollar -> True
-      ITdollardollar -> True
-      _ -> False
-
-    isQuasiQuote :: Token -> Bool
-    isQuasiQuote = \case
-      ITquasiQuote _ -> True
-      ITqQuasiQuote _ -> True
-      _ -> False
-
--- | @f \@T@ and @f \@(T a b)@, reported as the function's name and the head
--- type constructor with applied arguments dropped.
-typeAppsOf :: [(Token, Span)] -> [TypeAppFact]
-typeAppsOf = go
-  where
-    go = \case
-      ((fnTok, fnSpan) : (ITtypeApp, _) : rest)
-        | Just fn <- varName fnTok,
-          Just headName <- headTypeOf rest ->
-            TypeAppFact
-              { typeAppFactFunction = fn,
-                typeAppFactHead = TypeHead headName,
-                typeAppFactSpan = fnSpan
-              }
-              : go rest
-      (_ : rest) -> go rest
-      [] -> []
-
-    headTypeOf = \case
-      ((IToparen, _) : rest) -> headTypeOf rest
-      ((t, _) : _) -> conName t
-      [] -> Nothing
-
-varName :: Token -> Maybe Text
-varName = \case
-  ITvarid f -> Just (fsText f)
-  ITqvarid (_, f) -> Just (fsText f)
-  _ -> Nothing
-
-conName :: Token -> Maybe Text
-conName = \case
-  ITconid f -> Just (fsText f)
-  ITqconid (_, f) -> Just (fsText f)
-  _ -> Nothing
-
-fsText :: FastString -> Text
-fsText = T.pack . unpackFS
 
 headerLineOf :: [(Token, Span)] -> Maybe Word
 headerLineOf toks = case [sp | (ITmodule, sp) <- toks] of

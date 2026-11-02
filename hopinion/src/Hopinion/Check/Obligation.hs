@@ -43,6 +43,8 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import Database.Esqueleto.Experimental
 import Database.Persist.TH
+import Hopinion.Check.Obligation.Extract (templateHaskellOf, typeAppsOf)
+import Hopinion.Check.Obligation.Fact
 import Hopinion.Compiled (CompiledModules, couldGenerateUseOf, declaredInstancesOf)
 import Hopinion.Facts.Component
 import Hopinion.Facts.Instance
@@ -50,8 +52,6 @@ import Hopinion.Facts.Module
 import Hopinion.Facts.Name
 import Hopinion.Facts.Package
 import Hopinion.Facts.Place
-import Hopinion.Facts.TemplateHaskell
-import Hopinion.Facts.TypeApp
 import Hopinion.Hie (DeclaredInstance (..))
 import Hopinion.Rule
 import Hopinion.Rule.Id
@@ -146,13 +146,17 @@ carry o pkg ctx = do
   mapM_
     met
     [ typeAppFactHead ta
-    | ta <- moduleContextTypeApps ctx,
+    | ModuleSyntaxParsed parsed <- [moduleContextSyntax ctx],
+      ta <- typeAppsOf parsed,
       typeAppFactFunction ta == obligationCombinator o
     ]
-  case moduleContextTemplateHaskell ctx of
-    TemplateHaskellUseNone -> pure ()
-    TemplateHaskellUseQuasiQuotes -> generates TemplateHaskellUseQuasiQuotes
-    TemplateHaskellUseSplices -> generates TemplateHaskellUseSplices
+  case moduleContextSyntax ctx of
+    ModuleSyntaxParsed parsed -> case templateHaskellOf parsed of
+      TemplateHaskellUseNone -> pure ()
+      TemplateHaskellUseQuasiQuotes -> generates TemplateHaskellUseQuasiQuotes
+      TemplateHaskellUseSplices -> generates TemplateHaskellUseSplices
+    ModuleSyntaxFailed _ _ -> pure ()
+    ModuleSyntaxNotHaskellSource -> pure ()
   where
     ref = moduleContextRef ctx
     kind = moduleContextComponent ctx

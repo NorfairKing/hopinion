@@ -3,8 +3,11 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Hopinion.Facts.TemplateHaskell
-  ( TemplateHaskellUse (..),
+-- | What the obligation family reads out of a module's tokens, beside the
+-- family because nothing else reads it.
+module Hopinion.Check.Obligation.Fact
+  ( TypeAppFact (..),
+    TemplateHaskellUse (..),
     templateHaskellUseText,
     parseTemplateHaskellUse,
   )
@@ -12,9 +15,23 @@ where
 
 import Data.Text (Text)
 import Data.Validity
+import Data.Validity.Text ()
 import Database.Persist (PersistField (..))
 import Database.Persist.Sql (PersistFieldSql (..), SqlType (..))
 import GHC.Generics (Generic)
+import Hopinion.Facts.Name
+import Hopinion.Facts.Place
+
+-- | @f \@T@ or @f \@(T a b)@: the function's name and the head type constructor,
+-- with applied arguments dropped.
+data TypeAppFact = TypeAppFact
+  { typeAppFactFunction :: !Text,
+    typeAppFactHead :: !TypeHead,
+    typeAppFactSpan :: !Span
+  }
+  deriving stock (Show, Eq, Generic)
+
+instance Validity TypeAppFact
 
 -- | A parser cannot see what Template Haskell generates, so a module that uses
 -- it records the fact, and the rules that care put the module to the compiler

@@ -7,13 +7,15 @@ import Data.Char (isAlphaNum, isUpper)
 import Data.Text (Text)
 import qualified Data.Text as T
 import Hopinion.Check.Hs.LambdaCase.Fact
+import Hopinion.Check.Hs.NoFilePath.Fact
 import Hopinion.Check.Hs.NoSemigroupOnText.Fact
 import Hopinion.Check.Hs.NoStringError.Fact
+import Hopinion.Check.Hs.TestOneSpecPerFile.Fact
+import Hopinion.Check.Obligation.Fact
 import Hopinion.Check.Package.AppOnlyMain.Fact
 import Hopinion.Comment
 import Hopinion.Facts.Component
 import Hopinion.Facts.Decl
-import Hopinion.Facts.Export
 import Hopinion.Facts.Gen ()
 import Hopinion.Facts.Instance
 import Hopinion.Facts.Name
@@ -21,8 +23,6 @@ import Hopinion.Facts.Outcome
 import Hopinion.Facts.Package
 import Hopinion.Facts.Place
 import Hopinion.Facts.Suppression
-import Hopinion.Facts.TemplateHaskell
-import Hopinion.Facts.TypeApp
 import Hopinion.Facts.Version
 import Hopinion.Rule.Id
 import Test.Syd
@@ -155,6 +155,8 @@ spec = do
     genValidSpec @CasedArgument
   describe "StrayAppDecl" $ do
     genValidSpec @StrayAppDecl
+  describe "NameFact" $ do
+    genValidSpec @NameFact
   describe "ConcatOperand" $ do
     genValidSpec @ConcatOperand
   describe "ConcatChain" $ do

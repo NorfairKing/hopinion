@@ -1,8 +1,8 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingStrategies #-}
 
--- | What a module says it exports.
-module Hopinion.Facts.Export (ExportList (..)) where
+-- | What a module says it exports, which only this rule reads.
+module Hopinion.Check.Hs.TestOneSpecPerFile.Fact (ExportList (..)) where
 
 import Data.Text (Text)
 import Data.Validity

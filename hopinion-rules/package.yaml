@@ -35,6 +35,7 @@ library:
   - syb
   - text
   - validity
+  - validity-text
 
 executables:
   hopinion:

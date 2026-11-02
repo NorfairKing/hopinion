@@ -220,8 +220,8 @@ Everything that needs the module-local declaration list and call graph.
 
 `HsTestOneSpecPerFile` and `TestNoTestHelpers` shipped ahead of the rest of this
 milestone. Both read the top-level declaration list and neither walks the module
-itself, so they cost the two facts the context now carries, the declarations and
-the export list, and nothing more. Their measurement is recorded: zero findings
+itself, so they cost two facts, the shared declarations and the export list the
+export rule reads for itself, and nothing more. Their measurement is recorded: zero findings
 for the export rule against this repository, and sixty-one for the helper rule,
 every one of them in this repository's own test suite and every one of them
 fixed rather than suppressed: the helpers that hid what a test asserts became

@@ -3,8 +3,9 @@
 
 module Hopinion.Check.Hs.NoFilePath.Rule (rule) where
 
+import Hopinion.Check.Hs.NoFilePath.Extract (namesOf)
+import Hopinion.Check.Hs.NoFilePath.Fact
 import Hopinion.Facts.Module
-import Hopinion.Facts.Occurrence
 import Hopinion.Parse (ParsedModule)
 import Hopinion.Rule
 import Hopinion.Rule.Id
@@ -21,7 +22,7 @@ rule =
     }
 
 check :: ModuleContext -> ParsedModule -> CheckResult
-check mf _ =
+check mf parsed =
   findingsResult
     [ Finding
         { findingRule = ruleId rule,
@@ -29,6 +30,6 @@ check mf _ =
           findingSpan = nameFactSpan nf,
           findingMessage = "The type FilePath."
         }
-    | nf <- moduleContextNames mf,
+    | nf <- namesOf mf parsed,
       nameFactText nf == "FilePath"
     ]

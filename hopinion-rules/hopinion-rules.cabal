@@ -53,6 +53,8 @@ library
       Hopinion.Check.Hs.NoCustomEq.Rule
       Hopinion.Check.Hs.NoCustomOrd.Rule
       Hopinion.Check.Hs.NoCustomShowRead.Rule
+      Hopinion.Check.Hs.NoFilePath.Extract
+      Hopinion.Check.Hs.NoFilePath.Fact
       Hopinion.Check.Hs.NoFilePath.Rule
       Hopinion.Check.Hs.NoSemigroupOnText.Extract
       Hopinion.Check.Hs.NoSemigroupOnText.Fact
@@ -66,6 +68,8 @@ library
       Hopinion.Check.Hs.RecordFieldPerLine.Extract
       Hopinion.Check.Hs.RecordFieldPerLine.Fact
       Hopinion.Check.Hs.RecordFieldPerLine.Rule
+      Hopinion.Check.Hs.TestOneSpecPerFile.Extract
+      Hopinion.Check.Hs.TestOneSpecPerFile.Fact
       Hopinion.Check.Hs.TestOneSpecPerFile.Rule
       Hopinion.Check.Package.AppOnlyMain.Extract
       Hopinion.Check.Package.AppOnlyMain.Fact
@@ -91,6 +95,7 @@ library
     , syb
     , text
     , validity
+    , validity-text
   default-language: Haskell2010
 
 executable hopinion

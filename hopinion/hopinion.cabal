@@ -13,6 +13,8 @@ library
       Hopinion
       Hopinion.Annotation
       Hopinion.Check.Obligation
+      Hopinion.Check.Obligation.Extract
+      Hopinion.Check.Obligation.Fact
       Hopinion.Choices
       Hopinion.Comment
       Hopinion.Compiled
@@ -20,18 +22,14 @@ library
       Hopinion.Extract.Ghc
       Hopinion.Facts.Component
       Hopinion.Facts.Decl
-      Hopinion.Facts.Export
       Hopinion.Facts.Instance
       Hopinion.Facts.Module
       Hopinion.Facts.Name
-      Hopinion.Facts.Occurrence
       Hopinion.Facts.Outcome
       Hopinion.Facts.Package
       Hopinion.Facts.Persist
       Hopinion.Facts.Place
       Hopinion.Facts.Suppression
-      Hopinion.Facts.TemplateHaskell
-      Hopinion.Facts.TypeApp
       Hopinion.Facts.Version
       Hopinion.OptParse
       Hopinion.Parse

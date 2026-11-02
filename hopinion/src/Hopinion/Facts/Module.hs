@@ -15,15 +15,11 @@ import qualified Data.Text as T
 import Hopinion.Comment (CommentFact (..))
 import Hopinion.Facts.Component
 import Hopinion.Facts.Decl
-import Hopinion.Facts.Export
 import Hopinion.Facts.Instance
 import Hopinion.Facts.Name
-import Hopinion.Facts.Occurrence
 import Hopinion.Facts.Outcome
 import Hopinion.Facts.Place
 import Hopinion.Facts.Suppression
-import Hopinion.Facts.TemplateHaskell
-import Hopinion.Facts.TypeApp
 import Hopinion.Parse (ParsedModule)
 import Path (File, Path, Rel, filename)
 
@@ -46,14 +42,10 @@ data ModuleContext = ModuleContext
     moduleContextComponentName :: !ComponentName,
     -- | Every top-level declaration, in source order.
     moduleContextDecls :: ![DeclFact],
-    moduleContextExports :: !ExportList,
     moduleContextInstances :: ![InstanceFact],
-    moduleContextNames :: ![NameFact],
     moduleContextComments :: ![CommentFact],
     moduleContextAnnotations :: ![AnnotationFact],
     moduleContextAnnotationProblems :: ![AnnotationProblem],
-    moduleContextTypeApps :: ![TypeAppFact],
-    moduleContextTemplateHaskell :: !TemplateHaskellUse,
     moduleContextSyntax :: !ModuleSyntax
   }
 

@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingStrategies #-}
 
-module Hopinion.Facts.Occurrence (NameFact (..)) where
+module Hopinion.Check.Hs.NoFilePath.Fact (NameFact (..)) where
 
 import Data.Text (Text)
 import Data.Validity
