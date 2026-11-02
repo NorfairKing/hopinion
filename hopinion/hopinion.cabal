@@ -41,6 +41,7 @@ library
       Hopinion.Rule.Prose
       Hopinion.Run
       Hopinion.Store
+      Hopinion.Timing
   other-modules:
       Paths_hopinion
   hs-source-dirs:

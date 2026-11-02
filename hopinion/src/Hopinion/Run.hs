@@ -33,7 +33,7 @@ where
 
 import Control.Exception (try)
 import Control.Monad.IO.Class (liftIO)
-import Data.Foldable (traverse_)
+import Data.Foldable (foldr', for_, traverse_)
 import Data.List (nub, sort)
 import Data.List.NonEmpty (NonEmpty (..))
 import qualified Data.List.NonEmpty as NE
@@ -41,6 +41,7 @@ import qualified Data.Map.Strict as M
 import qualified Data.Set as S
 import Data.Text (Text)
 import qualified Data.Text as T
+import qualified Data.Text.IO as TIO
 import Database.Persist.Sql (Migration)
 import Hopinion.Annotation
 import Hopinion.Choices (readChoicesIn, renderChoicesFileError, unChoices)
@@ -59,6 +60,7 @@ import Hopinion.Report
 import Hopinion.Rule
 import Hopinion.Rule.Id
 import Hopinion.Store
+import Hopinion.Timing
 import Path (Abs, Dir, File, Path, Rel, toFilePath, (</>))
 import Path.IO (ensureDir, resolveFile')
 import Text.Colour (Chunk, TerminalCapabilities (..), blue, chunk, fore, red, renderChunksText)
@@ -108,45 +110,59 @@ runCheckWithoutChoices rs hieDirs root =
         written <- traverse (writePackage rs hieDirs root) models
         -- One value per module, handed to each phase at its own scope, so a
         -- module is read once for all three and never if nothing asks.
-        let byPackage = M.fromList (zip (map packageModelName models) (map snd written))
+        let byPackage = M.fromList [(packageModelName m, c) | (m, (_, c, _)) <- zip models written]
         names <- packageNames
-        packageReports <- traverse (\n -> runPackagePhase rs n (M.findWithDefault mempty n byPackage)) names
-        projectReport <- projectReportFor rs names (mconcat (map snd written))
-        pure (mconcat (map fst written) <> mconcat packageReports <> projectReport)
+        packageReports <- traverse (\n -> fst <$> runPackagePhase rs n (M.findWithDefault mempty n byPackage)) names
+        (projectReport, _) <- projectReportFor rs names (mconcat [c | (_, c, _) <- written])
+        pure (mconcat [r | (r, _, _) <- written] <> mconcat packageReports <> projectReport)
 
 runPackageCommand :: RuleSet -> HieDirectories -> SourceRoot -> Path Abs Dir -> Maybe (Path Abs Dir) -> IO Complaints
-runPackageCommand rs hieDirs root dir mOut = reportingArtifactProblems $ do
+runPackageCommand rs hieDirs root dir mOut = reportingArtifactProblems $ withTimings mOut $ do
   eModels <- discoverPackages root dir
   case eModels of
-    Left err -> pure (failureComplaints [FailureRepositoryUnreadable (renderDiscoveryError err)])
-    Right [] -> pure (failureComplaints [FailureRepositoryUnreadable (renderDiscoveryError (DiscoveryErrorNoCabalFileUnder dir))])
+    Left err -> pure (failureComplaints [FailureRepositoryUnreadable (renderDiscoveryError err)], [])
+    Right [] -> pure (failureComplaints [FailureRepositoryUnreadable (renderDiscoveryError (DiscoveryErrorNoCabalFileUnder dir))], [])
     Right (pm : _) -> do
       traverse_ ensureDir mOut
       withStore (storeMigrations rs) (storeAt mOut) $ do
         writeMeta
-        (moduleReport, compiled) <- writePackage rs hieDirs root pm
-        packageReport <- runPackagePhase rs (packageModelName pm) compiled
-        pure (moduleReport <> packageReport)
+        (moduleReport, compiled, moduleSteps) <- writePackage rs hieDirs root pm
+        (packageReport, packageSteps) <- runPackagePhase rs (packageModelName pm) compiled
+        pure (moduleReport <> packageReport, moduleSteps ++ packageSteps)
+
+-- | Run a command, and write how long its steps took beside its report when it
+-- has somewhere to write one, with the whole run last.
+withTimings :: Maybe (Path Abs Dir) -> IO (Complaints, [Timing]) -> IO Complaints
+withTimings mOut act = do
+  stop <- startClock
+  (report, steps) <- act
+  total <- stop "total"
+  for_ mOut $ \out -> do
+    ensureDir out
+    TIO.writeFile (toFilePath (out </> timingFile)) (renderTimings (steps ++ [total]))
+  pure report
 
 -- | The project phase takes what the package phase produced, both halves of it:
 -- the store to make more findings out of, and the findings already made, which
 -- it unions in rather than deriving again.
 runProjectCommand :: RuleSet -> HieDirectories -> [Path Abs Dir] -> [Text] -> Maybe (Path Abs Dir) -> IO Complaints
-runProjectCommand rs hieDirs packageDirs expectedNames mOut = reportingArtifactProblems $ do
+runProjectCommand rs hieDirs packageDirs expectedNames mOut = reportingArtifactProblems $ withTimings mOut $ do
   earlier <- traverse readReportFrom packageDirs
   -- Before the merge, which copies column by column and would fail on a name
   -- rather than on the version that explains it.
   foreignFormats <- unreadableFormats packageDirs
   case (sequence earlier, repeatedDirs packageDirs ++ foreignFormats) of
-    (_, refused@(_ : _)) -> pure (failureComplaints (map FailurePackageOutputRefused refused))
-    (Left err, _) -> pure (failureComplaints [FailurePackageOutputRefused (renderReportDirError err)])
+    (_, refused@(_ : _)) -> pure (failureComplaints (map FailurePackageOutputRefused refused), [])
+    (Left err, _) -> pure (failureComplaints [FailurePackageOutputRefused (renderReportDirError err)], [])
     (Right reports, []) -> do
       traverse_ ensureDir mOut
       withStore (storeMigrations rs) (storeAt mOut) $ do
         writeMeta
+        stopMerging <- liftIO startClock
         unmergeable <- concat <$> traverse (mergeStore . (</> factsFile)) packageDirs
+        merging <- liftIO (stopMerging "merge package facts")
         if not (null unmergeable)
-          then pure (failureComplaints (map FailurePackageOutputRefused unmergeable))
+          then pure (failureComplaints (map FailurePackageOutputRefused unmergeable), [merging])
           else do
             -- This process never saw the source, so the modules come from the
             -- merged facts, which is also what keeps both paths asking about
@@ -161,8 +177,8 @@ runProjectCommand rs hieDirs packageDirs expectedNames mOut = reportingArtifactP
                       ParseOutcomeOk <- [storedModuleOutcome m]
                     ]
                 )
-            projectReport <- projectReportFor rs (map PackageName expectedNames) compiled
-            pure (mconcat (map fst reports) <> projectReport)
+            (projectReport, projectSteps) <- projectReportFor rs (map PackageName expectedNames) compiled
+            pure (mconcat (map fst reports) <> projectReport, merging : projectSteps)
 
 -- | A build that could not answer for a module it was held to covering is
 -- something the tool could not tell, so it belongs in the report. Let out as an
@@ -214,9 +230,9 @@ repeatedDirs dirs =
     length (filter (== dir) dirs) > 1
   ]
 
-projectReportFor :: RuleSet -> [PackageName] -> CompiledModules -> Query Complaints
+projectReportFor :: RuleSet -> [PackageName] -> CompiledModules -> Query (Complaints, [Timing])
 projectReportFor rs expected compiled = case NE.nonEmpty (nub (sort expected)) of
-  Nothing -> pure (failureComplaints [FailureNoPackagesExpected])
+  Nothing -> pure (failureComplaints [FailureNoPackagesExpected], [])
   Just neExpected -> runProjectPhase rs neExpected compiled
 
 -- | One module, for an editor or for debugging the parser. The context comes
@@ -334,10 +350,15 @@ withPackages root act = do
 -- what the later phases need and returning what the module rules found.
 --
 -- What a build said comes back with it, since the package phase is about to
--- want all of it.
-writePackage :: RuleSet -> HieDirectories -> SourceRoot -> PackageModel -> Query (Complaints, CompiledModules)
+-- want all of it, and so does how long each step took.
+--
+-- Rule by rule rather than module by module, so that each rule's time is one
+-- step. Every rule's results are forced inside its own step, and the facts
+-- every rule shares are forced while reading, so a rule is not charged for
+-- what another needed first.
+writePackage :: RuleSet -> HieDirectories -> SourceRoot -> PackageModel -> Query (Complaints, CompiledModules, [Timing])
 writePackage rs hieDirs root pm = do
-  contexts <- liftIO (readModules rs (packageModelComponents pm))
+  (contexts, reading) <- liftIO (timed "read modules" (readModules rs (packageModelComponents pm)))
   -- One deferred read per module, shared by all three scopes.
   compiled <-
     liftIO
@@ -360,22 +381,59 @@ writePackage rs hieDirs root pm = do
     | c <- packageModelComponents pm,
       m <- componentModelDeclaredModules c
     ]
-  mapM_ writeContext contexts
+  mapM_ writeEnvelope contexts
+  checked <- liftIO (traverse (checkedOver contexts) (moduleChecks rs))
+  carried <- traverse (carriedFrom contexts) [r | r <- ruleSetRules rs, ruleLevel r /= LevelModule]
+  let perModule = foldr' (zipWith (<>) . fst) (map (const noResult) contexts) checked
   pure
-    ( mconcat (map (runModuleLayer rs) contexts) <> unread,
-      compiled
+    ( mconcat (zipWith (moduleLayerComplaints rs) contexts perModule) <> unread,
+      compiled,
+      reading : map snd checked ++ carried
     )
   where
     pkg = packageModelName pm
 
-    writeContext ctx = do
+    writeEnvelope :: ModuleContext -> Query ()
+    writeEnvelope ctx =
       writeModuleEnvelope
         pkg
         (moduleContextRef ctx)
         (moduleContextPath ctx)
         (moduleContextOutcome ctx)
         (moduleContextAnnotations ctx)
-      mapM_ (\r -> carryOf r pkg ctx) (ruleSetRules rs)
+
+    checkedOver :: [ModuleContext] -> (RuleId, ModuleCheck) -> IO ([CheckResult], Timing)
+    checkedOver contexts (rid, c) =
+      timed (ruleStep "module rule " rid) $ do
+        let results = map (moduleResultOf c) contexts
+        mapM_ (forceList . unCheckResult) results
+        pure results
+
+    carriedFrom :: [ModuleContext] -> Rule -> Query Timing
+    carriedFrom contexts r = do
+      stop <- liftIO startClock
+      mapM_ (carryOf r pkg) contexts
+      liftIO (stop (ruleStep "carry " (ruleId r)))
+
+-- | What one module rule says about one module, which is nothing about a module
+-- with no parse to give it.
+moduleResultOf :: ModuleCheck -> ModuleContext -> CheckResult
+moduleResultOf c ctx = case moduleContextSyntax ctx of
+  ModuleSyntaxParsed parsed -> moduleCheckFindings c ctx parsed
+  ModuleSyntaxFailed _ _ -> noResult
+  ModuleSyntaxNotHaskellSource -> noResult
+
+ruleStep :: Text -> RuleId -> Text
+ruleStep prefix rid = T.concat [prefix, unRuleId rid]
+
+-- | One package or project rule's findings, forced inside its own step.
+timedRule :: Text -> Rule -> Query CheckResult -> Query (CheckResult, Timing)
+timedRule prefix r query = do
+  stop <- liftIO startClock
+  result <- query
+  liftIO (forceList (unCheckResult result))
+  t <- liftIO (stop (ruleStep prefix (ruleId r)))
+  pure (result, t)
 
 -- | Every module of every component, read in parallel.
 --
@@ -415,7 +473,18 @@ moduleContextFor rs cm mm = do
               }
       parseHaskellModule input >>= \case
         Left (errLoc, msg) -> pure (failedModuleContext extractInput errLoc msg)
-        Right parsed -> pure (extractModuleContext extractInput parsed)
+        Right parsed -> forceShared (extractModuleContext extractInput parsed)
+
+-- | The facts every rule may read, forced while reading, so that it happens in
+-- parallel and no rule's step is charged for them.
+forceShared :: ModuleContext -> IO ModuleContext
+forceShared ctx = do
+  forceList (moduleContextDecls ctx)
+  forceList (moduleContextInstances ctx)
+  forceList (moduleContextComments ctx)
+  forceList (moduleContextAnnotations ctx)
+  forceList (moduleContextAnnotationProblems ctx)
+  pure ctx
 
 -- | One level's verdict: what its rules found, with its own suppressions given
 -- the chance to answer for it.
@@ -440,17 +509,17 @@ layerComplaints rs level result inScope =
 -- Haskell, so no rule runs over it and there is nothing to say about it.
 runModuleLayer :: RuleSet -> ModuleContext -> Complaints
 runModuleLayer rs mf =
-  layerComplaints rs LevelModule (resultFor (moduleContextSyntax mf)) (moduleContextAnnotations mf)
+  moduleLayerComplaints rs mf (foldMap (\(_, c) -> moduleResultOf c mf) (moduleChecks rs))
+
+-- | The same, over what the module rules already said about this module.
+moduleLayerComplaints :: RuleSet -> ModuleContext -> CheckResult -> Complaints
+moduleLayerComplaints rs mf result =
+  layerComplaints rs LevelModule result (moduleContextAnnotations mf)
     <> complaintsOf
       ( map ComplaintProblem (moduleContextAnnotationProblems mf)
           ++ map ComplaintFailure (failures (moduleContextOutcome mf))
       )
   where
-    resultFor = \case
-      ModuleSyntaxParsed parsed -> foldMap (\c -> c mf parsed) (moduleChecks rs)
-      ModuleSyntaxFailed _ _ -> noResult
-      ModuleSyntaxNotHaskellSource -> noResult
-
     failures = \case
       ParseOutcomeOk -> []
       ParseOutcomeNotHaskellSource -> []
@@ -465,11 +534,11 @@ runModuleLayer rs mf =
 
 -- | The package phase: every package rule, over what the modules wrote for it,
 -- and over what a build said about this package's modules.
-runPackagePhase :: RuleSet -> PackageName -> CompiledModules -> Query Complaints
+runPackagePhase :: RuleSet -> PackageName -> CompiledModules -> Query (Complaints, [Timing])
 runPackagePhase rs pkg compiled = do
-  results <- traverse perRule (rulesAtLevel rs LevelPackage)
+  results <- traverse (\r -> timedRule "package rule " r (perRule r)) (rulesAtLevel rs LevelPackage)
   annotations <- annotationsOfPackage pkg
-  pure (layerComplaints rs LevelPackage (mconcat results) annotations)
+  pure (layerComplaints rs LevelPackage (mconcat (map fst results)) annotations, map snd results)
   where
     perRule r = case ruleImpl r of
       RuleImplPackage c -> packageCheckFindings c pkg compiled
@@ -478,17 +547,18 @@ runPackagePhase rs pkg compiled = do
 
 -- | The project phase: every project rule, over what every module in every
 -- package wrote for it, and over what a build said about all of them.
-runProjectPhase :: RuleSet -> NonEmpty PackageName -> CompiledModules -> Query Complaints
+runProjectPhase :: RuleSet -> NonEmpty PackageName -> CompiledModules -> Query (Complaints, [Timing])
 runProjectPhase rs expected compiled = do
   uncovered <- liftIO (uncoveredModules compiled)
   problems <- storeProblems rs expected uncovered
   -- Every problem, not the first: a build that missed a dozen modules names a
   -- dozen, which at a rebuild apiece is one fix rather than twelve.
   if not (null problems)
-    then pure (failureComplaints (map FailureFactsIncomplete problems))
+    then pure (failureComplaints (map FailureFactsIncomplete problems), [])
     else do
-      results <- traverse perRule (rulesAtLevel rs LevelProject)
-      layerComplaints rs LevelProject (mconcat results) <$> storedAnnotations
+      results <- traverse (\r -> timedRule "project rule " r (perRule r)) (rulesAtLevel rs LevelProject)
+      annotations <- storedAnnotations
+      pure (layerComplaints rs LevelProject (mconcat (map fst results)) annotations, map snd results)
   where
     perRule r = case ruleImpl r of
       RuleImplProject c -> projectCheckFindings c compiled
@@ -545,8 +615,8 @@ storeProblems rs expected uncovered = do
         ]
     )
 
-moduleChecks :: RuleSet -> [ModuleContext -> ParsedModule -> CheckResult]
-moduleChecks rs = [moduleCheckFindings c | r <- rulesAtLevel rs LevelModule, RuleImplModule c <- [ruleImpl r]]
+moduleChecks :: RuleSet -> [(RuleId, ModuleCheck)]
+moduleChecks rs = [(ruleId r, c) | r <- rulesAtLevel rs LevelModule, RuleImplModule c <- [ruleImpl r]]
 
 -- | Each level judges exactly the annotations naming its own rules, which keeps
 -- unused-annotation detection sound without a global pass. A rule this set does
