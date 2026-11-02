@@ -3,7 +3,6 @@
 -- taken apart, and that comes from 'Hopinion.Extract.Ghc'.
 module Hopinion.Check.Hs.RecordFieldPerLine.Extract (crowdedRecordsOf) where
 
-import Data.Generics (listify)
 import Data.List (nub)
 import GHC.Hs
 import GHC.Types.SrcLoc (GenLocated, unLoc)
@@ -11,7 +10,6 @@ import Hopinion.Check.Hs.RecordFieldPerLine.Fact
 import Hopinion.Extract.Ghc
 import Hopinion.Facts.Module
 import Hopinion.Facts.Place
-import Hopinion.Parse (ParsedModule, parsedModuleDecls)
 import Path (File, Path, Rel)
 
 -- | Every record value in the module that writes two of its fields on one
@@ -24,19 +22,18 @@ import Path (File, Path, Rel)
 -- Record patterns are not record values and are left alone: a pattern names
 -- what it takes apart rather than what it builds, and nothing about a diff of
 -- one argues for the layout this rule asks of the other.
-crowdedRecordsOf :: ModuleContext -> ParsedModule -> [CrowdedRecord]
-crowdedRecordsOf ctx parsed =
+crowdedRecordsOf :: ModuleContext -> [LHsExpr GhcPs] -> [CrowdedRecord]
+crowdedRecordsOf ctx exprs =
   let rp = moduleContextPath ctx
       ref = moduleContextRef ctx
       decls = moduleContextDecls ctx
-      ds = parsedModuleDecls parsed
    in [ CrowdedRecord
           { crowdedRecordUse = use,
             crowdedRecordFields = fromIntegral (length fieldLines),
             crowdedRecordSpan = sp,
             crowdedRecordScope = declScopeOf ref decls sp
           }
-      | le <- listify (const True :: LHsExpr GhcPs -> Bool) ds,
+      | le <- exprs,
         Just (use, fieldLines) <- [layoutOf rp le],
         length fieldLines > 1,
         length (nub fieldLines) < length fieldLines,

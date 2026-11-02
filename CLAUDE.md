@@ -14,7 +14,10 @@ the user's global configuration.
 
 A rule is written the way a repository outside this one would write it, so it
 never changes the `hopinion` package. A fact only that rule reads goes in an
-`Extract.hs` beside it, read from the `ParsedModule` its check is handed; what
+`Extract.hs` beside it, read from the `ParsedModule` its check is handed. A
+rule that wants every node of one type, wherever it is, is a
+`ModuleCheckOverNodes` and is handed them, never a `listify` over the module,
+so that the module is walked once however many rules there are. What
 the compiler wrote down comes from `compiledModuleOf` and
 `compiledInterfaceOf`. If a rule seems to need a change to the core, that is a
 missing extension point, and it is fixed in the core for every rule before the

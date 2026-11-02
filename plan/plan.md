@@ -248,12 +248,24 @@ large.
 expression-level fact, and with it a `listify` over the whole module: a generic
 traversal of every node, annotations and spans included, to find one kind of
 expression. A second such fact is a second traversal, and this milestone is
-sixteen rules that want declarations and expressions. So the walking gets
-centralised before the second one arrives: one pass that visits each node once
-and hands it to whichever collectors asked for that shape of node, rather than a
-traversal per fact.
+sixteen rules that want declarations and expressions. So the walking is
+centralised: one pass that visits each node once and hands it to whichever
+collectors asked for that shape of node, rather than a traversal per fact.
 A collector is something a rule brings, never a case in the pass, because a
 rule outside this repository has to be able to bring one too.
+
+Done: a module rule written as `ModuleCheckOverNodes` names the type of node it
+wants by the type of its argument, and `Hopinion.Nodes` collects every wanted
+type in one walk per module.
+On the `hopinion` package, the five rules that walked for themselves went from
+0.145 s to 0.071 s together, and a further such rule adds no walk.
+
+Still open: the walk visits about 877,000 nodes on the `hopinion` package, and
+most are characters of strings and exact-print annotations that no rule asks
+for. Skipping a subtree whose type cannot hold a wanted type would cut that by
+about three quarters. Working that out needs each type's field types, which
+`gunfold` gives without building a value, and a `dataTypeOf` over a value never
+forced, which `.hlint.yaml` bans today.
 
 Three things that rule had to work out belong to that pass rather than to it,
 because every rule about an expression needs them and each is a way to be

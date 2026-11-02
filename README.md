@@ -53,3 +53,6 @@ The rules hopinion ships are written against the same API, so a rule never
 needs a change to hopinion itself. A module rule is handed each module's parse
 tree, and a package or project rule can ask for each module's `.hie` and `.hi`
 contents. Each of those is read once, however many rules ask.
+A module rule that wants every node of one type, such as every expression, is a
+`ModuleCheckOverNodes` and is handed them from one walk of the module shared by
+every rule, rather than walking the tree itself.

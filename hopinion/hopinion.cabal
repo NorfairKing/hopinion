@@ -31,6 +31,7 @@ library
       Hopinion.Facts.Place
       Hopinion.Facts.Suppression
       Hopinion.Facts.Version
+      Hopinion.Nodes
       Hopinion.OptParse
       Hopinion.Parse
       Hopinion.Project

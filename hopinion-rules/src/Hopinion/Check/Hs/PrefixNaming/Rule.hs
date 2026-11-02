@@ -5,6 +5,7 @@ module Hopinion.Check.Hs.PrefixNaming.Rule (rule) where
 
 import Data.Text (Text)
 import qualified Data.Text as T
+import GHC.Hs (GhcPs, TyClDecl)
 import Hopinion.Check.Hs.PrefixNaming.Extract
 import Hopinion.Check.Hs.PrefixNaming.Fact
 import Hopinion.Facts.Module
@@ -21,11 +22,11 @@ rule =
       ruleText = "Name a constructor or field after its type, and a newtype's field unExample.",
       ruleWhy = $(proseBeside "why.txt"),
       ruleFix = $(proseBeside "fix.txt"),
-      ruleImpl = RuleImplModule (ModuleCheckFromSource check)
+      ruleImpl = RuleImplModule (ModuleCheckOverNodes check)
     }
 
-check :: ModuleContext -> ParsedModule -> CheckResult
-check mf parsed =
+check :: ModuleContext -> ParsedModule -> [TyClDecl GhcPs] -> CheckResult
+check mf _ tyClDecls =
   findingsResult
     [ Finding
         { findingRule = ruleId rule,
@@ -37,7 +38,7 @@ check mf parsed =
               (unprefixedNameWritten un)
               (unprefixedNameType un)
         }
-    | un <- unprefixedNamesOf mf parsed
+    | un <- unprefixedNamesOf mf tyClDecls
     ]
 
 -- | A newtype's field is told what to be called, because there is exactly one

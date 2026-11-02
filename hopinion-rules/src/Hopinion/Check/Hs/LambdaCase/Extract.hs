@@ -9,7 +9,6 @@ import Data.Data (Data)
 import Data.Generics (listify)
 import Data.List.NonEmpty (NonEmpty (..))
 import qualified Data.List.NonEmpty as NE
-import Data.Maybe (isJust)
 import Data.Text (Text)
 import GHC.Hs
 import GHC.Types.Fixity (LexicalFixity (..))
@@ -18,7 +17,6 @@ import GHC.Types.SrcLoc (unLoc)
 import Hopinion.Check.Hs.LambdaCase.Fact
 import Hopinion.Extract.Ghc
 import Hopinion.Facts.Module
-import Hopinion.Parse (ParsedModule, parsedModuleDecls)
 
 -- | Every binding in the module that names its last argument only to take it
 -- apart, wherever it is written: a where clause and an instance method name
@@ -27,18 +25,17 @@ import Hopinion.Parse (ParsedModule, parsedModuleDecls)
 -- Over the bindings rather than over the declarations, because a top-level
 -- binding and a local one are the same node once the declaration wrapper is
 -- off, so one predicate answers for both.
-casedArgumentsOf :: ModuleContext -> ParsedModule -> [CasedArgument]
-casedArgumentsOf ctx parsed =
+casedArgumentsOf :: ModuleContext -> [HsBind GhcPs] -> [CasedArgument]
+casedArgumentsOf ctx binds =
   let rp = moduleContextPath ctx
       ref = moduleContextRef ctx
       decls = moduleContextDecls ctx
-      ds = parsedModuleDecls parsed
    in [ CasedArgument
           { casedArgumentShape = shape,
             casedArgumentSpan = sp,
             casedArgumentScope = declScopeOf ref decls sp
           }
-      | b <- listify (isJust . shapeOf) ds,
+      | b <- binds,
         Just (shape, name) <- [shapeOf b],
         let sp = spanOfSrcSpan rp (getLocA name)
       ]

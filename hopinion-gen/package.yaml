@@ -67,6 +67,7 @@ tests:
     - filepath
     - genvalidity-sydtest
     - genvalidity-sydtest-aeson
+    - ghc-lib-parser
     - hopinion
     - hopinion-rules
     - hopinion-hie
@@ -78,5 +79,6 @@ tests:
     - safe-coloured-text
     - sydtest
     - sydtest-aeson
+    - syb
     - text
     - yaml

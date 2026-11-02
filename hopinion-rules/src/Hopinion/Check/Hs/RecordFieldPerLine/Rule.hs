@@ -5,6 +5,7 @@ module Hopinion.Check.Hs.RecordFieldPerLine.Rule (rule) where
 
 import Data.Text (Text)
 import qualified Data.Text as T
+import GHC.Hs (GhcPs, LHsExpr)
 import Hopinion.Check.Hs.RecordFieldPerLine.Extract
 import Hopinion.Check.Hs.RecordFieldPerLine.Fact
 import Hopinion.Facts.Module
@@ -20,11 +21,11 @@ rule =
       ruleText = "Write a record value with more than one field a field per line.",
       ruleWhy = $(proseBeside "why.txt"),
       ruleFix = $(proseBeside "fix.txt"),
-      ruleImpl = RuleImplModule (ModuleCheckFromSource check)
+      ruleImpl = RuleImplModule (ModuleCheckOverNodes check)
     }
 
-check :: ModuleContext -> ParsedModule -> CheckResult
-check mf parsed =
+check :: ModuleContext -> ParsedModule -> [LHsExpr GhcPs] -> CheckResult
+check mf _ exprs =
   findingsResult
     [ Finding
         { findingRule = ruleId rule,
@@ -32,7 +33,7 @@ check mf parsed =
           findingSpan = crowdedRecordSpan cr,
           findingMessage = messageFor (crowdedRecordUse cr) (crowdedRecordFields cr)
         }
-    | cr <- crowdedRecordsOf mf parsed
+    | cr <- crowdedRecordsOf mf exprs
     ]
 
 messageFor :: RecordUse -> Word -> Text

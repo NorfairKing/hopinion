@@ -5,6 +5,7 @@
 module Hopinion.Check.Hs.NoStringError.Rule (rule) where
 
 import qualified Data.Text as T
+import GHC.Hs (GhcPs, LHsType)
 import Hopinion.Check.Hs.NoStringError.Extract
 import Hopinion.Check.Hs.NoStringError.Fact
 import Hopinion.Facts.Module
@@ -20,15 +21,15 @@ rule =
       ruleText = "An error is a type of its own, not a String.",
       ruleWhy = $(proseBeside "why.txt"),
       ruleFix = $(proseBeside "fix.txt"),
-      ruleImpl = RuleImplModule (ModuleCheckFromSource check)
+      ruleImpl = RuleImplModule (ModuleCheckOverNodes check)
     }
 
-check :: ModuleContext -> ParsedModule -> CheckResult
-check mf parsed = slotFindings mf parsed <> declFindings mf parsed
+check :: ModuleContext -> ParsedModule -> [LHsType GhcPs] -> CheckResult
+check mf parsed types = slotFindings mf types <> declFindings mf parsed
 
 -- | A failure written into a type that carries one.
-slotFindings :: ModuleContext -> ParsedModule -> CheckResult
-slotFindings mf parsed =
+slotFindings :: ModuleContext -> [LHsType GhcPs] -> CheckResult
+slotFindings mf types =
   findingsResult
     [ Finding
         { findingRule = ruleId rule,
@@ -42,7 +43,7 @@ slotFindings mf parsed =
                 name
               ]
         }
-    | es <- errorSlotsOf mf parsed,
+    | es <- errorSlotsOf mf types,
       Just name <- [proseErrorName (errorSlotError es)]
     ]
 

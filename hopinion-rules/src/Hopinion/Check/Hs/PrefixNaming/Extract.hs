@@ -7,7 +7,6 @@ module Hopinion.Check.Hs.PrefixNaming.Extract (unprefixedNamesOf) where
 
 import Data.Char (isAlpha)
 import Data.Foldable (toList)
-import Data.Generics (listify)
 import Data.Text (Text)
 import qualified Data.Text as T
 import GHC.Hs
@@ -17,7 +16,6 @@ import Hopinion.Extract.Ghc
 import Hopinion.Facts.Module
 import Hopinion.Facts.Name
 import Hopinion.Facts.Place
-import Hopinion.Parse (ParsedModule, parsedModuleDecls)
 import Path (File, Path, Rel)
 
 -- | Every constructor and every field in the module whose name does not start
@@ -35,12 +33,11 @@ import Path (File, Path, Rel)
 -- to say it is the one behind a lens, and the name the lens takes from it is
 -- what carries the type, so holding the field itself to the prefix would refuse
 -- the spelling that convention asks for.
-unprefixedNamesOf :: ModuleContext -> ParsedModule -> [UnprefixedName]
-unprefixedNamesOf ctx parsed =
+unprefixedNamesOf :: ModuleContext -> [TyClDecl GhcPs] -> [UnprefixedName]
+unprefixedNamesOf ctx tyClDecls =
   let rp = moduleContextPath ctx
       ref = moduleContextRef ctx
       decls = moduleContextDecls ctx
-      ds = parsedModuleDecls parsed
    in [ UnprefixedName
           { unprefixedNameRole = role,
             unprefixedNameWritten = written,
@@ -48,7 +45,7 @@ unprefixedNamesOf ctx parsed =
             unprefixedNameSpan = sp,
             unprefixedNameScope = declScopeOf ref decls sp
           }
-      | DataDecl {tcdLName = n, tcdDataDefn = defn} <- listify (const True :: TyClDecl GhcPs -> Bool) ds,
+      | DataDecl {tcdLName = n, tcdDataDefn = defn} <- tyClDecls,
         let th = TypeHead (rdrText (unLoc n)),
         isWord (unTypeHead th),
         (role, written, sp) <- introducedBy rp defn,

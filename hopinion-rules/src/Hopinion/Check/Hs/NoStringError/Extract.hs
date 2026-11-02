@@ -6,7 +6,6 @@
 -- taken apart, and that comes from 'Hopinion.Extract.Ghc'.
 module Hopinion.Check.Hs.NoStringError.Extract (errorSlotsOf, errorDeclsOf) where
 
-import Data.Generics (listify)
 import Data.List (nubBy)
 import Data.Maybe (isJust)
 import Data.Text (Text)
@@ -24,8 +23,8 @@ import Hopinion.Parse (ParsedModule, parsedModuleDecls)
 -- From the type syntax rather than from the names in it, because the question
 -- is which argument of which type a name is written as: the @String@ in
 -- @Either String a@ is an error and the one in @Either a String@ is a result.
-errorSlotsOf :: ModuleContext -> ParsedModule -> [ErrorSlot]
-errorSlotsOf ctx parsed =
+errorSlotsOf :: ModuleContext -> [LHsType GhcPs] -> [ErrorSlot]
+errorSlotsOf ctx types =
   let rp = moduleContextPath ctx
       ref = moduleContextRef ctx
       decls = moduleContextDecls ctx
@@ -47,7 +46,7 @@ errorSlotsOf ctx parsed =
     applications =
       nubBy
         (\a b -> getLocA a == getLocA b)
-        (map peelType (listify (isJust . errorArgumentOf) (parsedModuleDecls parsed)))
+        (map peelType (filter (isJust . errorArgumentOf) types))
 
     -- The function part of an application is a partial application of the same
     -- head, so reading it as well would report the one @String@ in

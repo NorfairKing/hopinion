@@ -382,6 +382,7 @@ test-suite hopinion-test
       Hopinion.Facts.ModuleSpec
       Hopinion.FactsSpec
       Hopinion.HieSpec
+      Hopinion.NodesSpec
       Hopinion.ProjectSpec
       Hopinion.ReportSpec
       Hopinion.RuleSpec
@@ -403,6 +404,7 @@ test-suite hopinion-test
     , filepath
     , genvalidity-sydtest
     , genvalidity-sydtest-aeson
+    , ghc-lib-parser
     , hopinion
     , hopinion-gen
     , hopinion-hie
@@ -412,6 +414,7 @@ test-suite hopinion-test
     , persistent
     , process
     , safe-coloured-text
+    , syb
     , sydtest
     , sydtest-aeson
     , text

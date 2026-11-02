@@ -38,6 +38,7 @@ import Data.List (nub, sort)
 import Data.List.NonEmpty (NonEmpty (..))
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Map.Strict as M
+import Data.Maybe (mapMaybe)
 import qualified Data.Set as S
 import Data.Text (Text)
 import qualified Data.Text as T
@@ -53,6 +54,7 @@ import Hopinion.Facts.Outcome
 import Hopinion.Facts.Place
 import Hopinion.Facts.Suppression
 import Hopinion.Facts.Version
+import Hopinion.Nodes (nodesIn)
 import Hopinion.Parse
 import Hopinion.Project
 import Hopinion.Report
@@ -447,7 +449,10 @@ runModuleLayer rs mf =
       )
   where
     resultFor = \case
-      ModuleSyntaxParsed parsed -> foldMap (\c -> c mf parsed) (moduleChecks rs)
+      ModuleSyntaxParsed parsed ->
+        let checks = moduleChecks rs
+            nodes = nodesIn (S.fromList (mapMaybe moduleCheckNodeType checks)) (parsedModuleDecls parsed)
+         in foldMap (\c -> moduleCheckFindings c mf parsed nodes) checks
       ModuleSyntaxFailed _ _ -> noResult
       ModuleSyntaxNotHaskellSource -> noResult
 
@@ -545,8 +550,8 @@ storeProblems rs expected uncovered = do
         ]
     )
 
-moduleChecks :: RuleSet -> [ModuleContext -> ParsedModule -> CheckResult]
-moduleChecks rs = [moduleCheckFindings c | r <- rulesAtLevel rs LevelModule, RuleImplModule c <- [ruleImpl r]]
+moduleChecks :: RuleSet -> [ModuleCheck]
+moduleChecks rs = [c | r <- rulesAtLevel rs LevelModule, RuleImplModule c <- [ruleImpl r]]
 
 -- | Each level judges exactly the annotations naming its own rules, which keeps
 -- unused-annotation detection sound without a global pass. A rule this set does

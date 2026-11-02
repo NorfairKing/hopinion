@@ -6,7 +6,6 @@
 -- apart, and that comes from 'Hopinion.Extract.Ghc'.
 module Hopinion.Check.Hs.NoSemigroupOnText.Extract (concatChainsOf) where
 
-import Data.Generics (listify)
 import Data.List.NonEmpty (NonEmpty (..))
 import qualified Data.List.NonEmpty as NE
 import Data.Maybe (isJust)
@@ -17,7 +16,6 @@ import Hopinion.Check.Hs.NoSemigroupOnText.Fact
 import Hopinion.Extract.Ghc
 import Hopinion.Facts.Module
 import Hopinion.Facts.Place
-import Hopinion.Parse (ParsedModule, parsedModuleDecls)
 import Path (File, Path, Rel)
 
 -- | Every run of concatenation the module writes, one fact per run.
@@ -28,8 +26,8 @@ import Path (File, Path, Rel)
 --
 -- Only the outermost infix expression of a spine is flattened, since an inner
 -- one is part of that spine rather than a spine of its own.
-concatChainsOf :: ModuleContext -> ParsedModule -> [ConcatChain]
-concatChainsOf ctx parsed =
+concatChainsOf :: ModuleContext -> [LHsExpr GhcPs] -> [ConcatChain]
+concatChainsOf ctx exprs =
   let rp = moduleContextPath ctx
       ref = moduleContextRef ctx
       decls = moduleContextDecls ctx
@@ -44,7 +42,7 @@ concatChainsOf ctx parsed =
       ]
   where
     infixes :: [LHsExpr GhcPs]
-    infixes = listify (isJust . infixOperands) (parsedModuleDecls parsed)
+    infixes = filter (isJust . infixOperands) exprs
 
     nested :: [SrcLoc.SrcSpan]
     nested =

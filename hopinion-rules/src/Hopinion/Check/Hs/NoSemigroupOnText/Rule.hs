@@ -3,6 +3,7 @@
 
 module Hopinion.Check.Hs.NoSemigroupOnText.Rule (rule) where
 
+import GHC.Hs (GhcPs, LHsExpr)
 import Hopinion.Check.Hs.NoSemigroupOnText.Extract
 import Hopinion.Check.Hs.NoSemigroupOnText.Fact
 import Hopinion.Facts.Module
@@ -18,11 +19,11 @@ rule =
       ruleText = "Concatenate strings and text with a list, not with <> or ++.",
       ruleWhy = $(proseBeside "why.txt"),
       ruleFix = $(proseBeside "fix.txt"),
-      ruleImpl = RuleImplModule (ModuleCheckFromSource check)
+      ruleImpl = RuleImplModule (ModuleCheckOverNodes check)
     }
 
-check :: ModuleContext -> ParsedModule -> CheckResult
-check mf parsed =
+check :: ModuleContext -> ParsedModule -> [LHsExpr GhcPs] -> CheckResult
+check mf _ exprs =
   findingsResult
     [ Finding
         { findingRule = ruleId rule,
@@ -30,6 +31,6 @@ check mf parsed =
           findingSpan = concatChainSpan cc,
           findingMessage = "A string literal concatenated with <> or ++."
         }
-    | cc <- concatChainsOf mf parsed,
+    | cc <- concatChainsOf mf exprs,
       ConcatOperandStringLiteral `elem` concatChainOperands cc
     ]

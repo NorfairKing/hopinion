@@ -1,7 +1,9 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingVia #-}
+{-# LANGUAGE GADTs #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 -- | What a rule is, and what running one produces.
 --
@@ -12,6 +14,7 @@ module Hopinion.Rule
   ( Finding (..),
     CheckResult (..),
     ModuleCheck (..),
+    moduleCheckNodeType,
     moduleCheckFindings,
     PackageCheck (..),
     ProjectCheck (..),
@@ -43,9 +46,11 @@ where
 
 import Autodocodec
 import Data.Aeson (FromJSON, ToJSON)
+import Data.Data (Data)
 import Data.List (sort)
 import Data.List.NonEmpty (NonEmpty)
 import qualified Data.List.NonEmpty as NE
+import Data.Proxy (Proxy (..))
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Validity
@@ -56,10 +61,12 @@ import Hopinion.Compiled (CompiledModules)
 import Hopinion.Facts.Module
 import Hopinion.Facts.Name
 import Hopinion.Facts.Place
+import Hopinion.Nodes (Nodes, nodesOf)
 import Hopinion.Parse (ParsedModule)
 import Hopinion.Rule.Id
 import Hopinion.Store (Carry, Query)
 import Text.Colour (Chunk, chunk, fore, red)
+import Type.Reflection (SomeTypeRep, someTypeRep)
 
 data Finding = Finding
   { findingRule :: !RuleId,
@@ -139,10 +146,27 @@ data RuleImpl
 -- A module rule wanting what the compiler wrote down would take that as a
 -- further argument; nothing does yet. Package and project rules are
 -- unaffected, since those already run in IO.
-newtype ModuleCheck = ModuleCheckFromSource (ModuleContext -> ParsedModule -> CheckResult)
+data ModuleCheck where
+  ModuleCheckFromSource :: (ModuleContext -> ParsedModule -> CheckResult) -> ModuleCheck
+  -- | A rule that looks for every node of one type, wherever it is in the
+  -- module, is handed them rather than walking the tree for itself.
+  -- One walk finds the nodes of every such rule at once; see
+  -- "Hopinion.Nodes" for why that matters.
+  ModuleCheckOverNodes :: (Data node) => (ModuleContext -> ParsedModule -> [node] -> CheckResult) -> ModuleCheck
 
-moduleCheckFindings :: ModuleCheck -> ModuleContext -> ParsedModule -> CheckResult
-moduleCheckFindings (ModuleCheckFromSource f) = f
+-- | The type of node a check asks to be handed, if it asks for any.
+moduleCheckNodeType :: ModuleCheck -> Maybe SomeTypeRep
+moduleCheckNodeType = \case
+  ModuleCheckFromSource _ -> Nothing
+  ModuleCheckOverNodes (_ :: ModuleContext -> ParsedModule -> [node] -> CheckResult) ->
+    Just (someTypeRep (Proxy :: Proxy node))
+
+-- | What a check finds in one module, given the nodes one walk found for every
+-- check that asked.
+moduleCheckFindings :: ModuleCheck -> ModuleContext -> ParsedModule -> Nodes -> CheckResult
+moduleCheckFindings c ctx parsed nodes = case c of
+  ModuleCheckFromSource f -> f ctx parsed
+  ModuleCheckOverNodes f -> f ctx parsed (nodesOf nodes)
 
 data PackageCheck = PackageCheck
   { packageCheckMigration :: Migration,

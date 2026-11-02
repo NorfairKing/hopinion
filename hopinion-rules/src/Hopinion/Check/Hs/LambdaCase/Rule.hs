@@ -5,6 +5,7 @@
 module Hopinion.Check.Hs.LambdaCase.Rule (rule) where
 
 import Data.Text (Text)
+import GHC.Hs (GhcPs, HsBind)
 import Hopinion.Check.Hs.LambdaCase.Extract
 import Hopinion.Check.Hs.LambdaCase.Fact
 import Hopinion.Facts.Module
@@ -20,11 +21,11 @@ rule =
       ruleText = "Use \\case rather than naming an argument to take it apart.",
       ruleWhy = $(proseBeside "why.txt"),
       ruleFix = $(proseBeside "fix.txt"),
-      ruleImpl = RuleImplModule (ModuleCheckFromSource check)
+      ruleImpl = RuleImplModule (ModuleCheckOverNodes check)
     }
 
-check :: ModuleContext -> ParsedModule -> CheckResult
-check mf parsed =
+check :: ModuleContext -> ParsedModule -> [HsBind GhcPs] -> CheckResult
+check mf _ binds =
   findingsResult
     [ Finding
         { findingRule = ruleId rule,
@@ -32,7 +33,7 @@ check mf parsed =
           findingSpan = casedArgumentSpan ca,
           findingMessage = messageFor (casedArgumentShape ca)
         }
-    | ca <- casedArgumentsOf mf parsed
+    | ca <- casedArgumentsOf mf binds
     ]
 
 messageFor :: ArgumentShape -> Text
