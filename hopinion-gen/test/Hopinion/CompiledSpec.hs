@@ -11,8 +11,10 @@ module Hopinion.CompiledSpec (spec) where
 
 import Hopinion.Compiled
 import Hopinion.Facts.Name
+import Hopinion.Hie (DeclaredInstance (..), compiledModuleName)
 import Path (parseRelFile, reldir, relfile, toFilePath, (</>))
-import Path.IO (ensureDir, withSystemTempDir)
+import Path.IO (ensureDir, removeFile, withSystemTempDir)
+import System.Process (CreateProcess (..), proc, readCreateProcess)
 import Test.Syd
 
 spec :: Spec
@@ -97,6 +99,58 @@ spec = do
             ]
         uncovered <- uncoveredModules compiled
         uncovered `shouldBe` []
+
+  -- Reading a module's artifacts costs more than parsing it did, so each file
+  -- is read once however many rules ask, and in whichever order they ask.
+  -- A file that is gone after the first question is how a second read shows:
+  -- the second question would find nothing there.
+  describe "reading each file once" $ do
+    let fixture :: String
+        fixture =
+          unlines
+            [ "module Fixture where",
+              "",
+              "data Written = Written",
+              "  deriving (Show)"
+            ]
+    let rp = [relfile|thing/src/Fixture.hs|]
+    let askNames :: CompiledModules -> IO ()
+        askNames compiled = do
+          named <- compiledModuleOf rp compiled
+          fmap compiledModuleName named `shouldBe` Just "Fixture"
+    let askInterface :: CompiledModules -> IO ()
+        askInterface compiled = do
+          declared <- declaredInstancesOf rp compiled
+          declared
+            `shouldBe` Just
+              [ DeclaredInstance
+                  { declaredInstanceClass = "Show",
+                    declaredInstanceType = "Written"
+                  }
+              ]
+    let askingTwice :: (CompiledModules -> IO ()) -> (CompiledModules -> IO ()) -> IO ()
+        askingTwice first second = withSystemTempDir "hopinion-hie" $ \tmp -> do
+          ensureDir (tmp </> [reldir|src|])
+          writeFile (toFilePath (tmp </> [relfile|src/Fixture.hs|])) fixture
+          _ <-
+            readCreateProcess
+              (proc "ghc" ["-v0", "-fwrite-ide-info", "-outputdir", ".", "-hiedir", ".", "src/Fixture.hs"])
+                { cwd = Just (toFilePath tmp)
+                }
+              ""
+          compiled <-
+            compiledModulesFor
+              (HieDirectories [tmp])
+              [(ModuleKey "Fixture", rp)]
+          first compiled
+          removeFile (tmp </> [relfile|Fixture.hie|])
+          second compiled
+
+    it "reads the .hie file once when its names are asked for first" $
+      askingTwice askNames askInterface
+
+    it "reads the .hie file once when the interface beside it is asked for first" $
+      askingTwice askInterface askNames
 
   describe "sameSourceFile" $ do
     it "matches a path relative to the package against one relative to the repository" $

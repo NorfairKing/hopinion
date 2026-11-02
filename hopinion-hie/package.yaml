@@ -26,6 +26,4 @@ library:
   - path
   - text
   - validity
-  - validity-containers
-  - validity-path
   - validity-text

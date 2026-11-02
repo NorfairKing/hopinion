@@ -7,76 +7,12 @@ cabal-version: 1.12
 name:           hopinion
 version:        0.0.0
 build-type:     Simple
-extra-source-files:
-    src/Hopinion/Check/Comment/BareTodo/fix.txt
-    src/Hopinion/Check/Comment/BareTodo/why.txt
-    src/Hopinion/Check/Comment/CouplingConnection/fix.txt
-    src/Hopinion/Check/Comment/CouplingConnection/why.txt
-    src/Hopinion/Check/Hs/LambdaCase/fix.txt
-    src/Hopinion/Check/Hs/LambdaCase/why.txt
-    src/Hopinion/Check/Hs/NoCustomEq/fix.txt
-    src/Hopinion/Check/Hs/NoCustomEq/why.txt
-    src/Hopinion/Check/Hs/NoCustomOrd/fix.txt
-    src/Hopinion/Check/Hs/NoCustomOrd/why.txt
-    src/Hopinion/Check/Hs/NoCustomShowRead/fix.txt
-    src/Hopinion/Check/Hs/NoCustomShowRead/why.txt
-    src/Hopinion/Check/Hs/NoFilePath/fix.txt
-    src/Hopinion/Check/Hs/NoFilePath/why.txt
-    src/Hopinion/Check/Hs/NoSemigroupOnText/fix.txt
-    src/Hopinion/Check/Hs/NoSemigroupOnText/why.txt
-    src/Hopinion/Check/Hs/NoStringError/fix.txt
-    src/Hopinion/Check/Hs/NoStringError/why.txt
-    src/Hopinion/Check/Hs/PrefixNaming/fix.txt
-    src/Hopinion/Check/Hs/PrefixNaming/why.txt
-    src/Hopinion/Check/Hs/RecordFieldPerLine/fix.txt
-    src/Hopinion/Check/Hs/RecordFieldPerLine/why.txt
-    src/Hopinion/Check/Hs/TestOneSpecPerFile/fix.txt
-    src/Hopinion/Check/Hs/TestOneSpecPerFile/why.txt
-    src/Hopinion/Check/Package/AppOnlyMain/fix.txt
-    src/Hopinion/Check/Package/AppOnlyMain/why.txt
-    src/Hopinion/Check/Package/GenValidInGenPackage/fix.txt
-    src/Hopinion/Check/Package/GenValidInGenPackage/why.txt
-    src/Hopinion/Check/Project/GenValidSpecPerGenValid/fix.txt
-    src/Hopinion/Check/Project/GenValidSpecPerGenValid/why.txt
-    src/Hopinion/Check/Project/JsonSpecPerJsonType/fix.txt
-    src/Hopinion/Check/Project/JsonSpecPerJsonType/why.txt
-    src/Hopinion/Check/Test/NoTestHelpers/fix.txt
-    src/Hopinion/Check/Test/NoTestHelpers/why.txt
 
 library
   exposed-modules:
       Hopinion
       Hopinion.Annotation
-      Hopinion.Check.Comment.BareTodo.Rule
-      Hopinion.Check.Comment.CouplingConnection.Rule
-      Hopinion.Check.Hs.LambdaCase.Extract
-      Hopinion.Check.Hs.LambdaCase.Fact
-      Hopinion.Check.Hs.LambdaCase.Rule
-      Hopinion.Check.Hs.NoCustomEq.Rule
-      Hopinion.Check.Hs.NoCustomOrd.Rule
-      Hopinion.Check.Hs.NoCustomShowRead.Rule
-      Hopinion.Check.Hs.NoFilePath.Rule
-      Hopinion.Check.Hs.NoSemigroupOnText.Extract
-      Hopinion.Check.Hs.NoSemigroupOnText.Fact
-      Hopinion.Check.Hs.NoSemigroupOnText.Rule
-      Hopinion.Check.Hs.NoStringError.Extract
-      Hopinion.Check.Hs.NoStringError.Fact
-      Hopinion.Check.Hs.NoStringError.Rule
-      Hopinion.Check.Hs.PrefixNaming.Extract
-      Hopinion.Check.Hs.PrefixNaming.Fact
-      Hopinion.Check.Hs.PrefixNaming.Rule
-      Hopinion.Check.Hs.RecordFieldPerLine.Extract
-      Hopinion.Check.Hs.RecordFieldPerLine.Fact
-      Hopinion.Check.Hs.RecordFieldPerLine.Rule
-      Hopinion.Check.Hs.TestOneSpecPerFile.Rule
       Hopinion.Check.Obligation
-      Hopinion.Check.Package.AppOnlyMain.Extract
-      Hopinion.Check.Package.AppOnlyMain.Fact
-      Hopinion.Check.Package.AppOnlyMain.Rule
-      Hopinion.Check.Package.GenValidInGenPackage.Rule
-      Hopinion.Check.Project.GenValidSpecPerGenValid.Rule
-      Hopinion.Check.Project.JsonSpecPerJsonType.Rule
-      Hopinion.Check.Test.NoTestHelpers.Rule
       Hopinion.Choices
       Hopinion.Comment
       Hopinion.Compiled
@@ -105,7 +41,6 @@ library
       Hopinion.Rule
       Hopinion.Rule.Id
       Hopinion.Rule.Prose
-      Hopinion.Rule.Registry
       Hopinion.Run
       Hopinion.Store
   other-modules:
@@ -143,7 +78,6 @@ library
     , resourcet
     , safe-coloured-text
     , safe-coloured-text-terminfo
-    , syb
     , template-haskell
     , text
     , unliftio
@@ -153,16 +87,4 @@ library
     , validity-path
     , validity-text
     , yaml
-  default-language: Haskell2010
-
-executable hopinion
-  main-is: Main.hs
-  other-modules:
-      Paths_hopinion
-  hs-source-dirs:
-      app
-  ghc-options: -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates -Wpartial-fields -Widentities -Wredundant-constraints -Wcpp-undef -Wunused-packages -threaded -rtsopts -with-rtsopts=-N8
-  build-depends:
-      base >=4.7 && <5
-    , hopinion
   default-language: Haskell2010

@@ -440,16 +440,16 @@ layerComplaints rs level result inScope =
 -- Haskell, so no rule runs over it and there is nothing to say about it.
 runModuleLayer :: RuleSet -> ModuleContext -> Complaints
 runModuleLayer rs mf =
-  layerComplaints rs LevelModule (resultFor (moduleContextOutcome mf)) (moduleContextAnnotations mf)
+  layerComplaints rs LevelModule (resultFor (moduleContextSyntax mf)) (moduleContextAnnotations mf)
     <> complaintsOf
       ( map ComplaintProblem (moduleContextAnnotationProblems mf)
           ++ map ComplaintFailure (failures (moduleContextOutcome mf))
       )
   where
     resultFor = \case
-      ParseOutcomeOk -> foldMap (\c -> c mf) (moduleChecks rs)
-      ParseOutcomeFailed _ _ -> noResult
-      ParseOutcomeNotHaskellSource -> noResult
+      ModuleSyntaxParsed parsed -> foldMap (\c -> c mf parsed) (moduleChecks rs)
+      ModuleSyntaxFailed _ _ -> noResult
+      ModuleSyntaxNotHaskellSource -> noResult
 
     failures = \case
       ParseOutcomeOk -> []
@@ -545,7 +545,7 @@ storeProblems rs expected uncovered = do
         ]
     )
 
-moduleChecks :: RuleSet -> [ModuleContext -> CheckResult]
+moduleChecks :: RuleSet -> [ModuleContext -> ParsedModule -> CheckResult]
 moduleChecks rs = [moduleCheckFindings c | r <- rulesAtLevel rs LevelModule, RuleImplModule c <- [ruleImpl r]]
 
 -- | Each level judges exactly the annotations naming its own rules, which keeps

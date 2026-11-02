@@ -1,0 +1,52 @@
+name: hopinion-rules
+version: 0.0.0
+
+# A rule's prose is embedded at compile time, so cabal has to know that editing
+# it means rebuilding.
+extra-source-files:
+- src/**/*.txt
+
+# The warnings this repository is held to. Here rather than in the Nix overlay,
+# so that a cabal build in the dev shell says what a Nix build would; the
+# overlay adds -Werror on top, which is what makes the difference between a
+# warning and a failure a property of how it is built rather than of what it is.
+ghc-options:
+- -Wall
+- -Wincomplete-uni-patterns
+- -Wincomplete-record-updates
+- -Wpartial-fields
+- -Widentities
+- -Wredundant-constraints
+- -Wcpp-undef
+- -Wunused-packages
+
+dependencies:
+- base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+  dependencies:
+  - containers
+  - esqueleto
+  - ghc-lib-parser
+  - hopinion
+  - path
+  - persistent
+  - syb
+  - text
+  - validity
+
+executables:
+  hopinion:
+    main: Main.hs
+    source-dirs: app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    # Eight, not every core. Reading modules is parallel and collection is not,
+    # so the two pull in opposite directions: -N on a 64-core machine spent six
+    # seconds of CPU collecting to save two tenths of a second, and -N16 buys
+    # nothing over -N8.
+    - -with-rtsopts=-N8
+    dependencies:
+    - hopinion-rules

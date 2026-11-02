@@ -6,7 +6,7 @@
 -- There are two of those, and only two: a command either produces a report or
 -- judges one. Producing succeeds whatever is in the report, so that the report
 -- survives as an artifact to look at; judging is what fails.
-module Hopinion (hopinion, hopinionWith) where
+module Hopinion (hopinionWith) where
 
 import Control.Monad ((>=>))
 import Data.Bifunctor (first)
@@ -23,7 +23,6 @@ import Hopinion.Report
 import Hopinion.Report.Render
 import Hopinion.Rule (Rule, RuleSet, RuleSetError, renderRuleSetError, ruleSet, withoutRules)
 import Hopinion.Rule.Id (RuleId)
-import Hopinion.Rule.Registry (builtinRules)
 import Hopinion.Run
 import Path (Abs, Dir, File, Path, SomeBase (..), (</>))
 import Path.IO (getCurrentDir, resolveDir')
@@ -32,13 +31,12 @@ import System.IO (hSetEncoding, stderr, stdout, utf8)
 import Text.Colour (Chunk, chunk, fore, red)
 import Text.Colour.Term (hPutChunksLocale, putChunksLocale)
 
--- | hopinion with the rules it ships with.
-hopinion :: IO ()
-hopinion = hopinionWith builtinRules
-
 -- | hopinion with a rule set of your own, which is the whole of how a
--- repository adds rules: an executable that depends on this library, passes
--- @builtinRules ++ itsOwn@, and is what the check builders are pointed at.
+-- repository adds rules: an executable that depends on this library and on
+-- @hopinion-rules@, passes @builtinRules ++ itsOwn@, and is what the check builders
+-- are pointed at.
+-- The rules hopinion ships are written against this library the same way, so
+-- a rule never needs a change here.
 --
 -- Turning a rule off is not this. That is `hopinion.yaml` at the repository
 -- root, so a repository that only wants fewer rules needs no executable of its

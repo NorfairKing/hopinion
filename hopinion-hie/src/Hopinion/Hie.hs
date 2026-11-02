@@ -6,18 +6,31 @@
 --
 -- Its own package because these are read by the @ghc@ library and hopinion
 -- parses with @ghc-lib-parser@; both expose modules under @GHC.@, so one
--- component cannot import both. Only plain data crosses the boundary.
+-- module cannot import both without @PackageImports@.
+-- hopinion itself only ever handles the two files as the opaque values here.
+--
+-- Each file is handed over whole, as the compiler's own type, so that a rule
+-- wanting something nothing here reads can read it for itself: it depends on
+-- @ghc@ and unwraps the value, and this package does not change.
+-- What the shipped rules read out of them is a function over the whole file,
+-- kept here so that every rule asks it the same way.
 --
 -- The version coupling that leaves is real and contained: the reader has to be
 -- built by the compiler that built the code under check, which the Nix layer
 -- arranges by taking both from one package set.
 module Hopinion.Hie
-  ( CompiledModule (..),
+  ( CompiledModule,
+    compiledModuleHieFile,
+    compiledModuleName,
+    compiledModuleFile,
+    compiledModuleGenerated,
     ArtifactUnreadable (..),
     renderArtifactUnreadable,
     readCompiledModule,
+    CompiledInterface (..),
+    readCompiledInterface,
     DeclaredInstance (..),
-    readDeclaredInstances,
+    compiledInterfaceInstances,
   )
 where
 
@@ -29,8 +42,6 @@ import qualified Data.Set as S
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Validity
-import Data.Validity.Containers ()
-import Data.Validity.Path ()
 import Data.Validity.Text ()
 import GHC.Generics (Generic)
 import GHC.Iface.Binary (CheckHiWay (..), TraceBinIFace (..), readBinIface)
@@ -51,41 +62,46 @@ import GHC.Types.Name (nameOccName)
 import GHC.Types.Name.Cache (initNameCache)
 import GHC.Types.Name.Occurrence (occNameString)
 import GHC.Unit.Module (moduleName, moduleNameString)
-import GHC.Unit.Module.ModIface (mi_insts)
+import GHC.Unit.Module.ModIface (ModIface, mi_insts)
 import Path (Abs, File, Path, Rel, parseRelFile, toFilePath)
 
--- | What one module's @.hie@ file is worth to a rule, which is what its
--- generated code named and nothing else.
+-- | One module's @.hie@ file, as the compiler wrote it.
 --
--- A @.hie@ file keeps no shape for generated code, so which class went with
--- which type comes from the interface instead.
---
--- Ordinary code's names are not carried, because the parser already read them.
--- This is the seam where more of the file would arrive: it also holds the type
--- of every node, which the rules no parser can reach will need.
+-- The constructor stays here, so that what is worked out of the file once per
+-- read cannot disagree with the file.
 data CompiledModule = CompiledModule
-  { compiledModuleName :: !Text,
-    -- | The source file GHC compiled, as GHC was given it: relative to the
-    -- package, not the repository. Here because a module name does not identify
-    -- a module, and two @Main@s are told apart by this and nothing else.
-    --
-    -- Nothing when GHC recorded something that is not a package-relative file,
-    -- an absolute path included. Such a build says nothing that tells its own
-    -- modules apart, so whatever matches a module against one of these has
-    -- nothing to match on and must match none rather than guess.
-    compiledModuleFile :: !(Maybe (Path Rel File)),
-    -- | One set of names per splice expansion.
+  { compiledModuleHieFile :: !HieFile,
+    -- | What this module's generated code named: one set of names per splice
+    -- expansion.
+    -- Worked out once per read, since a rule asks it once per pair of names.
     --
     -- Generated code arrives as one node carrying the union of every name it
     -- produced, where ordinary code spreads its names across a leaf each. So a
     -- node naming two things is the only place two names can be known to have
     -- arrived together, which is what @genValidSpec \@T@ needs and a
     -- module-wide name set cannot give.
+    --
+    -- A @.hie@ file keeps no shape for generated code, so which class went
+    -- with which type comes from the interface instead.
     compiledModuleGenerated :: ![Set Text]
   }
-  deriving (Show, Eq, Generic)
 
-instance Validity CompiledModule
+compiledModuleName :: CompiledModule -> Text
+compiledModuleName = T.pack . moduleNameString . moduleName . hie_module . compiledModuleHieFile
+
+-- | The source file GHC compiled, as GHC was given it: relative to the
+-- package, not the repository. A module name does not identify a module, and
+-- two @Main@s are told apart by this and nothing else.
+--
+-- Nothing when GHC recorded something that is not a package-relative file, an
+-- absolute path included. Such a build says nothing that tells its own modules
+-- apart, so whatever matches a module against one of these has nothing to
+-- match on and must match none rather than guess.
+compiledModuleFile :: CompiledModule -> Maybe (Path Rel File)
+compiledModuleFile = parseRelFile . hie_hs_file . compiledModuleHieFile
+
+generatedIn :: HieFile -> [Set Text]
+generatedIn = concatMap generatedOf . M.elems . getAsts . hie_asts
 
 -- | Why a file the compiler was supposed to have written could not be read.
 --
@@ -108,15 +124,14 @@ readCompiledModule path = do
   result <- try $ do
     cache <- initNameCache 'z' []
     file <- hie_file_result <$> readHieFile cache (toFilePath path)
-    let asts = M.elems (getAsts (hie_asts file))
     let compiled =
           CompiledModule
-            { compiledModuleName = T.pack (moduleNameString (moduleName (hie_module file))),
-              compiledModuleFile = parseRelFile (hie_hs_file file),
-              compiledModuleGenerated = concatMap generatedOf asts
+            { compiledModuleHieFile = file,
+              compiledModuleGenerated = generatedIn file
             }
     -- Forced inside the catch, so a file this compiler cannot read fails here
     -- rather than as an exception in the middle of a rule.
+    _ <- evaluate (T.length (compiledModuleName compiled))
     _ <- evaluate (length (compiledModuleGenerated compiled))
     pure compiled
   pure $ case result of
@@ -147,6 +162,33 @@ generatedOf :: HieAST a -> [Set Text]
 generatedOf ast =
   [names | let { names = namesAt ast }, S.size names > 1] ++ concatMap generatedOf (nodeChildren ast)
 
+-- | One module's @.hi@ interface, as the compiler wrote it.
+newtype CompiledInterface = CompiledInterface
+  { unCompiledInterface :: ModIface
+  }
+
+-- | Read one @.hi@ interface, or say why it could not be read.
+--
+-- A generic platform, no ways and an ignored way tag, because nothing read out
+-- of an interface here depends on the flavour of the build.
+readCompiledInterface :: Path Abs File -> IO (Either ArtifactUnreadable CompiledInterface)
+readCompiledInterface path = do
+  result <- try $ do
+    cache <- initNameCache 'z' []
+    iface <- CompiledInterface <$> readBinIface profile cache IgnoreHiWay QuietBinIFace (toFilePath path)
+    -- Forced inside the catch, for the reason the .hie read is.
+    _ <- evaluate (length (compiledInterfaceInstances iface))
+    pure iface
+  pure $ case result of
+    Left (e :: SomeException) -> Left (reason e)
+    Right iface -> Right iface
+  where
+    profile =
+      Profile
+        { profilePlatform = genericPlatform,
+          profileWays = mempty
+        }
+
 -- | One instance a module declares, however it came to declare it.
 --
 -- An interface records what a module defines whether it was written, derived or
@@ -164,29 +206,9 @@ data DeclaredInstance = DeclaredInstance
 
 instance Validity DeclaredInstance
 
--- | Every instance one module declares, read out of its @.hi@ interface, or why
--- it could not be read.
---
--- A generic platform, no ways and an ignored way tag, because this reads the
--- instance list and nothing that depends on the flavour of the build.
-readDeclaredInstances :: Path Abs File -> IO (Either ArtifactUnreadable [DeclaredInstance])
-readDeclaredInstances path = do
-  result <- try $ do
-    cache <- initNameCache 'z' []
-    iface <- readBinIface profile cache IgnoreHiWay QuietBinIFace (toFilePath path)
-    let instances = mapMaybe declaredInstanceOf (mi_insts iface)
-    -- Forced inside the catch, for the reason the .hie read is.
-    _ <- evaluate (length instances)
-    pure instances
-  pure $ case result of
-    Left (e :: SomeException) -> Left (reason e)
-    Right instances -> Right instances
-  where
-    profile =
-      Profile
-        { profilePlatform = genericPlatform,
-          profileWays = mempty
-        }
+-- | Every instance one module declares whose head is a type constructor.
+compiledInterfaceInstances :: CompiledInterface -> [DeclaredInstance]
+compiledInterfaceInstances = mapMaybe declaredInstanceOf . mi_insts . unCompiledInterface
 
 -- | An instance whose head is not a type constructor is not one an obligation
 -- can be about, since there is no type to write @genValidSpec \@T@ at.

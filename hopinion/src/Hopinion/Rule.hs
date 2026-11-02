@@ -56,6 +56,7 @@ import Hopinion.Compiled (CompiledModules)
 import Hopinion.Facts.Module
 import Hopinion.Facts.Name
 import Hopinion.Facts.Place
+import Hopinion.Parse (ParsedModule)
 import Hopinion.Rule.Id
 import Hopinion.Store (Carry, Query)
 import Text.Colour (Chunk, chunk, fore, red)
@@ -131,12 +132,16 @@ data RuleImpl
 -- everything it reads has become a finding by the time the module phase
 -- returns.
 --
--- Pure, over the source alone. A module rule wanting what the compiler wrote
--- down would take it as a second argument; nothing does yet. Package and
--- project rules are unaffected, since those already run in IO.
-newtype ModuleCheck = ModuleCheckFromSource (ModuleContext -> CheckResult)
+-- Pure, over the source alone, and only ever run over a module that parsed.
+-- It is handed the parse as well as the facts, so a rule that needs something
+-- no shared fact holds reads it off the parse tree itself, and the module is
+-- still parsed once.
+-- A module rule wanting what the compiler wrote down would take that as a
+-- further argument; nothing does yet. Package and project rules are
+-- unaffected, since those already run in IO.
+newtype ModuleCheck = ModuleCheckFromSource (ModuleContext -> ParsedModule -> CheckResult)
 
-moduleCheckFindings :: ModuleCheck -> ModuleContext -> CheckResult
+moduleCheckFindings :: ModuleCheck -> ModuleContext -> ParsedModule -> CheckResult
 moduleCheckFindings (ModuleCheckFromSource f) = f
 
 data PackageCheck = PackageCheck

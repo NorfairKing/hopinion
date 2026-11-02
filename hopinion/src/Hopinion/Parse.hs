@@ -11,6 +11,7 @@
 module Hopinion.Parse
   ( ParseInput (..),
     ParsedModule (..),
+    parsedModuleDecls,
     NameOccurrence (..),
     parseHaskellModule,
   )
@@ -29,7 +30,7 @@ import GHC.Driver.Session
     xopt_set,
     xopt_unset,
   )
-import GHC.Hs (GhcPs, HsModule)
+import GHC.Hs (GhcPs, HsModule (..), LHsDecl)
 import qualified GHC.LanguageExtensions as LangExt
 import GHC.Parser.Lexer
   ( PState (..),
@@ -86,6 +87,11 @@ data ParsedModule = ParsedModule
     parsedModuleExportListSpan :: !(Maybe Span),
     parsedModuleNames :: ![NameOccurrence]
   }
+
+-- | Every top-level declaration, as the parser saw it, which is where a rule
+-- reading the parse tree for a fact of its own starts.
+parsedModuleDecls :: ParsedModule -> [LHsDecl GhcPs]
+parsedModuleDecls = hsmodDecls . SrcLoc.unLoc . parsedModuleAst
 
 -- | A capitalised name the module writes, before anything has worked out which
 -- declaration it is inside.

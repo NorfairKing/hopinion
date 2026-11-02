@@ -50,7 +50,7 @@ exampleRule =
       ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
   where
-    check mf =
+    check mf _ =
       findingsResult
         [ Finding
             { findingRule = ruleId exampleRule,

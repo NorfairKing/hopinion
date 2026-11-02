@@ -61,7 +61,7 @@ import Hopinion.Store
 --
 -- [allow:file:TestJsonSpecPerJsonType] The quasi-quoter below writes ToJSON
 -- and FromJSON for the Key of every table it makes, and every table in the
--- repository shares one Key type head, so this answers for all of them.
+-- package shares one Key type head, so this answers for all of them.
 -- Nothing here is a wire format: a Key is a row number that never leaves the
 -- store it came from, and persistent tests its own instances.
 --

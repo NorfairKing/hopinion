@@ -1,11 +1,12 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
--- | Turning a parse tree into facts.
+-- | Turning a parse tree into the facts more than one rule reads.
 --
--- This module grows with every new fact and never with a new rule, which is
--- the trade that keeps a rule small. It is therefore also the part to review
--- hardest: a fact that is wrong here is wrong for every rule that reads it.
+-- This module grows with a fact that a second rule starts reading, and never
+-- with a rule: a fact only one rule reads is extracted beside that rule, from
+-- the parse the context carries. It is the part to review hardest, because a
+-- fact that is wrong here is wrong for every rule that reads it.
 module Hopinion.Extract
   ( ExtractInput (..),
     extractModuleContext,
@@ -21,12 +22,6 @@ import qualified Data.Text as T
 import GHC.Hs
 import GHC.Types.SrcLoc (GenLocated (..), unLoc)
 import Hopinion.Annotation (annotationsOf)
-import Hopinion.Check.Hs.LambdaCase.Extract (casedArgumentsOf)
-import Hopinion.Check.Hs.NoSemigroupOnText.Extract (concatChainsOf)
-import Hopinion.Check.Hs.NoStringError.Extract (errorDeclsOf, errorSlotsOf)
-import Hopinion.Check.Hs.PrefixNaming.Extract (unprefixedNamesOf)
-import Hopinion.Check.Hs.RecordFieldPerLine.Extract (crowdedRecordsOf)
-import Hopinion.Check.Package.AppOnlyMain.Extract (strayAppDeclsOf)
 import Hopinion.Comment
 import Hopinion.Extract.Ghc
 import Hopinion.Facts.Component
@@ -36,7 +31,6 @@ import Hopinion.Facts.Instance
 import Hopinion.Facts.Module
 import Hopinion.Facts.Name
 import Hopinion.Facts.Occurrence
-import Hopinion.Facts.Outcome
 import Hopinion.Facts.Place
 import Hopinion.Facts.TemplateHaskell
 import Hopinion.Parse
@@ -86,29 +80,22 @@ extractModuleContext input parsed =
           moduleContextAnnotations = annotations,
           moduleContextAnnotationProblems = annotationProblems,
           moduleContextTypeApps = parsedModuleTypeApps parsed,
-          moduleContextConcatChains = concatChainsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
-          moduleContextErrorSlots = errorSlotsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
-          moduleContextErrorDecls = errorDeclsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
-          moduleContextCasedArguments = casedArgumentsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
-          moduleContextCrowdedRecords = crowdedRecordsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
-          moduleContextUnprefixedNames = unprefixedNamesOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
-          moduleContextStrayAppDecls = strayAppDeclsOf rp decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
           moduleContextTemplateHaskell = parsedModuleTemplateHaskell parsed,
-          moduleContextOutcome = ParseOutcomeOk
+          moduleContextSyntax = ModuleSyntaxParsed parsed
         }
 
 -- | A module that did not parse still produces facts, because the project
 -- layer has to treat the failure as an error rather than as a module with no
 -- declarations.
 failedModuleContext :: ExtractInput -> Position -> Text -> ModuleContext
-failedModuleContext input errLoc errMsg = (emptyModuleContext input) {moduleContextOutcome = ParseOutcomeFailed errLoc errMsg}
+failedModuleContext input errLoc errMsg = emptyModuleContext input (ModuleSyntaxFailed errLoc errMsg)
 
 -- | A module that is declared and present but holds no Haskell to read.
 preprocessedModuleContext :: ExtractInput -> ModuleContext
-preprocessedModuleContext input = (emptyModuleContext input) {moduleContextOutcome = ParseOutcomeNotHaskellSource}
+preprocessedModuleContext input = emptyModuleContext input ModuleSyntaxNotHaskellSource
 
-emptyModuleContext :: ExtractInput -> ModuleContext
-emptyModuleContext input =
+emptyModuleContext :: ExtractInput -> ModuleSyntax -> ModuleContext
+emptyModuleContext input syntax =
   ModuleContext
     { moduleContextModule = extractInputModule input,
       moduleContextPath = extractInputRelPath input,
@@ -122,15 +109,8 @@ emptyModuleContext input =
       moduleContextAnnotations = [],
       moduleContextAnnotationProblems = [],
       moduleContextTypeApps = [],
-      moduleContextConcatChains = [],
-      moduleContextErrorSlots = [],
-      moduleContextErrorDecls = [],
-      moduleContextCasedArguments = [],
-      moduleContextCrowdedRecords = [],
-      moduleContextUnprefixedNames = [],
-      moduleContextStrayAppDecls = [],
       moduleContextTemplateHaskell = TemplateHaskellUseNone,
-      moduleContextOutcome = ParseOutcomeOk
+      moduleContextSyntax = syntax
     }
 
 nameFactOf :: ModuleRef -> [DeclFact] -> NameOccurrence -> NameFact

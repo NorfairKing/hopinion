@@ -353,6 +353,7 @@ library
     , genvalidity-path
     , genvalidity-text
     , hopinion
+    , hopinion-rules
     , text
   default-language: Haskell2010
 
@@ -404,6 +405,7 @@ test-suite hopinion-test
     , hopinion
     , hopinion-gen
     , hopinion-hie
+    , hopinion-rules
     , path
     , path-io
     , persistent

@@ -2,7 +2,7 @@ final: prev:
 with final.lib;
 with final.haskell.lib;
 let
-  hopinionExe = justStaticExecutables final.haskellPackages.hopinion;
+  hopinionExe = justStaticExecutables final.haskellPackages.hopinion-rules;
 
   # The builders, against this nixpkgs and this hopinion. Attached to the
   # executable below rather than exported from a flake, so that a consuming
@@ -36,6 +36,7 @@ in
 
         hopinionPackages = {
           hopinion = hopinionPkg "hopinion";
+          hopinion-rules = hopinionPkg "hopinion-rules";
           hopinion-hie = hopinionPkg "hopinion-hie";
           hopinion-gen = hopinionPkg "hopinion-gen";
         };
