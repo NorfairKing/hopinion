@@ -1,0 +1,2 @@
+Both instances mean something outside this program reads the type, and the compiler accepts an encoder and a decoder that disagree.
+jsonSpec asserts that decoding an encoded value gives it back, over generated values.

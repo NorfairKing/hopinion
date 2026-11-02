@@ -1,17 +1,17 @@
 module Good where
 
-import Path (Abs, Dir, File, Path, Rel, toFilePath)
+import Path (Abs, Dir, File, Path, Rel, fromAbsFile, fromRelFile)
 
 -- A path that says what it is, and a conversion at the edge, which is what the
 -- rule deliberately stays quiet about.
 readFrom :: Path Abs File -> IO String
-readFrom file = readFile (toFilePath file)
+readFrom file = readFile (fromAbsFile file)
 
 resourcesIn :: Path b Dir -> Path b Dir
 resourcesIn = id
 
 named :: Path Rel File -> String
-named = toFilePath
+named = fromRelFile
 
 -- The word FilePath in a comment is not a use of the type, and neither is the
 -- word inside a string. Both are single tokens of their own, which is why this

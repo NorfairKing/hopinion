@@ -1,0 +1,1 @@
+An instance in the library is linked into everything that depends on it, so the shipped executable carries QuickCheck and the generators.

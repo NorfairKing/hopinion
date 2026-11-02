@@ -1,0 +1,6 @@
+Name constructors and fields after their type, such as:
+
+  data Shape = ShapeCircle Double | ShapeSquare Double
+  data Point = Point {pointX :: !Int, pointY :: !Int}
+  data URL = URL {urlHost :: !Text}
+  newtype UserId = UserId {unUserId :: Text}

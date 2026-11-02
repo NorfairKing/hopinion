@@ -1,0 +1,1 @@
+genValid can produce values the type's own Validity rejects, and every property built on it inherits that.

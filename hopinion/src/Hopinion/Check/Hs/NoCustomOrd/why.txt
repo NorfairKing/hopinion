@@ -1,0 +1,2 @@
+Every sort, Map and Set goes through the instance, so a custom ordering changes what order means everywhere.
+A derived Ord also agrees with the derived Eq.

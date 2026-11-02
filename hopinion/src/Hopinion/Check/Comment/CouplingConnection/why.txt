@@ -1,0 +1,2 @@
+Prose saying that two places move together names neither of them to a tool, so nothing brings a reader to the other one when this changes.
+A tag and a ref do, and marginalia and tagref report the pair when one half goes missing.

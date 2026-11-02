@@ -1,0 +1,1 @@
+An executable's modules are private to it, so a test suite can reach only the library it calls into.

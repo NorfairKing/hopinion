@@ -44,9 +44,9 @@ exampleRule =
     { ruleId = RuleId "ExampleNoShouting",
       ruleText = "A comment in this repository uses ordinary capitalisation.",
       ruleWhy =
-        "This rule belongs to the repository rather than to hopinion, so that a\
-        \ repository adding a rule of its own can be watched doing it. The\
-        \ standard behind it is invented for the purpose.",
+        "This rule belongs to the repository, so that a repository adding a\
+        \ rule of its own can be watched doing it. Its standard is invented.",
+      ruleFix = "Write the comment in ordinary capitalisation.",
       ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
   where

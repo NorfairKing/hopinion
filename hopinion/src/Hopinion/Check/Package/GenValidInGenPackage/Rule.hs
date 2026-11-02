@@ -29,6 +29,7 @@ import Hopinion.Facts.Package
 import Hopinion.Facts.Place
 import Hopinion.Rule
 import Hopinion.Rule.Id
+import Hopinion.Rule.Prose (proseBeside)
 import Hopinion.Store
 
 -- | This rule's table, defined here because this rule is the only thing that
@@ -54,10 +55,8 @@ rule =
   Rule
     { ruleId = RuleId "HsGenValidInGenPackage",
       ruleText = "A GenValid instance lives in the matching -gen package.",
-      ruleWhy =
-        "An instance in the library is linked into everything that depends on\
-        \ it, so the shipped executable carries QuickCheck and the generators.\
-        \ The -gen package stops that at the test suite.",
+      ruleWhy = $(proseBeside "why.txt"),
+      ruleFix = $(proseBeside "fix.txt"),
       ruleImpl =
         RuleImplPackage
           PackageCheck

@@ -1,5 +1,6 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Hopinion.Check.Hs.NoStringError.Rule (rule) where
 
@@ -8,22 +9,15 @@ import Hopinion.Check.Hs.NoStringError.Fact
 import Hopinion.Facts.Module
 import Hopinion.Rule
 import Hopinion.Rule.Id
+import Hopinion.Rule.Prose (proseBeside)
 
 rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "HsNoStringError",
       ruleText = "An error is a type of its own, not a String.",
-      ruleWhy =
-        "A caller can branch on a constructor. It cannot branch on prose\
-        \ without taking the message apart again, so a String error asks every\
-        \ handler to treat every failure the same way. Writing the words at the\
-        \ point of failure also fixes them there, which is the place that knows\
-        \ least about who will read them. Wrap what a library hands you into a\
-        \ type of your own at the edge, and render that type where the failure\
-        \ is reported. Naming the prose does not make it a type: a synonym for\
-        \ String is a String, and a wrapper around one has a single constructor,\
-        \ which is still nothing to branch on.",
+      ruleWhy = $(proseBeside "why.txt"),
+      ruleFix = $(proseBeside "fix.txt"),
       ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 

@@ -5,6 +5,9 @@
      [0;90;1m•[0m                              [0;91m┬[0m[0;91m─[0m 
      [0;90;1m•[0m                              [0;91m╰╸[0m [0;91mA test file exports exactly (spec).[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Only the Main that gathers the specs reads a test file, and it asks for spec alone.[0m
+     [0;90;1m│[0m [0;96mHint: If the file defines no `spec`, rename it so that its name does not end in `Spec.hs`.
+     [0;90;1m│[0;96m       Otherwise, make its export list exactly `(spec)`: `module Foo.BarSpec (spec) where`.
+     [0;90;1m│[0;96m       Move anything other modules import from it into a `.Gen` module of the -gen library if it is a generator, and otherwise into a test-suite module whose name does not end in `Spec`, such as `Foo.TestUtils`.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this anywhere in the file, and say why: -- [allow:file:HsTestOneSpecPerFile] <reason>[0m
 [0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain HsTestOneSpecPerFile

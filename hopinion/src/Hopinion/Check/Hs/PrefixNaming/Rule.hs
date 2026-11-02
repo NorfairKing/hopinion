@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Hopinion.Check.Hs.PrefixNaming.Rule (rule) where
 
@@ -9,23 +10,15 @@ import Hopinion.Facts.Module
 import Hopinion.Facts.Name
 import Hopinion.Rule
 import Hopinion.Rule.Id
+import Hopinion.Rule.Prose (proseBeside)
 
 rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "HsPrefixNaming",
       ruleText = "Name a constructor or field after its type, and a newtype's field unExample.",
-      ruleWhy =
-        "A constructor and a field are in scope across the whole module that\
-        \ declares them and across every module importing it, where the type\
-        \ they belong to is not written beside them. The prefix is what says\
-        \ which type a name at a use site is about, and it is what keeps two\
-        \ types in one module from wanting the same field name. The whole of\
-        \ the type's name, because an abbreviation is a second name for the\
-        \ type that nothing keeps in step with the first. The one field of a\
-        \ newtype is the exception: it has no sibling to be told apart from,\
-        \ so a prefix would only repeat what the declaration says, and the\
-        \ name says that applying it undoes the wrapper instead.",
+      ruleWhy = $(proseBeside "why.txt"),
+      ruleFix = $(proseBeside "fix.txt"),
       ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 

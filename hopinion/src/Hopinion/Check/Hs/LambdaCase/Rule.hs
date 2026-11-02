@@ -1,5 +1,6 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Hopinion.Check.Hs.LambdaCase.Rule (rule) where
 
@@ -8,16 +9,15 @@ import Hopinion.Check.Hs.LambdaCase.Fact
 import Hopinion.Facts.Module
 import Hopinion.Rule
 import Hopinion.Rule.Id
+import Hopinion.Rule.Prose (proseBeside)
 
 rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "HsLambdaCase",
       ruleText = "Use \\case rather than naming an argument to take it apart.",
-      ruleWhy =
-        "A \\case definition writes the function's name once; equations write it\
-        \ once each, so renaming the function reformats every equation and\
-        \ buries the real change in the diff.",
+      ruleWhy = $(proseBeside "why.txt"),
+      ruleFix = $(proseBeside "fix.txt"),
       ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 

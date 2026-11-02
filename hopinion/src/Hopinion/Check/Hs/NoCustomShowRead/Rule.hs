@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Hopinion.Check.Hs.NoCustomShowRead.Rule (rule) where
 
@@ -8,18 +9,15 @@ import Hopinion.Facts.Module
 import Hopinion.Facts.Name
 import Hopinion.Rule
 import Hopinion.Rule.Id
+import Hopinion.Rule.Prose (proseBeside)
 
 rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "HsNoCustomShowRead",
       ruleText = "Show and Read are derived, or their methods ignore the value.",
-      ruleWhy =
-        "A written Show drifts as the type changes, and a Read written to match\
-        \ it drifts separately, so the pair stops roundtripping while it still\
-        \ compiles. Deriving keeps both in step with the fields. An instance\
-        \ that ignores the value prints the same text whatever it is handed,\
-        \ which is how a secret stays out of the logs.",
+      ruleWhy = $(proseBeside "why.txt"),
+      ruleFix = $(proseBeside "fix.txt"),
       ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 

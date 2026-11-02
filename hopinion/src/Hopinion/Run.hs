@@ -308,7 +308,8 @@ explainRule rs rid = case ruleNamed rs rid of
       ( concat
           [ [fore blue (chunk (unRuleId (ruleId r))), chunk "\n"],
             [chunk (ruleText r), chunk "\n"],
-            [chunk (ruleWhy r), chunk "\n"],
+            [chunk (T.concat ["Why: ", ruleWhy r]), chunk "\n"],
+            [chunk (T.concat ["Instead: ", ruleFix r]), chunk "\n"],
             [ chunk (T.concat ["Level: ", levelText (ruleLevel r)]),
               chunk "\n"
             ],

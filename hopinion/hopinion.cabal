@@ -7,6 +7,41 @@ cabal-version: 1.12
 name:           hopinion
 version:        0.0.0
 build-type:     Simple
+extra-source-files:
+    src/Hopinion/Check/Comment/BareTodo/fix.txt
+    src/Hopinion/Check/Comment/BareTodo/why.txt
+    src/Hopinion/Check/Comment/CouplingConnection/fix.txt
+    src/Hopinion/Check/Comment/CouplingConnection/why.txt
+    src/Hopinion/Check/Hs/LambdaCase/fix.txt
+    src/Hopinion/Check/Hs/LambdaCase/why.txt
+    src/Hopinion/Check/Hs/NoCustomEq/fix.txt
+    src/Hopinion/Check/Hs/NoCustomEq/why.txt
+    src/Hopinion/Check/Hs/NoCustomOrd/fix.txt
+    src/Hopinion/Check/Hs/NoCustomOrd/why.txt
+    src/Hopinion/Check/Hs/NoCustomShowRead/fix.txt
+    src/Hopinion/Check/Hs/NoCustomShowRead/why.txt
+    src/Hopinion/Check/Hs/NoFilePath/fix.txt
+    src/Hopinion/Check/Hs/NoFilePath/why.txt
+    src/Hopinion/Check/Hs/NoSemigroupOnText/fix.txt
+    src/Hopinion/Check/Hs/NoSemigroupOnText/why.txt
+    src/Hopinion/Check/Hs/NoStringError/fix.txt
+    src/Hopinion/Check/Hs/NoStringError/why.txt
+    src/Hopinion/Check/Hs/PrefixNaming/fix.txt
+    src/Hopinion/Check/Hs/PrefixNaming/why.txt
+    src/Hopinion/Check/Hs/RecordFieldPerLine/fix.txt
+    src/Hopinion/Check/Hs/RecordFieldPerLine/why.txt
+    src/Hopinion/Check/Hs/TestOneSpecPerFile/fix.txt
+    src/Hopinion/Check/Hs/TestOneSpecPerFile/why.txt
+    src/Hopinion/Check/Package/AppOnlyMain/fix.txt
+    src/Hopinion/Check/Package/AppOnlyMain/why.txt
+    src/Hopinion/Check/Package/GenValidInGenPackage/fix.txt
+    src/Hopinion/Check/Package/GenValidInGenPackage/why.txt
+    src/Hopinion/Check/Project/GenValidSpecPerGenValid/fix.txt
+    src/Hopinion/Check/Project/GenValidSpecPerGenValid/why.txt
+    src/Hopinion/Check/Project/JsonSpecPerJsonType/fix.txt
+    src/Hopinion/Check/Project/JsonSpecPerJsonType/why.txt
+    src/Hopinion/Check/Test/NoTestHelpers/fix.txt
+    src/Hopinion/Check/Test/NoTestHelpers/why.txt
 
 library
   exposed-modules:
@@ -69,6 +104,7 @@ library
       Hopinion.Report.Render
       Hopinion.Rule
       Hopinion.Rule.Id
+      Hopinion.Rule.Prose
       Hopinion.Rule.Registry
       Hopinion.Run
       Hopinion.Store
@@ -88,6 +124,7 @@ library
     , containers
     , diagnose
     , esqueleto
+    , file-embed
     , filepath
     , ghc-lib-parser
     , ghc-lib-parser-ex
@@ -107,6 +144,7 @@ library
     , safe-coloured-text
     , safe-coloured-text-terminfo
     , syb
+    , template-haskell
     , text
     , unliftio
     , unordered-containers

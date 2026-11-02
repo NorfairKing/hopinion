@@ -1,0 +1,8 @@
+For each top-level binding other than `spec`, do the first of these that applies:
+1. Unused: delete it.
+2. Used by one `it`: move it into a `let` in that `it`'s do-block.
+3. One line long: inline it at each use.
+4. Used by several tests here: move it into a `let` at the top of the innermost `describe` or `spec` containing them.
+5. A generator used by several spec modules: move it into a `.Gen` module of the -gen library.
+6. Anything else used by several spec modules: move it into a test-suite module whose name does not end in `Spec`, such as `Foo.TestUtils`.
+Keep type signatures, with one binding per `let`.

@@ -1,0 +1,2 @@
+A caller can branch on a constructor, but not on prose without taking the message apart again.
+A synonym for String, or a wrapper around one with a single constructor, is still nothing to branch on.

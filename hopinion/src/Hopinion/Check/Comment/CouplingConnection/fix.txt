@@ -1,0 +1,5 @@
+Use marginalia if the repository has a `.marginalia` file or `[check:tag` annotations, tagref if it has `[tag:` annotations, and otherwise ask.
+Pick an unused PascalCase name for what is shared, such as `WireFormat`.
+Write `[check:tag Name]` and what has to stay in sync in a comment on this declaration, and `[check:ref Name]` in a comment on the definition of each name the prose marks, such as `'Encoder'`.
+With tagref, write `[tag:Name]` and `[ref:Name]` instead.
+If none of the marked names is defined in this repository, suppress the finding instead.

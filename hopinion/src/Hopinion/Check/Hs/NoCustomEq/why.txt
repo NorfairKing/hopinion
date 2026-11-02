@@ -1,0 +1,2 @@
+Every == goes through the instance, so a custom equality changes what equal means everywhere, including in every shouldBe.
+A comparison that is right for one caller belongs in a function that caller names.

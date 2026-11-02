@@ -5,6 +5,7 @@
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: genValidSpec is what checks the generator: genValid can produce values the type's own Validity rejects, and every property built on it inherits that. The spec belongs to the package that declares the instance.[0m
+     [0;90;1m│[0m [0;96mHint: Add `genValidSpec @T` from `Test.Syd.Validity` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 11 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain TestGenValidSpecPerGenValid

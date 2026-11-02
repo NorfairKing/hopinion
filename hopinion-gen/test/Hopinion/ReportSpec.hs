@@ -100,6 +100,16 @@ spec = do
     renderReportColoured shippedRules sources together `shouldSatisfy` T.isInfixOf "\ESC"
     renderReport shippedRules sources together `shouldSatisfy` not . T.isInfixOf "\ESC"
 
+  -- A finding shows what to do instead and not why, so the report says once
+  -- where the why is.
+  -- Once rather than per finding, because it is the same sentence each time.
+  it "says once how to see why a rule exists" $ do
+    root <- rootAt (resourceDir </> [reldir|repo|])
+    complaints <- runCheck shippedRules noHieDirectories root
+    (sources, missing) <- sourcesForReport [root] complaints
+    T.count "to see why the rule exists" (renderReport shippedRules sources (complaints <> missing))
+      `shouldBe` 1
+
   -- A failure is what the tool could not do rather than what is wrong with the
   -- code, so it has no position and nothing to show underneath.
   it "shows a failure with no code under it" $

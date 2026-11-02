@@ -1,0 +1,5 @@
+Derive Eq first.
+If the instance orders by constructor and then by fields from left to right, delete it and derive Ord: `deriving stock (Ord)`, `deriving newtype (Ord)` on a newtype, or `deriving stock instance Ord T` for a type from another module.
+Otherwise, also write its order as a projection, such as `taskPriority`, or a function, such as `compareTaskPriority :: Task -> Task -> Ordering`, and use it wherever the old order is needed: `sortOn taskPriority` or `sortBy compareTaskPriority`, and likewise `maximumBy`, `minimumBy` and `insertBy`.
+Key a `Map` or `Set` that relied on the old order on the projection instead: `Set Task` becomes `Map Int Task`.
+For any other custom order on a key, ask.

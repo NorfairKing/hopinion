@@ -1,0 +1,2 @@
+Add `jsonSpec @T` from `Test.Syd.Validity.Aeson` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.
+If `T` has no GenValid instance, write one in a `.Gen` module of the -gen library.

@@ -5,7 +5,12 @@
      [0;90;1m•[0m                              [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                              [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 11 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -16,7 +21,12 @@
      [0;90;1m•[0m                                [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                                [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 17 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -27,7 +37,12 @@
      [0;90;1m•[0m                                [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                                [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 22 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -38,7 +53,12 @@
      [0;90;1m•[0m                        [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                        [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 25 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -49,7 +69,12 @@
      [0;90;1m•[0m                                [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                                [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 31 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -60,7 +85,12 @@
      [0;90;1m•[0m                       [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                       [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 35 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -71,7 +101,12 @@
      [0;90;1m•[0m                      [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                      [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 39 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -82,7 +117,12 @@
      [0;90;1m•[0m                          [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                          [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 44 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -93,7 +133,12 @@
      [0;90;1m•[0m                    [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                    [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 48 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -104,7 +149,12 @@
      [0;90;1m•[0m                                   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                                   [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 48 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -115,7 +165,12 @@
      [0;90;1m•[0m                                    [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                                    [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 53 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -126,7 +181,12 @@
      [0;90;1m•[0m                         [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                         [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 57 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -137,7 +197,12 @@
      [0;90;1m•[0m                                   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                                   [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 61 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -148,7 +213,12 @@
      [0;90;1m•[0m                   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m                   [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 65 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -159,7 +229,12 @@
      [0;90;1m•[0m                                   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m                                   [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 68 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -170,7 +245,12 @@
      [0;90;1m•[0m                                [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m                                [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 71 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -181,7 +261,12 @@
      [0;90;1m•[0m                         [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m                         [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 74 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -192,6 +277,12 @@
      [0;90;1m•[0m                                                  [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                                                  [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A caller can branch on a constructor. It cannot branch on prose without taking the message apart again, so a String error asks every handler to treat every failure the same way. Writing the words at the point of failure also fixes them there, which is the place that knows least about who will read them. Wrap what a library hands you into a type of your own at the edge, and render that type where the failure is reported. Naming the prose does not make it a type: a synonym for String is a String, and a wrapper around one has a single constructor, which is still nothing to branch on.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 77 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain HsNoStringError

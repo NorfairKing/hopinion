@@ -1,4 +1,8 @@
 [34mCommentBareTodo[m
 A TODO names an issue or a URL.
-A reference tells the reader where the work is tracked. A TODO on its own reads like a plan, and goes stale in place.
+Why: A TODO on its own reads like a plan and goes stale in place.
+A reference says where the work is tracked, and a made-up one points nowhere.
+Instead: If the work is small and part of your task, do it and delete the TODO.
+Otherwise, add a URL, an issue number such as `#412`, or a ticket such as `FOO-412` to the same comment.
+Do not invent one: if no issue exists, ask whether to file one.
 Level: module

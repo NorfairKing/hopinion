@@ -6,6 +6,8 @@
      [0;90;1m•[0m [0;91m│ [0m
      [0;90;1m•[0m [0;91m╰╸ ToJSON and FromJSON oblige jsonSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Both instances mean something outside this program reads the type, and the compiler accepts an encoder and a decoder that disagree. jsonSpec asserts the roundtrip over generated values. The spec belongs to the package that declares the instances.[0m
+     [0;90;1m│[0m [0;96mHint: Add `jsonSpec @T` from `Test.Syd.Validity.Aeson` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.
+     [0;90;1m│[0;96m       If `T` has no GenValid instance, write one in a `.Gen` module of the -gen library.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 5 of thing/src/Thing.hs, and say why: -- [allow:TestJsonSpecPerJsonType] <reason>[0m
 [0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain TestJsonSpecPerJsonType

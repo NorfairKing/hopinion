@@ -5,13 +5,14 @@
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA test file binds only spec at the top level.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Test code should be easy to delete.
-     [0;90;1m│[0;96m       In order of preference, try these:
-     [0;90;1m│[0;96m       * Move the code into a let-binding in the it that uses it
-     [0;90;1m│[0;96m       * Inline the code
-     [0;90;1m│[0;96m       * Move the code into a let-binding in the enclosing describe or spec
-     [0;90;1m│[0;96m       * Move a generator into a .Gen module, if it is used across modules
-     [0;90;1m│[0;96m       * Move a test utility into a .TestUtils module[0m
+     [0;90;1m│[0m [0;96mHint: For each top-level binding other than `spec`, do the first of these that applies:
+     [0;90;1m│[0;96m       1. Unused: delete it.
+     [0;90;1m│[0;96m       2. Used by one `it`: move it into a `let` in that `it`'s do-block.
+     [0;90;1m│[0;96m       3. One line long: inline it at each use.
+     [0;90;1m│[0;96m       4. Used by several tests here: move it into a `let` at the top of the innermost `describe` or `spec` containing them.
+     [0;90;1m│[0;96m       5. A generator used by several spec modules: move it into a `.Gen` module of the -gen library.
+     [0;90;1m│[0;96m       6. Anything else used by several spec modules: move it into a test-suite module whose name does not end in `Spec`, such as `Foo.TestUtils`.
+     [0;90;1m│[0;96m       Keep type signatures, with one binding per `let`.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 11 of test_resources/Rule/TestNoTestHelpers/badSpec.hs, and say why: -- [allow:TestNoTestHelpers] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -22,12 +23,14 @@
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA test file binds only spec at the top level.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Test code should be easy to delete.
-     [0;90;1m│[0;96m       In order of preference, try these:
-     [0;90;1m│[0;96m       * Move the code into a let-binding in the it that uses it
-     [0;90;1m│[0;96m       * Inline the code
-     [0;90;1m│[0;96m       * Move the code into a let-binding in the enclosing describe or spec
-     [0;90;1m│[0;96m       * Move a generator into a .Gen module, if it is used across modules
-     [0;90;1m│[0;96m       * Move a test utility into a .TestUtils module[0m
+     [0;90;1m│[0m [0;96mHint: For each top-level binding other than `spec`, do the first of these that applies:
+     [0;90;1m│[0;96m       1. Unused: delete it.
+     [0;90;1m│[0;96m       2. Used by one `it`: move it into a `let` in that `it`'s do-block.
+     [0;90;1m│[0;96m       3. One line long: inline it at each use.
+     [0;90;1m│[0;96m       4. Used by several tests here: move it into a `let` at the top of the innermost `describe` or `spec` containing them.
+     [0;90;1m│[0;96m       5. A generator used by several spec modules: move it into a `.Gen` module of the -gen library.
+     [0;90;1m│[0;96m       6. Anything else used by several spec modules: move it into a test-suite module whose name does not end in `Spec`, such as `Foo.TestUtils`.
+     [0;90;1m│[0;96m       Keep type signatures, with one binding per `let`.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 14 of test_resources/Rule/TestNoTestHelpers/badSpec.hs, and say why: -- [allow:TestNoTestHelpers] <reason>[0m
 [0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain TestNoTestHelpers

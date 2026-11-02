@@ -1,0 +1,1 @@
+Only the Main that gathers the specs reads a test file, and it asks for spec alone.

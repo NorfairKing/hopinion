@@ -1,0 +1,6 @@
+Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+Find the ways to fail at each `Left "..."` or `throwError "..."`.
+If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+Wrap a library's String failure at the call in a constructor named for what failed.
+Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.

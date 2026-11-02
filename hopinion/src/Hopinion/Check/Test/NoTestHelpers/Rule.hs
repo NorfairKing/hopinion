@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Hopinion.Check.Test.NoTestHelpers.Rule (rule) where
 
@@ -9,20 +10,15 @@ import Hopinion.Facts.Name
 import Hopinion.Facts.Place
 import Hopinion.Rule
 import Hopinion.Rule.Id
+import Hopinion.Rule.Prose (proseBeside)
 
 rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "TestNoTestHelpers",
       ruleText = "A test file binds only spec at the top level.",
-      ruleWhy =
-        "Test code should be easy to delete.\n\
-        \In order of preference, try these:\n\
-        \* Move the code into a let-binding in the it that uses it\n\
-        \* Inline the code\n\
-        \* Move the code into a let-binding in the enclosing describe or spec\n\
-        \* Move a generator into a .Gen module, if it is used across modules\n\
-        \* Move a test utility into a .TestUtils module",
+      ruleWhy = $(proseBeside "why.txt"),
+      ruleFix = $(proseBeside "fix.txt"),
       ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 

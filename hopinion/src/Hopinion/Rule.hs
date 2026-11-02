@@ -183,11 +183,18 @@ data Rule = Rule
     -- | What the rule asks for, as one short line. A reader meets it beside
     -- the code it is about, with room for a line and no more.
     ruleText :: !Text,
-    -- | The argument for the rule, general to the rule rather than to any one
-    -- finding: enough that a reader stopped by it can choose between fixing
-    -- the code and writing the suppression, and it stops there. A rule whose
-    -- argument a reader rejects is one they will suppress every time.
+    -- | Answers "why does this rule exist?", for a reader asking about the rule
+    -- itself rather than about a finding.
+    -- A rule whose argument a reader rejects is one they will suppress every
+    -- time.
+    -- It argues and stops there: what to write instead belongs in 'ruleFix'.
     ruleWhy :: !Text,
+    -- | Answers "ok, so what do I do instead?", for a reader who has just met
+    -- a finding.
+    -- It has to be enough to act on without reading 'ruleWhy'.
+    -- General to the rule rather than to any one finding, which is what the
+    -- finding's own message is for.
+    ruleFix :: !Text,
     ruleImpl :: !RuleImpl
   }
 

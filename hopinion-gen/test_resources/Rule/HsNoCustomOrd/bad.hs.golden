@@ -6,6 +6,11 @@
      [0;90;1m•[0m [0;91m│ [0m
      [0;90;1m•[0m [0;91m╰╸ Ord is derived.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Custom ordering belongs in a function, not in the instance that every sort and Map goes through.[0m
+     [0;90;1m│[0m [0;96mHint: Derive Eq first.
+     [0;90;1m│[0;96m       If the instance orders by constructor and then by fields from left to right, delete it and derive Ord: `deriving stock (Ord)`, `deriving newtype (Ord)` on a newtype, or `deriving stock instance Ord T` for a type from another module.
+     [0;90;1m│[0;96m       Otherwise, also write its order as a projection, such as `taskPriority`, or a function, such as `compareTaskPriority :: Task -> Task -> Ordering`, and use it wherever the old order is needed: `sortOn taskPriority` or `sortBy compareTaskPriority`, and likewise `maximumBy`, `minimumBy` and `insertBy`.
+     [0;90;1m│[0;96m       Key a `Map` or `Set` that relied on the old order on the projection instead: `Set Task` becomes `Map Int Task`.
+     [0;90;1m│[0;96m       For any other custom order on a key, ask.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 9 of test_resources/Rule/HsNoCustomOrd/bad.hs, and say why: -- [allow:HsNoCustomOrd] <reason>[0m
 [0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain HsNoCustomOrd

@@ -5,6 +5,14 @@
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mUse \case rather than naming an argument to take it apart.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A \case definition writes the function's name once; equations write it once each, so renaming the function reformats every equation and buries the real change in the diff.[0m
+     [0;90;1m│[0m [0;96mHint: Replace `f x = case x of` with `f = \case`, keeping the alternatives.
+     [0;90;1m│[0;96m       For equations that differ only in their last argument, keep the earlier arguments and turn the equations into alternatives, with their guards and `where` clauses:
+     [0;90;1m│[0;96m       
+     [0;90;1m│[0;96m         weigh n = \case
+     [0;90;1m│[0;96m           Good -> n
+     [0;90;1m│[0;96m           Bad -> negate n
+     [0;90;1m│[0;96m       
+     [0;90;1m│[0;96m       Add `{-# LANGUAGE LambdaCase #-}` unless the package already enables it.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 6 of test_resources/Rule/HsLambdaCase/bad.hs, and say why: -- [allow:HsLambdaCase] <reason>[0m
 [0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain HsLambdaCase

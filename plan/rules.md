@@ -134,6 +134,7 @@ Rule ids are stable. They are what a check module cites and what an
 | `HsNoSectionHeadersInCode` | No `-- * section header` outside the export list | B | comment | error | |
 | `HsOrmolu` | Use ormolu for formatting | A | | | |
 | `HsRecordSyntaxForProducts` | Prefer record syntax when using a product type | B | project | warn | Positional construction of a constructor that has field names |
+| `HsToFilePathOnlyWhenPolymorphic` | Use `toFilePath` only when nothing more specific type-checks | B | types | error | A `toFilePath` applied to a `Path` whose base and kind are known should be `fromAbsFile`, `fromRelFile`, `fromAbsDir` or `fromRelDir`, which say at the conversion what is being converted. Needs the argument's type, so syntax alone cannot tell |
 
 ## Testing
 

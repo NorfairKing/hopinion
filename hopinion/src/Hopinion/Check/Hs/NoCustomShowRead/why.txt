@@ -1,0 +1,2 @@
+A written Show drifts from the type, and a written Read drifts from it separately, so the pair stops roundtripping while it still compiles.
+A derived Show prints every field, secrets included, so a secret needs an instance that ignores the value.

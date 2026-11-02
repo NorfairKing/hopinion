@@ -7,6 +7,17 @@
      [0;90;1m•[0m [0;91m│ [0m
      [0;90;1m•[0m [0;91m╰╸ An executable's own source is one Main module holding only main = theRealMain.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: An executable's modules are private to it, so a test suite can reach only the library it calls into. One line naming a function in the library moves the code where a test can reach it.[0m
+     [0;90;1m│[0m [0;96mHint: Move every module of the executable other than Main, and every declaration in Main other than `main`, into the package's library, adding a library if there is none.
+     [0;90;1m│[0;96m       Move those modules from the executable's `other-modules` to the library's `exposed-modules`, in package.yaml if the package uses hpack.
+     [0;90;1m│[0;96m       Expose an `IO ()` function from the library that does what `main` did, and make the executable depend on the library.
+     [0;90;1m│[0;96m       Leave Main with only its header, an import of that function, and `main` defined as that function, such as:
+     [0;90;1m│[0;96m       
+     [0;90;1m│[0;96m         module Main (main) where
+     [0;90;1m│[0;96m       
+     [0;90;1m│[0;96m         import Server (runServer)
+     [0;90;1m│[0;96m       
+     [0;90;1m│[0;96m         main :: IO ()
+     [0;90;1m│[0;96m         main = runServer[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 6 of thing/app/Main.hs, and say why: -- [allow:HsAppOnlyMain] <reason>[0m
 [0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain HsAppOnlyMain

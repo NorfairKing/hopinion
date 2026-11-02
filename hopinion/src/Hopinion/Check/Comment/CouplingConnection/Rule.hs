@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 -- | A comment is reported when it says two places move together /and/ names
 -- one of them as code, which is two signals rather than one.
@@ -26,18 +27,15 @@ import Hopinion.Facts.Module
 import Hopinion.Facts.Place
 import Hopinion.Rule
 import Hopinion.Rule.Id
+import Hopinion.Rule.Prose (proseBeside)
 
 rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "CommentCouplingConnection",
       ruleText = "A comment that couples two named places carries a tag or a ref.",
-      ruleWhy =
-        "Prose saying that two places move together names neither of them to a\
-        \ tool, so nothing brings a reader to the other one when this changes. A\
-        \ tag and a ref do, and tagref and marginalia report the pair when one\
-        \ half of it goes missing. Write [tag:Name] here and [ref:Name] there, or\
-        \ [check:tag Name] and [check:ref Name].",
+      ruleWhy = $(proseBeside "why.txt"),
+      ruleFix = $(proseBeside "fix.txt"),
       ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 

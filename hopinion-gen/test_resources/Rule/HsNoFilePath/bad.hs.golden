@@ -5,7 +5,11 @@
      [0;90;1m•[0m             [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m             [0;91m╰╸[0m [0;91mA path is a Path, not a FilePath.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Path says in the type whether it is a file or a directory, and whether it is absolute or relative. FilePath is String, so a directory passed where a file was meant compiles. Converting at the edge with toFilePath is fine; this reports the type in your own signatures.[0m
+     [0;90;1m│[0m [0;96mHint: Use `Path b t` from the path package instead of `FilePath`: `Path Abs File`, `Path Rel File`, `Path Abs Dir`, `Path Rel Dir`, or polymorphic in `b` or `t`.
+     [0;90;1m│[0;96m       Parse a string into a path once, where it enters the program, with `parseAbsFile` and its siblings, or with `resolveFile'` and `resolveDir'` from path-io.
+     [0;90;1m│[0;96m       Write literals as `[absfile|...|]`, `[relfile|...|]`, `[absdir|...|]` or `[reldir|...|]`.
+     [0;90;1m│[0;96m       Use path's `</>`, `parent`, `filename` and `fileExtension` instead of System.FilePath, and path-io instead of System.Directory.
+     [0;90;1m│[0;96m       Where a library only takes a `FilePath`, convert at the call with `fromAbsFile`, `fromRelFile`, `fromAbsDir` or `fromRelDir`, and with `toFilePath` only for a polymorphic path.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 4 of test_resources/Rule/HsNoFilePath/bad.hs, and say why: -- [allow:HsNoFilePath] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -16,6 +20,11 @@
      [0;90;1m•[0m                  [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                  [0;91m╰╸[0m [0;91mA path is a Path, not a FilePath.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Path says in the type whether it is a file or a directory, and whether it is absolute or relative. FilePath is String, so a directory passed where a file was meant compiles. Converting at the edge with toFilePath is fine; this reports the type in your own signatures.[0m
+     [0;90;1m│[0m [0;96mHint: Use `Path b t` from the path package instead of `FilePath`: `Path Abs File`, `Path Rel File`, `Path Abs Dir`, `Path Rel Dir`, or polymorphic in `b` or `t`.
+     [0;90;1m│[0;96m       Parse a string into a path once, where it enters the program, with `parseAbsFile` and its siblings, or with `resolveFile'` and `resolveDir'` from path-io.
+     [0;90;1m│[0;96m       Write literals as `[absfile|...|]`, `[relfile|...|]`, `[absdir|...|]` or `[reldir|...|]`.
+     [0;90;1m│[0;96m       Use path's `</>`, `parent`, `filename` and `fileExtension` instead of System.FilePath, and path-io instead of System.Directory.
+     [0;90;1m│[0;96m       Where a library only takes a `FilePath`, convert at the call with `fromAbsFile`, `fromRelFile`, `fromAbsDir` or `fromRelDir`, and with `toFilePath` only for a polymorphic path.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 8 of test_resources/Rule/HsNoFilePath/bad.hs, and say why: -- [allow:HsNoFilePath] <reason>[0m
 [0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain HsNoFilePath

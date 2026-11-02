@@ -1,0 +1,1 @@
+Add `genValidSpec @T` from `Test.Syd.Validity` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.

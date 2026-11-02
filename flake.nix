@@ -2,21 +2,21 @@
   description = "hopinion";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/80bdc1e5ce51f56b19791b52b2901187931f5353";
-    pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix/f799ae951fde0627157f40aec28dec27b22076d0";
-    weeder-nix.url = "github:NorfairKing/weeder-nix/e0f0c0532babecb3e5726a1fbc1f89c1472c4cd4";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+    pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
+    weeder-nix.url = "github:NorfairKing/weeder-nix";
     weeder-nix.flake = false;
-    validity.url = "github:NorfairKing/validity/456dfd9e4ef7906d33ce70f3f5fdf204a12cce8e";
+    validity.url = "github:NorfairKing/validity";
     validity.flake = false;
-    autodocodec.url = "github:NorfairKing/autodocodec/29b57dc2d425d732ce75143ecf3fc6411df0347b";
+    autodocodec.url = "github:NorfairKing/autodocodec";
     autodocodec.flake = false;
-    safe-coloured-text.url = "github:NorfairKing/safe-coloured-text/5d1187b7873a8a1e397245c7c0c6d9ab88765d67";
+    safe-coloured-text.url = "github:NorfairKing/safe-coloured-text";
     safe-coloured-text.flake = false;
-    fast-myers-diff.url = "github:NorfairKing/fast-myers-diff/78ac171911bac6a9aafc2c9a642012c5a0e731f0";
+    fast-myers-diff.url = "github:NorfairKing/fast-myers-diff";
     fast-myers-diff.flake = false;
-    sydtest.url = "github:NorfairKing/sydtest/27be1a6de567b76878511bd1d60392372c6accdf";
+    sydtest.url = "github:NorfairKing/sydtest";
     sydtest.flake = false;
-    opt-env-conf.url = "github:NorfairKing/opt-env-conf/de7ac850e960c28e5182810515a87fbe1d6daede";
+    opt-env-conf.url = "github:NorfairKing/opt-env-conf";
     opt-env-conf.flake = false;
   };
 

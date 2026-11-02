@@ -39,6 +39,22 @@ spec = describe "explainRule" $ do
           ExplanationGiven cs -> cs
           ExplanationNoRuleCalled cs -> cs
 
+  -- The why and the fix answer different questions, so each says which one
+  -- it answers.
+  it "labels why a rule exists and what to do instead" $
+    case explainRule shippedRules (RuleId "CommentBareTodo") of
+      ExplanationNoRuleCalled cs -> expectationFailure (unwords ["Did not explain a rule this build has:", show cs])
+      ExplanationGiven cs ->
+        renderChunksText WithoutColours cs
+          `shouldBe` "CommentBareTodo\n\
+                     \A TODO names an issue or a URL.\n\
+                     \Why: A TODO on its own reads like a plan and goes stale in place.\n\
+                     \A reference says where the work is tracked, and a made-up one points nowhere.\n\
+                     \Instead: If the work is small and part of your task, do it and delete the TODO.\n\
+                     \Otherwise, add a URL, an issue number such as `#412`, or a ticket such as `FOO-412` to the same comment.\n\
+                     \Do not invent one: if no issue exists, ask whether to file one.\n\
+                     \Level: module\n"
+
   it "asks for colour when the terminal has it" $
     renderChunksText With8BitColours (listRules shippedRules)
       `shouldNotBe` renderChunksText WithoutColours (listRules shippedRules)

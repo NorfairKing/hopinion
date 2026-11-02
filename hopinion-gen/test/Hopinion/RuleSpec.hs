@@ -52,9 +52,15 @@ spec = do
   -- A reader meets the rule text beside the code it is about, where there is
   -- room for a line. The bound is the column this repository wraps prose at,
   -- and a rule that wants more than it is one saying two things: the second
-  -- belongs in the why.
+  -- belongs in the why or the fix.
   it "says what every rule asks for in one line" $
     [(ruleId r, T.length (ruleText r)) | r <- ruleSetRules shippedRules, T.length (ruleText r) > 80]
+      `shouldBe` []
+
+  -- The fix is the only guidance a finding gives, so a rule without one leaves
+  -- a reader with nothing to do but suppress.
+  it "says what to do instead for every rule" $
+    [ruleId r | r <- ruleSetRules shippedRules, T.null (T.strip (ruleFix r))]
       `shouldBe` []
 
   mapM_ ruleSpec (ruleSetRules shippedRules)

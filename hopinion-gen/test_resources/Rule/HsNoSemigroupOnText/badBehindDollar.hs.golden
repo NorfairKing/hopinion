@@ -5,7 +5,8 @@
      [0;90;1m•[0m                            [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m                            [0;91m╰╸[0m [0;91mConcatenate strings and text with a list, not with <> or ++.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A literal list of the pieces formats better than a <> chain.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the whole chain with one call over the list of its pieces: `concat ["at ", path]` for a String, `T.pack (concat ["at ", T.unpack path])` for a Text, and `mconcat ["at ", path]` for anything else.
+     [0;90;1m│[0;96m       Use `unwords` or `unlines` instead of `concat` only when the result stays the same.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 11 of test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -16,6 +17,8 @@
      [0;90;1m•[0m                          [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m                          [0;91m╰╸[0m [0;91mConcatenate strings and text with a list, not with <> or ++.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A literal list of the pieces formats better than a <> chain.[0m
+     [0;90;1m│[0m [0;96mHint: Replace the whole chain with one call over the list of its pieces: `concat ["at ", path]` for a String, `T.pack (concat ["at ", T.unpack path])` for a Text, and `mconcat ["at ", path]` for anything else.
+     [0;90;1m│[0;96m       Use `unwords` or `unlines` instead of `concat` only when the result stays the same.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 15 of test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs, and say why: -- [allow:HsNoSemigroupOnText] <reason>[0m
 [0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain HsNoSemigroupOnText

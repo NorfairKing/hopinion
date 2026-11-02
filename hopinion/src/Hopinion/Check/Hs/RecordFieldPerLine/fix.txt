@@ -1,0 +1,6 @@
+Put the constructor, or the value being updated, on its own line, and each field on its own line under it:
+
+  Point
+    { pointX = 0,
+      pointY = 0
+    }

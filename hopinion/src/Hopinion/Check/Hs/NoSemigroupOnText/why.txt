@@ -1,0 +1,1 @@
+A literal list of the pieces formats better than a <> chain.

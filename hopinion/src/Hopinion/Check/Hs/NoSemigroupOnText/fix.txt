@@ -1,0 +1,2 @@
+Replace the whole chain with one call over the list of its pieces: `concat ["at ", path]` for a String, `T.pack (concat ["at ", T.unpack path])` for a Text, and `mconcat ["at ", path]` for anything else.
+Use `unwords` or `unlines` instead of `concat` only when the result stays the same.

@@ -1,0 +1,2 @@
+FilePath is String, so a directory passed where a file was meant compiles.
+Path says in the type whether it is a file or a directory, and whether it is absolute or relative, and fromAbsFile and its siblings say it again at each conversion.

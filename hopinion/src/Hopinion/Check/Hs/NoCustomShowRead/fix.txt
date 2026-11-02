@@ -1,0 +1,4 @@
+If the type holds a secret, such as a password, token or key, define only `show` or only `showsPrec`, ignoring the value: `show _ = "<api key>"`.
+Give a secret inside a larger type a newtype of its own with such an instance, and derive Show on the larger type.
+Otherwise, move any text the instance produces for people or output into a function such as `renderFoo :: Foo -> Text`, call it where that text is used, and derive Show with `deriving stock (Show)`.
+Replace a written Read with a parser such as `parseFoo :: Text -> Either FooParseError Foo` at each use of `read`, `reads` or `readMaybe`, or with `deriving stock (Read)` if something needs the instance itself.

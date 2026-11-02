@@ -5,6 +5,9 @@
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA TODO names an issue or a URL.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A reference tells the reader where the work is tracked. A TODO on its own reads like a plan, and goes stale in place.[0m
+     [0;90;1m│[0m [0;96mHint: If the work is small and part of your task, do it and delete the TODO.
+     [0;90;1m│[0;96m       Otherwise, add a URL, an issue number such as `#412`, or a ticket such as `FOO-412` to the same comment.
+     [0;90;1m│[0;96m       Do not invent one: if no issue exists, ask whether to file one.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 4 of test_resources/Rule/CommentBareTodo/bad-block-comment.hs, and say why: -- [allow:CommentBareTodo] <reason>[0m
 [0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain CommentBareTodo

@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 -- | [check:ref GenValidSpecPerGenValid]
 module Hopinion.Check.Project.GenValidSpecPerGenValid.Rule (rule) where
@@ -7,6 +8,7 @@ import Data.List.NonEmpty (NonEmpty (..))
 import Hopinion.Check.Obligation
 import Hopinion.Rule (Rule)
 import Hopinion.Rule.Id
+import Hopinion.Rule.Prose (proseBeside)
 
 rule :: Rule
 rule =
@@ -16,11 +18,8 @@ rule =
         obligationText =
           "A GenValid instance obliges genValidSpec @T in the gen package's test\
           \ suite.",
-        obligationWhy =
-          "genValidSpec is what checks the generator: genValid can produce values\
-          \ the type's own Validity rejects, and every property built on it\
-          \ inherits that. The spec belongs to the package that declares the\
-          \ instance.",
+        obligationWhy = $(proseBeside "why.txt"),
+        obligationFix = $(proseBeside "fix.txt"),
         obligationClasses = "GenValid" :| [],
         obligationCombinator = "genValidSpec"
       }

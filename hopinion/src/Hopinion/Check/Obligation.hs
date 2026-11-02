@@ -114,6 +114,7 @@ data Obligation = Obligation
   { obligationId :: !RuleId,
     obligationText :: !Text,
     obligationWhy :: !Text,
+    obligationFix :: !Text,
     obligationClasses :: !(NonEmpty Text),
     obligationCombinator :: !Text
   }
@@ -124,6 +125,7 @@ obligationRule o =
     { ruleId = obligationId o,
       ruleText = obligationText o,
       ruleWhy = obligationWhy o,
+      ruleFix = obligationFix o,
       ruleImpl =
         RuleImplProject
           ProjectCheck

@@ -5,7 +5,10 @@
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance lives in the matching -gen package.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: An instance in the library is linked into everything that depends on it, so the shipped executable carries QuickCheck and the generators. The -gen package stops that at the test suite.[0m
+     [0;90;1m│[0m [0;96mHint: Move this module's GenValid instances, and the generators they use, into the library of the package's `-gen` package, in this module's name with `.Gen` appended: `Foo.Bar.Gen` for `Foo.Bar`.
+     [0;90;1m│[0;96m       Create that package or module if missing, exposing the module and starting it with `{-# OPTIONS_GHC -Wno-orphans #-}`.
+     [0;90;1m│[0;96m       Keep the Validity instances where they are.
+     [0;90;1m│[0;96m       Import the `.Gen` module in the tests that use the instances, and drop genvalidity and QuickCheck from this library's `build-depends` if nothing else uses them.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 8 of lonely/src/Lonely.hs, and say why: -- [allow:HsGenValidInGenPackage] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -16,7 +19,7 @@
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: genValidSpec is what checks the generator: genValid can produce values the type's own Validity rejects, and every property built on it inherits that. The spec belongs to the package that declares the instance.[0m
+     [0;90;1m│[0m [0;96mHint: Add `genValidSpec @T` from `Test.Syd.Validity` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 8 of lonely/src/Lonely.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -27,7 +30,9 @@
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA TODO names an issue or a URL.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A reference tells the reader where the work is tracked. A TODO on its own reads like a plan, and goes stale in place.[0m
+     [0;90;1m│[0m [0;96mHint: If the work is small and part of your task, do it and delete the TODO.
+     [0;90;1m│[0;96m       Otherwise, add a URL, an issue number such as `#412`, or a ticket such as `FOO-412` to the same comment.
+     [0;90;1m│[0;96m       Do not invent one: if no issue exists, ask whether to file one.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 4 of thing/src/Thing.hs, and say why: -- [allow:CommentBareTodo] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -38,7 +43,10 @@
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance lives in the matching -gen package.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: An instance in the library is linked into everything that depends on it, so the shipped executable carries QuickCheck and the generators. The -gen package stops that at the test suite.[0m
+     [0;90;1m│[0m [0;96mHint: Move this module's GenValid instances, and the generators they use, into the library of the package's `-gen` package, in this module's name with `.Gen` appended: `Foo.Bar.Gen` for `Foo.Bar`.
+     [0;90;1m│[0;96m       Create that package or module if missing, exposing the module and starting it with `{-# OPTIONS_GHC -Wno-orphans #-}`.
+     [0;90;1m│[0;96m       Keep the Validity instances where they are.
+     [0;90;1m│[0;96m       Import the `.Gen` module in the tests that use the instances, and drop genvalidity and QuickCheck from this library's `build-depends` if nothing else uses them.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 9 of thing/src/Thing.hs, and say why: -- [allow:HsGenValidInGenPackage] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -49,6 +57,7 @@
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: genValidSpec is what checks the generator: genValid can produce values the type's own Validity rejects, and every property built on it inherits that. The spec belongs to the package that declares the instance.[0m
+     [0;90;1m│[0m [0;96mHint: Add `genValidSpec @T` from `Test.Syd.Validity` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 9 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain CommentBareTodo

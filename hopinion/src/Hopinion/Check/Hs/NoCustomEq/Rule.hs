@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Hopinion.Check.Hs.NoCustomEq.Rule (rule) where
 
@@ -8,15 +9,15 @@ import Hopinion.Facts.Module
 import Hopinion.Facts.Name
 import Hopinion.Rule
 import Hopinion.Rule.Id
+import Hopinion.Rule.Prose (proseBeside)
 
 rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "HsNoCustomEq",
       ruleText = "Eq is derived.",
-      ruleWhy =
-        "Custom equality belongs in a function, not in the instance that every\
-        \ == goes through.",
+      ruleWhy = $(proseBeside "why.txt"),
+      ruleFix = $(proseBeside "fix.txt"),
       ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 

@@ -1,0 +1,8 @@
+Replace `f x = case x of` with `f = \case`, keeping the alternatives.
+For equations that differ only in their last argument, keep the earlier arguments and turn the equations into alternatives, with their guards and `where` clauses:
+
+  weigh n = \case
+    Good -> n
+    Bad -> negate n
+
+Add `{-# LANGUAGE LambdaCase #-}` unless the package already enables it.

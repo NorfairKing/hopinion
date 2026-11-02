@@ -12,13 +12,13 @@ import Database.Persist (PersistField (..), PersistValue (..))
 -- The failure is a type, so a caller can tell one from another, and the words
 -- are chosen by whoever reports it rather than by whoever hit it.
 data ParseError
-  = NotANumber Text
-  | OutOfRange Int Int
+  = ParseErrorNotANumber Text
+  | ParseErrorOutOfRange Int Int
 
 renderParseError :: ParseError -> Text
 renderParseError = \case
-  NotANumber t -> t
-  OutOfRange _ _ -> "out of range"
+  ParseErrorNotANumber t -> t
+  ParseErrorOutOfRange _ _ -> "out of range"
 
 parseAge :: Text -> Either ParseError Int
 parseAge _ = Right 0
@@ -75,8 +75,8 @@ spelledOutSingle = pure 0
 -- Constructors are the point: these are what a caller branches on, and what a
 -- renderer turns into words at the place that knows who is reading.
 data LookupError
-  = NoSuchKey Text
-  | KeyExpired Int
+  = LookupErrorNoSuchKey Text
+  | LookupErrorKeyExpired Int
 
 -- One constructor is still nothing to branch on, so a wrapper has to wrap
 -- something that is already a type.
@@ -95,8 +95,8 @@ newtype Complaint = Complaint Text
 -- constructor name that does not echo, and this rule cannot tell the two apart.
 -- It reports the wrapper it can be sure of and leaves this one alone, so what
 -- it misses is a type named better than it is.
-newtype RepoTypeParseError = UnknownRepoType Text
+newtype RepoTypeParseError = RepoTypeParseErrorUnknownRepoType Text
 
 renderRepoTypeParseError :: RepoTypeParseError -> Text
 renderRepoTypeParseError = \case
-  UnknownRepoType t -> T.concat ["Unknown repo type: ", t]
+  RepoTypeParseErrorUnknownRepoType t -> T.concat ["Unknown repo type: ", t]

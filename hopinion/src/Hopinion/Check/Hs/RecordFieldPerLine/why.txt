@@ -1,0 +1,2 @@
+A field per line makes changing one field a one-line diff, so review sees the field that changed rather than the whole value.
+A value with one field has nothing to line up against, so it is left alone.

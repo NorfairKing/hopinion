@@ -25,7 +25,7 @@ import qualified Data.ByteString.Lazy as LB
 import Data.Either (lefts, rights)
 import Data.List (nub, sortOn)
 import qualified Data.Map.Strict as M
-import Data.Maybe (catMaybes, mapMaybe)
+import Data.Maybe (catMaybes, isJust, mapMaybe)
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
@@ -97,10 +97,35 @@ renderedWith ::
 renderedWith render restyle rs sources report
   | isClean report = ""
   | otherwise =
-      render
-        ( layoutPretty
-            defaultLayoutOptions
-            (restyle (D.prettyDiagnostic D.WithUnicode (D.TabSize 2) (diagnosticFor rs sources report)))
+      T.concat
+        [ render
+            ( layoutPretty
+                defaultLayoutOptions
+                (restyle (D.prettyDiagnostic D.WithUnicode (D.TabSize 2) (diagnosticFor rs sources report)))
+            ),
+          whereTheWhyIs rs report
+        ]
+
+-- | A finding says what to do instead and not why, so the report says where
+-- the why is.
+-- Once under the whole report rather than under each finding, because it is
+-- the same sentence every time.
+--
+-- The executable is not named: a repository with rules of its own runs this
+-- under a name of its own.
+whereTheWhyIs :: RuleSet -> Complaints -> Text
+whereTheWhyIs rs report =
+  case [rid | ComplaintFinding f <- unComplaints report, let rid = findingRule f, isJust (ruleFor rs rid)] of
+    [] -> ""
+    rid : _ ->
+      T.pack
+        ( unlines
+            [ unwords
+                [ "Run explain with a rule's id to see why the rule exists, for example:",
+                  "explain",
+                  T.unpack (unRuleId rid)
+                ]
+            ]
         )
 
 -- | Coloured when a person is looking, plain when the output is being
@@ -183,7 +208,7 @@ findingReport rs sources f =
             (Just rid)
             (T.unpack (findingMessage f))
             [(positionOf sources (findingSpan f), D.This (T.unpack (ruleText rule)))]
-            [ D.Note (T.unpack (ruleWhy rule)),
+            [ D.Hint (T.unpack (ruleFix rule)),
               D.Hint (suppressionHint sources f)
             ]
 

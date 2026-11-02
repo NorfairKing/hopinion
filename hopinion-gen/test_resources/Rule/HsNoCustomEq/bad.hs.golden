@@ -6,6 +6,9 @@
      [0;90;1m•[0m [0;91m│ [0m
      [0;90;1m•[0m [0;91m╰╸ Eq is derived.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Custom equality belongs in a function, not in the instance that every == goes through.[0m
+     [0;90;1m│[0m [0;96mHint: If the instance compares every field, delete it and derive Eq: `deriving stock (Eq)`, `deriving newtype (Eq)` on a newtype, or `deriving stock instance Eq T` for a type from another module.
+     [0;90;1m│[0;96m       Otherwise, also write its comparison as a named function, such as `sameUserName :: User -> User -> Bool`, and use it wherever the old meaning is needed: `==` becomes a call to it, `elem x` becomes `any (sameUserName x)`, and `nub`, `group` and `delete` become `nubBy`, `groupBy` and `deleteBy`.
+     [0;90;1m│[0;96m       If a field has no Eq instance, use only the named function and derive nothing.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 8 of test_resources/Rule/HsNoCustomEq/bad.hs, and say why: -- [allow:HsNoCustomEq] <reason>[0m
 [0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain HsNoCustomEq

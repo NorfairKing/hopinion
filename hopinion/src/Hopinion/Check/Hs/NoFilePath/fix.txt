@@ -1,0 +1,5 @@
+Use `Path b t` from the path package instead of `FilePath`: `Path Abs File`, `Path Rel File`, `Path Abs Dir`, `Path Rel Dir`, or polymorphic in `b` or `t`.
+Parse a string into a path once, where it enters the program, with `parseAbsFile` and its siblings, or with `resolveFile'` and `resolveDir'` from path-io.
+Write literals as `[absfile|...|]`, `[relfile|...|]`, `[absdir|...|]` or `[reldir|...|]`.
+Use path's `</>`, `parent`, `filename` and `fileExtension` instead of System.FilePath, and path-io instead of System.Directory.
+Where a library only takes a `FilePath`, convert at the call with `fromAbsFile`, `fromRelFile`, `fromAbsDir` or `fromRelDir`, and with `toFilePath` only for a polymorphic path.

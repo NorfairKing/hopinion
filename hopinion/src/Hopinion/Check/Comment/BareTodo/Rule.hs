@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 -- | [check:ref BareTodo]
 module Hopinion.Check.Comment.BareTodo.Rule (rule) where
@@ -10,15 +11,15 @@ import Hopinion.Comment
 import Hopinion.Facts.Module
 import Hopinion.Rule
 import Hopinion.Rule.Id
+import Hopinion.Rule.Prose (proseBeside)
 
 rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "CommentBareTodo",
       ruleText = "A TODO names an issue or a URL.",
-      ruleWhy =
-        "A reference tells the reader where the work is tracked. A TODO on its\
-        \ own reads like a plan, and goes stale in place.",
+      ruleWhy = $(proseBeside "why.txt"),
+      ruleFix = $(proseBeside "fix.txt"),
       ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 

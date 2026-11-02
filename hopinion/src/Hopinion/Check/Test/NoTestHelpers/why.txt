@@ -1,0 +1,2 @@
+Test code should be easy to delete.
+Code that lives inside the test it serves goes when that test goes.

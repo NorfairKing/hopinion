@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Hopinion.Check.Hs.RecordFieldPerLine.Rule (rule) where
 
@@ -8,18 +9,15 @@ import Hopinion.Check.Hs.RecordFieldPerLine.Fact
 import Hopinion.Facts.Module
 import Hopinion.Rule
 import Hopinion.Rule.Id
+import Hopinion.Rule.Prose (proseBeside)
 
 rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "HsRecordFieldPerLine",
       ruleText = "Write a record value with more than one field a field per line.",
-      ruleWhy =
-        "A field per line makes changing one field a one-line diff, so review\
-        \ sees the field that changed rather than the whole value. Adding a\
-        \ field to a value written on one line rewrites that line and reflows\
-        \ whatever followed. A value with one field has nothing to line up\
-        \ against, so it is left alone.",
+      ruleWhy = $(proseBeside "why.txt"),
+      ruleFix = $(proseBeside "fix.txt"),
       ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 

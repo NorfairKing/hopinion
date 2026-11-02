@@ -6,6 +6,10 @@
      [0;90;1m•[0m [0;91m│ [0m
      [0;90;1m•[0m [0;91m╰╸ Show and Read are derived, or their methods ignore the value.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A written Show drifts as the type changes, and a Read written to match it drifts separately, so the pair stops roundtripping while it still compiles. Deriving keeps both in step with the fields. An instance that ignores the value prints the same text whatever it is handed, which is how a secret stays out of the logs.[0m
+     [0;90;1m│[0m [0;96mHint: If the type holds a secret, such as a password, token or key, define only `show` or only `showsPrec`, ignoring the value: `show _ = "<api key>"`.
+     [0;90;1m│[0;96m       Give a secret inside a larger type a newtype of its own with such an instance, and derive Show on the larger type.
+     [0;90;1m│[0;96m       Otherwise, move any text the instance produces for people or output into a function such as `renderFoo :: Foo -> Text`, call it where that text is used, and derive Show with `deriving stock (Show)`.
+     [0;90;1m│[0;96m       Replace a written Read with a parser such as `parseFoo :: Text -> Either FooParseError Foo` at each use of `read`, `reads` or `readMaybe`, or with `deriving stock (Read)` if something needs the instance itself.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 5 of test_resources/Rule/HsNoCustomShowRead/bad-read.hs, and say why: -- [allow:HsNoCustomShowRead] <reason>[0m
 [0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain HsNoCustomShowRead

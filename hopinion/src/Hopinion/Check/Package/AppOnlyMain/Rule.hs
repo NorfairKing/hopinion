@@ -26,6 +26,7 @@ import Hopinion.Facts.Name
 import Hopinion.Facts.Place
 import Hopinion.Rule
 import Hopinion.Rule.Id
+import Hopinion.Rule.Prose (proseBeside)
 
 -- | This rule's table, defined here because this rule is the only thing that
 -- writes it and the only thing that reads it.
@@ -56,10 +57,8 @@ rule =
   Rule
     { ruleId = RuleId "HsAppOnlyMain",
       ruleText = "An executable's own source is one Main module holding only main = theRealMain.",
-      ruleWhy =
-        "An executable's modules are private to it, so a test suite can reach\
-        \ only the library it calls into. One line naming a function in the\
-        \ library moves the code where a test can reach it.",
+      ruleWhy = $(proseBeside "why.txt"),
+      ruleFix = $(proseBeside "fix.txt"),
       ruleImpl =
         RuleImplPackage
           PackageCheck

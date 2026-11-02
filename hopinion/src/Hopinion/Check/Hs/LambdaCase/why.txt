@@ -1,0 +1,1 @@
+Equations write the function's name once each, so renaming the function reformats every equation and buries the change in the diff.

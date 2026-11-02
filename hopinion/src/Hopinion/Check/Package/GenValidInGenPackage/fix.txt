@@ -1,0 +1,4 @@
+Move this module's GenValid instances, and the generators they use, into the library of the package's `-gen` package, in this module's name with `.Gen` appended: `Foo.Bar.Gen` for `Foo.Bar`.
+Create that package or module if missing, exposing the module and starting it with `{-# OPTIONS_GHC -Wno-orphans #-}`.
+Keep the Validity instances where they are.
+Import the `.Gen` module in the tests that use the instances, and drop genvalidity and QuickCheck from this library's `build-depends` if nothing else uses them.

@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Hopinion.Check.Hs.NoSemigroupOnText.Rule (rule) where
 
@@ -6,13 +7,15 @@ import Hopinion.Check.Hs.NoSemigroupOnText.Fact
 import Hopinion.Facts.Module
 import Hopinion.Rule
 import Hopinion.Rule.Id
+import Hopinion.Rule.Prose (proseBeside)
 
 rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "HsNoSemigroupOnText",
       ruleText = "Concatenate strings and text with a list, not with <> or ++.",
-      ruleWhy = "A literal list of the pieces formats better than a <> chain.",
+      ruleWhy = $(proseBeside "why.txt"),
+      ruleFix = $(proseBeside "fix.txt"),
       ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 

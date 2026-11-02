@@ -5,7 +5,11 @@
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA comment that couples two named places carries a tag or a ref.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Prose saying that two places move together names neither of them to a tool, so nothing brings a reader to the other one when this changes. A tag and a ref do, and tagref and marginalia report the pair when one half of it goes missing. Write [tag:Name] here and [ref:Name] there, or [check:tag Name] and [check:ref Name].[0m
+     [0;90;1m│[0m [0;96mHint: Use marginalia if the repository has a `.marginalia` file or `[check:tag` annotations, tagref if it has `[tag:` annotations, and otherwise ask.
+     [0;90;1m│[0;96m       Pick an unused PascalCase name for what is shared, such as `WireFormat`.
+     [0;90;1m│[0;96m       Write `[check:tag Name]` and what has to stay in sync in a comment on this declaration, and `[check:ref Name]` in a comment on the definition of each name the prose marks, such as `'Encoder'`.
+     [0;90;1m│[0;96m       With tagref, write `[tag:Name]` and `[ref:Name]` instead.
+     [0;90;1m│[0;96m       If none of the marked names is defined in this repository, suppress the finding instead.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 4 of test_resources/Rule/CommentCouplingConnection/bad-a-bare-check-is-not-a-connection.hs, and say why: -- [allow:CommentCouplingConnection] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -16,6 +20,11 @@
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA comment that couples two named places carries a tag or a ref.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: Prose saying that two places move together names neither of them to a tool, so nothing brings a reader to the other one when this changes. A tag and a ref do, and tagref and marginalia report the pair when one half of it goes missing. Write [tag:Name] here and [ref:Name] there, or [check:tag Name] and [check:ref Name].[0m
+     [0;90;1m│[0m [0;96mHint: Use marginalia if the repository has a `.marginalia` file or `[check:tag` annotations, tagref if it has `[tag:` annotations, and otherwise ask.
+     [0;90;1m│[0;96m       Pick an unused PascalCase name for what is shared, such as `WireFormat`.
+     [0;90;1m│[0;96m       Write `[check:tag Name]` and what has to stay in sync in a comment on this declaration, and `[check:ref Name]` in a comment on the definition of each name the prose marks, such as `'Encoder'`.
+     [0;90;1m│[0;96m       With tagref, write `[tag:Name]` and `[ref:Name]` instead.
+     [0;90;1m│[0;96m       If none of the marked names is defined in this repository, suppress the finding instead.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 8 of test_resources/Rule/CommentCouplingConnection/bad-a-bare-check-is-not-a-connection.hs, and say why: -- [allow:CommentCouplingConnection] <reason>[0m
 [0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain CommentCouplingConnection

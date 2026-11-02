@@ -1,5 +1,6 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Hopinion.Check.Hs.TestOneSpecPerFile.Rule (rule) where
 
@@ -10,15 +11,15 @@ import Hopinion.Facts.Module
 import Hopinion.Facts.Place
 import Hopinion.Rule
 import Hopinion.Rule.Id
+import Hopinion.Rule.Prose (proseBeside)
 
 rule :: Rule
 rule =
   Rule
     { ruleId = RuleId "HsTestOneSpecPerFile",
       ruleText = "A test file exports exactly (spec).",
-      ruleWhy =
-        "Only the Main that gathers the specs reads a test file, and it asks for\
-        \ spec alone.",
+      ruleWhy = $(proseBeside "why.txt"),
+      ruleFix = $(proseBeside "fix.txt"),
       ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
 

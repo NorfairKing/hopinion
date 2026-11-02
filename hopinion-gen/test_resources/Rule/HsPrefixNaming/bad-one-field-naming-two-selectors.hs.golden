@@ -5,7 +5,12 @@
      [0;90;1m•[0m     [0;91m┬[0m 
      [0;90;1m•[0m     [0;91m╰╸[0m [0;91mName a constructor or field after its type, and a newtype's field unExample.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A constructor and a field are in scope across the whole module that declares them and across every module importing it, where the type they belong to is not written beside them. The prefix is what says which type a name at a use site is about, and it is what keeps two types in one module from wanting the same field name. The whole of the type's name, because an abbreviation is a second name for the type that nothing keeps in step with the first. The one field of a newtype is the exception: it has no sibling to be told apart from, so a prefix would only repeat what the declaration says, and the name says that applying it undoes the wrapper instead.[0m
+     [0;90;1m│[0m [0;96mHint: Name constructors and fields after their type, such as:
+     [0;90;1m│[0;96m       
+     [0;90;1m│[0;96m         data Shape = ShapeCircle Double | ShapeSquare Double
+     [0;90;1m│[0;96m         data Point = Point {pointX :: !Int, pointY :: !Int}
+     [0;90;1m│[0;96m         data URL = URL {urlHost :: !Text}
+     [0;90;1m│[0;96m         newtype UserId = UserId {unUserId :: Text}[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 4 of test_resources/Rule/HsPrefixNaming/bad-one-field-naming-two-selectors.hs, and say why: -- [allow:HsPrefixNaming] <reason>[0m
 [0;90;1m─────╯[0m
 
@@ -16,6 +21,12 @@
      [0;90;1m•[0m        [0;91m┬[0m 
      [0;90;1m•[0m        [0;91m╰╸[0m [0;91mName a constructor or field after its type, and a newtype's field unExample.[0m
      [0;90;1m•[0m
-     [0;90;1m│[0m [0;96mNote: A constructor and a field are in scope across the whole module that declares them and across every module importing it, where the type they belong to is not written beside them. The prefix is what says which type a name at a use site is about, and it is what keeps two types in one module from wanting the same field name. The whole of the type's name, because an abbreviation is a second name for the type that nothing keeps in step with the first. The one field of a newtype is the exception: it has no sibling to be told apart from, so a prefix would only repeat what the declaration says, and the name says that applying it undoes the wrapper instead.[0m
+     [0;90;1m│[0m [0;96mHint: Name constructors and fields after their type, such as:
+     [0;90;1m│[0;96m       
+     [0;90;1m│[0;96m         data Shape = ShapeCircle Double | ShapeSquare Double
+     [0;90;1m│[0;96m         data Point = Point {pointX :: !Int, pointY :: !Int}
+     [0;90;1m│[0;96m         data URL = URL {urlHost :: !Text}
+     [0;90;1m│[0;96m         newtype UserId = UserId {unUserId :: Text}[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 4 of test_resources/Rule/HsPrefixNaming/bad-one-field-naming-two-selectors.hs, and say why: -- [allow:HsPrefixNaming] <reason>[0m
 [0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain HsPrefixNaming
