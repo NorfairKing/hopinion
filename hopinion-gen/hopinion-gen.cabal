@@ -352,6 +352,7 @@ library
     , genvalidity-containers
     , genvalidity-path
     , genvalidity-text
+    , ghc-lib-parser
     , hopinion
     , hopinion-rules
     , text

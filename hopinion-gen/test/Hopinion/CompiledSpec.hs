@@ -13,7 +13,7 @@ import Hopinion.Compiled
 import Hopinion.Facts.Name
 import Hopinion.Hie (DeclaredInstance (..), compiledModuleName)
 import Path (parseRelFile, reldir, relfile, toFilePath, (</>))
-import Path.IO (ensureDir, removeFile, withSystemTempDir)
+import Path.IO (copyFile, ensureDir, removeFile, withSystemTempDir)
 import System.Process (CreateProcess (..), proc, readCreateProcess)
 import Test.Syd
 
@@ -151,6 +151,30 @@ spec = do
 
     it "reads the .hie file once when the interface beside it is asked for first" $
       askingTwice askInterface askNames
+
+    -- Covered means answerable: a module the coverage check lets through is
+    -- one whose interface a rule can then be given.
+    it "answers for an interface wherever coverage found one" $
+      withSystemTempDir "hopinion-hie" $ \tmp -> do
+        let partial = tmp </> [reldir|partial|]
+        let whole = tmp </> [reldir|whole|]
+        ensureDir partial
+        ensureDir (whole </> [reldir|src|])
+        writeFile (toFilePath (whole </> [relfile|src/Fixture.hs|])) fixture
+        _ <-
+          readCreateProcess
+            (proc "ghc" ["-v0", "-fwrite-ide-info", "-outputdir", ".", "-hiedir", ".", "src/Fixture.hs"])
+              { cwd = Just (toFilePath whole)
+              }
+            ""
+        copyFile (whole </> [relfile|Fixture.hie|]) (partial </> [relfile|Fixture.hie|])
+        compiled <-
+          compiledModulesFor
+            (HieDirectories [partial, whole])
+            [(ModuleKey "Fixture", rp)]
+        uncovered <- uncoveredModules compiled
+        uncovered `shouldBe` []
+        askInterface compiled
 
   describe "sameSourceFile" $ do
     it "matches a path relative to the package against one relative to the repository" $

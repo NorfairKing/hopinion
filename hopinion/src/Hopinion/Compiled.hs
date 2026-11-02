@@ -149,7 +149,7 @@ compiledModulesFor dirs mks = do
   where
     artifactsFor (mk, rp) = do
       compiled <- memoizeMVar (lookUp dirs mk rp)
-      interface <- memoizeMVar (runMemoized compiled >>= lookUpInterface mk)
+      interface <- memoizeMVar (runMemoized compiled >>= lookUpInterface dirs mk rp)
       pure
         ( rp,
           ModuleArtifacts
@@ -351,26 +351,43 @@ lookUp (HieDirectories dirs) mk rp = case artifactFileOf "hie" mk of
 -- because an interface carries no source path and so cannot say which of two
 -- components' modules called @Main@ it belongs to. The @.hie@ file can, so it
 -- picks the directory and the interface is read from the one it picked.
--- A @.hie@ file that answered nowhere leaves nowhere to look, for the same
--- reason it gave.
-lookUpInterface :: ModuleKey -> Answer (Path Abs Dir, CompiledModule) -> IO (Answer CompiledInterface)
-lookUpInterface mk = \case
-  AnswerNothingThere -> pure AnswerNothingThere
-  AnswerUnusable whys -> pure (AnswerUnusable whys)
-  Answered (d, _) -> case artifactFileOf "hi" mk of
-    Nothing -> pure AnswerNothingThere
-    Just relative -> do
-      let file = d </> relative
-      let path = toFilePath file
-      result <- forgivingAbsence (readCompiledInterface file)
-      pure $ case result of
-        -- Unusable rather than nothing there, because this directory is the
-        -- one that does hold this module: saying nothing would report the
-        -- module as nowhere, when its interface was not written beside its
-        -- names.
-        Nothing -> AnswerUnusable [T.pack (unwords [path, "is not there, though the .hie beside it is about this module"])]
-        Just (Left err) -> AnswerUnusable [unreadable file (renderArtifactUnreadable err)]
-        Just (Right interface) -> Answered interface
+--
+-- A directory whose @.hie@ file answers and whose interface is not there is
+-- passed over for the next one that answers, because 'uncoveredModules' counts
+-- an interface in any directory, and a module it lets through has to be one a
+-- rule can be given.
+-- The first answer is the memoised one, so this reads each later @.hie@ file
+-- at most once and the first not again.
+lookUpInterface :: HieDirectories -> ModuleKey -> Path Rel File -> Answer (Path Abs Dir, CompiledModule) -> IO (Answer CompiledInterface)
+lookUpInterface (HieDirectories dirs) mk rp = go []
+  where
+    go :: [Text] -> Answer (Path Abs Dir, CompiledModule) -> IO (Answer CompiledInterface)
+    go whys = \case
+      AnswerNothingThere -> pure (if null whys then AnswerNothingThere else AnswerUnusable whys)
+      AnswerUnusable theirs -> pure (AnswerUnusable (whys ++ theirs))
+      Answered (d, _) -> do
+        here <- interfaceIn d
+        case here of
+          Answered interface -> pure (Answered interface)
+          AnswerNothingThere -> pure AnswerNothingThere
+          AnswerUnusable theirs -> do
+            later <- lookUp (HieDirectories (drop 1 (dropWhile (/= d) dirs))) mk rp
+            go (whys ++ theirs) later
+
+    interfaceIn :: Path Abs Dir -> IO (Answer CompiledInterface)
+    interfaceIn d = case artifactFileOf "hi" mk of
+      Nothing -> pure AnswerNothingThere
+      Just relative -> do
+        let file = d </> relative
+        result <- forgivingAbsence (readCompiledInterface file)
+        pure $ case result of
+          -- Unusable rather than nothing there, because this directory is the
+          -- one that does hold this module: saying nothing would report the
+          -- module as nowhere, when its interface was not written beside its
+          -- names.
+          Nothing -> AnswerUnusable [T.pack (unwords [toFilePath file, "is not there, though the .hie beside it is about this module"])]
+          Just (Left err) -> AnswerUnusable [unreadable file (renderArtifactUnreadable err)]
+          Just (Right interface) -> Answered interface
 
 unreadable :: Path Abs File -> Text -> Text
 unreadable file err =

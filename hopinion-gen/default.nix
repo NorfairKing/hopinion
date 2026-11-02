@@ -1,10 +1,10 @@
 { mkDerivation, autodocodec-yaml, base, containers, filepath
 , genvalidity, genvalidity-aeson, genvalidity-containers
 , genvalidity-path, genvalidity-sydtest, genvalidity-sydtest-aeson
-, genvalidity-text, hopinion, hopinion-hie, hopinion-rules, lib
-, ormolu, path, path-io, persistent, process, QuickCheck
-, safe-coloured-text, sydtest, sydtest-aeson, sydtest-discover
-, text, yaml
+, genvalidity-text, ghc-lib-parser, hopinion, hopinion-hie
+, hopinion-rules, lib, ormolu, path, path-io, persistent, process
+, QuickCheck, safe-coloured-text, sydtest, sydtest-aeson
+, sydtest-discover, text, yaml
 }:
 mkDerivation {
   pname = "hopinion-gen";
@@ -14,8 +14,8 @@ mkDerivation {
   isExecutable = true;
   libraryHaskellDepends = [
     base genvalidity genvalidity-aeson genvalidity-containers
-    genvalidity-path genvalidity-text hopinion hopinion-rules
-    QuickCheck text
+    genvalidity-path genvalidity-text ghc-lib-parser hopinion
+    hopinion-rules QuickCheck text
   ];
   executableHaskellDepends = [ base ];
   testHaskellDepends = [

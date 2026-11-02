@@ -31,6 +31,7 @@ library:
   - genvalidity-path
   - genvalidity-text
   - hopinion
+  - ghc-lib-parser
   - hopinion-rules
   - text
 

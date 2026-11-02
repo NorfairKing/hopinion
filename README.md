@@ -37,13 +37,16 @@ Take the overlay, and one derivation checks the whole repository:
 ## Adding rules of your own
 
 A rule is a `Rule` value from `hopinion`. Write it in a library of your
-own that depends on `hopinion` and `hopinion-rules`, and give that library an
-executable:
+own that depends on `hopinion` and `hopinion-rules`, together with a function
+that runs them:
 
 ```haskell
-main :: IO ()
-main = hopinionWith (builtinRules ++ [myRule])
+myHopinion :: IO ()
+myHopinion = hopinionWith (builtinRules ++ [myRule])
 ```
+
+Give that library an executable whose `main` is `myHopinion` and nothing
+else, which is what hopinion's own `HsAppOnlyMain` rule asks of it.
 
 Pass that executable to `makeHopinionCheck` as `exe`.
 The rules hopinion ships are written against the same API, so a rule never
