@@ -89,6 +89,18 @@ otherwise own privately is the same three columns, the same join and the same
 two questions put to the compiler, and restating all of that per rule would be
 four hundred lines of agreement waiting to drift.
 
+**A rule never needs a change to the `hopinion` library.** A repository writing a
+rule of its own cannot edit the library it depends on, so nothing a shipped
+rule does may need that either. The shipped rules live in the
+`hopinion-rules` package and the framework in `hopinion`, so the compiler
+holds the core to knowing no rule: a shipped rule can only reach what any other package can.
+What makes that possible without paying for it twice is that every source is
+read once and handed to every rule whole. A module is parsed once, and a
+module rule and a carry get the parse as well as the shared facts, so a fact
+only one rule reads is extracted by that rule. A `.hie` or `.hi` file is read
+once, memoised, and handed over as the compiler's own value, so a rule that
+wants something no helper reads out of it reads it for itself.
+
 **A type belongs to whatever gives it meaning.** A rule's own fact is in that
 rule's directory; what more than one rule reads is under `Hopinion.Facts`, one
 type per module, and no module re-exports another. That is what makes a
@@ -208,8 +220,8 @@ Everything that needs the module-local declaration list and call graph.
 
 `HsTestOneSpecPerFile` and `TestNoTestHelpers` shipped ahead of the rest of this
 milestone. Both read the top-level declaration list and neither walks the module
-itself, so they cost the two facts the context now carries, the declarations and
-the export list, and nothing more. Their measurement is recorded: zero findings
+itself, so they cost two facts, the shared declarations and the export list the
+export rule reads for itself, and nothing more. Their measurement is recorded: zero findings
 for the export rule against this repository, and sixty-one for the helper rule,
 every one of them in this repository's own test suite and every one of them
 fixed rather than suppressed: the helpers that hid what a test asserts became
@@ -240,6 +252,8 @@ sixteen rules that want declarations and expressions. So the walking gets
 centralised before the second one arrives: one pass that visits each node once
 and hands it to whichever collectors asked for that shape of node, rather than a
 traversal per fact.
+A collector is something a rule brings, never a case in the pass, because a
+rule outside this repository has to be able to bring one too.
 
 Three things that rule had to work out belong to that pass rather than to it,
 because every rule about an expression needs them and each is a way to be
@@ -318,8 +332,9 @@ For a rule in a family that already has a combinator:
 1. Write `Hopinion/Check/<Area>/<Name>/Rule.hs`, exporting only `rule`, with its
    id written as a literal in it. A rule is a directory, so anything else only
    that rule needs goes beside it: `Fact.hs` for a fact nothing else reads,
-   `Extract.hs` for the reading of the parse tree that produces it. A rule that
-   needs neither is the one module.
+   `Extract.hs` for the reading of the parse tree that produces it, from the
+   `ParsedModule` the check is handed. A rule that needs neither is the one
+   module.
 2. Add one line to `builtinRules`.
 3. Add `test_resources/Rule/<RuleId>/good.hs` and `bad.hs`. A `scenarioDir` runs
    one test per file, so a further case is a further file named `good*` or
@@ -331,7 +346,9 @@ For a rule in a family that already has a combinator:
    the shipping class.
 
 Step 2 is the only edit outside the rule's own directory and its resources,
-unless the fact it brings is one ModuleContext has to carry. Adding the module
+and none of it is in the `hopinion` library. A fact a second rule starts reading may
+move into `Hopinion.Facts` so the two share it, which is a choice made for
+sharing rather than a step a rule cannot do without. Adding the module
 and not the line leaves a rule nothing runs, which the resource listing test
 catches in both directions. Step 5 is the only step that needs judgement.
 
@@ -341,8 +358,9 @@ returns the rule, and the resources are a repository per case rather than a
 module, since the level is project.
 
 A rule a repository writes for itself takes the same steps minus the second: it
-goes in that repository's own library, in a function that calls `hopinionWith`
-and that its executable's `main` names.
+goes in that repository's own library, which depends on `hopinion` and on
+`hopinion-rules`, in a function that calls `hopinionWith` with `builtinRules` and its
+own rules, and that its executable's `main` names.
 
 ### The budget
 
@@ -355,7 +373,7 @@ and that its executable's `main` names.
 | Files touched outside the rule's own module | 1 |
 
 If adding a rule needs more than that, either it belongs to a family with no
-combinator yet, or it needs a fact that extraction does not produce. Both are
+combinator yet, or it needs a fact no rule has extracted yet. Both are
 real costs, and both are paid once on behalf of every later rule of the same
 shape.
 

@@ -103,7 +103,7 @@
             # Named rather than discovered, because the example repositories under
             # hopinion-gen/test_resources are packages too and are deliberately
             # not this one's.
-            packages = [ "hopinion" "hopinion-hie" "hopinion-gen" ];
+            packages = [ "hopinion" "hopinion-rules" "hopinion-hie" "hopinion-gen" ];
           };
         in
         {

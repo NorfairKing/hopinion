@@ -102,10 +102,10 @@ spec = do
 
   let readingInstances :: Path Abs File -> IO [DeclaredInstance]
       readingInstances path = do
-        result <- readDeclaredInstances path
+        result <- readCompiledInterface path
         case result of
           Left err -> fail (T.unpack (renderArtifactUnreadable err))
-          Right instances -> pure instances
+          Right interface -> pure (compiledInterfaceInstances interface)
 
   describe "readCompiledModule" $ do
     -- The met side of an obligation rests on exactly this: two names that
@@ -139,9 +139,9 @@ spec = do
         result <- readCompiledModule path
         case result of
           Left _ -> pure ()
-          Right compiled -> expectationFailure (unwords ["Read a module out of nothing:", show compiled])
+          Right compiled -> expectationFailure (unwords ["Read a module out of nothing:", T.unpack (compiledModuleName compiled)])
 
-  describe "readDeclaredInstances" $ do
+  describe "readCompiledInterface" $ do
     -- The made side of an obligation rests on this: an instance that is in the
     -- module and in no source anybody wrote. Nothing in Fixture.hs mentions
     -- Gennable at all.
@@ -169,7 +169,7 @@ spec = do
       withSystemTempDir "hopinion-hie" $ \tmp -> do
         let path = tmp </> [relfile|Fixture.hi|]
         writeFile (toFilePath path) "this is not an interface"
-        result <- readDeclaredInstances path
+        result <- readCompiledInterface path
         case result of
           Left _ -> pure ()
-          Right instances -> expectationFailure (unwords ["Read instances out of nothing:", show instances])
+          Right interface -> expectationFailure (unwords ["Read instances out of nothing:", show (compiledInterfaceInstances interface)])

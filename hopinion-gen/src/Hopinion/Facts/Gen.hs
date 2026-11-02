@@ -12,22 +12,22 @@ import Data.GenValidity.Text ()
 import qualified Data.Text as T
 import Hopinion.Annotation (OverBroad, Unused)
 import Hopinion.Check.Hs.LambdaCase.Fact
+import Hopinion.Check.Hs.NoFilePath.Fact
 import Hopinion.Check.Hs.NoSemigroupOnText.Fact
 import Hopinion.Check.Hs.NoStringError.Fact
+import Hopinion.Check.Hs.TestOneSpecPerFile.Fact
+import Hopinion.Check.Obligation.Fact
 import Hopinion.Check.Package.AppOnlyMain.Fact
 import Hopinion.Choices (Choices)
 import Hopinion.Comment (Attachment, CommentFact, CommentStyle, RawComment)
 import Hopinion.Facts.Component
 import Hopinion.Facts.Decl
-import Hopinion.Facts.Export
 import Hopinion.Facts.Instance
 import Hopinion.Facts.Name
 import Hopinion.Facts.Outcome
 import Hopinion.Facts.Package
 import Hopinion.Facts.Place
 import Hopinion.Facts.Suppression
-import Hopinion.Facts.TemplateHaskell
-import Hopinion.Facts.TypeApp
 import Hopinion.Facts.Version
 import Hopinion.Report (Complaint, Complaints, Failure, ParseFailure, StoreProblem)
 import Hopinion.Rule (Finding)
@@ -129,6 +129,8 @@ instance GenValid ArgumentShape
 instance GenValid CasedArgument
 
 instance GenValid StrayAppDecl
+
+instance GenValid NameFact
 
 instance GenValid ConcatOperand
 

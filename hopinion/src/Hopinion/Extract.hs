@@ -1,11 +1,12 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
--- | Turning a parse tree into facts.
+-- | Turning a parse tree into the facts more than one rule reads.
 --
--- This module grows with every new fact and never with a new rule, which is
--- the trade that keeps a rule small. It is therefore also the part to review
--- hardest: a fact that is wrong here is wrong for every rule that reads it.
+-- This module grows with a fact that a second rule starts reading, and never
+-- with a rule: a fact only one rule reads is extracted beside that rule, from
+-- the parse the context carries. It is the part to review hardest, because a
+-- fact that is wrong here is wrong for every rule that reads it.
 module Hopinion.Extract
   ( ExtractInput (..),
     extractModuleContext,
@@ -21,24 +22,14 @@ import qualified Data.Text as T
 import GHC.Hs
 import GHC.Types.SrcLoc (GenLocated (..), unLoc)
 import Hopinion.Annotation (annotationsOf)
-import Hopinion.Check.Hs.LambdaCase.Extract (casedArgumentsOf)
-import Hopinion.Check.Hs.NoSemigroupOnText.Extract (concatChainsOf)
-import Hopinion.Check.Hs.NoStringError.Extract (errorDeclsOf, errorSlotsOf)
-import Hopinion.Check.Hs.PrefixNaming.Extract (unprefixedNamesOf)
-import Hopinion.Check.Hs.RecordFieldPerLine.Extract (crowdedRecordsOf)
-import Hopinion.Check.Package.AppOnlyMain.Extract (strayAppDeclsOf)
 import Hopinion.Comment
 import Hopinion.Extract.Ghc
 import Hopinion.Facts.Component
 import Hopinion.Facts.Decl
-import Hopinion.Facts.Export
 import Hopinion.Facts.Instance
 import Hopinion.Facts.Module
 import Hopinion.Facts.Name
-import Hopinion.Facts.Occurrence
-import Hopinion.Facts.Outcome
 import Hopinion.Facts.Place
-import Hopinion.Facts.TemplateHaskell
 import Hopinion.Parse
 import Hopinion.Rule (RuleSet)
 import Path (File, Path, Rel)
@@ -79,66 +70,36 @@ extractModuleContext input parsed =
           moduleContextComponent = extractInputComponent input,
           moduleContextComponentName = extractInputComponentName input,
           moduleContextDecls = decls,
-          moduleContextExports = exportListOf rp (unLoc (parsedModuleAst parsed)),
           moduleContextInstances = concatMap (instanceFactsOf rp ref) (hsmodDecls (unLoc (parsedModuleAst parsed))),
-          moduleContextNames = map (nameFactOf ref decls) (parsedModuleNames parsed),
           moduleContextComments = attached,
           moduleContextAnnotations = annotations,
           moduleContextAnnotationProblems = annotationProblems,
-          moduleContextTypeApps = parsedModuleTypeApps parsed,
-          moduleContextConcatChains = concatChainsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
-          moduleContextErrorSlots = errorSlotsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
-          moduleContextErrorDecls = errorDeclsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
-          moduleContextCasedArguments = casedArgumentsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
-          moduleContextCrowdedRecords = crowdedRecordsOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
-          moduleContextUnprefixedNames = unprefixedNamesOf rp ref decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
-          moduleContextStrayAppDecls = strayAppDeclsOf rp decls (hsmodDecls (unLoc (parsedModuleAst parsed))),
-          moduleContextTemplateHaskell = parsedModuleTemplateHaskell parsed,
-          moduleContextOutcome = ParseOutcomeOk
+          moduleContextSyntax = ModuleSyntaxParsed parsed
         }
 
 -- | A module that did not parse still produces facts, because the project
 -- layer has to treat the failure as an error rather than as a module with no
 -- declarations.
 failedModuleContext :: ExtractInput -> Position -> Text -> ModuleContext
-failedModuleContext input errLoc errMsg = (emptyModuleContext input) {moduleContextOutcome = ParseOutcomeFailed errLoc errMsg}
+failedModuleContext input errLoc errMsg = emptyModuleContext input (ModuleSyntaxFailed errLoc errMsg)
 
 -- | A module that is declared and present but holds no Haskell to read.
 preprocessedModuleContext :: ExtractInput -> ModuleContext
-preprocessedModuleContext input = (emptyModuleContext input) {moduleContextOutcome = ParseOutcomeNotHaskellSource}
+preprocessedModuleContext input = emptyModuleContext input ModuleSyntaxNotHaskellSource
 
-emptyModuleContext :: ExtractInput -> ModuleContext
-emptyModuleContext input =
+emptyModuleContext :: ExtractInput -> ModuleSyntax -> ModuleContext
+emptyModuleContext input syntax =
   ModuleContext
     { moduleContextModule = extractInputModule input,
       moduleContextPath = extractInputRelPath input,
       moduleContextComponent = extractInputComponent input,
       moduleContextComponentName = extractInputComponentName input,
       moduleContextDecls = [],
-      moduleContextExports = ExportListNone,
       moduleContextInstances = [],
-      moduleContextNames = [],
       moduleContextComments = [],
       moduleContextAnnotations = [],
       moduleContextAnnotationProblems = [],
-      moduleContextTypeApps = [],
-      moduleContextConcatChains = [],
-      moduleContextErrorSlots = [],
-      moduleContextErrorDecls = [],
-      moduleContextCasedArguments = [],
-      moduleContextCrowdedRecords = [],
-      moduleContextUnprefixedNames = [],
-      moduleContextStrayAppDecls = [],
-      moduleContextTemplateHaskell = TemplateHaskellUseNone,
-      moduleContextOutcome = ParseOutcomeOk
-    }
-
-nameFactOf :: ModuleRef -> [DeclFact] -> NameOccurrence -> NameFact
-nameFactOf ref decls occ =
-  NameFact
-    { nameFactText = nameOccurrenceText occ,
-      nameFactSpan = nameOccurrenceSpan occ,
-      nameFactScope = declScopeOf ref decls (nameOccurrenceSpan occ)
+      moduleContextSyntax = syntax
     }
 
 -- | The name an instance declaration is known by, shared by the declaration
@@ -225,47 +186,6 @@ dataOrNewtype defn = case dd_cons defn of
 
 dropWildCard :: LHsSigWcType GhcPs -> LHsSigType GhcPs
 dropWildCard = hswc_body
-
--- | The export list, and the entries in it.
---
--- Documentation is not an entry: a section heading or a paragraph in an export
--- list exports nothing, so a list holding one and a name exports one thing.
-exportListOf :: Path Rel File -> HsModule GhcPs -> ExportList
-exportListOf rp m = case hsmodExports m of
-  Nothing -> ExportListNone
-  Just lies ->
-    ExportList
-      (spanOfSrcSpan rp (getLocA lies))
-      (mapMaybe (exportedText . unLoc) (unLoc lies))
-
-exportedText :: IE GhcPs -> Maybe Text
-exportedText = \case
-  IEVar _ n _ -> Just (wrappedText (unLoc n))
-  IEThingAbs _ n _ -> Just (wrappedText (unLoc n))
-  IEThingAll _ n _ -> Just (subordinates (wrappedText (unLoc n)) [".."])
-  IEThingWith _ n wildcard ns _ ->
-    Just
-      ( subordinates
-          (wrappedText (unLoc n))
-          (case wildcard of NoIEWildcard -> map (wrappedText . unLoc) ns; IEWildcard _ -> [".."])
-      )
-  IEModuleContents _ name -> Just (T.pack (unwords ["module", moduleNameString (unLoc name)]))
-  IEGroup {} -> Nothing
-  IEDoc {} -> Nothing
-  IEDocNamed {} -> Nothing
-
-subordinates :: Text -> [Text] -> Text
-subordinates name children = T.concat [name, "(", T.intercalate ", " children, ")"]
-
-wrappedText :: IEWrappedName GhcPs -> Text
-wrappedText = \case
-  IEName _ n -> rdrText (unLoc n)
-  IEDefault _ n -> adorned "default" n
-  IEPattern _ n -> adorned "pattern" n
-  IEType _ n -> adorned "type" n
-  where
-    adorned :: String -> LIdP GhcPs -> Text
-    adorned keyword n = T.pack (unwords [keyword, T.unpack (rdrText (unLoc n))])
 
 instanceFactsOf :: Path Rel File -> ModuleRef -> LHsDecl GhcPs -> [InstanceFact]
 instanceFactsOf rp ref ldecl =

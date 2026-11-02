@@ -1,35 +1,26 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Hopinion.Facts.Module
   ( ModuleContext (..),
+    ModuleSyntax (..),
+    moduleContextOutcome,
     moduleContextRef,
     moduleContextIsSpecFile,
     isSpecFilePath,
   )
 where
 
+import Data.Text (Text)
 import qualified Data.Text as T
-import GHC.Generics (Generic)
-import Hopinion.Check.Hs.LambdaCase.Fact
-import Hopinion.Check.Hs.NoSemigroupOnText.Fact
-import Hopinion.Check.Hs.NoStringError.Fact
-import Hopinion.Check.Hs.PrefixNaming.Fact
-import Hopinion.Check.Hs.RecordFieldPerLine.Fact
-import Hopinion.Check.Package.AppOnlyMain.Fact
 import Hopinion.Comment (CommentFact (..))
 import Hopinion.Facts.Component
 import Hopinion.Facts.Decl
-import Hopinion.Facts.Export
 import Hopinion.Facts.Instance
 import Hopinion.Facts.Name
-import Hopinion.Facts.Occurrence
 import Hopinion.Facts.Outcome
 import Hopinion.Facts.Place
 import Hopinion.Facts.Suppression
-import Hopinion.Facts.TemplateHaskell
-import Hopinion.Facts.TypeApp
+import Hopinion.Parse (ParsedModule)
 import Path (File, Path, Rel, filename)
 
 -- | Everything the parser saw about one module.
@@ -37,6 +28,11 @@ import Path (File, Path, Rel, filename)
 -- Never serialised, and that is the point: a rule that reads one runs in the
 -- process that produced it, so a fact it turns straight into a finding is never
 -- written down. What a rule does have to carry, that rule says.
+--
+-- The facts here are the ones more than one part of the tool reads.
+-- A fact only one rule reads is that rule's to extract from the parse tree in
+-- 'moduleContextSyntax', so that a rule, shipped or not, never needs a field
+-- added here.
 data ModuleContext = ModuleContext
   { moduleContextModule :: !ModuleKey,
     moduleContextPath :: !(Path Rel File),
@@ -46,24 +42,32 @@ data ModuleContext = ModuleContext
     moduleContextComponentName :: !ComponentName,
     -- | Every top-level declaration, in source order.
     moduleContextDecls :: ![DeclFact],
-    moduleContextExports :: !ExportList,
     moduleContextInstances :: ![InstanceFact],
-    moduleContextNames :: ![NameFact],
     moduleContextComments :: ![CommentFact],
     moduleContextAnnotations :: ![AnnotationFact],
     moduleContextAnnotationProblems :: ![AnnotationProblem],
-    moduleContextTypeApps :: ![TypeAppFact],
-    moduleContextConcatChains :: ![ConcatChain],
-    moduleContextErrorSlots :: ![ErrorSlot],
-    moduleContextErrorDecls :: ![ErrorDecl],
-    moduleContextCasedArguments :: ![CasedArgument],
-    moduleContextCrowdedRecords :: ![CrowdedRecord],
-    moduleContextUnprefixedNames :: ![UnprefixedName],
-    moduleContextStrayAppDecls :: ![StrayAppDecl],
-    moduleContextTemplateHaskell :: !TemplateHaskellUse,
-    moduleContextOutcome :: !ParseOutcome
+    moduleContextSyntax :: !ModuleSyntax
   }
-  deriving stock (Show, Eq, Generic)
+
+-- | What reading the module's source came to, with the parse itself when there
+-- was one.
+--
+-- The parse travels with the facts so that the module is parsed once however
+-- many rules read it.
+data ModuleSyntax
+  = ModuleSyntaxParsed !ParsedModule
+  | ModuleSyntaxFailed !Position !Text
+  | -- | The module is real and its source is not Haskell: a preprocessor
+    -- generates it at build time.
+    ModuleSyntaxNotHaskellSource
+
+-- | What reading the module came to, as it is written down for the layers that
+-- never see the parse.
+moduleContextOutcome :: ModuleContext -> ParseOutcome
+moduleContextOutcome ctx = case moduleContextSyntax ctx of
+  ModuleSyntaxParsed _ -> ParseOutcomeOk
+  ModuleSyntaxFailed pos msg -> ParseOutcomeFailed pos msg
+  ModuleSyntaxNotHaskellSource -> ParseOutcomeNotHaskellSource
 
 -- | Which module this is, in which component, which is what a scope names.
 moduleContextRef :: ModuleContext -> ModuleRef

@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | The rule sets the specs and the example executable run with.
@@ -14,9 +15,11 @@ where
 
 import Data.Either (fromRight)
 import qualified Data.Text as T
+import GHC.Parser.Lexer (Token (..))
 import Hopinion (hopinionWith)
-import Hopinion.Comment
+import Hopinion.Extract.Ghc (declScopeOf)
 import Hopinion.Facts.Module
+import Hopinion.Parse (ParsedModule (..), SourceToken (..))
 import Hopinion.Rule
 import Hopinion.Rule.Id
 import Hopinion.Rule.Registry (builtinRules)
@@ -38,6 +41,10 @@ shippedRules = fromRight emptyRuleSet (ruleSet builtinRules [])
 -- example executable run are looking at one value rather than at two that have
 -- to be kept the same. Deliberately about something no shipped rule is about,
 -- so that a run finding it can only have found this.
+--
+-- It reads the comments off the parse's tokens rather than off the shared
+-- comment facts, so that the way an outside rule reaches the parse is a way
+-- the end to end checks walk.
 exampleRule :: Rule
 exampleRule =
   Rule
@@ -50,18 +57,25 @@ exampleRule =
       ruleImpl = RuleImplModule (ModuleCheckFromSource check)
     }
   where
-    check mf =
+    check :: ModuleContext -> ParsedModule -> CheckResult
+    check mf parsed =
       findingsResult
         [ Finding
             { findingRule = ruleId exampleRule,
-              findingScope = scopeOfComment (moduleContextRef mf) cf,
-              findingSpan = commentFactSpan cf,
+              findingScope = declScopeOf (moduleContextRef mf) (moduleContextDecls mf) sp,
+              findingSpan = sp,
               findingMessage = "A comment in capitals."
             }
-        | cf <- moduleContextComments mf,
-          commentFactStyle cf /= CommentStylePragma,
-          isShouting (commentFactText cf)
+        | SourceToken tok sp <- parsedModuleTokens parsed,
+          Just text <- [commentText tok],
+          isShouting (T.pack text)
         ]
+
+    commentText :: Token -> Maybe String
+    commentText = \case
+      ITlineComment s _ -> Just s
+      ITblockComment s _ -> Just s
+      _ -> Nothing
 
     isShouting t =
       let letters = T.filter (\c -> c `elem` ['a' .. 'z'] || c `elem` ['A' .. 'Z']) t
