@@ -9,6 +9,7 @@
 -- one test suite's compiled module be read as another's.
 module Hopinion.CompiledSpec (spec) where
 
+import qualified Data.Text as T
 import Hopinion.Compiled
 import Hopinion.Facts.Name
 import Hopinion.Hie (DeclaredInstance (..), compiledModuleName)
@@ -175,6 +176,54 @@ spec = do
         uncovered <- uncoveredModules compiled
         uncovered `shouldBe` []
         askInterface compiled
+
+  -- A file that is not there and a file that is there and unreadable call for
+  -- different fixes, so the problem a rule's question ends in says which.
+  describe "what a missing file is called" $ do
+    it "says nothing is there when no directory has the .hie file" $
+      withSystemTempDir "hopinion-hie" $ \tmp -> do
+        compiled <-
+          compiledModulesFor
+            (HieDirectories [tmp])
+            [(ModuleKey "Thing", [relfile|thing/src/Thing.hs|])]
+        compiledModuleOf [relfile|thing/src/Thing.hs|] compiled
+          `shouldThrow` ( ==
+                            ArtifactProblem
+                              ( T.pack
+                                  ( unlines
+                                      [ "A build's .hie files were given, so every module has to be covered by them, but Thing from thing/src/Thing.hs is not. A rule asked what that module's code generates and would have been told nothing, which reads exactly like a module that generates nothing.",
+                                        concat ["  nothing at ", toFilePath tmp]
+                                      ]
+                                  )
+                              )
+                        )
+
+    it "says the interface is not there when only the .hie file was written" $
+      withSystemTempDir "hopinion-hie" $ \tmp -> do
+        ensureDir (tmp </> [reldir|src|])
+        writeFile (toFilePath (tmp </> [relfile|src/Fixture.hs|])) "module Fixture where\n"
+        _ <-
+          readCreateProcess
+            (proc "ghc" ["-v0", "-fwrite-ide-info", "-outputdir", ".", "-hiedir", ".", "src/Fixture.hs"])
+              { cwd = Just (toFilePath tmp)
+              }
+            ""
+        removeFile (tmp </> [relfile|Fixture.hi|])
+        compiled <-
+          compiledModulesFor
+            (HieDirectories [tmp])
+            [(ModuleKey "Fixture", [relfile|thing/src/Fixture.hs|])]
+        declaredInstancesOf [relfile|thing/src/Fixture.hs|] compiled
+          `shouldThrow` ( ==
+                            ArtifactProblem
+                              ( T.pack
+                                  ( unlines
+                                      [ "A build's .hie files were given, so every module has to be covered by them, but Fixture from thing/src/Fixture.hs is not. A rule asked what that module's code generates and would have been told nothing, which reads exactly like a module that generates nothing.",
+                                        concat ["  ", toFilePath (tmp </> [relfile|Fixture.hi|]), " is not there, though the .hie beside it is about this module"]
+                                      ]
+                                  )
+                              )
+                        )
 
   describe "sameSourceFile" $ do
     it "matches a path relative to the package against one relative to the repository" $

@@ -1,5 +1,4 @@
 {-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 
 -- | What the compiler wrote down about a module: the @.hie@ file for what it
 -- names, the @.hi@ interface for what it declares.
@@ -34,7 +33,7 @@ module Hopinion.Hie
   )
 where
 
-import Control.Exception (SomeException, displayException, evaluate, try)
+import Control.Exception (SomeException, displayException, evaluate, fromException, tryJust)
 import qualified Data.Map as M
 import Data.Maybe (mapMaybe)
 import Data.Set (Set)
@@ -64,6 +63,7 @@ import GHC.Types.Name.Occurrence (occNameString)
 import GHC.Unit.Module (moduleName, moduleNameString)
 import GHC.Unit.Module.ModIface (ModIface, mi_insts)
 import Path (Abs, File, Path, Rel, parseRelFile, toFilePath)
+import System.IO.Error (isDoesNotExistError)
 
 -- | One module's @.hie@ file, as the compiler wrote it.
 --
@@ -119,9 +119,11 @@ renderArtifactUnreadable (ArtifactUnreadable t) = t
 --
 -- A file written by another compiler is the expected failure, reported rather
 -- than thrown so the caller can decide what knowing nothing means.
+-- A file that is not there is thrown, so that the caller tells absence from
+-- unreadability the way it would for any other file.
 readCompiledModule :: Path Abs File -> IO (Either ArtifactUnreadable CompiledModule)
 readCompiledModule path = do
-  result <- try $ do
+  result <- tryJust unlessAbsent $ do
     cache <- initNameCache 'z' []
     file <- hie_file_result <$> readHieFile cache (toFilePath path)
     let compiled =
@@ -135,8 +137,14 @@ readCompiledModule path = do
     _ <- evaluate (length (compiledModuleGenerated compiled))
     pure compiled
   pure $ case result of
-    Left (e :: SomeException) -> Left (reason e)
+    Left e -> Left (reason e)
     Right compiled -> Right compiled
+
+-- | Every exception but the one that says the file is not there.
+unlessAbsent :: SomeException -> Maybe SomeException
+unlessAbsent e = case fromException e of
+  Just io | isDoesNotExistError io -> Nothing
+  _ -> Just e
 
 -- | Why a file could not be read, in the one line that says it. The rest is a
 -- backtrace through this reader, which the person reading the report cannot act
@@ -167,20 +175,21 @@ newtype CompiledInterface = CompiledInterface
   { unCompiledInterface :: ModIface
   }
 
--- | Read one @.hi@ interface, or say why it could not be read.
+-- | Read one @.hi@ interface, or say why it could not be read, and throw for a
+-- file that is not there, as 'readCompiledModule' does.
 --
 -- A generic platform, no ways and an ignored way tag, because nothing read out
 -- of an interface here depends on the flavour of the build.
 readCompiledInterface :: Path Abs File -> IO (Either ArtifactUnreadable CompiledInterface)
 readCompiledInterface path = do
-  result <- try $ do
+  result <- tryJust unlessAbsent $ do
     cache <- initNameCache 'z' []
     iface <- CompiledInterface <$> readBinIface profile cache IgnoreHiWay QuietBinIFace (toFilePath path)
     -- Forced inside the catch, for the reason the .hie read is.
     _ <- evaluate (length (compiledInterfaceInstances iface))
     pure iface
   pure $ case result of
-    Left (e :: SomeException) -> Left (reason e)
+    Left e -> Left (reason e)
     Right iface -> Right iface
   where
     profile =
