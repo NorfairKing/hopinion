@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE TypeApplications #-}
 
 module Hopinion.RunSpec (spec) where
 
@@ -17,6 +18,7 @@ import Path (Dir, Path, Rel, reldir, relfile, toFilePath, (</>))
 import Path.IO (ensureDir, listDirRel, resolveDir', withSystemTempDir)
 import Test.Syd
 import Text.Colour (TerminalCapabilities (..), renderChunksText)
+import Text.Read (readMaybe)
 
 spec :: Spec
 spec = do
@@ -42,7 +44,12 @@ spec = do
         packageTimings <- TIO.readFile (toFilePath (packageOut </> timingFile))
         projectTimings <- TIO.readFile (toFilePath (projectOut </> timingFile))
         let steps = map (T.drop 1 . T.dropWhile (/= '\t')) . T.lines
+        let seconds = map (readMaybe @Double . T.unpack . T.takeWhile (/= '\t')) . T.lines
         let named prefix rules = [T.concat [prefix, unRuleId (ruleId r)] | r <- rules]
+        -- A duration is never the same twice, so what is asserted is that each
+        -- line starts with one.
+        map (fmap (>= 0)) (seconds packageTimings ++ seconds projectTimings)
+          `shouldBe` map (const (Just True)) (T.lines packageTimings ++ T.lines projectTimings)
         steps packageTimings
           `shouldBe` concat
             [ ["read modules"],

@@ -37,6 +37,10 @@ Take the overlay, and one derivation checks the whole repository:
 Every package and project output holds `timing.txt` beside its report: the
 seconds each step took, one step per line, so a slow rule shows up in a build
 that was substituted rather than run.
+A `.hie` or `.hi` file is read when a rule first asks for it, so its cost is in
+the step of whichever rule asked first.
+The file differs from one build to the next, so `nix build --rebuild` reports
+these outputs as not reproducible.
 
 ## Adding rules of your own
 
