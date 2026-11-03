@@ -7,11 +7,11 @@
 
 -- | What a repository has decided about the rules it is held to.
 --
--- One file at the repository root, read by one parser. The development loop is
--- handed the repository and finds it; the derivations are handed a package each
--- and are told where it is. A file rather than a flag, because a rule turned off
--- in a flake and not in the working tree is a check whose cheapest feedback
--- loop disagrees with its slowest.
+-- One file at the repository root, read by one parser. The derivations are
+-- handed a package each, so the check builders find the file and tell each
+-- derivation where it is. A file rather than a flag, so that what a repository
+-- decided is written in the repository rather than in each flake that checks
+-- it.
 --
 -- Deliberately small: which packages exist and which package set builds them
 -- are things the Nix layer knows, and a second copy here would be a second copy
@@ -30,7 +30,6 @@ module Hopinion.Choices
     renderChoicesFileError,
     parseChoices,
     readChoicesFrom,
-    readChoicesIn,
   )
 where
 
@@ -51,7 +50,7 @@ import Data.Validity
 import qualified Data.Yaml as Yaml
 import GHC.Generics (Generic)
 import Hopinion.Rule.Id (RuleId)
-import Path (Abs, Dir, File, Path, Rel, relfile, toFilePath, (</>))
+import Path (Abs, File, Path, Rel, relfile, toFilePath)
 import Path.IO (forgivingAbsence)
 
 -- | Everything the file says, which is one thing so far.
@@ -117,8 +116,8 @@ data ChoicesError
   | ChoicesErrorSettingRefused !Text
   deriving (Show, Eq)
 
--- | Absence is only an error for a caller that named the file: a repository that
--- has not written one has decided nothing, which is 'readChoicesIn' below.
+-- | Absence is an error, because the file is only ever read when something
+-- named it: a repository that has not written one is never asked for it.
 data ChoicesFileError
   = ChoicesFileErrorAbsent !(Path Abs File)
   | ChoicesFileErrorRefused !(Path Abs File) !ChoicesError
@@ -185,17 +184,4 @@ readChoicesFrom path = do
   read' <- forgivingAbsence (BS.readFile (toFilePath path))
   pure $ case read' of
     Nothing -> Left (ChoicesFileErrorAbsent path)
-    Just contents -> first (ChoicesFileErrorRefused path) (parseChoices contents)
-
--- | The file beside a repository, which is what the development loop reads.
---
--- Absence is a real answer here, where it is an error above: most repositories
--- want every rule, and having to write a file to say so would be a file that
--- says nothing.
-readChoicesIn :: Path Abs Dir -> IO (Either ChoicesFileError Choices)
-readChoicesIn root = do
-  let path = root </> choicesFile
-  read' <- forgivingAbsence (BS.readFile (toFilePath path))
-  pure $ case read' of
-    Nothing -> Right noChoices
     Just contents -> first (ChoicesFileErrorRefused path) (parseChoices contents)

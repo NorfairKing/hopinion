@@ -1,11 +1,11 @@
 [0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Visible in thing-gen's test suite.
-     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@8:1-8:26[0m
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@15:1-15:26[0m
      [0;90;1m│[0m
-[0;90;1m   8 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mV[0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1mi[0m[0;91;1mb[0m[0;91;1ml[0m[0;91;1me[0m
+[0;90;1m  15 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mV[0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1mi[0m[0;91;1mb[0m[0;91;1ml[0m[0;91;1me[0m
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mHint: Add `genValidSpec @T` from `Test.Syd.Validity` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 8 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 15 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 Run explain with a rule's id to see why the rule exists, for example: explain TestGenValidSpecPerGenValid

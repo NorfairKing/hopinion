@@ -2,8 +2,9 @@
 #
 # The Haskell test suite exercises the layers; this exercises the derivations
 # that wire them together. Everything here is specific to running under Nix and
-# invisible to `hopinion check`: the source filter, `--rel-prefix`,
-# `--expect-packages`, and the two ways a repository chooses its own rules.
+# invisible to the Haskell suite: the source filter, `--rel-prefix`,
+# `--expect-packages`, building a repository for its artifacts, and the two ways
+# a repository chooses its own rules.
 #
 # The shape under test is that producing a report always succeeds and only
 # judging one fails, so the assertions come in pairs: the report of a dirty
@@ -11,6 +12,12 @@
 { pkgs, hopinion, examples, generatingPackage, exampleTool }:
 let
   inherit (pkgs) lib runCommand;
+
+  # The package set that builds one example, which is what hopinion needs to
+  # check it.
+  exampleSet = example: packages:
+    pkgs.haskellPackages.extend (self: _:
+      lib.genAttrs packages (n: self.callPackage (example + "/${n}") { }));
 
   # A derivation that succeeds exactly when the script inside it fails, and
   # whose output holds what the script said so the next test can read it.
@@ -50,30 +57,35 @@ let
   cleanPackages = [ "lonely" "thing" "thing-gen" ];
   dirtyPackages = [ "lonely" "thing" "thing-gen" ];
 
-  # Every check of a project that is clean must pass, over the builder every
-  # entry point goes through.
-  #
-  # Not `makeHopinionCheck`, because these example packages are in no package set
-  # and are never built. So this is also the one place the builders run with no
-  # compiler answers at all, which is what a repository with an unbuildable
-  # package would hit.
-  cleanCheck = hopinion.checkOver {
+  # Every check of a project that is clean must pass, through the builder a
+  # consuming flake calls.
+  cleanCheck = hopinion.makeHopinionCheck {
     name = "e2e-clean";
-    subjects = map (n: { name = n; src = hopinion.internals.sourceOf examples.clean n; }) cleanPackages;
+    src = examples.clean;
+    packages = cleanPackages;
+    haskellPackages = exampleSet examples.clean cleanPackages;
   };
 
-  dirtySubjects = map (n: { name = n; src = hopinion.internals.sourceOf examples.dirty n; }) dirtyPackages;
+  dirtySubjects = hopinion.internals.subjectsFor {
+    src = examples.dirty;
+    packages = dirtyPackages;
+    haskellPackages = exampleSet examples.dirty dirtyPackages;
+  };
+
+  dirtySubjectNamed = name: lib.findFirst (s: s.name == name) (throw "no dirty subject ${name}") dirtySubjects;
+
+  dirtyHieArguments = hopinion.internals.hieArguments (lib.concatMap (s: s.hieRoots) dirtySubjects);
 
   # Built, not judged, so it exists to be read even though the project it
   # describes is dirty. This is the property the split is for.
-  dirtyPackageReport = hopinion.internals.packageOutput examples.dirty "thing";
-  dirtyProjectReport = hopinion.internals.projectOutput examples.dirty dirtyPackages;
+  dirtyPackageReport = hopinion.internals.packageOutputFor (dirtySubjectNamed "thing");
+  dirtyProjectReport = hopinion.internals.projectOutputFor { subjects = dirtySubjects; };
 
   # What a repository writes to decide against a rule.
   #
   # Written here rather than kept beside the example, because the example is
-  # also what the Haskell suite runs over in one process and it must stay a
-  # project with every rule against it.
+  # also what the Haskell suite runs over and it must stay a project with every
+  # rule against it.
   choicesTurningOffBareTodo = pkgs.writeText "hopinion.yaml" ''
     disabled-rules:
       - CommentBareTodo
@@ -95,8 +107,8 @@ let
   };
 
   # The one line that connects what a repository decided to what its check runs,
-  # asked in both directions. It is the only part of the file's path into a
-  # build that `hopinion check` does not walk itself, so nothing else covers it.
+  # asked in both directions. The Haskell suite reads the file by name, so this
+  # lookup is the part of its path into a build that nothing else covers.
   choicesFound = hopinion.internals.choicesIn examples.decided;
   choicesAbsent = hopinion.internals.choicesIn examples.clean;
 
@@ -160,7 +172,7 @@ in
     '';
 
   # A rule the repository has decided against must actually not run, over the
-  # derivations rather than in one process. Both directions, because a check
+  # derivations rather than in the Haskell suite. Both directions, because a check
   # that reported nothing for some other reason would satisfy the first half on
   # its own.
   e2e-disabled-rule-is-not-run = runCommand "e2e-disabled-rule-is-not-run" { } ''
@@ -229,8 +241,10 @@ in
       # one rather than whichever happens to be checked first.
       supplied = lib.filter (n: n != "lonely") dirtyPackages;
       withheld = runCommand "e2e-withheld-facts-report" { } ''
+        ${dirtyHieArguments}
         ${hopinion}/bin/hopinion project \
-          ${lib.concatMapStringsSep " " (n: "--package ${hopinion.internals.packageOutput examples.dirty n}") supplied} \
+          ${lib.concatMapStringsSep " " (n: "--package ${hopinion.internals.packageOutputFor (dirtySubjectNamed n)}") supplied} \
+          $hieArgs \
           --expect-packages ${lib.concatStringsSep "," dirtyPackages} \
           --out $out
       '';
@@ -243,7 +257,8 @@ in
   e2e-no-packages-is-judged-failing =
     let
       empty = runCommand "e2e-no-packages-report" { } ''
-        ${hopinion}/bin/hopinion project --expect-packages "" --out $out
+        mkdir nothing-built
+        ${hopinion}/bin/hopinion project --hie-directory nothing-built --expect-packages "" --out $out
       '';
     in
     expectFailure "e2e-no-packages-is-judged-failing" (judgeOf [ empty ]);
@@ -286,9 +301,8 @@ in
     '';
 
   # A build that covers less than was read from it is a failure, not a quieter
-  # check. The two ways of learning nothing about a module look identical in
-  # every report: the build never compiled it, which is a hole, or there was no
-  # build at all, which is a mode.
+  # check. A module the build never compiled would otherwise read, in every
+  # report, exactly like a module with nothing to say about it.
   #
   # The hole is made rather than waited for: one module's answer is deleted from
   # a tree that was complete, which is what a package set that does not compile
@@ -320,8 +334,10 @@ in
   e2e-wrong-source-mapping-is-a-complaint =
     let
       misdirected = runCommand "e2e-wrong-source-report" { } ''
+        ${dirtyHieArguments}
         ${hopinion}/bin/hopinion project \
-          ${lib.concatMapStringsSep " " (n: "--package ${hopinion.internals.packageOutput examples.dirty n}") dirtyPackages} \
+          ${lib.concatMapStringsSep " " (s: "--package ${hopinion.internals.packageOutputFor s}") dirtySubjects} \
+          $hieArgs \
           --expect-packages ${lib.concatStringsSep "," dirtyPackages} \
           --out $out
       '';

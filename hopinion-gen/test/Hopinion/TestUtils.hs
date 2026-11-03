@@ -16,11 +16,17 @@ module Hopinion.TestUtils
     ownedSpec,
     ruleResourcesDir,
     ruleSpec,
+    checkBuilt,
+    packagesIn,
+    withArtifacts,
   )
 where
 
-import Control.Monad (unless)
+import Control.Monad (forM, unless)
 import Data.List (isPrefixOf, nub, sort, sortOn)
+import Data.List.NonEmpty (NonEmpty (..))
+import qualified Data.List.NonEmpty as NE
+import Data.Maybe (catMaybes, fromMaybe)
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
@@ -34,8 +40,7 @@ import Hopinion.Rule.Gen (shippedRules)
 import Hopinion.Rule.Id
 import Hopinion.Run
 import Path
-  ( Abs,
-    Dir,
+  ( Dir,
     File,
     Path,
     Rel,
@@ -47,12 +52,14 @@ import Path
     parseRelDir,
     parseRelFile,
     reldir,
+    stripProperPrefix,
     toFilePath,
     (</>),
   )
-import Path.IO (ensureDir, forgivingAbsence, getCurrentDir, listDirRel, makeAbsolute, withSystemTempDir)
+import Path.IO (ensureDir, forgivingAbsence, getCurrentDir, listDir, listDirRel, makeAbsolute, withSystemTempDir)
+import System.Exit (ExitCode (..))
 import System.FilePath (dropTrailingPathSeparator)
-import System.Process (readProcess)
+import System.Process (CreateProcess (..), proc, readCreateProcessWithExitCode, readProcess)
 import Test.Syd
 
 -- | Everything any spec reads, which is what 'ownedSpec' holds to belonging to
@@ -112,12 +119,6 @@ caseOf name
   | "bad" `isPrefixOf` toFilePath name = Just ResourceCaseDirty
   | otherwise = Nothing
 
--- | Whether this rule's level makes the layered path meaningful over the same
--- resources.
-data SplitCheck
-  = SplitCheckUnderTest
-  | SplitCheckNotUnderTest
-
 -- | Everything one rule is held to: that it has both kinds of resource, and
 -- what it says about each of them.
 ruleSpec :: Rule -> Spec
@@ -138,8 +139,8 @@ ruleSpec r =
 
         case ruleLevel r of
           LevelModule -> scenarioDir dir (moduleScenario rid . (dir </>))
-          LevelPackage -> projectScenarios rid dir SplitCheckNotUnderTest
-          LevelProject -> projectScenarios rid dir SplitCheckUnderTest
+          LevelPackage -> projectScenarios rid dir
+          LevelProject -> projectScenarios rid dir
 
 -- | A rule's own directory name, which is its id.
 ruleDirName :: RuleId -> IO (Path Rel Dir)
@@ -203,13 +204,13 @@ formatSensitive = []
 
 -- | A rule above the module level needs a whole repository per case rather than
 -- a module, and @scenarioDir@ enumerates files, so the enumeration is here.
-projectScenarios :: RuleId -> Path Rel Dir -> SplitCheck -> Spec
-projectScenarios rid dir splitCheck = do
+projectScenarios :: RuleId -> Path Rel Dir -> Spec
+projectScenarios rid dir = do
   entries <- runIO (subdirectoriesOf dir)
-  mapM_ (projectScenario rid splitCheck . (dir </>)) entries
+  mapM_ (projectScenario rid . (dir </>)) entries
 
-projectScenario :: RuleId -> SplitCheck -> Path Rel Dir -> Spec
-projectScenario rid splitCheck project =
+projectScenario :: RuleId -> Path Rel Dir -> Spec
+projectScenario rid project =
   describe (toFilePath (dirname project)) $ do
     golden <- runIO (goldenBeside project)
 
@@ -229,11 +230,6 @@ projectScenario rid splitCheck project =
         it
           "is named for what it is a case of"
           (expectationFailure (unwords ["Neither a good nor a bad case:", toFilePath project]) :: IO ())
-
-    case splitCheck of
-      SplitCheckNotUnderTest -> pure ()
-      SplitCheckUnderTest ->
-        it "reports the same through fact files as in one process" (splitAgrees project)
 
 -- | The scenarios, which are the directories: a rule above the module level is
 -- given a repository per case, and the goldens beside them are files.
@@ -286,7 +282,7 @@ renderedFindings root fs = do
 
 findingsInModule :: RuleId -> Path Rel File -> IO [Finding]
 findingsInModule rid file = do
-  report <- runModuleCommand shippedRules file [] ComponentKindLib
+  report <- runModuleLayer shippedRules <$> factsForFile shippedRules file [] ComponentKindLib
   pure [f | f <- complaintsFindings report, findingRule f == rid]
 
 -- | A module case names its resource the way the suite was invoked, relative to
@@ -304,7 +300,7 @@ renderedFindingsInModule rid file = do
 
 findingsInProject :: RuleId -> Path Rel Dir -> IO [Finding]
 findingsInProject rid dir = do
-  report <- runCheck shippedRules noHieDirectories =<< rootAt dir
+  report <- checkBuilt shippedRules =<< rootAt dir
   [t | ComplaintFailure t <- unComplaints report] `shouldBe` []
   pure [f | f <- complaintsFindings report, findingRule f == rid]
 
@@ -312,47 +308,6 @@ renderedFindingsInProject :: RuleId -> Path Rel Dir -> IO Text
 renderedFindingsInProject rid dir = do
   root <- rootAt dir
   renderedFindings root =<< findingsInProject rid dir
-
--- | The property that keeps the split honest: running a project rule through
--- fact files on disk must find exactly what running it in one process finds.
---
--- It catches the class of bug the split introduces, where a project rule reads
--- a fact that is in memory in the all-in-one path and that extraction never
--- serialises. Per project rule, so a rule added later is covered without anyone
--- remembering to add it anywhere.
-splitAgrees :: Path Rel Dir -> IO ()
-splitAgrees dir = withSystemTempDir "hopinion-split" $ \tmp -> do
-  root <- rootAt dir
-  inOneProcess <- runCheck shippedRules noHieDirectories root
-  eModels <- discoverPackages root (sourceRootDir root)
-  case eModels of
-    Left err -> expectationFailure (T.unpack (renderDiscoveryError err))
-    Right models -> do
-      named <- mapM (writeOne tmp root) models
-      throughFiles <- runProjectCommand shippedRules noHieDirectories (map snd named) (map fst named) Nothing
-      [t | ComplaintFailure t <- unComplaints throughFiles] `shouldBe` []
-      -- Every finding, not only the project ones: the project phase unions in
-      -- what the package phase already found, so the two paths agree or they do
-      -- not.
-      sortedFindings throughFiles `shouldBe` sortedFindings inOneProcess
-
--- | What the package command writes, written the same way, so that the layered
--- path under test is the one the derivations run.
-writeOne :: Path Abs Dir -> SourceRoot -> PackageModel -> IO (Text, Path Abs Dir)
-writeOne tmp root pm = do
-  let name = unPackageName (packageModelName pm)
-  dir <- (tmp </>) <$> parseRelDir (T.unpack name)
-  ensureDir dir
-  report <- runPackageCommand shippedRules noHieDirectories root (packageModelDir pm) (Just dir)
-  (sources, _) <- sourcesForReport [root] report
-  writeReportTo shippedRules dir sources report
-  pure (name, dir)
-
-sortedFindings :: Complaints -> [Finding]
-sortedFindings =
-  sortOn
-    (\f -> (findingSpan f, unRuleId (findingRule f), findingMessage f))
-    . complaintsFindings
 
 -- | A source root over a directory, resolved against the working directory the
 -- suite runs in, which is the package directory.
@@ -364,3 +319,93 @@ rootAt dir = do
       { sourceRootDir = absDir,
         sourceRootPrefix = Nothing
       }
+
+-- | A repository checked the way the check builders check it: each package on
+-- its own into an output of its own, then the project over those outputs, all
+-- over what a build of it leaves behind.
+--
+-- The facts cross a file on the way, as they do between derivations, so a fact
+-- a project rule needs and extraction does not write is a test failure here.
+checkBuilt :: RuleSet -> SourceRoot -> IO Complaints
+checkBuilt rs root = do
+  packages <- packagesIn root
+  withArtifacts packages $ \hie -> withSystemTempDir "hopinion-outputs" $ \tmp -> do
+    outputs <- forM packages $ \pm -> do
+      out <- (tmp </>) . ([reldir|packages|] </>) <$> parseRelDir (T.unpack (unPackageName (packageModelName pm)))
+      report <- runPackageCommand rs hie root (packageModelDir pm) out
+      (sources, _) <- sourcesForReport [root] report
+      writeReportTo rs out sources report
+      pure out
+    runProjectCommand
+      rs
+      hie
+      outputs
+      (map (unPackageName . packageModelName) packages)
+      (tmp </> [reldir|project|])
+
+-- | Every package of a repository: each directory directly under it that holds
+-- a cabal file, which is how a flake names them to the check builders.
+packagesIn :: SourceRoot -> IO [PackageModel]
+packagesIn root = do
+  (dirs, _) <- listDir (sourceRootDir root)
+  fmap (sortOn packageModelName . catMaybes) . forM dirs $ \dir -> do
+    read' <- readPackageIn root dir
+    case read' of
+      Right pm -> pure (Just pm)
+      Left (DiscoveryErrorNoCabalFileIn _) -> pure Nothing
+      Left err -> expectationFailure (T.unpack (renderDiscoveryError err))
+
+-- | What a build of these packages leaves behind, for as long as the action
+-- runs.
+--
+-- One tree per component, as nix/hie.nix collects them, because
+-- every component with a @main-is@ writes a @Main.hie@.
+-- Each component is handed every library's source directories, since a
+-- resource names no package set to find its sibling packages in.
+-- GHC is run from the package directory with paths relative to it, which is
+-- how cabal runs it and so what a @.hie@ file's source path is matched against.
+--
+-- A resource that does not compile fails the test, because a build of it
+-- would.
+-- Packages with nothing to compile still get a tree, an empty one, which is
+-- what a build of them leaves.
+withArtifacts :: [PackageModel] -> (HieDirectories -> IO a) -> IO a
+withArtifacts packages act = withSystemTempDir "hopinion-artifacts" $ \tmp -> do
+  let components = [(pm, c) | pm <- packages, c <- packageModelComponents pm]
+  let libraryDirs =
+        [ d
+        | (_, c) <- components,
+          componentModelKind c == ComponentKindLib,
+          d <- componentModelSourceDirs c
+        ]
+  trees <- forM (zip [0 :: Int ..] components) $ \(i, (pm, c)) -> do
+    tree <- (tmp </>) <$> parseRelDir (show i)
+    ensureDir tree
+    targets <-
+      forM
+        [mm | mm <- componentModelModules c, moduleModelSource mm == ModuleSourceHaskell]
+        (stripProperPrefix (packageModelDir pm) . moduleModelFile)
+    unless (null targets) $ do
+      (code, out, err) <-
+        readCreateProcessWithExitCode
+          ( proc
+              "ghc"
+              ( concat
+                  [ ["-v0", "-fno-code", "-fwrite-interface", "-fwrite-ide-info"],
+                    ["-outputdir", toFilePath tree, "-hiedir", toFilePath tree],
+                    [concat ["-i", toFilePath d] | d <- nub (componentModelSourceDirs c ++ libraryDirs)],
+                    [concat ["-X", T.unpack e] | e <- componentModelDefaultExtensions c],
+                    map toFilePath targets
+                  ]
+              )
+          )
+            { cwd = Just (toFilePath (packageModelDir pm))
+            }
+          ""
+      case code of
+        ExitSuccess -> pure ()
+        ExitFailure _ ->
+          expectationFailure
+            (unlines ["A resource does not compile, so no build of it could be checked:", out, err])
+    pure tree
+  act (HieDirectories (fromMaybe (tmp :| []) (NE.nonEmpty trees)))

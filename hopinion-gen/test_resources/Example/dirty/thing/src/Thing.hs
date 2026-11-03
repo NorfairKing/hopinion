@@ -1,7 +1,16 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 module Thing where
+
+import Data.GenValidity (GenValid)
+import Data.Validity (Validity)
+import GHC.Generics (Generic)
 
 -- TODO a bare marker, which is the module-level finding.
 data Widget = Widget
+  deriving (Generic)
+
+instance Validity Widget
 
 -- A generator outside a -gen package, which is the package-level finding, and
 -- an obligation the gen package's test suite does not meet, which is the

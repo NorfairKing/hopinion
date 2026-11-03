@@ -68,8 +68,7 @@ let
   # Where the repository says which rules it has decided against.
   #
   # Passed as a path rather than read here and turned into flags, so that one
-  # parser reads it: this file exists so that the development loop and the
-  # derivations cannot disagree about which rules run.
+  # parser reads it.
   #
   # Named rather than found, because each package derivation is handed one
   # package's subtree and a file at the repository root is not in it.
@@ -78,8 +77,8 @@ let
 
   # The file beside a repository, or null when it has not written one.
   #
-  # `hopinion check` finds this file for itself, being handed the repository;
-  # the derivations are not, so this is that lookup for them. Named rather than
+  # The derivations are each handed one package rather than the repository, so
+  # this is the lookup for them. Named rather than
   # buried in `makeHopinionCheck`, since it is the line connecting what a
   # repository decided to what its check runs.
   choicesIn = src:
@@ -93,7 +92,7 @@ let
   # own modules already yielded, and the facts the rules that can see further
   # asked to carry. There is no separate facts-only build, because this one
   # succeeds whatever it found.
-  packageOutputFor = { name, src, hieRoots ? [ ], exe ? hopinion, choices ? null }:
+  packageOutputFor = { name, src, hieRoots, exe ? hopinion, choices ? null }:
     runCommand "${name}-hopinion" { } ''
       ${hieArguments hieRoots}
       ${toolCall { inherit exe choices; }} package \
@@ -103,11 +102,6 @@ let
         --out $out \
         ${src}
     '';
-
-  packageOutput = src: name: packageOutputFor {
-    inherit name;
-    src = sourceOf src name;
-  };
 
   # The sources are passed as well as the packages, so that a project finding is
   # shown against the code like every other finding. That costs nothing in
@@ -119,7 +113,7 @@ let
   # from how the package phase answered it.
   projectOutputFor = { subjects, exe ? hopinion, choices ? null }:
     runCommand "hopinion-project" { } ''
-      ${hieArguments (lib.concatMap (s: s.hieRoots or [ ]) subjects)}
+      ${hieArguments (lib.concatMap (s: s.hieRoots) subjects)}
       ${toolCall { inherit exe choices; }} project \
         ${lib.concatMapStringsSep " " (s: "--package ${packageOutputFor (s // { inherit exe choices; })}") subjects} \
         ${lib.concatMapStringsSep " " (s: "--source ${s.name}=${s.src}") subjects} \
@@ -128,8 +122,18 @@ let
         --out $out
     '';
 
-  projectOutput = src: packages:
-    projectOutputFor { subjects = map (n: { name = n; src = sourceOf src n; }) packages; };
+  # Every named package as a subject: its own sources, and what the package set
+  # that builds it wrote down about it.
+  subjectsFor = { src, packages, haskellPackages }:
+    let built = hie.withArtifacts { inherit haskellPackages packages; };
+    in
+    map
+      (n: {
+        name = n;
+        src = sourceOf src n;
+        hieRoots = [ built.${n}.hie ];
+      })
+      packages;
 
   # The only derivation that can fail, and it holds no work of its own: what it
   # reads is already built and already readable.
@@ -220,7 +224,7 @@ in
   # two are built and how the end to end tests drive them into their failing
   # cases, which is not a promise to anybody.
   internals = {
-    inherit sourceOf sourceDirOf packageOutput packageOutputFor projectOutput projectOutputFor judge hieArguments exeOf choicesIn;
+    inherit sourceOf sourceDirOf packageOutputFor projectOutputFor subjectsFor judge hieArguments exeOf choicesIn;
     inherit (hie) addHieOutput;
   };
 
@@ -233,9 +237,9 @@ in
   # it fails if the repository has anything to answer for, and succeeds with the
   # report at its output otherwise.
   #
-  # The package set is not optional. What a rule can tell about a module that
-  # generates code depends on having the compiler's answer about that module,
-  # and a rule that abstains is a rule that ran and said nothing. The
+  # The package set is not optional, and neither is hopinion running here: this
+  # is the only way it is run. What a rule can tell about a module that
+  # generates code depends on having the compiler's answer about that module. The
   # repository's own tree is what hopinion reads, so that a finding's path is
   # the path its reader has, and the same package built with @-fwrite-ide-info@
   # is what says what a splice generated: taking that from the set that built
@@ -251,9 +255,8 @@ in
   # a directory a walk did not reach.
   #
   # Which rules run is not an argument here or anywhere: a repository writes
-  # that in `hopinion.yaml` at its root, which `hopinion check` reads too, so
-  # the cheapest feedback loop and the slowest cannot disagree. This finds the
-  # file and hands each derivation its path; nothing here reads what it says.
+  # that in `hopinion.yaml` at its root. This finds the file and hands each
+  # derivation its path; nothing here reads what it says.
   makeHopinionCheck =
     { name ? "hopinion"
     , src
@@ -263,17 +266,10 @@ in
     }:
     let
       resolves = assertPackagesResolve { inherit src packages haskellPackages; };
-      built = hie.withArtifacts { inherit haskellPackages packages; };
     in
     lib.seq resolves (checkOver {
       inherit name exe;
       choices = choicesIn src;
-      subjects = map
-        (n: {
-          name = n;
-          src = sourceOf src n;
-          hieRoots = [ built.${n}.hie ];
-        })
-        packages;
+      subjects = subjectsFor { inherit src packages haskellPackages; };
     });
 }

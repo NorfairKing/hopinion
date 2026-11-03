@@ -62,9 +62,10 @@ tells a reader what to write and where; if the parser then rejects it, the tool
 has lied. `suppressionIsFileScoped` is the one place that decides, and both the
 hint and the text it offers ask it.
 
-**The artifacts are not optional, and coverage is asserted.** Given any
-`--hie-directory`, every module read must have both a `.hie` and a `.hi` file,
-or the run fails naming the module. An artifact tree missing one module is
+**The artifacts are not optional, and coverage is asserted.** hopinion only
+runs as part of a Nix check, over code that build compiled, so at least one
+`--hie-directory` is required, and every module read must have both a `.hie`
+and a `.hi` file, or the run fails naming the module. An artifact tree missing one module is
 indistinguishable at the point of use from no artifacts at all: both say
 nothing.
 
@@ -320,8 +321,7 @@ literal in them, which is where `T.pack x <> y` and `show x <> y` live, and
 telling a `Builder` from a `Text` so it stops asking at the one place `<>` is
 the right operator.
 
-**Done when:** `nix flake check` passes with the types tier active, and the tool
-run without artifacts states which rules it skipped.
+**Done when:** `nix flake check` passes with the types tier active.
 
 ## Not planned
 

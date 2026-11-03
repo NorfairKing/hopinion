@@ -2,7 +2,9 @@
 
 module ThingChecks (spec) where
 
+import Test.Syd (Spec)
+import Test.Syd.Validity (genValidSpec)
 import Thing
 
-spec :: IO ()
+spec :: Spec
 spec = genValidSpec @Plain

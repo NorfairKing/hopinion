@@ -1,92 +1,96 @@
 [0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Orphan anywhere, and no lonely-gen package to write it in.
-     [0;90;1m╭──▶[0m [0;32;1mlonely/src/Lonely.hs@5:1-5:25[0m
+     [0;90;1m╭──▶[0m [0;32;1mlonely/src/Lonely.hs@12:1-12:25[0m
      [0;90;1m│[0m
-[0;90;1m   5 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mO[0m[0;91;1mr[0m[0;91;1mp[0m[0;91;1mh[0m[0;91;1ma[0m[0;91;1mn[0m
+[0;90;1m  12 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mO[0m[0;91;1mr[0m[0;91;1mp[0m[0;91;1mh[0m[0;91;1ma[0m[0;91;1mn[0m
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mHint: Add `genValidSpec @T` from `Test.Syd.Validity` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 5 of lonely/src/Lonely.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 12 of lonely/src/Lonely.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Standalone in thing-gen's test suite.
-     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@13:1-13:38[0m
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@24:1-24:38[0m
      [0;90;1m│[0m
-[0;90;1m  13 │[0m [0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1me[0m
+[0;90;1m  24 │[0m [0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1me[0m
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mHint: Add `genValidSpec @T` from `Test.Syd.Validity` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 13 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 24 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Stocked in thing-gen's test suite.
-     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@16:1-17:28[0m
+[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Unstrategised in thing-gen's test suite.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@27:1-29:32[0m
      [0;90;1m│[0m
-[0;90;1m  16 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1mc[0m[0;91;1mk[0m[0;91;1me[0m[0;91;1md[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1mc[0m[0;91;1mk[0m[0;91;1me[0m[0;91;1md[0m
-[0;90;1m  17 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1mc[0m[0;91;1mk[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m)[0m
+[0;90;1m  27 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1m [0m[0;91;1mU[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1mg[0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1me[0m[0;91;1md[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mU[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1mg[0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1me[0m[0;91;1md[0m
+[0;90;1m  28 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1mc[0m[0;91;1mk[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mS[0m[0;91;1mh[0m[0;91;1mo[0m[0;91;1mw[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1m)[0m
+[0;90;1m  29 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m)[0m
      [0;90;1m•[0m [0;91m│ [0m
      [0;90;1m•[0m [0;91m╰╸ A GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mHint: Add `genValidSpec @T` from `Test.Syd.Validity` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 16 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 27 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Wrapped in thing-gen's test suite.
-     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@19:1-20:30[0m
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@31:1-33:40[0m
      [0;90;1m│[0m
-[0;90;1m  19 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1mn[0m[0;91;1me[0m[0;91;1mw[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mW[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mp[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1md[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mW[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mp[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m
-[0;90;1m  20 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mw[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m)[0m
+[0;90;1m  31 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1mn[0m[0;91;1me[0m[0;91;1mw[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mW[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mp[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1md[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mW[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mp[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m
+[0;90;1m  32 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1mc[0m[0;91;1mk[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mS[0m[0;91;1mh[0m[0;91;1mo[0m[0;91;1mw[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1m)[0m
+[0;90;1m  33 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mw[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m)[0m
      [0;90;1m•[0m [0;91m│ [0m
      [0;90;1m•[0m [0;91m╰╸ A GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mHint: Add `genValidSpec @T` from `Test.Syd.Validity` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 19 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 31 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @AnyOf in thing-gen's test suite.
-     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@22:1-23:31[0m
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@35:1-37:41[0m
      [0;90;1m│[0m
-[0;90;1m  22 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1m [0m[0;91;1mA[0m[0;91;1mn[0m[0;91;1my[0m[0;91;1mO[0m[0;91;1mf[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mA[0m[0;91;1mn[0m[0;91;1my[0m[0;91;1mO[0m[0;91;1mf[0m
-[0;90;1m  23 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1my[0m[0;91;1mc[0m[0;91;1ml[0m[0;91;1ma[0m[0;91;1ms[0m[0;91;1ms[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m)[0m
+[0;90;1m  35 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1m [0m[0;91;1mA[0m[0;91;1mn[0m[0;91;1my[0m[0;91;1mO[0m[0;91;1mf[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mA[0m[0;91;1mn[0m[0;91;1my[0m[0;91;1mO[0m[0;91;1mf[0m
+[0;90;1m  36 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1mc[0m[0;91;1mk[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mS[0m[0;91;1mh[0m[0;91;1mo[0m[0;91;1mw[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1m)[0m
+[0;90;1m  37 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1my[0m[0;91;1mc[0m[0;91;1ml[0m[0;91;1ma[0m[0;91;1ms[0m[0;91;1ms[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m)[0m
      [0;90;1m•[0m [0;91m│ [0m
      [0;90;1m•[0m [0;91m╰╸ A GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mHint: Add `genValidSpec @T` from `Test.Syd.Validity` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 22 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 35 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 
-[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @ViaCodec in thing-gen's test suite.
-     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@26:1-27:49[0m
+[0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @ViaInt in thing-gen's test suite.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@40:1-42:40[0m
      [0;90;1m│[0m
-[0;90;1m  26 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1m [0m[0;91;1mV[0m[0;91;1mi[0m[0;91;1ma[0m[0;91;1mC[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mV[0m[0;91;1mi[0m[0;91;1ma[0m[0;91;1mC[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m
-[0;90;1m  27 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m)[0m[0;91;1m [0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1ma[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mA[0m[0;91;1mu[0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1mo[0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1m [0m[0;91;1mV[0m[0;91;1mi[0m[0;91;1ma[0m[0;91;1mC[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1m)[0m
+[0;90;1m  40 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1mn[0m[0;91;1me[0m[0;91;1mw[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mV[0m[0;91;1mi[0m[0;91;1ma[0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mV[0m[0;91;1mi[0m[0;91;1ma[0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m
+[0;90;1m  41 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1mc[0m[0;91;1mk[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mS[0m[0;91;1mh[0m[0;91;1mo[0m[0;91;1mw[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1m)[0m
+[0;90;1m  42 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m)[0m[0;91;1m [0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1ma[0m[0;91;1m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m
      [0;90;1m•[0m [0;91m│ [0m
      [0;90;1m•[0m [0;91m╰╸ A GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mHint: Add `genValidSpec @T` from `Test.Syd.Validity` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 26 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 40 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Allowed in thing-gen's test suite.
-     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@32:1-32:30[0m
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@50:1-50:46[0m
      [0;90;1m│[0m
-[0;90;1m  32 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mA[0m[0;91;1ml[0m[0;91;1ml[0m[0;91;1mo[0m[0;91;1mw[0m[0;91;1me[0m[0;91;1md[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1m)[0m
-     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+[0;90;1m  50 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1m)[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m>[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mA[0m[0;91;1ml[0m[0;91;1ml[0m[0;91;1mo[0m[0;91;1mw[0m[0;91;1me[0m[0;91;1md[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1m)[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mHint: Add `genValidSpec @T` from `Test.Syd.Validity` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 32 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 50 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error TestGenValidSpecPerGenValid][0m: No genValidSpec @Generated in thing-gen's test suite.
-     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing/Spliced.hs@11:1-11:28[0m
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing/Spliced.hs@16:1-16:28[0m
      [0;90;1m│[0m
-[0;90;1m  11 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1md[0m
+[0;90;1m  16 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1md[0m
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance obliges genValidSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mHint: Add `genValidSpec @T` from `Test.Syd.Validity` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 11 of thing/src/Thing/Spliced.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 16 of thing/src/Thing/Spliced.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 Run explain with a rule's id to see why the rule exists, for example: explain TestGenValidSpecPerGenValid

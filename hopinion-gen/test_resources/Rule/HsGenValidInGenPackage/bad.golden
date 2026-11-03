@@ -1,7 +1,7 @@
 [0;91;1m[error HsGenValidInGenPackage][0m: A GenValid instance in thing's library.
-     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@5:1-5:25[0m
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@12:1-12:25[0m
      [0;90;1m│[0m
-[0;90;1m   5 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mW[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1mg[0m[0;91;1me[0m[0;91;1mt[0m
+[0;90;1m  12 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mW[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1mg[0m[0;91;1me[0m[0;91;1mt[0m
      [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m [0;91m╰╸[0m [0;91mA GenValid instance lives in the matching -gen package.[0m
      [0;90;1m•[0m
@@ -9,6 +9,6 @@
      [0;90;1m│[0;96m       Create that package or module if missing, exposing the module and starting it with `{-# OPTIONS_GHC -Wno-orphans #-}`.
      [0;90;1m│[0;96m       Keep the Validity instances where they are.
      [0;90;1m│[0;96m       Import the `.Gen` module in the tests that use the instances, and drop genvalidity and QuickCheck from this library's `build-depends` if nothing else uses them.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 5 of thing/src/Thing.hs, and say why: -- [allow:HsGenValidInGenPackage] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 12 of thing/src/Thing.hs, and say why: -- [allow:HsGenValidInGenPackage] <reason>[0m
 [0;90;1m─────╯[0m
 Run explain with a rule's id to see why the rule exists, for example: explain HsGenValidInGenPackage

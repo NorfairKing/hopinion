@@ -119,10 +119,10 @@ instance PersistFieldSql StoredPath where
 -- rather than an upsert, so a second row for one key is a constraint violation
 -- rather than a silent overwrite. It is a violation and not a report: writing
 -- one is a mistake in whatever enumerated the packages or the modules, and the
--- caller has to have ruled it out before it gets here. Discovery does rule out
--- two packages by one name, which is what 'Hopinion.Project.discoverPackages'
--- refuses as @DiscoveryErrorTwoPackagesCalled@. The stamp is the exception,
--- and 'writeMeta' says why.
+-- caller has to have ruled it out before it gets here. Two packages by one name
+-- cannot get here, because the check builders name packages by their package-set
+-- attribute and a package set has one package per name. The stamp is the
+-- exception, and 'writeMeta' says why.
 --
 -- Suppressions are rows, since a module has as many as it has, and one opaque
 -- column each, since nothing queries into one.
@@ -191,8 +191,8 @@ withStore migrations location act =
           mapM_ runMigrationQuiet (envelopeMigration : migrations)
           act
 
--- | The same store with nowhere to put it, which is what the one-process run
--- uses, and why the two paths can be asserted to agree.
+-- | The same store with nowhere to put it, for asking a store a question
+-- without a file to clean up.
 withMemoryStore :: [Migration] -> Query a -> IO a
 withMemoryStore migrations = withStore migrations StoreLocationInMemory
 

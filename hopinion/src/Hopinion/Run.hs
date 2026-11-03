@@ -3,20 +3,12 @@
 
 -- | The commands, over everything else.
 --
--- @check@ and the split package-plus-project path share their layers but not
--- their plumbing: @check@ round-trips facts through the codec in memory, so the
--- property that the two agree can still catch a fact a project rule needs and
--- extraction does not serialise.
---
 -- Every command takes the rule set it runs rather than reading one this module
 -- knows, which is what lets a repository add rules and turn others off.
 module Hopinion.Run
-  ( runCheck,
-    HieDirectories (..),
-    noHieDirectories,
+  ( HieDirectories (..),
     runPackageCommand,
     runProjectCommand,
-    runModuleCommand,
     factsForFile,
     factsForSource,
     runModuleLayer,
@@ -24,16 +16,11 @@ module Hopinion.Run
     Explanation (..),
     explainRule,
     storeMigrations,
-    writePackage,
-    runPackagePhase,
-    runProjectPhase,
-    runCheckWithoutChoices,
   )
 where
 
 import Control.Exception (try)
 import Control.Monad.IO.Class (liftIO)
-import Data.Foldable (traverse_)
 import Data.List (nub, sort)
 import Data.List.NonEmpty (NonEmpty (..))
 import qualified Data.List.NonEmpty as NE
@@ -44,7 +31,6 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import Database.Persist.Sql (Migration)
 import Hopinion.Annotation
-import Hopinion.Choices (readChoicesIn, renderChoicesFileError, unChoices)
 import Hopinion.Compiled
 import Hopinion.Extract
 import Hopinion.Facts.Component
@@ -63,13 +49,12 @@ import Hopinion.Rule.Id
 import Hopinion.Store
 import Path (Abs, Dir, File, Path, Rel, toFilePath, (</>))
 import Path.IO (ensureDir, resolveFile')
-import Text.Colour (Chunk, TerminalCapabilities (..), blue, chunk, fore, red, renderChunksText)
+import Text.Colour (Chunk, blue, chunk, fore, red)
 import UnliftIO.Async (pooledMapConcurrently)
 
--- | Where a run's store lives: in the output directory when there is one, and
--- in memory when there is not.
-storeAt :: Maybe (Path Abs Dir) -> StoreLocation
-storeAt = maybe StoreLocationInMemory (StoreLocationOnDisk . (</> factsFile))
+-- | Where a run's store lives, which is in its output directory.
+storeAt :: Path Abs Dir -> StoreLocation
+storeAt out = StoreLocationOnDisk (out </> factsFile)
 
 -- | Every table the envelope and the rules between them need.
 --
@@ -80,51 +65,14 @@ storeAt = maybe StoreLocationInMemory (StoreLocationOnDisk . (</> factsFile))
 storeMigrations :: RuleSet -> [Migration]
 storeMigrations rs = ruleMigrations (ruleSetRules rs ++ ruleSetTurnedOff rs)
 
--- | The whole project in one process, which is the development loop.
---
--- One store with nowhere to put it, so the phases run over exactly the code the
--- layered path runs over and the two can be asserted to agree.
---
--- Narrows the given set by what the repository decided, this being the command
--- handed a repository and so the one that can find its file. A file that is
--- there and wrong is a complaint in the report like any other.
-runCheck :: RuleSet -> HieDirectories -> SourceRoot -> IO Complaints
-runCheck given hieDirs root = do
-  decided <- readChoicesIn (sourceRootDir root)
-  case decided of
-    Left err -> pure (failureComplaints [FailureChoicesRefused (renderChoicesFileError err)])
-    Right choices -> case withoutRules (unChoices choices) given of
-      Left err -> pure (failureComplaints [FailureRuleSetRefused (renderChunksText WithoutColours (renderRuleSetError err))])
-      Right rs -> runCheckWithoutChoices rs hieDirs root
-
--- | The same, over the rule set exactly as given.
---
--- Exported so a test can ask what a run would have said without the file, which
--- is what makes a test of the file about the file.
-runCheckWithoutChoices :: RuleSet -> HieDirectories -> SourceRoot -> IO Complaints
-runCheckWithoutChoices rs hieDirs root =
-  reportingArtifactProblems $
-    withPackages root $ \models ->
-      withMemoryStore (storeMigrations rs) $ do
-        writeMeta
-        written <- traverse (writePackage rs hieDirs root) models
-        -- One value per module, handed to each phase at its own scope, so a
-        -- module is read once for all three and never if nothing asks.
-        let byPackage = M.fromList (zip (map packageModelName models) (map snd written))
-        names <- packageNames
-        packageReports <- traverse (\n -> runPackagePhase rs n (M.findWithDefault mempty n byPackage)) names
-        projectReport <- projectReportFor rs names (mconcat (map snd written))
-        pure (mconcat (map fst written) <> mconcat packageReports <> projectReport)
-
-runPackageCommand :: RuleSet -> HieDirectories -> SourceRoot -> Path Abs Dir -> Maybe (Path Abs Dir) -> IO Complaints
-runPackageCommand rs hieDirs root dir mOut = reportingArtifactProblems $ do
-  eModels <- discoverPackages root dir
-  case eModels of
-    Left err -> pure (failureComplaints [FailureRepositoryUnreadable (renderDiscoveryError err)])
-    Right [] -> pure (failureComplaints [FailureRepositoryUnreadable (renderDiscoveryError (DiscoveryErrorNoCabalFileUnder dir))])
-    Right (pm : _) -> do
-      traverse_ ensureDir mOut
-      withStore (storeMigrations rs) (storeAt mOut) $ do
+runPackageCommand :: RuleSet -> HieDirectories -> SourceRoot -> Path Abs Dir -> Path Abs Dir -> IO Complaints
+runPackageCommand rs hieDirs root dir out = reportingArtifactProblems $ do
+  read' <- readPackageIn root dir
+  case read' of
+    Left err -> pure (failureComplaints [FailurePackageUnreadable (renderDiscoveryError err)])
+    Right pm -> do
+      ensureDir out
+      withStore (storeMigrations rs) (storeAt out) $ do
         writeMeta
         (moduleReport, compiled) <- writePackage rs hieDirs root pm
         packageReport <- runPackagePhase rs (packageModelName pm) compiled
@@ -133,8 +81,8 @@ runPackageCommand rs hieDirs root dir mOut = reportingArtifactProblems $ do
 -- | The project phase takes what the package phase produced, both halves of it:
 -- the store to make more findings out of, and the findings already made, which
 -- it unions in rather than deriving again.
-runProjectCommand :: RuleSet -> HieDirectories -> [Path Abs Dir] -> [Text] -> Maybe (Path Abs Dir) -> IO Complaints
-runProjectCommand rs hieDirs packageDirs expectedNames mOut = reportingArtifactProblems $ do
+runProjectCommand :: RuleSet -> HieDirectories -> [Path Abs Dir] -> [Text] -> Path Abs Dir -> IO Complaints
+runProjectCommand rs hieDirs packageDirs expectedNames out = reportingArtifactProblems $ do
   earlier <- traverse readReportFrom packageDirs
   -- Before the merge, which copies column by column and would fail on a name
   -- rather than on the version that explains it.
@@ -143,8 +91,8 @@ runProjectCommand rs hieDirs packageDirs expectedNames mOut = reportingArtifactP
     (_, refused@(_ : _)) -> pure (failureComplaints (map FailurePackageOutputRefused refused))
     (Left err, _) -> pure (failureComplaints [FailurePackageOutputRefused (renderReportDirError err)])
     (Right reports, []) -> do
-      traverse_ ensureDir mOut
-      withStore (storeMigrations rs) (storeAt mOut) $ do
+      ensureDir out
+      withStore (storeMigrations rs) (storeAt out) $ do
         writeMeta
         unmergeable <- concat <$> traverse (mergeStore . (</> factsFile)) packageDirs
         if not (null unmergeable)
@@ -221,16 +169,9 @@ projectReportFor rs expected compiled = case NE.nonEmpty (nub (sort expected)) o
   Nothing -> pure (failureComplaints [FailureNoPackagesExpected])
   Just neExpected -> runProjectPhase rs neExpected compiled
 
--- | One module, for an editor or for debugging the parser. The context comes
--- from flags rather than from a cabal file, so this command never needs to
--- discover anything.
-runModuleCommand :: RuleSet -> Path Rel File -> [Text] -> ComponentKind -> IO Complaints
-runModuleCommand rs file extensions component =
-  runModuleLayer rs <$> factsForFile rs file extensions component
-
--- | One file's facts, with the file standing in for the module name. Used by
--- the module command and by the tests, so neither reaches around the extraction
--- path a real run uses.
+-- | One file's facts, with the file standing in for the module name, so that
+-- a test of the module layer does not reach around the extraction path a real
+-- run uses.
 factsForFile :: RuleSet -> Path Rel File -> [Text] -> ComponentKind -> IO ModuleContext
 factsForFile rs file extensions component = do
   here <- resolveFile' (toFilePath file)
@@ -252,7 +193,7 @@ factsForSource rs rp extensions component src = do
           { extractInputModule = ModuleKey (relPathText rp),
             extractInputRelPath = rp,
             extractInputComponent = component,
-            -- The module command is given a file rather than a package, so
+            -- This is given a file rather than a package, so
             -- there is no cabal file to say which component claims it.
             extractInputComponentName = ComponentName "lib",
             extractInputRules = rs
@@ -324,13 +265,6 @@ explainRule rs rid = case ruleNamed rs rid of
         [ fore red (chunk "This repository has turned it off in hopinion.yaml, so this run does not make it.\n")
         | useOf rs rid == Just RuleUseTurnedOff
         ]
-
-withPackages :: SourceRoot -> ([PackageModel] -> IO Complaints) -> IO Complaints
-withPackages root act = do
-  eModels <- discoverPackages root (sourceRootDir root)
-  case eModels of
-    Left err -> pure (failureComplaints [FailureRepositoryUnreadable (renderDiscoveryError err)])
-    Right models -> act models
 
 -- | One package, read once: the module phase over every module in it, writing
 -- what the later phases need and returning what the module rules found.

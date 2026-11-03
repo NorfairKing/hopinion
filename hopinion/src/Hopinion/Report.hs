@@ -91,9 +91,7 @@ instance HasCodec ParseFailure where
 data Failure
   = FailureModuleDidNotParse !ParseFailure
   | FailureNoSourceFor !(Path Rel File)
-  | FailureRepositoryUnreadable !Text
-  | FailureChoicesRefused !Text
-  | FailureRuleSetRefused !Text
+  | FailurePackageUnreadable !Text
   | -- | A package output this run was given and cannot use: absent, repeated,
     -- written by another build of the tool, or holding facts that will not
     -- merge.
@@ -206,9 +204,7 @@ instance HasCodec Failure where
       enc = \case
         FailureModuleDidNotParse pf -> ("did-not-parse", mapToEncoder pf (requiredField' "did-not-parse"))
         FailureNoSourceFor rp -> ("no-source", mapToEncoder rp (requiredFieldWith' "no-source" relPathCodec))
-        FailureRepositoryUnreadable t -> ("unreadable", mapToEncoder t (requiredField' "unreadable"))
-        FailureChoicesRefused t -> ("choices-refused", mapToEncoder t (requiredField' "choices-refused"))
-        FailureRuleSetRefused t -> ("rules-refused", mapToEncoder t (requiredField' "rules-refused"))
+        FailurePackageUnreadable t -> ("unreadable", mapToEncoder t (requiredField' "unreadable"))
         FailurePackageOutputRefused t -> ("output-refused", mapToEncoder t (requiredField' "output-refused"))
         FailureArtifactsRefused t -> ("artifacts-refused", mapToEncoder t (requiredField' "artifacts-refused"))
         FailureNoPackagesExpected -> ("no-packages", mapToEncoder () (pureCodec ()))
@@ -217,9 +213,7 @@ instance HasCodec Failure where
         HM.fromList
           [ ("did-not-parse", ("a module the tool could not read", mapToDecoder FailureModuleDidNotParse (requiredField' "did-not-parse"))),
             ("no-source", ("a reported path no source root accounts for", mapToDecoder FailureNoSourceFor (requiredFieldWith' "no-source" relPathCodec))),
-            ("unreadable", ("what stopped the repository from being read", mapToDecoder FailureRepositoryUnreadable (requiredField' "unreadable"))),
-            ("choices-refused", ("what this repository asked for that is refused", mapToDecoder FailureChoicesRefused (requiredField' "choices-refused"))),
-            ("rules-refused", ("why the rules this run was asked for are not a set", mapToDecoder FailureRuleSetRefused (requiredField' "rules-refused"))),
+            ("unreadable", ("what stopped the package from being read", mapToDecoder FailurePackageUnreadable (requiredField' "unreadable"))),
             ("output-refused", ("a package output this run cannot use", mapToDecoder FailurePackageOutputRefused (requiredField' "output-refused"))),
             ("artifacts-refused", ("what a build did not answer for", mapToDecoder FailureArtifactsRefused (requiredField' "artifacts-refused"))),
             ("no-packages", ("the project layer was given nothing to expect", mapToDecoder (const FailureNoPackagesExpected) (pureCodec ()))),
@@ -244,9 +238,7 @@ renderFailure = \case
         relPathText rp,
         ", so it cannot be shown against its code. Pass --source PREFIX=DIR for the package it is in."
       ]
-  FailureRepositoryUnreadable t -> t
-  FailureChoicesRefused t -> t
-  FailureRuleSetRefused t -> t
+  FailurePackageUnreadable t -> t
   FailurePackageOutputRefused t -> t
   FailureArtifactsRefused t -> t
   FailureNoPackagesExpected -> "The project layer was given no packages to expect."

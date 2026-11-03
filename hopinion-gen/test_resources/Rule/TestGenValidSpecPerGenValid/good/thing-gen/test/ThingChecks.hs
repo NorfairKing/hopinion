@@ -2,16 +2,18 @@
 
 module ThingChecks (spec) where
 
+import Test.Syd (Spec)
+import Test.Syd.Validity (genValidSpec)
 import Thing
 import Thing.Spliced
 
-spec :: IO ()
+spec :: Spec
 spec = do
   genValidSpec @Plain
   genValidSpec @Standalone
-  genValidSpec @Stocked
+  genValidSpec @Unstrategised
   genValidSpec @Wrapped
   genValidSpec @AnyOf
-  genValidSpec @ViaCodec
+  genValidSpec @ViaInt
   genValidSpec @(Allowed Int)
   genValidSpec @Generated

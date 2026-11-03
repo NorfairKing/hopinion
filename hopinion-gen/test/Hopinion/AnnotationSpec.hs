@@ -21,8 +21,9 @@ import Hopinion.Rule.Gen (shippedRules)
 import Hopinion.Rule.Id
 import Hopinion.Rule.Registry (builtinRules)
 import Hopinion.Run
+import Hopinion.TestUtils (checkBuilt, packagesIn, withArtifacts)
 import Path (Dir, File, Path, Rel, mkRelFile, parseRelDir, reldir, relfile, toFilePath, (</>))
-import Path.IO (ensureDir, listDirRel, makeAbsolute, withSystemTempDir)
+import Path.IO (listDirRel, makeAbsolute, withSystemTempDir)
 import Test.Syd
 import Text.Colour (TerminalCapabilities (..), renderChunksText)
 
@@ -55,7 +56,7 @@ spec = do
   let renderedReportFor :: Path Rel Dir -> IO Text
       renderedReportFor dir = do
         root <- rootAt dir
-        report <- runCheck shippedRules noHieDirectories root
+        report <- checkBuilt shippedRules root
         (sources, missing) <- sourcesForReport [root] report
         pure (renderReportColoured shippedRules sources (report <> missing))
 
@@ -329,7 +330,7 @@ spec = do
   describe "suppressed" $
     it "is clean, because every finding in it is suppressed" $ do
       report <-
-        runCheck shippedRules noHieDirectories =<< rootAt (resourceDir </> [reldir|suppressed|])
+        checkBuilt shippedRules =<< rootAt (resourceDir </> [reldir|suppressed|])
       report `shouldBe` mempty
 
   -- The package runs and the project run are separate processes, so they can be
@@ -350,29 +351,26 @@ spec = do
             (expectationFailure . T.unpack . renderChunksText WithoutColours . renderRuleSetError)
             pure
             (ruleSet builtinRules [RuleId "CommentBareTodo"])
-        eModels <- discoverPackages root (sourceRootDir root)
-        case eModels of
-          Left err -> expectationFailure (T.unpack (renderDiscoveryError err))
-          Right models -> do
-            named <- forM models $ \pm -> do
-              let name = unPackageName (packageModelName pm)
-              dir <- (tmp </>) <$> parseRelDir (T.unpack name)
-              ensureDir dir
-              report <- runPackageCommand withEverything noHieDirectories root (packageModelDir pm) (Just dir)
-              (sources, _) <- sourcesForReport [root] report
-              writeReportTo withEverything dir sources report
-              pure (name, dir)
-            report <-
-              runProjectCommand
-                withoutTodo
-                noHieDirectories
-                (map snd named)
-                (map fst named)
-                Nothing
-            [t | ComplaintFailure t <- unComplaints report]
-              `shouldBe` replicate
-                3
-                (FailureFactsIncomplete (StoreProblemSuppressionNamesRuleNotRun (RuleId "CommentBareTodo")))
+        models <- packagesIn root
+        withArtifacts models $ \hie -> do
+          named <- forM models $ \pm -> do
+            let name = unPackageName (packageModelName pm)
+            dir <- (tmp </>) <$> parseRelDir (T.unpack name)
+            report <- runPackageCommand withEverything hie root (packageModelDir pm) dir
+            (sources, _) <- sourcesForReport [root] report
+            writeReportTo withEverything dir sources report
+            pure (name, dir)
+          report <-
+            runProjectCommand
+              withoutTodo
+              hie
+              (map snd named)
+              (map fst named)
+              (tmp </> [reldir|project|])
+          [t | ComplaintFailure t <- unComplaints report]
+            `shouldBe` replicate
+              3
+              (FailureFactsIncomplete (StoreProblemSuppressionNamesRuleNotRun (RuleId "CommentBareTodo")))
 
   -- The keystone. On-by-default with unlimited local escapes is only safe while
   -- a suppression cannot outlive its reason, so every way one can stop being
@@ -387,7 +385,7 @@ spec = do
     -- What kind of complaint it is lives in the golden below; here it is only
     -- that there is one, which is what a wrapper deciding whether to fail asks.
     it "fails the run" $ do
-      report <- runCheck shippedRules noHieDirectories =<< rootAt selfWeeding
+      report <- checkBuilt shippedRules =<< rootAt selfWeeding
       isClean report `shouldBe` False
 
     it "reports every suppression that has stopped being relevant" $
@@ -402,7 +400,7 @@ spec = do
   -- whoever wrote it meant.
   describe "misplaced" $ do
     it "fails the run" $ do
-      report <- runCheck shippedRules noHieDirectories =<< rootAt misplaced
+      report <- checkBuilt shippedRules =<< rootAt misplaced
       isClean report `shouldBe` False
 
     it "reports a site-scoped suppression in each place one cannot attach" $

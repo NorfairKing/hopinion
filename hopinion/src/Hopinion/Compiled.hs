@@ -9,7 +9,6 @@
 -- and look.
 module Hopinion.Compiled
   ( HieDirectories (..),
-    noHieDirectories,
     CompiledModules,
     ArtifactProblem (..),
     compiledModulesFor,
@@ -24,7 +23,8 @@ where
 
 import Control.Exception (Exception, throwIO)
 import Control.Monad (filterM)
-import Data.List (nub)
+import Data.List.NonEmpty (NonEmpty)
+import qualified Data.List.NonEmpty as NE
 import Data.Map (Map)
 import qualified Data.Map as M
 import Data.Maybe (isJust)
@@ -51,20 +51,11 @@ import UnliftIO.Memoize (Memoized, memoizeMVar, runMemoized)
 
 -- | Where a build collected its @.hie@ output.
 --
--- Empty means no build was involved, and every question a rule would have asked
--- goes unanswered. Non-empty is a promise that these directories account for
--- every module read, which 'uncoveredModules' holds the run to.
-newtype HieDirectories = HieDirectories [Path Abs Dir]
+-- Never empty, because hopinion only runs over code a build compiled.
+-- Giving them is a promise that they account for every module read, which
+-- 'uncoveredModules' holds the run to.
+newtype HieDirectories = HieDirectories (NonEmpty (Path Abs Dir))
   deriving (Show, Eq)
-
-instance Semigroup HieDirectories where
-  HieDirectories a <> HieDirectories b = HieDirectories (nub (a ++ b))
-
-instance Monoid HieDirectories where
-  mempty = noHieDirectories
-
-noHieDirectories :: HieDirectories
-noHieDirectories = HieDirectories []
 
 -- | What a build has to say about the modules of one scope, none of it read.
 --
@@ -74,10 +65,7 @@ noHieDirectories = HieDirectories []
 --
 -- Keyed by file, because a module name is not an identity: a package with four
 -- test suites has four modules called @Main@.
-data CompiledModules = CompiledModules
-  { compiledModulesDirs :: !HieDirectories,
-    compiledModulesByFile :: !(Map (Path Rel File) ModuleArtifacts)
-  }
+newtype CompiledModules = CompiledModules (Map (Path Rel File) ModuleArtifacts)
 
 -- | What a build left about one module, and what it takes to go and get it.
 --
@@ -90,6 +78,9 @@ data CompiledModules = CompiledModules
 -- same memoised read rather than a second one.
 data ModuleArtifacts = ModuleArtifacts
   { moduleArtifactsKey :: !ModuleKey,
+    -- | Per module rather than per scope, so that combining two scopes never
+    -- has to decide whose directories a module is looked for in.
+    moduleArtifactsDirs :: !HieDirectories,
     moduleArtifactsCompiled :: !(Memoized (Answer (Path Abs Dir, CompiledModule))),
     moduleArtifactsInterface :: !(Memoized (Answer CompiledInterface))
   }
@@ -118,18 +109,10 @@ instance Exception ArtifactProblem
 -- | A project scope is every package's. Combining shares what is deferred
 -- rather than deferring again, so one module stays one read.
 instance Semigroup CompiledModules where
-  a <> b =
-    CompiledModules
-      { compiledModulesDirs = compiledModulesDirs a <> compiledModulesDirs b,
-        compiledModulesByFile = M.union (compiledModulesByFile a) (compiledModulesByFile b)
-      }
+  CompiledModules a <> CompiledModules b = CompiledModules (M.union a b)
 
 instance Monoid CompiledModules where
-  mempty =
-    CompiledModules
-      { compiledModulesDirs = mempty,
-        compiledModulesByFile = M.empty
-      }
+  mempty = CompiledModules M.empty
 
 -- | Every one of these modules, ready to be asked about and not yet looked for.
 --
@@ -141,11 +124,7 @@ instance Monoid CompiledModules where
 compiledModulesFor :: HieDirectories -> [(ModuleKey, Path Rel File)] -> IO CompiledModules
 compiledModulesFor dirs mks = do
   entries <- traverse artifactsFor mks
-  pure
-    CompiledModules
-      { compiledModulesDirs = dirs,
-        compiledModulesByFile = M.fromList entries
-      }
+  pure (CompiledModules (M.fromList entries))
   where
     artifactsFor (mk, rp) = do
       compiled <- memoizeMVar (lookUp dirs mk rp)
@@ -154,6 +133,7 @@ compiledModulesFor dirs mks = do
         ( rp,
           ModuleArtifacts
             { moduleArtifactsKey = mk,
+              moduleArtifactsDirs = dirs,
               moduleArtifactsCompiled = compiled,
               moduleArtifactsInterface = interface
             }
@@ -169,13 +149,11 @@ compiledModulesFor dirs mks = do
 -- answered about. Asked of the file system rather than of the files, so this
 -- stays a stat per module and the reading stays deferred.
 uncoveredModules :: CompiledModules -> IO [Path Rel File]
-uncoveredModules cm = case compiledModulesDirs cm of
-  HieDirectories [] -> pure []
-  dirs ->
-    map fst
-      <$> filterM
-        (\(_, artifacts) -> not <$> covered dirs (moduleArtifactsKey artifacts))
-        (M.toList (compiledModulesByFile cm))
+uncoveredModules (CompiledModules byFile) =
+  map fst
+    <$> filterM
+      (\(_, artifacts) -> not <$> covered (moduleArtifactsDirs artifacts) (moduleArtifactsKey artifacts))
+      (M.toList byFile)
   where
     covered dirs mk = do
       names <- anyDirectoryHolds dirs (artifactFileOf "hie" mk)
@@ -190,7 +168,7 @@ uncoveredModules cm = case compiledModulesDirs cm of
 anyDirectoryHolds :: HieDirectories -> Maybe (Path Rel File) -> IO Bool
 anyDirectoryHolds _ Nothing = pure False
 anyDirectoryHolds (HieDirectories dirs) (Just relative) =
-  any isJust <$> traverse (\d -> forgivingAbsence (getModificationTime (d </> relative))) dirs
+  any isJust <$> traverse (\d -> forgivingAbsence (getModificationTime (d </> relative))) (NE.toList dirs)
 
 -- | Where a module's file is, by the layout the compiler writes: @A.B.C@ is
 -- @A\/B\/C.hie@ or @A\/B\/C.hi@ under one of the directories.
@@ -199,11 +177,11 @@ artifactFileOf extension mk =
   parseRelFile (FP.joinPath (map T.unpack (T.splitOn "." (unModuleKey mk))) FP.<.> extension)
 
 -- | This module's @.hie@ file, read the first time anything asks.
-compiledModuleOf :: Path Rel File -> CompiledModules -> IO (Maybe CompiledModule)
+compiledModuleOf :: Path Rel File -> CompiledModules -> IO CompiledModule
 compiledModuleOf rp cm = answerFor rp cm (fmap (answerMap snd) . runMemoized . moduleArtifactsCompiled)
 
 -- | This module's @.hi@ interface, read the first time anything asks.
-compiledInterfaceOf :: Path Rel File -> CompiledModules -> IO (Maybe CompiledInterface)
+compiledInterfaceOf :: Path Rel File -> CompiledModules -> IO CompiledInterface
 compiledInterfaceOf rp cm = answerFor rp cm (runMemoized . moduleArtifactsInterface)
 
 -- | Every instance this module declares, which is what makes generated code
@@ -212,8 +190,8 @@ compiledInterfaceOf rp cm = answerFor rp cm (runMemoized . moduleArtifactsInterf
 -- A @.hie@ file says which names an expansion mentioned, never which class went
 -- with which type. An interface says what the module ended up declaring,
 -- generated or not, which is the question an obligation's made side asks.
-declaredInstancesOf :: Path Rel File -> CompiledModules -> IO (Maybe [DeclaredInstance])
-declaredInstancesOf rp cm = fmap compiledInterfaceInstances <$> compiledInterfaceOf rp cm
+declaredInstancesOf :: Path Rel File -> CompiledModules -> IO [DeclaredInstance]
+declaredInstancesOf rp cm = compiledInterfaceInstances <$> compiledInterfaceOf rp cm
 
 answerMap :: (a -> b) -> Answer a -> Answer b
 answerMap f = \case
@@ -223,27 +201,42 @@ answerMap f = \case
 
 -- | Asking, which is what reads the file, the first time anything asks.
 --
--- A module of another scope is not here at all: nothing known and nothing
--- promised. A module that is here and whose file cannot be found is the other
--- thing entirely, since a build said it would be.
-answerFor :: Path Rel File -> CompiledModules -> (ModuleArtifacts -> IO (Answer a)) -> IO (Maybe a)
-answerFor rp cm ask = case M.lookup rp (compiledModulesByFile cm) of
-  Nothing -> pure Nothing
+-- Thrown rather than returned whenever there is no answer: the caller is a
+-- rule, and a rule has no third answer to give. The command layer catches it
+-- and makes it a complaint.
+answerFor :: Path Rel File -> CompiledModules -> (ModuleArtifacts -> IO (Answer a)) -> IO a
+answerFor rp (CompiledModules byFile) ask = case M.lookup rp byFile of
+  Nothing -> notInScope rp
   Just artifacts -> do
     found <- ask artifacts
-    case (found, compiledModulesDirs cm) of
-      (Answered answer, _) -> pure (Just answer)
-      (_, HieDirectories []) -> pure Nothing
-      (AnswerNothingThere, HieDirectories dirs) ->
-        promisedButAbsent (moduleArtifactsKey artifacts) rp [concat ["nothing at ", toFilePath d] | d <- dirs]
-      (AnswerUnusable whys, HieDirectories _) ->
+    let HieDirectories dirs = moduleArtifactsDirs artifacts
+    case found of
+      Answered answer -> pure answer
+      AnswerNothingThere ->
+        promisedButAbsent (moduleArtifactsKey artifacts) rp [concat ["nothing at ", toFilePath d] | d <- NE.toList dirs]
+      AnswerUnusable whys ->
         promisedButAbsent (moduleArtifactsKey artifacts) rp (map T.unpack whys)
 
 -- | The build promised this module and did not answer for it, said with what
 -- was found at each place it should have been.
+-- | A rule asked about a module this scope was not handed.
 --
--- Thrown rather than returned: the caller is a rule, and a rule has no third
--- answer to give. The command layer catches it and makes it a complaint.
+-- Only a rule can do that, by asking about a file it found somewhere other than
+-- in the modules it was run over, so it is a mistake in the rule.
+notInScope :: Path Rel File -> IO a
+notInScope rp =
+  throwIO
+    ( ArtifactProblem
+        ( T.pack
+            ( unwords
+                [ "A rule asked what the build wrote down about",
+                  T.unpack (relPathText rp),
+                  "which is not a module this run read."
+                ]
+            )
+        )
+    )
+
 promisedButAbsent :: ModuleKey -> Path Rel File -> [String] -> IO a
 promisedButAbsent mk rp whys =
   throwIO
@@ -251,7 +244,7 @@ promisedButAbsent mk rp whys =
         ( T.pack
             ( unlines
                 ( unwords
-                    [ "A build's .hie files were given, so every module has to be covered by them, but",
+                    [ "Every module has to be covered by the build's .hie files, but",
                       T.unpack (unModuleKey mk),
                       "from",
                       T.unpack (relPathText rp),
@@ -269,14 +262,11 @@ promisedButAbsent mk rp whys =
 --
 -- Two names in a module are not two names in one place: a test that mentions
 -- @T@ and another that calls @genValidSpec@ say nothing about
--- @genValidSpec \@T@. So this asks whether any single expansion names both, and
--- a module no build spoke for could have generated anything.
+-- @genValidSpec \@T@. So this asks whether any single expansion names both.
 couldGenerateUseOf :: Text -> Text -> Path Rel File -> CompiledModules -> IO Bool
 couldGenerateUseOf caller callee rp compiled = do
-  found <- compiledModuleOf rp compiled
-  pure $ case found of
-    Nothing -> True
-    Just c -> any (\names -> S.member caller names && S.member callee names) (compiledModuleGenerated c)
+  c <- compiledModuleOf rp compiled
+  pure $ any (\names -> S.member caller names && S.member callee names) (compiledModuleGenerated c)
 
 -- | Whether a @.hie@ file's source is the file a module was read from.
 --
@@ -309,7 +299,7 @@ sameSourceFile compiled rp = case compiled of
 lookUp :: HieDirectories -> ModuleKey -> Path Rel File -> IO (Answer (Path Abs Dir, CompiledModule))
 lookUp (HieDirectories dirs) mk rp = case artifactFileOf "hie" mk of
   Nothing -> pure AnswerNothingThere
-  Just relative -> go relative [] dirs
+  Just relative -> go relative [] (NE.toList dirs)
   where
     go :: Path Rel File -> [Text] -> [Path Abs Dir] -> IO (Answer (Path Abs Dir, CompiledModule))
     go _ whys [] = pure (if null whys then AnswerNothingThere else AnswerUnusable (reverse whys))
@@ -371,7 +361,9 @@ lookUpInterface (HieDirectories dirs) mk rp = go []
           Answered interface -> pure (Answered interface)
           AnswerNothingThere -> pure AnswerNothingThere
           AnswerUnusable theirs -> do
-            later <- lookUp (HieDirectories (drop 1 (dropWhile (/= d) dirs))) mk rp
+            later <- case NE.nonEmpty (drop 1 (NE.dropWhile (/= d) dirs)) of
+              Nothing -> pure AnswerNothingThere
+              Just rest -> lookUp (HieDirectories rest) mk rp
             go (whys ++ theirs) later
 
     interfaceIn :: Path Abs Dir -> IO (Answer CompiledInterface)

@@ -254,21 +254,15 @@ genPackageName = \case
 -- forgets, and a suppression against the file is what a person would write.
 recordGeneratedObligations :: Obligation -> CompiledModules -> PackageName -> ObligationTemplateHaskell -> Query ()
 recordGeneratedObligations o compiled pkg s = do
-  declared <- liftIO (declaredInstancesOf (unStoredPath (obligationTemplateHaskellFile s)) compiled)
-  case declared of
-    -- No build spoke for this module, so what it generates stays unknown and
-    -- the source is all there is. Only a run with no artifacts at all gets
-    -- here, since a run with them fails on a module they do not cover.
-    Nothing -> pure ()
-    Just instances -> do
-      written <- classesAndTypesMadeIn o pkg (obligationTemplateHaskellModuleRef s)
-      mapM_
-        (madeByGeneration s)
-        [ (declaredInstanceClass i, TypeHead (declaredInstanceType i))
-        | i <- instances,
-          declaredInstanceClass i `elem` NE.toList (obligationClasses o),
-          (declaredInstanceClass i, TypeHead (declaredInstanceType i)) `notElem` written
-        ]
+  instances <- liftIO (declaredInstancesOf (unStoredPath (obligationTemplateHaskellFile s)) compiled)
+  written <- classesAndTypesMadeIn o pkg (obligationTemplateHaskellModuleRef s)
+  mapM_
+    (madeByGeneration s)
+    [ (declaredInstanceClass i, TypeHead (declaredInstanceType i))
+    | i <- instances,
+      declaredInstanceClass i `elem` NE.toList (obligationClasses o),
+      (declaredInstanceClass i, TypeHead (declaredInstanceType i)) `notElem` written
+    ]
   where
     madeByGeneration :: ObligationTemplateHaskell -> (Text, TypeHead) -> Query ()
     madeByGeneration source (cls, th) =

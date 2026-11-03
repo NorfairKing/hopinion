@@ -174,7 +174,7 @@ spec = do
     -- A second row for one key is a constraint violation rather than a silent
     -- overwrite, which is what the schema is keyed for. It is not a report:
     -- writing one is a mistake in whatever enumerated the packages, and
-    -- discovery refuses two packages by one name before it gets here. This says
+    -- a package set holds one package per name. This says
     -- so out loud, so that a caller that starts producing one is not the thing
     -- that discovers it.
     it "refuses a second package under one name" $ do

@@ -1,7 +1,9 @@
 {-# LANGUAGE TypeApplications #-}
 module Main (main) where
 
+import Test.Syd (sydTest)
+import Test.Syd.Validity (genValidSpec)
 import Thing
 
 main :: IO ()
-main = genValidSpec @B
+main = sydTest (genValidSpec @B)

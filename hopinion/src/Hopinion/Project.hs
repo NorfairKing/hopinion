@@ -1,13 +1,10 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE QuasiQuotes #-}
 
--- | Discovery: which packages a repository has, what is in them, and how to read
--- one of their files.
+-- | Discovery: what is in a package, and how to read one of its files.
 --
--- Packages are found by walking for @.cabal@ files rather than by reading
--- @stack.yaml@, because the cabal file is what the build reads and walking
--- needs no stack knowledge.
+-- A package is read through its @.cabal@ file rather than through
+-- @stack.yaml@, because the cabal file is what the build reads.
 module Hopinion.Project
   ( SourceRoot (..),
     relPathIn,
@@ -18,9 +15,7 @@ module Hopinion.Project
     ModuleSource (..),
     DiscoveryError (..),
     renderDiscoveryError,
-    discoverPackages,
-    skippedByName,
-    readPackageModel,
+    readPackageIn,
     unclaimedSourceFiles,
     readSource,
   )
@@ -28,9 +23,7 @@ where
 
 import Control.Monad (filterM)
 import qualified Data.ByteString as BS
-import Data.List (intercalate, isPrefixOf, sort, sortOn)
-import Data.List.NonEmpty (NonEmpty (..))
-import qualified Data.List.NonEmpty as NE
+import Data.List (intercalate, isPrefixOf, sort)
 import Data.Maybe (catMaybes, isJust)
 import qualified Data.Set as S
 import Data.Text (Text)
@@ -61,12 +54,10 @@ import Path
     File,
     Path,
     Rel,
-    dirname,
     fileExtension,
     parent,
     parseRelDir,
     parseRelFile,
-    reldir,
     stripProperPrefix,
     toFilePath,
     (</>),
@@ -155,7 +146,7 @@ data PackageModel = PackageModel
   }
   deriving (Show, Eq)
 
--- | What can stop a repository from being read at all, as what happened rather
+-- | What can stop a package from being read at all, as what happened rather
 -- than as the sentence about it.
 --
 -- Typed, so that a new way of failing is a constructor every site has to
@@ -165,119 +156,39 @@ data PackageModel = PackageModel
 -- through rather than owned here.
 data DiscoveryError
   = DiscoveryErrorNoDirectoryAt !(Path Abs Dir)
-  | DiscoveryErrorNoCabalFileUnder !(Path Abs Dir)
+  | DiscoveryErrorNoCabalFileIn !(Path Abs Dir)
   | DiscoveryErrorCabalFileOutsideRoot !(Path Abs File)
   | DiscoveryErrorCabalFileUnparseable !(Path Abs File) !Text
-  | DiscoveryErrorTwoPackagesCalled !PackageName !(NonEmpty (Path Rel File))
   deriving (Show, Eq)
 
 renderDiscoveryError :: DiscoveryError -> Text
 renderDiscoveryError = \case
   DiscoveryErrorNoDirectoryAt dir ->
-    T.pack (unwords ["There is no directory at", toFilePath dir, "to read packages from."])
-  DiscoveryErrorNoCabalFileUnder dir ->
-    T.pack (unwords ["No cabal file under", toFilePath dir])
+    T.pack (unwords ["There is no directory at", toFilePath dir, "to read a package from."])
+  DiscoveryErrorNoCabalFileIn dir ->
+    T.pack (unwords ["No cabal file in", toFilePath dir])
   DiscoveryErrorCabalFileOutsideRoot cabalFile ->
     T.pack (unwords ["Outside the source root:", toFilePath cabalFile])
   DiscoveryErrorCabalFileUnparseable cabalFile errs ->
     T.pack (unwords ["Failed to parse", toFilePath cabalFile, ":", T.unpack errs])
-  DiscoveryErrorTwoPackagesCalled name cabalFiles ->
-    T.pack
-      ( unwords
-          ( [ "Two packages are called",
-              T.unpack (unPackageName name),
-              "and one name is all the facts of either can be filed under:"
-            ]
-              ++ [T.unpack (relPathText c) | c <- NE.toList cabalFiles]
-          )
-      )
 
--- | Every directory holding a @.cabal@ file, in name order so that a run is
--- reproducible.
-discoverPackages :: SourceRoot -> Path Abs Dir -> IO (Either DiscoveryError [PackageModel])
-discoverPackages root from = do
-  -- The walk itself says whether the root is there, rather than a question
-  -- asked first: a producing command that dies has written no report, and
-  -- anything between the asking and the walking could delete the directory.
-  walked <- forgivingAbsence (packageCabalFiles from)
-  case walked of
-    Nothing -> pure (Left (DiscoveryErrorNoDirectoryAt from))
-    Just cabalFiles -> do
-      models <- traverse (readPackageModel root) cabalFiles
-      pure (sequence models >>= assertNamesAreUnique)
-  where
-    -- A package name is what every fact is filed under, so two cabal files
-    -- claiming one name would file both packages' facts as one package's. Said
-    -- here, as a complaint about the repository, because the alternatives are a
-    -- fact quietly overwriting another and a constraint violation from inside
-    -- the store, neither of which a person can act on.
-    assertNamesAreUnique :: [PackageModel] -> Either DiscoveryError [PackageModel]
-    assertNamesAreUnique models =
-      case [group | group@(_ :| (_ : _)) <- byName models] of
-        [] -> Right models
-        (clashing@(first :| _) : _) ->
-          Left
-            ( DiscoveryErrorTwoPackagesCalled
-                (packageModelName first)
-                (NE.map packageModelCabal clashing)
-            )
-
-    -- NonEmpty because a group of equals has at least the one it is a group of,
-    -- which lets the message name the package without a partial function.
-    byName :: [PackageModel] -> [NonEmpty PackageModel]
-    byName models =
-      NE.groupBy
-        (\x y -> packageModelName x == packageModelName y)
-        (sortOn packageModelName models)
-
--- | The cabal file of every package under a directory, in name order so that a
--- run is reproducible. A directory with more than one is read through the first,
--- which is what cabal itself would refuse to do and nothing here has to decide.
-packageCabalFiles :: Path Abs Dir -> IO [Path Abs File]
-packageCabalFiles = go
-  where
-    -- Descending stops at a package: cabal packages do not nest, so anything
-    -- below one is that package's own material. Otherwise a package whose test
-    -- resources are little repositories would have them discovered as packages
-    -- of the repository under analysis.
-    go dir = do
-      (subs, files) <- listDir dir
-      case sort (filter isCabalFile files) of
-        (cabalFile : _) -> pure [cabalFile]
-        [] -> concat <$> traverse go (sort (filter (not . skippedByName . dirname) subs))
-
-    isCabalFile :: Path Abs File -> Bool
-    isCabalFile f = fileExtension f == Just ".cabal"
-
--- | The directories the walk does not go into, knowing only their name.
+-- | The package in this directory, which is the one a check was handed.
 --
--- None of this is needed inside a Nix build, where the source is a store path
--- copied from the git tree and an ignored directory never arrives. It is for a
--- working tree, which the development loop is pointed at, and there they are
--- all present.
+-- A directory with more than one cabal file is read through the first in name
+-- order, which is what cabal itself would refuse to do and nothing here has to
+-- decide.
 --
--- @dist-newstyle@ earns its place: cabal unpacks a @source-repository-package@
--- into @dist-newstyle\/src@, cabal file and all, so a walk that goes in there
--- reports a dependency's code as this repository's. A hidden directory is the
--- same story, @.stack-work@ most of all.
---
--- Whole names, not prefixes: a prefix takes @results@ along with the @result@
--- it means, and the packages under it go missing with nothing said, because a
--- walk that finds no cabal file and one that refused to look are the same
--- answer to a caller.
---
--- Neither @result@ nor @node_modules@ is named here. @result@ is a symlink to a
--- build output that holds no cabal file, and refusing to follow a symlink would
--- lose a package a repository links in on purpose. Nothing puts a Haskell
--- package under @node_modules@, so skipping it only adds a name this could be
--- wrong about.
-skippedByName :: Path Rel Dir -> Bool
-skippedByName d =
-  "." `isPrefixOf` name
-    || d == [reldir|dist-newstyle|]
-  where
-    name :: String
-    name = toFilePath d
+-- The listing itself says whether the directory is there, rather than a
+-- question asked first: a producing command that dies has written no report,
+-- and anything between the asking and the listing could delete the directory.
+readPackageIn :: SourceRoot -> Path Abs Dir -> IO (Either DiscoveryError PackageModel)
+readPackageIn root dir = do
+  listed <- forgivingAbsence (listDir dir)
+  case listed of
+    Nothing -> pure (Left (DiscoveryErrorNoDirectoryAt dir))
+    Just (_, files) -> case sort (filter ((== Just ".cabal") . fileExtension) files) of
+      [] -> pure (Left (DiscoveryErrorNoCabalFileIn dir))
+      (cabalFile : _) -> readPackageModel root cabalFile
 
 readPackageModel :: SourceRoot -> Path Abs File -> IO (Either DiscoveryError PackageModel)
 readPackageModel root cabalFile = do

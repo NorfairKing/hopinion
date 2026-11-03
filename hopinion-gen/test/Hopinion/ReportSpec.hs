@@ -20,7 +20,7 @@ import Hopinion.Report
 import Hopinion.Report.Render
 import Hopinion.Rule (Finding)
 import Hopinion.Rule.Gen (shippedRules)
-import Hopinion.Run
+import Hopinion.TestUtils (checkBuilt)
 import Path (Dir, Path, Rel, reldir, relfile, toFilePath, (</>))
 import Path.IO (listDirRel, makeAbsolute)
 import Test.Syd
@@ -85,7 +85,7 @@ spec = do
   it "shows a finding, a broken suppression, an unused one and an over-broad one" $
     goldenTextFile (toFilePath (resourceDir </> [relfile|every-kind.golden|])) $ do
       root <- rootAt (resourceDir </> [reldir|repo|])
-      report <- runCheck shippedRules noHieDirectories root
+      report <- checkBuilt shippedRules root
       (sources, missing) <- sourcesForReport [root] report
       pure (renderReportColoured shippedRules sources (report <> missing))
 
@@ -94,7 +94,7 @@ spec = do
   -- escape sequences and every golden would still match.
   it "colours the report for a terminal and not for a pipe" $ do
     root <- rootAt (resourceDir </> [reldir|repo|])
-    complaints <- runCheck shippedRules noHieDirectories root
+    complaints <- checkBuilt shippedRules root
     (sources, missing) <- sourcesForReport [root] complaints
     let together = complaints <> missing
     renderReportColoured shippedRules sources together `shouldSatisfy` T.isInfixOf "\ESC"
@@ -105,7 +105,7 @@ spec = do
   -- Once rather than per finding, because it is the same sentence each time.
   it "says once how to see why a rule exists" $ do
     root <- rootAt (resourceDir </> [reldir|repo|])
-    complaints <- runCheck shippedRules noHieDirectories root
+    complaints <- checkBuilt shippedRules root
     (sources, missing) <- sourcesForReport [root] complaints
     T.count "to see why the rule exists" (renderReport shippedRules sources (complaints <> missing))
       `shouldBe` 1

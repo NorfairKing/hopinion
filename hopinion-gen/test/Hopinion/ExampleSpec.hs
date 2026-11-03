@@ -2,7 +2,7 @@
 {-# LANGUAGE QuasiQuotes #-}
 
 -- | The two example repositories the Nix end to end tests drive through the
--- derivations, checked here in one process first.
+-- derivations, checked here first.
 --
 -- Everything nix/e2e.nix asserts about these projects rests on properties of
 -- the projects themselves: which packages they hold, which layer each finding
@@ -15,6 +15,7 @@ import Data.List (nub, sort)
 import Data.Maybe (mapMaybe)
 import Data.Text (Text)
 import qualified Data.Text as T
+import Hopinion.Choices (choicesFile, readChoicesFrom, renderChoicesFileError, unChoices)
 import Hopinion.Facts.Name
 import Hopinion.Project
 import Hopinion.Report
@@ -22,10 +23,11 @@ import Hopinion.Report.Render
 import Hopinion.Rule
 import Hopinion.Rule.Gen (shippedRules)
 import Hopinion.Rule.Id
-import Hopinion.Run
+import Hopinion.TestUtils (checkBuilt, packagesIn)
 import Path (Dir, Path, Rel, reldir, relfile, toFilePath, (</>))
 import Path.IO (listDirRel, makeAbsolute)
 import Test.Syd
+import Text.Colour (TerminalCapabilities (..), renderChunksText)
 
 spec :: Spec
 spec = do
@@ -46,7 +48,7 @@ spec = do
   let renderedReportFor :: Path Rel Dir -> IO Text
       renderedReportFor dir = do
         root <- rootAt dir
-        report <- runCheck shippedRules noHieDirectories root
+        report <- checkBuilt shippedRules root
         (sources, missing) <- sourcesForReport [root] report
         pure (renderReportColoured shippedRules sources (report <> missing))
 
@@ -55,13 +57,20 @@ spec = do
     sort dirs `shouldBe` [[reldir|clean|], [reldir|decided|], [reldir|dirty|]]
     sort files `shouldBe` [[relfile|dirty.golden|]]
 
-  -- A repository decides which rules it is held to in one file at its root, and
-  -- `check` is the command handed a repository, so it is the one that finds it.
-  -- This is the whole of that path bar the command line: the file is read, the
-  -- rule it names stops running, and the finding it would have made is gone.
+  -- A repository decides which rules it is held to in one file at its root,
+  -- which the check builders hand each derivation. This is that path bar the
+  -- builders and the command line: the file is read, the rule it names stops
+  -- running, and the finding it would have made is gone.
   describe "decided" $ do
     it "does not run the rule its hopinion.yaml decided against" $ do
-      report <- runCheck shippedRules noHieDirectories =<< rootAt (resourceDir </> [reldir|decided|])
+      root <- rootAt (resourceDir </> [reldir|decided|])
+      decided <- readChoicesFrom (sourceRootDir root </> choicesFile)
+      rs <- case decided of
+        Left err -> expectationFailure (T.unpack (renderChoicesFileError err))
+        Right choices -> case withoutRules (unChoices choices) shippedRules of
+          Left err -> expectationFailure (T.unpack (renderChunksText WithoutColours (renderRuleSetError err)))
+          Right rs -> pure rs
+      report <- checkBuilt rs root
       report `shouldBe` mempty
 
     -- The same repository with nothing decided, so that the test above is known
@@ -70,33 +79,28 @@ spec = do
     -- is what a rule set that never had the repository's say applied is.
     it "would report it, so the file is what made the difference" $ do
       root <- rootAt (resourceDir </> [reldir|decided|])
-      report <- runCheckWithoutChoices shippedRules noHieDirectories root
+      report <- checkBuilt shippedRules root
       map findingRule (complaintsFindings report)
         `shouldBe` [RuleId "CommentBareTodo"]
 
   describe "clean" $
     it "passes every check, which is what the Nix builders assert of it" $ do
-      report <- runCheck shippedRules noHieDirectories =<< rootAt (resourceDir </> [reldir|clean|])
+      report <- checkBuilt shippedRules =<< rootAt (resourceDir </> [reldir|clean|])
       report `shouldBe` mempty
 
   describe "dirty" $ do
     -- The Nix check compares eval-time discovery against this same list, so it
     -- is stated here too rather than only there.
-    it "holds the three packages discovery must find" $ do
-      let dir = resourceDir </> [reldir|dirty|]
-      root <- rootAt dir
-      eModels <- discoverPackages root (sourceRootDir root)
-      case eModels of
-        Left err -> expectationFailure (T.unpack (renderDiscoveryError err))
-        Right models ->
-          sort (map packageModelName models)
-            `shouldBe` [PackageName "lonely", PackageName "thing", PackageName "thing-gen"]
+    it "holds the three packages the Nix checks name" $ do
+      models <- packagesIn =<< rootAt (resourceDir </> [reldir|dirty|])
+      map packageModelName models
+        `shouldBe` [PackageName "lonely", PackageName "thing", PackageName "thing-gen"]
 
     -- Each builder needs something to fail on, and they fail at different
     -- levels, so an example that lost a level would leave one of them green
     -- whatever the tool did.
     it "fails at every level" $ do
-      report <- runCheck shippedRules noHieDirectories =<< rootAt (resourceDir </> [reldir|dirty|])
+      report <- checkBuilt shippedRules =<< rootAt (resourceDir </> [reldir|dirty|])
       [t | ComplaintFailure t <- unComplaints report] `shouldBe` []
       sort (nub (map ruleLevel (mapMaybe (ruleFor shippedRules . findingRule) (complaintsFindings report))))
         `shouldBe` [LevelModule, LevelPackage, LevelProject]

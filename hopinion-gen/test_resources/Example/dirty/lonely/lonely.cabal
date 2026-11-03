@@ -10,4 +10,6 @@ library
       src
   build-depends:
       base
+    , genvalidity
+    , validity
   default-language: Haskell2010

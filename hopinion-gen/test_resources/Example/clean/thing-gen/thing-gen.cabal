@@ -10,6 +10,8 @@ library
       src
   build-depends:
       base
+    , genvalidity
+    , thing
   default-language: Haskell2010
 
 test-suite thing-test
@@ -21,4 +23,8 @@ test-suite thing-test
       test
   build-depends:
       base
+    , genvalidity-sydtest
+    , sydtest
+    , thing
+    , thing-gen
   default-language: Haskell2010

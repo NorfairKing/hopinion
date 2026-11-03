@@ -90,7 +90,9 @@
             nixpkgs-fmt.enable = true;
             nixpkgs-fmt.excludes = [ ".*/default.nix" ];
             cabal2nix.enable = true;
-            cabal2nix.excludes = testResources;
+            # The examples the end to end checks build are the exception, since
+            # building them is how those checks get what a compiler wrote down.
+            cabal2nix.excludes = [ "^hopinion-gen/test_resources/(?!Example/(clean|dirty)/)" ];
           };
         };
       }
@@ -113,9 +115,9 @@
       // import ./nix/e2e.nix {
         inherit pkgs;
         inherit (pkgs) hopinion;
-        # Owned by Hopinion.ExampleSpec, which asserts in one process every
-        # property the checks here rest on. One set of examples, two ways of
-        # running it.
+        # Owned by Hopinion.ExampleSpec, which asserts every property the checks
+        # here rest on. One set of examples, checked by the Haskell suite and
+        # by the derivations.
         examples = {
           clean = ./hopinion-gen/test_resources/Example/clean;
           dirty = ./hopinion-gen/test_resources/Example/dirty;

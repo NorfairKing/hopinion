@@ -10,13 +10,10 @@ module Hopinion (hopinionWith) where
 
 import Control.Monad ((>=>))
 import Data.Bifunctor (first)
+import Data.List.NonEmpty (NonEmpty)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import Hopinion.Choices (ChoicesFileError, noChoices, readChoicesFrom, renderChoicesFileError, unChoices)
-import Hopinion.Comment
-import Hopinion.Facts.Module
-import Hopinion.Facts.Name
-import Hopinion.Facts.Place
 import Hopinion.OptParse
 import Hopinion.Project (SourceRoot (..))
 import Hopinion.Report
@@ -25,7 +22,7 @@ import Hopinion.Rule (Rule, RuleSet, RuleSetError, renderRuleSetError, ruleSet, 
 import Hopinion.Rule.Id (RuleId)
 import Hopinion.Run
 import Path (Abs, Dir, File, Path, SomeBase (..), (</>))
-import Path.IO (getCurrentDir, resolveDir')
+import Path.IO (getCurrentDir)
 import System.Exit (ExitCode (..), exitWith)
 import System.IO (hSetEncoding, stderr, stdout, utf8)
 import Text.Colour (Chunk, chunk, fore, red)
@@ -77,9 +74,8 @@ renderStartupError = \case
 -- says and nothing else. There is no flag for it, so the answer cannot differ
 -- between the shell and the build.
 --
--- Only for the commands that are handed no repository and so have to be told
--- where the file is; `check` is handed one and finds it for itself in
--- 'runCheck'.
+-- Every command is handed a package or package outputs rather than a
+-- repository, so each has to be told where the file is.
 disabledFor :: Settings -> IO (Either ChoicesFileError [RuleId])
 disabledFor settings = do
   told <- case settingsHopinionFile settings of
@@ -90,48 +86,20 @@ disabledFor settings = do
 run :: RuleSet -> Settings -> IO ()
 run rs settings =
   case settingsDispatch settings of
-    DispatchCheck root hieDirs -> do
-      absRoot <- absolutise root
-      absHie <- hieDirectoriesOf hieDirs
-      report <- emit rs [absRoot] Nothing =<< runCheck rs absHie absRoot
-      -- The development loop is a decider, because a person running it wants
-      -- the shell to know the answer.
-      exitWith (verdict report)
     DispatchPackage root dir out hieDirs -> do
       absRoot <- absolutise root
       absDir <- absoluteDir dir
-      absOut <- traverse absoluteDir out
+      absOut <- absoluteDir out
       absHie <- hieDirectoriesOf hieDirs
       report <- runPackageCommand rs absHie absRoot absDir absOut
-      _ <- emit rs [absRoot] absOut report
-      pure ()
+      emit rs [absRoot] absOut report
     DispatchProject packageDirs expected sources out hieDirs -> do
       roots <- traverse absolutise sources
       absPackageDirs <- traverse absoluteDir packageDirs
-      absOut <- traverse absoluteDir out
+      absOut <- absoluteDir out
       absHie <- hieDirectoriesOf hieDirs
       report <- runProjectCommand rs absHie absPackageDirs expected absOut
-      _ <- emit rs roots absOut report
-      pure ()
-    DispatchModule relFile extensions component dump -> do
-      facts <- factsForFile rs relFile extensions component
-      case dump of
-        DumpCommentsNone -> pure ()
-        DumpComments -> mapM_ (TIO.putStrLn . renderComment) (moduleContextComments facts)
-      -- The module command reports paths exactly as it was given them, so the
-      -- working directory is what they are relative to.
-      root <- resolveDir' "."
-      report <-
-        emit
-          rs
-          [ SourceRoot
-              { sourceRootDir = root,
-                sourceRootPrefix = Nothing
-              }
-          ]
-          Nothing
-          (runModuleLayer rs facts)
-      exitWith (verdict report)
+      emit rs roots absOut report
     DispatchJudge dirs -> do
       results <- traverse (absoluteDir >=> readReportFrom) dirs
       case sequence results of
@@ -156,7 +124,7 @@ verdict report = if isClean report then ExitSuccess else ExitFailure 1
 
 -- | The artifact trees as typed, resolved against the working directory like
 -- every other path a person can write on a command line.
-hieDirectoriesOf :: [SomeBase Dir] -> IO HieDirectories
+hieDirectoriesOf :: NonEmpty (SomeBase Dir) -> IO HieDirectories
 hieDirectoriesOf dirs = HieDirectories <$> traverse absoluteDir dirs
 
 -- | Resolve a source root as typed against the working directory, which is the
@@ -181,34 +149,16 @@ absoluteFile = \case
   Abs f -> pure f
   Rel f -> (</> f) <$> getCurrentDir
 
--- | Say what was found, write it where it was asked for, and hand back what was
--- said, which is what to judge: reading the sources can add complaints of its
--- own, and judging what came in would miss them.
+-- | Say what was found and write it to the output directory.
+--
+-- Reading the sources can add complaints of its own, so those are said and
+-- written too, where the judge will read them.
 --
 -- Findings go to stderr, as a compiler's do, so that a caller capturing the
 -- tool's ordinary output gets none of the diagnostics.
-emit :: RuleSet -> [SourceRoot] -> Maybe (Path Abs Dir) -> Complaints -> IO Complaints
-emit rs roots reportOut incoming = do
+emit :: RuleSet -> [SourceRoot] -> Path Abs Dir -> Complaints -> IO ()
+emit rs roots out incoming = do
   (sources, missing) <- sourcesForReport roots incoming
   let report = incoming <> missing
   printReport rs stderr sources report
-  case reportOut of
-    Nothing -> pure ()
-    Just dir -> writeReportTo rs dir sources report
-  pure report
-
-renderComment :: CommentFact -> T.Text
-renderComment cf =
-  T.concat
-    [ relPathText (spanFile (commentFactSpan cf)),
-      ":",
-      T.pack (show (positionLine (spanStart (commentFactSpan cf)))),
-      ":",
-      T.pack (show (positionCol (spanStart (commentFactSpan cf)))),
-      ": ",
-      T.pack (show (commentFactStyle cf)),
-      " ",
-      T.pack (show (commentFactAttachment cf)),
-      " ",
-      T.pack (show (commentFactText cf))
-    ]
+  writeReportTo rs out sources report

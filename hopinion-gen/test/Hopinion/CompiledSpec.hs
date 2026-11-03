@@ -9,6 +9,7 @@
 -- one test suite's compiled module be read as another's.
 module Hopinion.CompiledSpec (spec) where
 
+import Data.List.NonEmpty (NonEmpty (..))
 import qualified Data.Text as T
 import Hopinion.Compiled
 import Hopinion.Facts.Name
@@ -21,27 +22,16 @@ import Test.Syd
 spec :: Spec
 spec = do
   describe "uncoveredModules" $ do
-    -- No build was given, so nothing was promised. This is the module command
-    -- and any run over a tree nobody compiled.
-    it "promises nothing when there are no directories" $ do
-      compiled <-
-        compiledModulesFor
-          noHieDirectories
-          [(ModuleKey "Thing", [relfile|thing/src/Thing.hs|])]
-      uncovered <- uncoveredModules compiled
-      uncovered `shouldBe` []
-
-    -- The case the requirement exists for: a build was given and it does not
-    -- account for a module that was read. At the point of use this is
-    -- indistinguishable from the case above, since both say nothing, which is
-    -- why it is caught here instead.
+    -- The case the requirement exists for: a build does not account for a
+    -- module that was read. At the point of use this would say nothing, which
+    -- is why it is caught here instead.
     it "names a module the directories do not account for" $
       withSystemTempDir "hopinion-hie" $ \dir -> do
         writeFile (toFilePath (dir </> [relfile|Thing.hie|])) ""
         writeFile (toFilePath (dir </> [relfile|Thing.hi|])) ""
         compiled <-
           compiledModulesFor
-            (HieDirectories [dir])
+            (HieDirectories (dir :| []))
             [ (ModuleKey "Thing", [relfile|thing/src/Thing.hs|]),
               (ModuleKey "Other", [relfile|thing/src/Other.hs|])
             ]
@@ -56,7 +46,7 @@ spec = do
         writeFile (toFilePath (dir </> [relfile|Thing.hie|])) ""
         compiled <-
           compiledModulesFor
-            (HieDirectories [dir])
+            (HieDirectories (dir :| []))
             [(ModuleKey "Thing", [relfile|thing/src/Thing.hs|])]
         uncovered <- uncoveredModules compiled
         uncovered `shouldBe` [[relfile|thing/src/Thing.hs|]]
@@ -72,7 +62,7 @@ spec = do
         writeFile (toFilePath (dir </> [relfile|Deep/Down/Other.hi|])) ""
         compiled <-
           compiledModulesFor
-            (HieDirectories [dir])
+            (HieDirectories (dir :| []))
             [ (ModuleKey "Thing", [relfile|thing/src/Thing.hs|]),
               (ModuleKey "Deep.Down.Other", [relfile|thing/src/Deep/Down/Other.hs|])
             ]
@@ -94,7 +84,7 @@ spec = do
         writeFile (toFilePath (two </> [relfile|Main.hi|])) ""
         compiled <-
           compiledModulesFor
-            (HieDirectories [one, two])
+            (HieDirectories (one :| [two]))
             [ (ModuleKey "Main", [relfile|thing-gen/testa/Main.hs|]),
               (ModuleKey "Main", [relfile|thing-gen/testb/Main.hs|])
             ]
@@ -118,17 +108,16 @@ spec = do
     let askNames :: CompiledModules -> IO ()
         askNames compiled = do
           named <- compiledModuleOf rp compiled
-          fmap compiledModuleName named `shouldBe` Just "Fixture"
+          compiledModuleName named `shouldBe` "Fixture"
     let askInterface :: CompiledModules -> IO ()
         askInterface compiled = do
           declared <- declaredInstancesOf rp compiled
           declared
-            `shouldBe` Just
-              [ DeclaredInstance
-                  { declaredInstanceClass = "Show",
-                    declaredInstanceType = "Written"
-                  }
-              ]
+            `shouldBe` [ DeclaredInstance
+                           { declaredInstanceClass = "Show",
+                             declaredInstanceType = "Written"
+                           }
+                       ]
     let askingTwice :: (CompiledModules -> IO ()) -> (CompiledModules -> IO ()) -> IO ()
         askingTwice first second = withSystemTempDir "hopinion-hie" $ \tmp -> do
           ensureDir (tmp </> [reldir|src|])
@@ -141,7 +130,7 @@ spec = do
               ""
           compiled <-
             compiledModulesFor
-              (HieDirectories [tmp])
+              (HieDirectories (tmp :| []))
               [(ModuleKey "Fixture", rp)]
           first compiled
           removeFile (tmp </> [relfile|Fixture.hie|])
@@ -171,7 +160,7 @@ spec = do
         copyFile (whole </> [relfile|Fixture.hie|]) (partial </> [relfile|Fixture.hie|])
         compiled <-
           compiledModulesFor
-            (HieDirectories [partial, whole])
+            (HieDirectories (partial :| [whole]))
             [(ModuleKey "Fixture", rp)]
         uncovered <- uncoveredModules compiled
         uncovered `shouldBe` []
@@ -184,14 +173,14 @@ spec = do
       withSystemTempDir "hopinion-hie" $ \tmp -> do
         compiled <-
           compiledModulesFor
-            (HieDirectories [tmp])
+            (HieDirectories (tmp :| []))
             [(ModuleKey "Thing", [relfile|thing/src/Thing.hs|])]
         compiledModuleOf [relfile|thing/src/Thing.hs|] compiled
           `shouldThrow` ( ==
                             ArtifactProblem
                               ( T.pack
                                   ( unlines
-                                      [ "A build's .hie files were given, so every module has to be covered by them, but Thing from thing/src/Thing.hs is not. A rule asked what that module's code generates and would have been told nothing, which reads exactly like a module that generates nothing.",
+                                      [ "Every module has to be covered by the build's .hie files, but Thing from thing/src/Thing.hs is not. A rule asked what that module's code generates and would have been told nothing, which reads exactly like a module that generates nothing.",
                                         concat ["  nothing at ", toFilePath tmp]
                                       ]
                                   )
@@ -211,14 +200,14 @@ spec = do
         removeFile (tmp </> [relfile|Fixture.hi|])
         compiled <-
           compiledModulesFor
-            (HieDirectories [tmp])
+            (HieDirectories (tmp :| []))
             [(ModuleKey "Fixture", [relfile|thing/src/Fixture.hs|])]
         declaredInstancesOf [relfile|thing/src/Fixture.hs|] compiled
           `shouldThrow` ( ==
                             ArtifactProblem
                               ( T.pack
                                   ( unlines
-                                      [ "A build's .hie files were given, so every module has to be covered by them, but Fixture from thing/src/Fixture.hs is not. A rule asked what that module's code generates and would have been told nothing, which reads exactly like a module that generates nothing.",
+                                      [ "Every module has to be covered by the build's .hie files, but Fixture from thing/src/Fixture.hs is not. A rule asked what that module's code generates and would have been told nothing, which reads exactly like a module that generates nothing.",
                                         concat ["  ", toFilePath (tmp </> [relfile|Fixture.hi|]), " is not there, though the .hie beside it is about this module"]
                                       ]
                                   )

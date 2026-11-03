@@ -1,11 +1,18 @@
 module Thing where
 
+import Data.GenValidity (GenValid)
+import Data.Validity (Validity)
+import GHC.Generics (Generic)
+
 -- TODO this one is left alone.
 -- [allow:CommentBareTodo] Kept as an example of a suppressed comment finding.
 loose :: Int
 loose = 1
 
 data Internal = Internal
+  deriving (Generic)
+
+instance Validity Internal
 
 -- [allow:TestGenValidSpecPerGenValid] This never crosses a process boundary,
 -- it only exists for the debug endpoint's pretty printer, so there is nothing

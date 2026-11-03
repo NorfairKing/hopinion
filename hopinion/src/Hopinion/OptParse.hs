@@ -1,13 +1,11 @@
 {-# LANGUAGE ApplicativeDo #-}
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE RecordWildCards #-}
 
 module Hopinion.OptParse
   ( Settings (..),
     Dispatch (..),
-    DumpComments (..),
     RawSourceRoot (..),
     getSettings,
   )
@@ -16,10 +14,9 @@ where
 import Data.List.NonEmpty (NonEmpty (..))
 import Data.Text (Text)
 import qualified Data.Text as T
-import Hopinion.Facts.Component (ComponentKind (..), componentKindText, parseComponentKind)
 import Hopinion.Rule.Id (RuleId, parseRuleId)
 import OptEnvConf
-import Path (Dir, File, Path, Rel, SomeBase (..), parseRelDir, parseRelFile, parseSomeDir, parseSomeFile, reldir)
+import Path (Dir, File, Path, Rel, SomeBase, parseRelDir, parseSomeDir, parseSomeFile)
 import Paths_hopinion (version)
 
 data Settings = Settings
@@ -46,20 +43,11 @@ data RawSourceRoot = RawSourceRoot
   deriving (Show, Eq)
 
 data Dispatch
-  = DispatchCheck !RawSourceRoot ![SomeBase Dir]
-  | DispatchPackage !RawSourceRoot !(SomeBase Dir) !(Maybe (SomeBase Dir)) ![SomeBase Dir]
-  | DispatchProject ![SomeBase Dir] ![Text] ![RawSourceRoot] !(Maybe (SomeBase Dir)) ![SomeBase Dir]
-  | DispatchModule !(Path Rel File) ![Text] !ComponentKind !DumpComments
+  = DispatchPackage !RawSourceRoot !(SomeBase Dir) !(SomeBase Dir) !(NonEmpty (SomeBase Dir))
+  | DispatchProject ![SomeBase Dir] ![Text] ![RawSourceRoot] !(SomeBase Dir) !(NonEmpty (SomeBase Dir))
   | DispatchJudge !(NonEmpty (SomeBase Dir))
   | DispatchListRules
   | DispatchExplain !RuleId
-
--- | Whether the module command prints every comment with what it attached to,
--- which is for debugging the attachment pass rather than for checking anything.
-data DumpComments
-  = DumpCommentsNone
-  | DumpComments
-  deriving stock (Show, Eq)
 
 getSettings :: IO Settings
 getSettings = runSettingsParser version "hopinion: enforce the code review standards"
@@ -73,9 +61,9 @@ parseSettings = withoutConfig $ do
   -- Where the file is, never what is in it: nothing about a run is configured on
   -- a command line.
   --
-  -- For the two commands that cannot find it. A package derivation is handed one
-  -- package's subtree, and the project command is handed fact files and no
-  -- source at all; @check@ is handed the repository and looks beside it.
+  -- Named rather than found, because no command is handed the repository: a
+  -- package derivation is handed one package's subtree, and the project
+  -- command is handed fact files and no source at all.
   settingsHopinionFile <-
     optional
       ( setting
@@ -91,38 +79,12 @@ parseSettings = withoutConfig $ do
 parseDispatch :: Parser Dispatch
 parseDispatch =
   commands
-    [ command "check" "Check a whole project in one process" (parseRepository DispatchCheck),
-      command "module" "Check one module, for an editor or for debugging" parseModule,
-      command "package" "Check one package and write its facts" parsePackage,
+    [ command "package" "Check one package and write its facts" parsePackage,
       command "project" "Check a project from package facts alone" parseProject,
       command "judge" "Fail if any of these reports has something to answer for" parseJudge,
       command "list-rules" "Print every rule with its level and class" (pure DispatchListRules),
       command "explain" "Print a rule's text and where it comes from" parseExplain
     ]
-
--- | Both commands take a repository and the artifacts of building it, if there
--- are any. The prefix is empty because a repository is what reported paths are
--- already relative to; only a build that sees one package's subtree in
--- isolation needs one.
-parseRepository :: (RawSourceRoot -> [SomeBase Dir] -> Dispatch) -> Parser Dispatch
-parseRepository f = do
-  hieDirs <- parseHieDirectories
-  dir <-
-    setting
-      [ help "The repository root",
-        reader (maybeReader parseSomeDir),
-        argument,
-        metavar "DIR",
-        value (Rel [reldir|.|])
-      ]
-  pure
-    ( f
-        RawSourceRoot
-          { rawSourceRootDir = dir,
-            rawSourceRootPrefix = Nothing
-          }
-        hieDirs
-    )
 
 parsePackage :: Parser Dispatch
 parsePackage = do
@@ -141,15 +103,15 @@ parsePackage = do
 -- | Where a build put its @.hie@ output, so that a rule can ask what a splice
 -- generated instead of guessing.
 --
--- Passing none is allowed, which is what the module command and a run over a
--- tree nobody compiled do. Passing any is a promise that they cover every
--- module read, and the project phase holds the run to it, because a module a
--- build left out reads exactly like a module there is nothing to say about.
-parseHieDirectories :: Parser [SomeBase Dir]
+-- At least one, because hopinion only runs over code a build compiled. They
+-- have to cover every module read, and the project phase holds the run to it,
+-- because a module a build left out reads exactly like a module there is
+-- nothing to say about.
+parseHieDirectories :: Parser (NonEmpty (SomeBase Dir))
 parseHieDirectories =
-  many
+  someNonEmpty
     ( setting
-        [ help "A directory of .hie files, as a build with -fwrite-ide-info leaves behind. Given any, they must cover every module",
+        [ help "A directory of .hie and .hi files, as a build with -fwrite-ide-info leaves behind. Together they must cover every module",
           reader (maybeReader parseSomeDir),
           option,
           long "hie-directory",
@@ -160,17 +122,15 @@ parseHieDirectories =
 -- | Producing commands succeed whatever they find, so what they produced has to
 -- go somewhere a later command can read and a person can look at: the facts, the
 -- report as data, and the report as text.
-parseReportOut :: Parser (Maybe (SomeBase Dir))
+parseReportOut :: Parser (SomeBase Dir)
 parseReportOut =
-  optional
-    ( setting
-        [ help "A directory to write this run's facts and report to",
-          reader (maybeReader parseSomeDir),
-          option,
-          long "out",
-          metavar "DIR"
-        ]
-    )
+  setting
+    [ help "A directory to write this run's facts and report to",
+      reader (maybeReader parseSomeDir),
+      option,
+      long "out",
+      metavar "DIR"
+    ]
 
 -- | At least one report, because judging nothing is the one way this command
 -- can answer "clean" without having read anything. A caller that passes none
@@ -180,7 +140,7 @@ parseJudge :: Parser Dispatch
 parseJudge = do
   first <-
     setting
-      [ help "A report directory, as written by --report-out",
+      [ help "A report directory, as written by --out",
         reader (maybeReader parseSomeDir),
         argument,
         metavar "DIR"
@@ -251,43 +211,6 @@ sourceRootOf s = case break (== '=') s of
           rawSourceRootPrefix = Just parsedPrefix
         }
 
-parseModule :: Parser Dispatch
-parseModule = do
-  file <-
-    setting
-      [ help "The module to check, as a path relative to the directory hopinion runs in, because that is what its findings are reported against",
-        reader (maybeReader parseRelFile),
-        argument,
-        metavar "FILE"
-      ]
-  extensions <-
-    many
-      ( setting
-          [ help "An extension the module's cabal component enables by default",
-            reader str,
-            option,
-            long "extension",
-            metavar "EXTENSION"
-          ]
-      )
-  component <-
-    setting
-      [ help "Which sort of component the module belongs to",
-        reader (maybeReader (parseComponentKind . T.pack)),
-        option,
-        long "component",
-        metavar (T.unpack (T.intercalate "|" (map componentKindText [minBound .. maxBound]))),
-        value ComponentKindLib
-      ]
-  dump <-
-    setting
-      [ help "Print every comment with its attachment",
-        switch DumpComments,
-        long "dump-comments",
-        value DumpCommentsNone
-      ]
-  pure (DispatchModule file (map T.pack extensions) component dump)
-
 parseSourceRoot :: Parser RawSourceRoot
 parseSourceRoot = do
   dir <-
@@ -296,8 +219,7 @@ parseSourceRoot = do
         reader (maybeReader parseSomeDir),
         option,
         long "root",
-        metavar "DIR",
-        value (Rel [reldir|.|])
+        metavar "DIR"
       ]
   prefix <-
     optional
