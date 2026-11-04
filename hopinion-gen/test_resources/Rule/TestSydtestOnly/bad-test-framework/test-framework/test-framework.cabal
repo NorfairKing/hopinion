@@ -1,0 +1,15 @@
+cabal-version: 1.12
+name: test-framework
+version: 0.0.0
+build-type: Simple
+
+library
+  exposed-modules:
+      Test.Framework
+      Test.Framework.Providers.HUnit
+      Test.HUnit
+  hs-source-dirs:
+      src
+  build-depends:
+      base
+  default-language: Haskell2010

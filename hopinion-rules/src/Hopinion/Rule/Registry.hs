@@ -23,6 +23,7 @@ import qualified Hopinion.Check.Package.AppOnlyMain.Rule as AppOnlyMain
 import qualified Hopinion.Check.Package.GenValidInGenPackage.Rule as GenValidInGenPackage
 import qualified Hopinion.Check.Project.GenValidSpecPerGenValid.Rule as GenValidSpecPerGenValid
 import qualified Hopinion.Check.Project.JsonSpecPerJsonType.Rule as JsonSpecPerJsonType
+import qualified Hopinion.Check.Project.SydtestOnly.Rule as SydtestOnly
 import qualified Hopinion.Check.Test.NoTestHelpers.Rule as NoTestHelpers
 import Hopinion.Rule (Rule)
 
@@ -48,5 +49,6 @@ builtinRules =
     NoTestHelpers.rule,
     PrefixNaming.rule,
     RecordFieldPerLine.rule,
+    SydtestOnly.rule,
     TestOneSpecPerFile.rule
   ]

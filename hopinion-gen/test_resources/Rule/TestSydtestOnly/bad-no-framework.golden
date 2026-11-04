@@ -1,0 +1,15 @@
+[0;91;1m[error TestSydtestOnly][0m: A test suite that never reaches Test.Syd: thing-test.
+     [0;90;1m╭──▶[0m [0;32;1mthing/test/Main.hs@1:1-1:25[0m
+     [0;90;1m│[0m
+[0;90;1m   1 │[0m [0;91;1mm[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1mu[0m[0;91;1ml[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mM[0m[0;91;1ma[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mm[0m[0;91;1ma[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1m)[0m[0;91;1m [0m[0;91;1mw[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1me[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mTests are written with sydtest.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Write every test with sydtest: `import Test.Syd`, and add sydtest to the component's dependencies, in package.yaml if the package uses hpack.
+     [0;90;1m│[0;96m       Remove every import of another test framework, and remove that framework from the dependencies.
+     [0;90;1m│[0;96m       Replace hspec's `describe`, `it`, `shouldBe` and `prop` with sydtest's functions of the same names.
+     [0;90;1m│[0;96m       Replace a tasty or test-framework `testGroup` with `describe`, and a `testCase` or `testProperty` with `it`.
+     [0;90;1m│[0;96m       Make the test suite's main module hold only `{-# OPTIONS_GHC -F -pgmF sydtest-discover #-}`, instead of hspec-discover or a hand-written list of test modules.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this anywhere in the file, and say why: -- [allow:file:TestSydtestOnly] <reason>[0m
+[0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain TestSydtestOnly

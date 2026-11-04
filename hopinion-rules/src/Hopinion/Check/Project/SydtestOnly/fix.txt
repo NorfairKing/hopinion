@@ -1,0 +1,5 @@
+Write every test with sydtest: `import Test.Syd`, and add sydtest to the component's dependencies, in package.yaml if the package uses hpack.
+Remove every import of another test framework, and remove that framework from the dependencies.
+Replace hspec's `describe`, `it`, `shouldBe` and `prop` with sydtest's functions of the same names.
+Replace a tasty or test-framework `testGroup` with `describe`, and a `testCase` or `testProperty` with `it`.
+Make the test suite's main module hold only `{-# OPTIONS_GHC -F -pgmF sydtest-discover #-}`, instead of hspec-discover or a hand-written list of test modules.

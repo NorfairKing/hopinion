@@ -1,0 +1,15 @@
+[0;91;1m[error TestSydtestOnly][0m: An import of another test framework: Test.HUnit.
+     [0;90;1m╭──▶[0m [0;32;1mthing-gen/src/Thing/TestUtils.hs@3:8-3:18[0m
+     [0;90;1m│[0m
+[0;90;1m   3 │[0m [0;97mi[0m[0;97mm[0m[0;97mp[0m[0;97mo[0m[0;97mr[0m[0;97mt[0m[0;97m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1m.[0m[0;91;1mH[0m[0;91;1mU[0m[0;91;1mn[0m[0;91;1mi[0m[0;91;1mt[0m[0;97m [0m[0;97m([0m[0;97m([0m[0;97m@[0m[0;97m?[0m[0;97m=[0m[0;97m)[0m[0;97m)[0m
+     [0;90;1m•[0m        [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m        [0;91m╰╸[0m [0;91mTests are written with sydtest.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Write every test with sydtest: `import Test.Syd`, and add sydtest to the component's dependencies, in package.yaml if the package uses hpack.
+     [0;90;1m│[0;96m       Remove every import of another test framework, and remove that framework from the dependencies.
+     [0;90;1m│[0;96m       Replace hspec's `describe`, `it`, `shouldBe` and `prop` with sydtest's functions of the same names.
+     [0;90;1m│[0;96m       Replace a tasty or test-framework `testGroup` with `describe`, and a `testCase` or `testProperty` with `it`.
+     [0;90;1m│[0;96m       Make the test suite's main module hold only `{-# OPTIONS_GHC -F -pgmF sydtest-discover #-}`, instead of hspec-discover or a hand-written list of test modules.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this anywhere in the file, and say why: -- [allow:file:TestSydtestOnly] <reason>[0m
+[0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain TestSydtestOnly

@@ -1,0 +1,13 @@
+cabal-version: 1.12
+name: tasty-bench
+version: 0.0.0
+build-type: Simple
+
+library
+  exposed-modules:
+      Test.Tasty.Bench
+  hs-source-dirs:
+      src
+  build-depends:
+      base
+  default-language: Haskell2010

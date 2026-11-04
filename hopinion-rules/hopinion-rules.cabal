@@ -40,6 +40,8 @@ extra-source-files:
     src/Hopinion/Check/Project/GenValidSpecPerGenValid/why.txt
     src/Hopinion/Check/Project/JsonSpecPerJsonType/fix.txt
     src/Hopinion/Check/Project/JsonSpecPerJsonType/why.txt
+    src/Hopinion/Check/Project/SydtestOnly/fix.txt
+    src/Hopinion/Check/Project/SydtestOnly/why.txt
     src/Hopinion/Check/Test/NoTestHelpers/fix.txt
     src/Hopinion/Check/Test/NoTestHelpers/why.txt
 
@@ -77,6 +79,9 @@ library
       Hopinion.Check.Package.GenValidInGenPackage.Rule
       Hopinion.Check.Project.GenValidSpecPerGenValid.Rule
       Hopinion.Check.Project.JsonSpecPerJsonType.Rule
+      Hopinion.Check.Project.SydtestOnly.Extract
+      Hopinion.Check.Project.SydtestOnly.Fact
+      Hopinion.Check.Project.SydtestOnly.Rule
       Hopinion.Check.Test.NoTestHelpers.Rule
       Hopinion.Rule.Registry
   other-modules:

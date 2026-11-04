@@ -335,6 +335,75 @@ extra-source-files:
     test_resources/Rule/TestNoTestHelpers/goodNotATestFile.hs.golden
     test_resources/Rule/TestNoTestHelpers/goodSpec.hs
     test_resources/Rule/TestNoTestHelpers/goodSpec.hs.golden
+    test_resources/Rule/TestSydtestOnly/bad-detailed.golden
+    test_resources/Rule/TestSydtestOnly/bad-detailed/cabal/cabal.cabal
+    test_resources/Rule/TestSydtestOnly/bad-detailed/cabal/src/Distribution/TestSuite.hs
+    test_resources/Rule/TestSydtestOnly/bad-detailed/thing/src/Thing.hs
+    test_resources/Rule/TestSydtestOnly/bad-detailed/thing/test/Tests.hs
+    test_resources/Rule/TestSydtestOnly/bad-detailed/thing/thing.cabal
+    test_resources/Rule/TestSydtestOnly/bad-helper-library.golden
+    test_resources/Rule/TestSydtestOnly/bad-helper-library/thing-gen/src/Test/HUnit.hs
+    test_resources/Rule/TestSydtestOnly/bad-helper-library/thing-gen/src/Thing/TestUtils.hs
+    test_resources/Rule/TestSydtestOnly/bad-helper-library/thing-gen/thing-gen.cabal
+    test_resources/Rule/TestSydtestOnly/bad-helper-library/thing/src/Thing.hs
+    test_resources/Rule/TestSydtestOnly/bad-helper-library/thing/test/Main.hs
+    test_resources/Rule/TestSydtestOnly/bad-helper-library/thing/thing.cabal
+    test_resources/Rule/TestSydtestOnly/bad-hspec.golden
+    test_resources/Rule/TestSydtestOnly/bad-hspec/hspec/hspec.cabal
+    test_resources/Rule/TestSydtestOnly/bad-hspec/hspec/src/Test/Hspec.hs
+    test_resources/Rule/TestSydtestOnly/bad-hspec/hspec/src/Test/Hspec/QuickCheck.hs
+    test_resources/Rule/TestSydtestOnly/bad-hspec/thing/src/Thing.hs
+    test_resources/Rule/TestSydtestOnly/bad-hspec/thing/test/Main.hs
+    test_resources/Rule/TestSydtestOnly/bad-hspec/thing/thing.cabal
+    test_resources/Rule/TestSydtestOnly/bad-no-framework.golden
+    test_resources/Rule/TestSydtestOnly/bad-no-framework/thing/src/Thing.hs
+    test_resources/Rule/TestSydtestOnly/bad-no-framework/thing/test/Main.hs
+    test_resources/Rule/TestSydtestOnly/bad-no-framework/thing/thing.cabal
+    test_resources/Rule/TestSydtestOnly/bad-tasty.golden
+    test_resources/Rule/TestSydtestOnly/bad-tasty/tasty/src/Test/Tasty.hs
+    test_resources/Rule/TestSydtestOnly/bad-tasty/tasty/src/Test/Tasty/HUnit.hs
+    test_resources/Rule/TestSydtestOnly/bad-tasty/tasty/src/Test/Tasty/QuickCheck.hs
+    test_resources/Rule/TestSydtestOnly/bad-tasty/tasty/tasty.cabal
+    test_resources/Rule/TestSydtestOnly/bad-tasty/thing/src/Thing.hs
+    test_resources/Rule/TestSydtestOnly/bad-tasty/thing/test/Main.hs
+    test_resources/Rule/TestSydtestOnly/bad-tasty/thing/thing.cabal
+    test_resources/Rule/TestSydtestOnly/bad-test-framework.golden
+    test_resources/Rule/TestSydtestOnly/bad-test-framework/test-framework/src/Test/Framework.hs
+    test_resources/Rule/TestSydtestOnly/bad-test-framework/test-framework/src/Test/Framework/Providers/HUnit.hs
+    test_resources/Rule/TestSydtestOnly/bad-test-framework/test-framework/src/Test/HUnit.hs
+    test_resources/Rule/TestSydtestOnly/bad-test-framework/test-framework/test-framework.cabal
+    test_resources/Rule/TestSydtestOnly/bad-test-framework/thing/src/Thing.hs
+    test_resources/Rule/TestSydtestOnly/bad-test-framework/thing/test/Main.hs
+    test_resources/Rule/TestSydtestOnly/bad-test-framework/thing/thing.cabal
+    test_resources/Rule/TestSydtestOnly/good-discovered.golden
+    test_resources/Rule/TestSydtestOnly/good-discovered/thing/src/Thing.hs
+    test_resources/Rule/TestSydtestOnly/good-discovered/thing/test/Main.hs
+    test_resources/Rule/TestSydtestOnly/good-discovered/thing/test/ThingSpec.hs
+    test_resources/Rule/TestSydtestOnly/good-discovered/thing/thing.cabal
+    test_resources/Rule/TestSydtestOnly/good-main-from-library.golden
+    test_resources/Rule/TestSydtestOnly/good-main-from-library/thing-gen/src/Thing/Spec.hs
+    test_resources/Rule/TestSydtestOnly/good-main-from-library/thing-gen/src/Thing/TestMain.hs
+    test_resources/Rule/TestSydtestOnly/good-main-from-library/thing-gen/thing-gen.cabal
+    test_resources/Rule/TestSydtestOnly/good-main-from-library/thing/src/Thing.hs
+    test_resources/Rule/TestSydtestOnly/good-main-from-library/thing/test/Main.hs
+    test_resources/Rule/TestSydtestOnly/good-main-from-library/thing/thing.cabal
+    test_resources/Rule/TestSydtestOnly/good-similar-name.golden
+    test_resources/Rule/TestSydtestOnly/good-similar-name/hspec-like/hspec-like.cabal
+    test_resources/Rule/TestSydtestOnly/good-similar-name/hspec-like/src/Test/HspecLike.hs
+    test_resources/Rule/TestSydtestOnly/good-similar-name/hspec-like/src/Thing/Like.hs
+    test_resources/Rule/TestSydtestOnly/good-similar-name/thing/src/Thing.hs
+    test_resources/Rule/TestSydtestOnly/good-similar-name/thing/test/Main.hs
+    test_resources/Rule/TestSydtestOnly/good-similar-name/thing/thing.cabal
+    test_resources/Rule/TestSydtestOnly/good-tasty-bench.golden
+    test_resources/Rule/TestSydtestOnly/good-tasty-bench/tasty-bench/src/Test/Tasty/Bench.hs
+    test_resources/Rule/TestSydtestOnly/good-tasty-bench/tasty-bench/tasty-bench.cabal
+    test_resources/Rule/TestSydtestOnly/good-tasty-bench/thing/bench/Main.hs
+    test_resources/Rule/TestSydtestOnly/good-tasty-bench/thing/src/Thing.hs
+    test_resources/Rule/TestSydtestOnly/good-tasty-bench/thing/thing.cabal
+    test_resources/Rule/TestSydtestOnly/good.golden
+    test_resources/Rule/TestSydtestOnly/good/thing/src/Thing.hs
+    test_resources/Rule/TestSydtestOnly/good/thing/test/Main.hs
+    test_resources/Rule/TestSydtestOnly/good/thing/thing.cabal
     test_resources/Run/runs.golden
     test_resources/Run/turned-off.golden
 
