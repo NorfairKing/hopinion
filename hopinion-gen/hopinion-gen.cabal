@@ -122,6 +122,9 @@ extra-source-files:
     test_resources/Project/absent-module/thing/thing.cabal
     test_resources/Project/absent-source-dir/thing/src/Thing.hs
     test_resources/Project/absent-source-dir/thing/thing.cabal
+    test_resources/Project/detailed-suite/thing/test/Helper.hs
+    test_resources/Project/detailed-suite/thing/test/Tests.hs
+    test_resources/Project/detailed-suite/thing/thing.cabal
     test_resources/Report/every-kind.golden
     test_resources/Report/failure.golden
     test_resources/Report/repo/thing/src/Stray.hs

@@ -240,7 +240,7 @@ componentsOf pd =
           ComponentKindTest
           (unqualName (testName t))
           (testBuildInfo t)
-          (otherModules (testBuildInfo t))
+          (otherModules (testBuildInfo t) ++ testModuleOf t)
           (mainOfTest t)
       | t <- testSuites pd
       ],
@@ -268,6 +268,13 @@ componentsOf pd =
     mainOfTest t = case testInterface t of
       Cabal.TestSuiteExeV10 _ p -> parseRelFile p
       _ -> Nothing
+
+    -- A detailed suite names its entry point as a module rather than a file,
+    -- and lists it nowhere else, so without this it would be no module of
+    -- its suite at all.
+    testModuleOf t = case testInterface t of
+      Cabal.TestSuiteLibV09 _ m -> [m]
+      _ -> []
 
     mainOfBenchmark b = case Cabal.benchmarkInterface b of
       Cabal.BenchmarkExeV10 _ p -> parseRelFile p

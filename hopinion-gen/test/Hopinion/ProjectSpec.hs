@@ -36,8 +36,17 @@ spec = do
     files `shouldBe` []
     sort dirs
       `shouldBe` [ [reldir|absent-module|],
-                   [reldir|absent-source-dir|]
+                   [reldir|absent-source-dir|],
+                   [reldir|detailed-suite|]
                  ]
+
+  -- A detailed suite names its entry point in test-module and nowhere else, so
+  -- reading only other-modules would leave every rule blind to it.
+  it "reads a detailed suite's test-module as one of its modules" $ do
+    root <- rootAt (resourceDir </> [reldir|detailed-suite|])
+    result <- readPackageIn root (sourceRootDir root </> [reldir|thing|])
+    fmap (map componentModelDeclaredModules . packageModelComponents) result
+      `shouldBe` Right [[ModuleKey "Helper", ModuleKey "Tests"]]
 
   -- The directory a command is pointed at may not be there, which is a mistake
   -- in whatever named it. It has to be a complaint rather than an exception for
