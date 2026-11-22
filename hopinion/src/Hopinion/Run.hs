@@ -230,7 +230,6 @@ listRules rs =
 data Explanation
   = ExplanationGiven ![Chunk]
   | ExplanationNoRuleCalled ![Chunk]
-  deriving (Show, Eq)
 
 -- | What a rule asks for and why, whether or not this run makes it.
 --

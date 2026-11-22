@@ -245,9 +245,6 @@ namedRule rs t = do
 data AnnotationReach
   = AnnotationReachFile
   | AnnotationReachSite
-  deriving stock (Show, Eq, Generic)
-
-instance Validity AnnotationReach
 
 -- | @[allow:RuleId] reason@, or @[allow:file:RuleId] reason@. One rule per
 -- annotation and no comma lists, because two rules at one site means two
@@ -330,9 +327,7 @@ data Suppression = Suppression
     -- it is reported.
     suppressionOverBroad :: ![OverBroad]
   }
-  deriving stock (Show, Eq, Generic)
-
-instance Validity Suppression
+  deriving stock (Show, Eq)
 
 -- | The annotations passed in must be exactly those naming rules this level
 -- judges, so that no annotation falls between two levels.

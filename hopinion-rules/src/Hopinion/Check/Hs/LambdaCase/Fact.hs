@@ -19,7 +19,7 @@ import Hopinion.Facts.Place
 data ArgumentShape
   = ArgumentShapeNamedThenCased
   | ArgumentShapeSplitOverEquations
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Show, Generic)
 
 instance Validity ArgumentShape
 
@@ -32,6 +32,6 @@ data CasedArgument = CasedArgument
     casedArgumentSpan :: !Span,
     casedArgumentScope :: !ScopeKey
   }
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Show, Generic)
 
 instance Validity CasedArgument

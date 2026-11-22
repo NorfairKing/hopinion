@@ -49,7 +49,7 @@ import Hopinion.Rule.Id
 -- Abstract on purpose: 'nonEmptyText' is the only way to make one, so a caller
 -- cannot write the empty one by hand.
 newtype NonEmptyText = NonEmptyText Text
-  deriving stock (Show, Eq, Ord, Generic)
+  deriving stock (Show, Eq, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec NonEmptyText)
 
 instance Validity NonEmptyText where

@@ -29,7 +29,7 @@ data TypeAppFact = TypeAppFact
     typeAppFactHead :: !TypeHead,
     typeAppFactSpan :: !Span
   }
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Show, Generic)
 
 instance Validity TypeAppFact
 
@@ -45,7 +45,7 @@ data TemplateHaskellUse
   = TemplateHaskellUseNone
   | TemplateHaskellUseQuasiQuotes
   | TemplateHaskellUseSplices
-  deriving stock (Show, Eq, Ord, Enum, Bounded, Generic)
+  deriving stock (Show, Eq, Enum, Bounded, Generic)
 
 instance Validity TemplateHaskellUse
 

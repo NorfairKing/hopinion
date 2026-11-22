@@ -25,5 +25,3 @@ library:
   - ghc
   - path
   - text
-  - validity
-  - validity-text

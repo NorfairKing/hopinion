@@ -1,12 +1,6 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DerivingStrategies #-}
-
 module Hopinion.Check.Package.NoRestatedValidityDefaults.Fact (RestatedMethod (..)) where
 
 import Data.Text (Text)
-import Data.Validity
-import Data.Validity.Text ()
-import GHC.Generics (Generic)
 import Hopinion.Facts.Instance
 import Hopinion.Facts.Place
 
@@ -25,6 +19,3 @@ data RestatedMethod = RestatedMethod
     restatedMethodName :: !Text,
     restatedMethodSpan :: !Span
   }
-  deriving stock (Show, Eq, Generic)
-
-instance Validity RestatedMethod

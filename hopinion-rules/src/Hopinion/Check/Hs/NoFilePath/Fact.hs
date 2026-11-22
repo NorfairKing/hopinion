@@ -20,6 +20,6 @@ data NameFact = NameFact
     nameFactSpan :: !Span,
     nameFactScope :: !ScopeKey
   }
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Show, Generic)
 
 instance Validity NameFact

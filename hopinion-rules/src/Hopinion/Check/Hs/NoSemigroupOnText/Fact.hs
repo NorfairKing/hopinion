@@ -39,6 +39,6 @@ data ConcatChain = ConcatChain
     concatChainSpan :: !Span,
     concatChainScope :: !ScopeKey
   }
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Show, Generic)
 
 instance Validity ConcatChain

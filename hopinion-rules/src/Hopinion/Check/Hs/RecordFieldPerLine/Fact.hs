@@ -1,14 +1,9 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DerivingStrategies #-}
-
 module Hopinion.Check.Hs.RecordFieldPerLine.Fact
   ( RecordUse (..),
     CrowdedRecord (..),
   )
 where
 
-import Data.Validity
-import GHC.Generics (Generic)
 import Hopinion.Facts.Place
 
 -- | The two ways a record value is written.
@@ -19,9 +14,6 @@ import Hopinion.Facts.Place
 data RecordUse
   = RecordUseConstructed
   | RecordUseUpdated
-  deriving stock (Show, Eq, Generic)
-
-instance Validity RecordUse
 
 -- | One record value that puts two of its fields on one line.
 --
@@ -35,14 +27,3 @@ data CrowdedRecord = CrowdedRecord
     crowdedRecordSpan :: !Span,
     crowdedRecordScope :: !ScopeKey
   }
-  deriving stock (Show, Eq, Generic)
-
--- | More than one field, because one field is the exception the rule makes,
--- and a fact recording a one-field record as crowded would be a rule with no
--- exception wearing a fact's clothes.
-instance Validity CrowdedRecord where
-  validate cr =
-    mconcat
-      [ genericValidate cr,
-        declare "the record has more than one field" (crowdedRecordFields cr > 1)
-      ]

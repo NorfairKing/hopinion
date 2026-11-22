@@ -29,7 +29,7 @@ data InstanceMethods
     -- that writes out no methods at all is not this: what its class defaults do
     -- with the value is not in the file.
     InstanceMethodsIgnoreArguments
-  deriving stock (Show, Eq, Ord, Generic)
+  deriving stock (Show, Eq, Generic)
 
 instance Validity InstanceMethods
 
@@ -48,7 +48,7 @@ data InstanceOrigin
   | InstanceOriginDerivingAnyclass
   | InstanceOriginDerivingVia !TypeHead
   | InstanceOriginDerivingUnspecified
-  deriving stock (Show, Eq, Ord, Generic)
+  deriving stock (Show, Eq, Generic)
 
 instance Validity InstanceOrigin
 
@@ -78,6 +78,6 @@ data InstanceFact = InstanceFact
     -- the finding is reported.
     instanceFactScope :: !ScopeKey
   }
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Show, Generic)
 
 instance Validity InstanceFact

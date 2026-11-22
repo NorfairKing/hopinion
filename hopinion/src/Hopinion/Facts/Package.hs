@@ -21,7 +21,7 @@ import Hopinion.Facts.Name
 data PackageRole
   = PackageRoleMain
   | PackageRoleGen
-  deriving stock (Show, Eq, Ord, Enum, Bounded, Generic)
+  deriving stock (Show, Eq, Enum, Bounded, Generic)
 
 instance Validity PackageRole
 
@@ -49,6 +49,6 @@ parsePackageRole t = lookup t [(packageRoleText r, r) | r <- [minBound .. maxBou
 data GenPackage
   = GenPackageNone !PackageName
   | GenPackage !PackageName
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Show, Generic)
 
 instance Validity GenPackage

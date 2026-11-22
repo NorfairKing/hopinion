@@ -170,7 +170,6 @@ StoredAnnotation
 data StoreLocation
   = StoreLocationInMemory
   | StoreLocationOnDisk !(Path Abs File)
-  deriving (Show, Eq)
 
 storeLocationText :: StoreLocation -> Text
 storeLocationText = \case

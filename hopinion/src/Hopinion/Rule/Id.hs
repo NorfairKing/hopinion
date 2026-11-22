@@ -82,7 +82,7 @@ data Level
   = LevelModule
   | LevelPackage
   | LevelProject
-  deriving stock (Show, Eq, Ord, Enum, Bounded, Generic)
+  deriving stock (Show, Eq, Ord, Generic)
 
 instance Validity Level
 

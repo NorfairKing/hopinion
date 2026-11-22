@@ -18,6 +18,6 @@ data StrayAppDecl = StrayAppDecl
   { strayAppDeclName :: !DeclName,
     strayAppDeclSpan :: !Span
   }
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Show, Generic)
 
 instance Validity StrayAppDecl

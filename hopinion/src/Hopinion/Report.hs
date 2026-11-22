@@ -337,7 +337,6 @@ data ReportError
 -- | One of those and the directory it was read from, which is what tells a
 -- reader which package's output to look at.
 data ReportDirError = ReportDirError !(Path Abs Dir) !ReportError
-  deriving stock (Show, Eq)
 
 renderReportDirError :: ReportDirError -> Text
 renderReportDirError (ReportDirError dir err) =

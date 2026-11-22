@@ -23,7 +23,7 @@ data ErrorType
   = ErrorTypeString
   | ErrorTypeText
   | ErrorTypeSomethingElse
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Show, Generic)
 
 instance Validity ErrorType
 
@@ -40,7 +40,7 @@ data ErrorSlot = ErrorSlot
     errorSlotSpan :: !Span,
     errorSlotScope :: !ScopeKey
   }
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Show, Generic)
 
 instance Validity ErrorSlot
 
@@ -51,7 +51,7 @@ instance Validity ErrorSlot
 data ErrorDeclShape
   = ErrorDeclShapeSynonym
   | ErrorDeclShapeWrapper
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Show, Generic)
 
 instance Validity ErrorDeclShape
 
@@ -66,6 +66,6 @@ data ErrorDecl = ErrorDecl
     errorDeclSpan :: !Span,
     errorDeclScope :: !ScopeKey
   }
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Show, Generic)
 
 instance Validity ErrorDecl

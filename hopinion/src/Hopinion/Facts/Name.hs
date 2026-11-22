@@ -61,7 +61,7 @@ instance HasCodec ModuleKey where
   codec = named "ModuleKey" (dimapCodec ModuleKey unModuleKey codec)
 
 newtype DeclName = DeclName {unDeclName :: Text}
-  deriving stock (Show, Read, Eq, Ord, Generic)
+  deriving stock (Show, Eq, Ord, Generic)
   deriving newtype (PersistField, PersistFieldSql)
   deriving (FromJSON, ToJSON) via (Autodocodec DeclName)
 
@@ -96,7 +96,6 @@ instance HasCodec PackageName where
 -- alone lets one of them stand in for the others.
 newtype ComponentName = ComponentName {unComponentName :: Text}
   deriving stock (Show, Read, Eq, Ord, Generic)
-  deriving newtype (PersistField, PersistFieldSql)
   deriving (FromJSON, ToJSON) via (Autodocodec ComponentName)
 
 -- | No colon, which is true of every name cabal will accept and of the one this
@@ -117,7 +116,7 @@ instance HasCodec ComponentName where
 -- answers "is this type tested at all" rather than "is this instantiation
 -- tested", which is the question the obligation engine wants.
 newtype TypeHead = TypeHead {unTypeHead :: Text}
-  deriving stock (Show, Read, Eq, Ord, Generic)
+  deriving stock (Show, Eq, Generic)
   deriving newtype (PersistField, PersistFieldSql)
 
 instance Validity TypeHead

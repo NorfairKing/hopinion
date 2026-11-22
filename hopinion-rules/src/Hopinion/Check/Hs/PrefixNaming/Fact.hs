@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -13,8 +11,6 @@ where
 
 import Data.Text (Text)
 import qualified Data.Text as T
-import Data.Validity
-import GHC.Generics (Generic)
 import Hopinion.Facts.Name
 import Hopinion.Facts.Place
 
@@ -28,9 +24,6 @@ data NameRole
   = NameRoleConstructor
   | NameRoleField
   | NameRoleNewtypeField
-  deriving stock (Show, Eq, Generic)
-
-instance Validity NameRole
 
 -- | One constructor or field whose name is not what its role asks for.
 --
@@ -43,24 +36,6 @@ data UnprefixedName = UnprefixedName
     unprefixedNameSpan :: !Span,
     unprefixedNameScope :: !ScopeKey
   }
-  deriving stock (Show, Eq, Generic)
-
--- | A name that is already right is not one of these, and a value saying
--- otherwise would be the rule's own question answered twice.
-instance Validity UnprefixedName where
-  validate un =
-    mconcat
-      [ genericValidate un,
-        declare
-          "the name is not what its role asks for"
-          ( not
-              ( nameIsRight
-                  (unprefixedNameRole un)
-                  (unprefixedNameType un)
-                  (unprefixedNameWritten un)
-              )
-          )
-      ]
 
 -- | Whether a name of this role, belonging to this type, is what it should be.
 nameIsRight :: NameRole -> TypeHead -> Text -> Bool

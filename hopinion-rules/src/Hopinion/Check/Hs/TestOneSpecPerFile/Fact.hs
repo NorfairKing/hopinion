@@ -20,6 +20,6 @@ import Hopinion.Facts.Place
 data ExportList
   = ExportListNone
   | ExportList !Span ![Text]
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Show, Generic)
 
 instance Validity ExportList

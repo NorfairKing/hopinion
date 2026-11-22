@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveGeneric #-}
-
 -- | What the compiler wrote down about a module: the @.hie@ file for what it
 -- names, the @.hi@ interface for what it declares.
 --
@@ -40,9 +38,6 @@ import Data.Set (Set)
 import qualified Data.Set as S
 import Data.Text (Text)
 import qualified Data.Text as T
-import Data.Validity
-import Data.Validity.Text ()
-import GHC.Generics (Generic)
 import GHC.Iface.Binary (CheckHiWay (..), TraceBinIFace (..), readBinIface)
 import GHC.Iface.Ext.Binary (hie_file_result, readHieFile)
 import GHC.Iface.Ext.Types
@@ -110,7 +105,6 @@ generatedIn = concatMap generatedOf . M.elems . getAsts . hie_asts
 -- speak. Named rather than left as a bare 'Text' so that a caller has to
 -- render it before showing it to anybody.
 newtype ArtifactUnreadable = ArtifactUnreadable Text
-  deriving (Show, Eq)
 
 renderArtifactUnreadable :: ArtifactUnreadable -> Text
 renderArtifactUnreadable (ArtifactUnreadable t) = t
@@ -214,9 +208,7 @@ data DeclaredInstance = DeclaredInstance
     declaredInstanceClassModule :: !Text,
     declaredInstanceType :: !Text
   }
-  deriving (Show, Eq, Ord, Generic)
-
-instance Validity DeclaredInstance
+  deriving (Show, Eq)
 
 -- | Every instance one module declares whose head is a type constructor.
 compiledInterfaceInstances :: CompiledInterface -> [DeclaredInstance]

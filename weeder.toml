@@ -1,17 +1,25 @@
 # Deliberately no exceptions: hs/no-weeder-exceptions bans them, and hopinion is
 # its own first subject. The entries below are roots rather than exceptions.
 #
-# Type classes are roots, so an instance nothing reaches is not reported. That
-# is a gap in what haskell-style.md means by "remove every instance you do not
-# use", and it is one this repository cannot close: with them off, weeder
-# reports 193 instances here, and almost all of them are either written by
-# persistent's quasi-quoter, which nobody can delete, or reached only through
-# Generic by validity and the codecs, which weeder cannot see. Twelve instances
-# really were dead and are gone, and they were found by reading rather than by
-# this file.
-type-class-roots = true
+# Type classes are not roots, so an instance nothing reaches is reported like
+# any other dead code.
+type-class-roots = false
 roots = [
   "^Main.main$",
   # Cabal generates this module and nothing in the source calls it.
   "^Paths_.*",
+]
+root-instances = [
+  # Written by persistent's share splice for every table, which nobody can
+  # delete one instance of.
+  { class = '\.SymbolToField$' },
+  { class = '\.ToBackendKey$' },
+  { class = '\.AtLeastOneUniqueKey$' },
+  { class = '\.OnlyOneUniqueKey$' },
+  { class = '\.SafeToInsert$' },
+  { instance = '^(PathPiece|FromHttpApiData|ToHttpApiData|PersistFieldSql) [A-Za-z]+Id$' },
+  { instance = '^(PathPiece|FromHttpApiData|ToHttpApiData|PersistFieldSql) \(Key [A-Za-z]+\)$' },
+  # The entity itself, which has no Id suffix to tell it from a hand-written
+  # instance, so only in the modules that call share.
+  { instance = '^PersistFieldSql [A-Za-z]+$', module = 'Hopinion/(Store|Check/Obligation|Check/[A-Za-z]+/[A-Za-z]+/Rule)\.hs$' },
 ]

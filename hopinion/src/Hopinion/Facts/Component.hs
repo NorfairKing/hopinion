@@ -21,7 +21,7 @@ data ComponentKind
   | ComponentKindApp
   | ComponentKindTest
   | ComponentKindBench
-  deriving stock (Show, Eq, Ord, Enum, Bounded, Generic)
+  deriving stock (Show, Eq, Enum, Bounded, Generic)
 
 instance Validity ComponentKind
 

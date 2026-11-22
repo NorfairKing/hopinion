@@ -103,7 +103,6 @@ instance HasCodec Finding where
 newtype CheckResult = CheckResult
   { unCheckResult :: [Finding]
   }
-  deriving stock (Show, Eq, Generic)
 
 instance Semigroup CheckResult where
   a <> b =
@@ -235,9 +234,7 @@ data Rule = Rule
 data RuleUse
   = RuleUseRuns
   | RuleUseTurnedOff
-  deriving stock (Show, Eq, Generic)
-
-instance Validity RuleUse
+  deriving stock (Eq)
 
 -- | One rule, and whether this run makes it.
 data RuleEntry = RuleEntry
@@ -271,7 +268,6 @@ data RuleSetError
   = RuleSetErrorIdsAreNotIds !(NonEmpty RuleId)
   | RuleSetErrorTwoRulesByOneId !(NonEmpty RuleId)
   | RuleSetErrorTurnedOffRulesDoNotExist !(NonEmpty RuleId)
-  deriving (Show, Eq)
 
 renderRuleSetError :: RuleSetError -> [Chunk]
 renderRuleSetError = \case

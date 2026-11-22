@@ -55,7 +55,6 @@ import UnliftIO.Memoize (Memoized, memoizeMVar, runMemoized)
 -- Giving them is a promise that they account for every module read, which
 -- 'uncoveredModules' holds the run to.
 newtype HieDirectories = HieDirectories (NonEmpty (Path Abs Dir))
-  deriving (Show, Eq)
 
 -- | What a build has to say about the modules of one scope, none of it read.
 --
@@ -105,14 +104,6 @@ newtype ArtifactProblem = ArtifactProblem Text
   deriving (Show, Eq)
 
 instance Exception ArtifactProblem
-
--- | A project scope is every package's. Combining shares what is deferred
--- rather than deferring again, so one module stays one read.
-instance Semigroup CompiledModules where
-  CompiledModules a <> CompiledModules b = CompiledModules (M.union a b)
-
-instance Monoid CompiledModules where
-  mempty = CompiledModules M.empty
 
 -- | Every one of these modules, ready to be asked about and not yet looked for.
 --

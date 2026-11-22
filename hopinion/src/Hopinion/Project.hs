@@ -76,7 +76,6 @@ data SourceRoot = SourceRoot
   { sourceRootDir :: !(Path Abs Dir),
     sourceRootPrefix :: !(Maybe (Path Rel Dir))
   }
-  deriving (Show, Eq)
 
 -- | What to call a file the tool read, in a report or a fact.
 --
@@ -105,14 +104,13 @@ data ModuleModel = ModuleModel
     moduleModelRelPath :: !(Path Rel File),
     moduleModelSource :: !ModuleSource
   }
-  deriving (Show, Eq)
 
 -- | Whether the file behind a declared module is Haskell to read or a
 -- preprocessor input, which holds no Haskell and so is read by nothing here.
 data ModuleSource
   = ModuleSourceHaskell
   | ModuleSourcePreprocessed
-  deriving (Show, Eq)
+  deriving (Eq)
 
 data ComponentModel = ComponentModel
   { componentModelKind :: !ComponentKind,
@@ -129,7 +127,6 @@ data ComponentModel = ComponentModel
     componentModelDeclaredModules :: ![ModuleKey],
     componentModelSourceDirs :: ![Path Abs Dir]
   }
-  deriving (Show, Eq)
 
 data PackageModel = PackageModel
   { packageModelName :: !PackageName,
@@ -144,7 +141,6 @@ data PackageModel = PackageModel
     -- out of a component.
     packageModelDataPaths :: ![Path Abs Dir]
   }
-  deriving (Show, Eq)
 
 -- | What can stop a package from being read at all, as what happened rather
 -- than as the sentence about it.

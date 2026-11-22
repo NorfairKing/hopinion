@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -32,7 +30,6 @@ import qualified Data.Text.Encoding as TE
 import qualified Data.Text.IO as TIO
 import Data.Validity.Containers ()
 import qualified Error.Diagnose as D
-import GHC.Generics (Generic)
 import Hopinion.Annotation (OverBroad (..), Unused (..), suppressionFor, suppressionIsFileScoped)
 import Hopinion.Facts.Name
 import Hopinion.Facts.Place
@@ -51,7 +48,6 @@ import System.IO (Handle, hIsTerminalDevice)
 -- | The text of every file a report points into, which is what turns a
 -- position into something a reader can look at.
 newtype SourceMap = SourceMap (M.Map (Path Rel File) Text)
-  deriving stock (Show, Eq, Generic)
 
 -- | The files a caller has to read for 'renderReport' to have anything to show.
 reportFiles :: Complaints -> [Path Rel File]

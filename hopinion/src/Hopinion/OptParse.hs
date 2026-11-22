@@ -40,7 +40,6 @@ data RawSourceRoot = RawSourceRoot
   { rawSourceRootDir :: !(SomeBase Dir),
     rawSourceRootPrefix :: !(Maybe (Path Rel Dir))
   }
-  deriving (Show, Eq)
 
 data Dispatch
   = DispatchPackage !RawSourceRoot !(SomeBase Dir) !(SomeBase Dir) !(NonEmpty (SomeBase Dir))

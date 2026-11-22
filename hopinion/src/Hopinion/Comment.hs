@@ -53,7 +53,7 @@ data CommentStyle
   | CommentStyleHaddockPrev
   | CommentStyleHaddockNamed
   | CommentStylePragma
-  deriving stock (Show, Eq, Ord, Enum, Bounded, Generic)
+  deriving stock (Show, Eq, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec CommentStyle)
 
 instance Validity CommentStyle
@@ -156,9 +156,6 @@ data CommentContext = CommentContext
     commentContextExportList :: !(Maybe Span),
     commentContextModuleHeaderLine :: !(Maybe Word)
   }
-  deriving stock (Show, Eq, Generic)
-
-instance Validity CommentContext
 
 mkCommentContext :: [Text] -> [RawComment] -> [DeclFact] -> Maybe Span -> Maybe Word -> CommentContext
 mkCommentContext ls comments decls mExportList mHeaderLine =
@@ -210,9 +207,6 @@ data CommentBlock = CommentBlock
     commentBlockText :: !Text,
     commentBlockPlacement :: !CommentPlacement
   }
-  deriving stock (Show, Eq, Generic)
-
-instance Validity CommentBlock
 
 -- | Whether a comment shares its line with code.
 --
@@ -222,9 +216,7 @@ instance Validity CommentBlock
 data CommentPlacement
   = CommentPlacementOnItsOwnLines
   | CommentPlacementTrailingCode
-  deriving stock (Show, Eq, Generic)
-
-instance Validity CommentPlacement
+  deriving stock (Eq)
 
 commentStyleOf :: Text -> CommentStyle
 commentStyleOf t

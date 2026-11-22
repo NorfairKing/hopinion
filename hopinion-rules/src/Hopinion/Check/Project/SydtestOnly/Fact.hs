@@ -1,10 +1,5 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DerivingStrategies #-}
-
 module Hopinion.Check.Project.SydtestOnly.Fact (ImportFact (..)) where
 
-import Data.Validity
-import GHC.Generics (Generic)
 import Hopinion.Facts.Name
 import Hopinion.Facts.Place
 
@@ -13,6 +8,3 @@ data ImportFact = ImportFact
   { importFactModule :: !ModuleKey,
     importFactSpan :: !Span
   }
-  deriving stock (Show, Eq, Generic)
-
-instance Validity ImportFact

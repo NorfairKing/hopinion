@@ -35,7 +35,7 @@ data DeclKind
     -- a rule asking for declarations of some kind must never be handed this.
     DeclKindAnnotation
   | DeclKindOther
-  deriving stock (Show, Eq, Ord, Enum, Bounded, Generic)
+  deriving stock (Show, Eq, Generic)
 
 instance Validity DeclKind
 
@@ -44,6 +44,6 @@ data DeclFact = DeclFact
     declFactKind :: !DeclKind,
     declFactSpan :: !Span
   }
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Show, Generic)
 
 instance Validity DeclFact

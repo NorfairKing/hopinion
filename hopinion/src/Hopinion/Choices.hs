@@ -121,7 +121,6 @@ data ChoicesError
 data ChoicesFileError
   = ChoicesFileErrorAbsent !(Path Abs File)
   | ChoicesFileErrorRefused !(Path Abs File) !ChoicesError
-  deriving (Show, Eq)
 
 renderChoicesFileError :: ChoicesFileError -> Text
 renderChoicesFileError = \case
