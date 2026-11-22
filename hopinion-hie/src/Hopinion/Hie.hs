@@ -57,7 +57,7 @@ import GHC.Iface.Syntax (IfaceClsInst (..))
 import GHC.Iface.Type (IfaceTyCon (..))
 import GHC.Platform (genericPlatform)
 import GHC.Platform.Profile (Profile (..))
-import GHC.Types.Name (nameOccName)
+import GHC.Types.Name (nameModule_maybe, nameOccName)
 import GHC.Types.Name.Cache (initNameCache)
 import GHC.Types.Name.Occurrence (occNameString)
 import GHC.Unit.Module (moduleName, moduleNameString)
@@ -209,6 +209,9 @@ readCompiledInterface path = do
 -- 'Hopinion.Facts.Name.TypeHead' has on the source side and for its reason.
 data DeclaredInstance = DeclaredInstance
   { declaredInstanceClass :: !Text,
+    -- | The module that defines the class, which tells two classes of one name
+    -- apart.
+    declaredInstanceClassModule :: !Text,
     declaredInstanceType :: !Text
   }
   deriving (Show, Eq, Ord, Generic)
@@ -226,12 +229,16 @@ compiledInterfaceInstances = mapMaybe declaredInstanceOf . mi_insts . unCompiled
 -- arguments too, so a poly-kinded class has its kind in front and arrives as
 -- @[TYPE, Widget]@ where an ordinary one is @[Written]@. Measured, not read
 -- from the manual.
+--
+-- A class is a top-level name, so it always has a module, and an instance
+-- whose class has none is not one an interface can record.
 declaredInstanceOf :: IfaceClsInst -> Maybe DeclaredInstance
-declaredInstanceOf inst = case reverse (ifInstTys inst) of
-  (Just tycon : _) ->
+declaredInstanceOf inst = case (reverse (ifInstTys inst), nameModule_maybe (ifInstCls inst)) of
+  (Just tycon : _, Just classModule) ->
     Just
       DeclaredInstance
         { declaredInstanceClass = T.pack (occNameString (nameOccName (ifInstCls inst))),
+          declaredInstanceClassModule = T.pack (moduleNameString (moduleName classModule)),
           declaredInstanceType = T.pack (occNameString (nameOccName (ifaceTyConName tycon)))
         }
   _ -> Nothing

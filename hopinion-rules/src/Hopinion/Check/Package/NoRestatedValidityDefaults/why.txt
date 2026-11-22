@@ -1,0 +1,2 @@
+A method written out as its own default is one more line that reads as a decision, so a reader looks for the reason it is there and finds none.
+It also hides the instance that does decide something: an instance that writes out only what differs from the default says at a glance what is special about the type.

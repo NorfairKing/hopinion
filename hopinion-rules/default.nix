@@ -1,6 +1,6 @@
 { mkDerivation, base, containers, esqueleto, ghc-lib-parser
-, hopinion, lib, path, persistent, syb, text, validity
-, validity-text
+, hopinion, hopinion-hie, lib, path, persistent, syb, text
+, validity, validity-text
 }:
 mkDerivation {
   pname = "hopinion-rules";
@@ -9,8 +9,8 @@ mkDerivation {
   isLibrary = true;
   isExecutable = true;
   libraryHaskellDepends = [
-    base containers esqueleto ghc-lib-parser hopinion path persistent
-    syb text validity validity-text
+    base containers esqueleto ghc-lib-parser hopinion hopinion-hie path
+    persistent syb text validity validity-text
   ];
   executableHaskellDepends = [ base ];
   license = "unknown";

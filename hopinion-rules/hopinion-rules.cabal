@@ -36,6 +36,8 @@ extra-source-files:
     src/Hopinion/Check/Package/AppOnlyMain/why.txt
     src/Hopinion/Check/Package/GenValidInGenPackage/fix.txt
     src/Hopinion/Check/Package/GenValidInGenPackage/why.txt
+    src/Hopinion/Check/Package/NoRestatedValidityDefaults/fix.txt
+    src/Hopinion/Check/Package/NoRestatedValidityDefaults/why.txt
     src/Hopinion/Check/Project/GenValidSpecPerGenValid/fix.txt
     src/Hopinion/Check/Project/GenValidSpecPerGenValid/why.txt
     src/Hopinion/Check/Project/JsonSpecPerJsonType/fix.txt
@@ -77,6 +79,9 @@ library
       Hopinion.Check.Package.AppOnlyMain.Fact
       Hopinion.Check.Package.AppOnlyMain.Rule
       Hopinion.Check.Package.GenValidInGenPackage.Rule
+      Hopinion.Check.Package.NoRestatedValidityDefaults.Extract
+      Hopinion.Check.Package.NoRestatedValidityDefaults.Fact
+      Hopinion.Check.Package.NoRestatedValidityDefaults.Rule
       Hopinion.Check.Project.GenValidSpecPerGenValid.Rule
       Hopinion.Check.Project.JsonSpecPerJsonType.Rule
       Hopinion.Check.Project.SydtestOnly.Extract
@@ -95,6 +100,7 @@ library
     , esqueleto
     , ghc-lib-parser
     , hopinion
+    , hopinion-hie
     , path
     , persistent
     , syb

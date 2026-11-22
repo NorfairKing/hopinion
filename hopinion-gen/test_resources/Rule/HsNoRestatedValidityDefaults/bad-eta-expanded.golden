@@ -1,0 +1,24 @@
+[0;91;1m[error HsNoRestatedValidityDefaults][0m: validate in Validity Colour restates its default.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@12:3-12:33[0m
+     [0;90;1m│[0m
+[0;90;1m  12 │[0m [0;97m [0m[0;97m [0m[0;91;1mv[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mc[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mg[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mc[0m
+     [0;90;1m•[0m   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m   [0;91m╰╸[0m [0;91mValidity and GenValid instances leave out methods that restate a default.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Delete each method this points at, and keep every other method of the instance.
+     [0;90;1m│[0;96m       If that leaves no methods, keep the instance with no `where`: `instance Validity Foo` or `instance GenValid Foo`.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 12 of thing/src/Thing.hs, and say why: -- [allow:HsNoRestatedValidityDefaults] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoRestatedValidityDefaults][0m: shrinkValid in GenValid Colour restates its default.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@15:3-15:44[0m
+     [0;90;1m│[0m
+[0;90;1m  15 │[0m [0;97m [0m[0;97m [0m[0;91;1ms[0m[0;91;1mh[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mk[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mc[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1ms[0m[0;91;1mh[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mk[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mu[0m[0;91;1mc[0m[0;91;1mt[0m[0;91;1mu[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1ml[0m[0;91;1my[0m[0;91;1m [0m[0;91;1mc[0m
+     [0;90;1m•[0m   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m   [0;91m╰╸[0m [0;91mValidity and GenValid instances leave out methods that restate a default.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Delete each method this points at, and keep every other method of the instance.
+     [0;90;1m│[0;96m       If that leaves no methods, keep the instance with no `where`: `instance Validity Foo` or `instance GenValid Foo`.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 15 of thing/src/Thing.hs, and say why: -- [allow:HsNoRestatedValidityDefaults] <reason>[0m
+[0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain HsNoRestatedValidityDefaults

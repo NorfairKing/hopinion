@@ -227,6 +227,33 @@ extra-source-files:
     test_resources/Rule/HsNoFilePath/bad.hs.golden
     test_resources/Rule/HsNoFilePath/good.hs
     test_resources/Rule/HsNoFilePath/good.hs.golden
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-eta-expanded.golden
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-eta-expanded/thing/src/Thing.hs
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-eta-expanded/thing/thing.cabal
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-gen-valid.golden
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-gen-valid/thing/src/Thing.hs
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-gen-valid/thing/thing.cabal
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-one-suppressed.golden
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-one-suppressed/thing/src/Thing.hs
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-one-suppressed/thing/thing.cabal
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-qualified.golden
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-qualified/thing/src/Thing.hs
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-qualified/thing/thing.cabal
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-shrink-only.golden
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-shrink-only/thing/src/Thing.hs
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-shrink-only/thing/thing.cabal
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-type-application.golden
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-type-application/thing/src/Thing.hs
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-type-application/thing/thing.cabal
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-validity.golden
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-validity/thing/src/Thing.hs
+    test_resources/Rule/HsNoRestatedValidityDefaults/bad-validity/thing/thing.cabal
+    test_resources/Rule/HsNoRestatedValidityDefaults/good-another-validity.golden
+    test_resources/Rule/HsNoRestatedValidityDefaults/good-another-validity/thing/src/Thing.hs
+    test_resources/Rule/HsNoRestatedValidityDefaults/good-another-validity/thing/thing.cabal
+    test_resources/Rule/HsNoRestatedValidityDefaults/good.golden
+    test_resources/Rule/HsNoRestatedValidityDefaults/good/thing/src/Thing.hs
+    test_resources/Rule/HsNoRestatedValidityDefaults/good/thing/thing.cabal
     test_resources/Rule/HsNoSemigroupOnText/bad.hs
     test_resources/Rule/HsNoSemigroupOnText/bad.hs.golden
     test_resources/Rule/HsNoSemigroupOnText/badBehindDollar.hs

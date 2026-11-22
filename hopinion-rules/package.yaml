@@ -30,6 +30,7 @@ library:
   - esqueleto
   - ghc-lib-parser
   - hopinion
+  - hopinion-hie
   - path
   - persistent
   - syb

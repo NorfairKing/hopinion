@@ -150,6 +150,7 @@ spec = do
         instances <- readingInstances (tmp </> [relfile|Fixture.hi|])
         DeclaredInstance
           { declaredInstanceClass = "Gennable",
+            declaredInstanceClassModule = "Generator",
             declaredInstanceType = "Widget"
           }
           `elem` instances
@@ -160,6 +161,7 @@ spec = do
         instances <- readingInstances (tmp </> [relfile|Fixture.hi|])
         DeclaredInstance
           { declaredInstanceClass = "Show",
+            declaredInstanceClassModule = "GHC.Internal.Show",
             declaredInstanceType = "Written"
           }
           `elem` instances

@@ -115,6 +115,7 @@ spec = do
           declared
             `shouldBe` [ DeclaredInstance
                            { declaredInstanceClass = "Show",
+                             declaredInstanceClassModule = "GHC.Internal.Show",
                              declaredInstanceType = "Written"
                            }
                        ]
