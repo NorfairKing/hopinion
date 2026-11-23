@@ -292,6 +292,22 @@ extra-source-files:
     test_resources/Rule/HsRecordFieldPerLine/bad.hs.golden
     test_resources/Rule/HsRecordFieldPerLine/good.hs
     test_resources/Rule/HsRecordFieldPerLine/good.hs.golden
+    test_resources/Rule/HsStrictFields/bad-commented.hs
+    test_resources/Rule/HsStrictFields/bad-commented.hs.golden
+    test_resources/Rule/HsStrictFields/bad-infix.hs
+    test_resources/Rule/HsStrictFields/bad-infix.hs.golden
+    test_resources/Rule/HsStrictFields/bad-strict-data.hs
+    test_resources/Rule/HsStrictFields/bad-strict-data.hs.golden
+    test_resources/Rule/HsStrictFields/bad-strict-without-strict-data.hs
+    test_resources/Rule/HsStrictFields/bad-strict-without-strict-data.hs.golden
+    test_resources/Rule/HsStrictFields/bad.hs
+    test_resources/Rule/HsStrictFields/bad.hs.golden
+    test_resources/Rule/HsStrictFields/good-strict-data.hs
+    test_resources/Rule/HsStrictFields/good-strict-data.hs.golden
+    test_resources/Rule/HsStrictFields/good-unlifted.hs
+    test_resources/Rule/HsStrictFields/good-unlifted.hs.golden
+    test_resources/Rule/HsStrictFields/good.hs
+    test_resources/Rule/HsStrictFields/good.hs.golden
     test_resources/Rule/HsTestOneSpecPerFile/badExportsNothingSpec.hs
     test_resources/Rule/HsTestOneSpecPerFile/badExportsNothingSpec.hs.golden
     test_resources/Rule/HsTestOneSpecPerFile/badNoExportListSpec.hs
@@ -494,6 +510,7 @@ test-suite hopinion-test
       Hopinion.FactsSpec
       Hopinion.HieSpec
       Hopinion.NodesSpec
+      Hopinion.ParseSpec
       Hopinion.ProjectSpec
       Hopinion.ReportSpec
       Hopinion.RuleSpec

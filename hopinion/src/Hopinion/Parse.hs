@@ -22,12 +22,15 @@ where
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import qualified Data.Text as T
+import GHC.Data.EnumSet (EnumSet)
 import GHC.Data.FastString (mkFastString)
 import qualified GHC.Data.StringBuffer as SB
 import GHC.Driver.Config.Parser (initParserOpts)
 import GHC.Driver.Session
-  ( DynFlags,
+  ( DynFlags (extensionFlags),
+    TurnOnFlag,
     defaultDynFlags,
+    impliedXFlags,
     xopt,
     xopt_set,
     xopt_unset,
@@ -83,7 +86,11 @@ data ParsedModule = ParsedModule
     parsedModuleHeaderLine :: !(Maybe Word),
     -- | The parenthesised export list, from its opening paren to its closing
     -- paren, which is what tells a legitimate section header from a stray one.
-    parsedModuleExportListSpan :: !(Maybe Span)
+    parsedModuleExportListSpan :: !(Maybe Span),
+    -- | The language extensions the module was parsed with: the cabal file's
+    -- @default-extensions@, with the module's own pragmas on top, each with
+    -- the extensions it implies, as GHC compiles the module.
+    parsedModuleExtensions :: !(EnumSet LangExt.Extension)
   }
 
 -- | One token, and where it is in the source the spans refer to.
@@ -141,7 +148,8 @@ parseHaskellModule input = do
                           ],
                         parsedModuleComments = commentsOf located,
                         parsedModuleHeaderLine = headerLineOf located,
-                        parsedModuleExportListSpan = exportListSpanOf located
+                        parsedModuleExportListSpan = exportListSpanOf located,
+                        parsedModuleExtensions = extensionFlags flags
                       }
                 )
 
@@ -156,11 +164,22 @@ baseDynFlags = foldl apply (defaultDynFlags fakeSettings)
         Just rest
           | Just ext <- ExSession.readExtension (T.unpack rest) -> xopt_unset flags ext
         _ -> case ExSession.readExtension (T.unpack name) of
-          Just ext -> xopt_set flags ext
+          Just ext -> turnOn flags ext
           -- An extension the parser does not know is not a parse failure: it
           -- is either a typo in the cabal file or a flag with no syntactic
           -- effect, and neither is this tool's business.
           Nothing -> flags
+
+-- | An extension, with every extension it implies, the way GHC turns one on
+-- when it is named on the command line, which is how cabal names
+-- @default-extensions@.
+--
+-- Turning one off turns off only itself, as it does in GHC.
+turnOn :: DynFlags -> LangExt.Extension -> DynFlags
+turnOn flags ext =
+  let follow :: DynFlags -> (TurnOnFlag, LangExt.Extension) -> DynFlags
+      follow acc (on, implied) = if on then turnOn acc implied else xopt_unset acc implied
+   in foldl follow (xopt_set flags ext) [(on, implied) | (from, on, implied) <- impliedXFlags, from == ext]
 
 -- | hopinion never runs a C preprocessor: it has no build, so it does not know
 -- what @MIN_VERSION_foo@ expands to. Directive lines are blanked, keeping their

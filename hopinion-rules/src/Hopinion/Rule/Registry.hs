@@ -20,6 +20,7 @@ import qualified Hopinion.Check.Hs.NoStringError.Rule as NoStringError
 import qualified Hopinion.Check.Hs.OneLetPerBinding.Rule as OneLetPerBinding
 import qualified Hopinion.Check.Hs.PrefixNaming.Rule as PrefixNaming
 import qualified Hopinion.Check.Hs.RecordFieldPerLine.Rule as RecordFieldPerLine
+import qualified Hopinion.Check.Hs.StrictFields.Rule as StrictFields
 import qualified Hopinion.Check.Hs.TestOneSpecPerFile.Rule as TestOneSpecPerFile
 import qualified Hopinion.Check.Package.AppOnlyMain.Rule as AppOnlyMain
 import qualified Hopinion.Check.Package.GenValidInGenPackage.Rule as GenValidInGenPackage
@@ -55,6 +56,7 @@ builtinRules =
     OneLetPerBinding.rule,
     PrefixNaming.rule,
     RecordFieldPerLine.rule,
+    StrictFields.rule,
     SydtestOnly.rule,
     TestOneSpecPerFile.rule
   ]

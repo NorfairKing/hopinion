@@ -34,6 +34,8 @@ extra-source-files:
     src/Hopinion/Check/Hs/PrefixNaming/why.txt
     src/Hopinion/Check/Hs/RecordFieldPerLine/fix.txt
     src/Hopinion/Check/Hs/RecordFieldPerLine/why.txt
+    src/Hopinion/Check/Hs/StrictFields/fix.txt
+    src/Hopinion/Check/Hs/StrictFields/why.txt
     src/Hopinion/Check/Hs/TestOneSpecPerFile/fix.txt
     src/Hopinion/Check/Hs/TestOneSpecPerFile/why.txt
     src/Hopinion/Check/Package/AppOnlyMain/fix.txt
@@ -82,6 +84,9 @@ library
       Hopinion.Check.Hs.RecordFieldPerLine.Extract
       Hopinion.Check.Hs.RecordFieldPerLine.Fact
       Hopinion.Check.Hs.RecordFieldPerLine.Rule
+      Hopinion.Check.Hs.StrictFields.Extract
+      Hopinion.Check.Hs.StrictFields.Fact
+      Hopinion.Check.Hs.StrictFields.Rule
       Hopinion.Check.Hs.TestOneSpecPerFile.Extract
       Hopinion.Check.Hs.TestOneSpecPerFile.Fact
       Hopinion.Check.Hs.TestOneSpecPerFile.Rule

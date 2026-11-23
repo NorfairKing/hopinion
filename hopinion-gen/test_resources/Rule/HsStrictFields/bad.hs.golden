@@ -1,0 +1,70 @@
+[0;91;1m[error HsStrictFields][0m: The field pointX is lazy.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsStrictFields/bad.hs@7:5-7:18[0m
+     [0;90;1m│[0m
+[0;90;1m   7 │[0m [0;97m [0m[0;97m [0m[0;97m{[0m[0;97m [0m[0;91;1mp[0m[0;91;1mo[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1mX[0m[0;91;1m [0m[0;91;1m:[0m[0;91;1m:[0m[0;91;1m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m[0;97m,[0m
+     [0;90;1m•[0m     [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m     [0;91m╰╸[0m [0;91mMake every field of a data type strict.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Write `!` before the field's type, as in `pointX :: !Int` or `Point !Int !Int`.
+     [0;90;1m│[0;96m       If the module has StrictData on, the field is lazy because of its `~`: delete the `~` instead.
+     [0;90;1m│[0;96m       Keep the field lazy only if something needs it to be, such as a value defined in terms of itself, or one that is expensive and often never read.
+     [0;90;1m│[0;96m       In that case, suppress the finding and say in the suppression what needs the field to be lazy.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 7 of test_resources/Rule/HsStrictFields/bad.hs, and say why: -- [allow:HsStrictFields] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsStrictFields][0m: Field 1 of Pair is lazy.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsStrictFields/bad.hs@11:18-11:21[0m
+     [0;90;1m│[0m
+[0;90;1m  11 │[0m [0;97md[0m[0;97ma[0m[0;97mt[0m[0;97ma[0m[0;97m [0m[0;97mP[0m[0;97ma[0m[0;97mi[0m[0;97mr[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mP[0m[0;97ma[0m[0;97mi[0m[0;97mr[0m[0;97m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m[0;97m [0m[0;97m![0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+     [0;90;1m•[0m                  [0;91m┬[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m                  [0;91m╰╸[0m [0;91mMake every field of a data type strict.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Write `!` before the field's type, as in `pointX :: !Int` or `Point !Int !Int`.
+     [0;90;1m│[0;96m       If the module has StrictData on, the field is lazy because of its `~`: delete the `~` instead.
+     [0;90;1m│[0;96m       Keep the field lazy only if something needs it to be, such as a value defined in terms of itself, or one that is expensive and often never read.
+     [0;90;1m│[0;96m       In that case, suppress the finding and say in the suppression what needs the field to be lazy.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 11 of test_resources/Rule/HsStrictFields/bad.hs, and say why: -- [allow:HsStrictFields] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsStrictFields][0m: The fields nameFirst, nameLast are lazy.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsStrictFields/bad.hs@14:5-14:34[0m
+     [0;90;1m│[0m
+[0;90;1m  14 │[0m [0;97m [0m[0;97m [0m[0;97m{[0m[0;97m [0m[0;91;1mn[0m[0;91;1ma[0m[0;91;1mm[0m[0;91;1me[0m[0;91;1mF[0m[0;91;1mi[0m[0;91;1mr[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mn[0m[0;91;1ma[0m[0;91;1mm[0m[0;91;1me[0m[0;91;1mL[0m[0;91;1ma[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m:[0m[0;91;1m:[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m
+     [0;90;1m•[0m     [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m     [0;91m╰╸[0m [0;91mMake every field of a data type strict.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Write `!` before the field's type, as in `pointX :: !Int` or `Point !Int !Int`.
+     [0;90;1m│[0;96m       If the module has StrictData on, the field is lazy because of its `~`: delete the `~` instead.
+     [0;90;1m│[0;96m       Keep the field lazy only if something needs it to be, such as a value defined in terms of itself, or one that is expensive and often never read.
+     [0;90;1m│[0;96m       In that case, suppress the finding and say in the suppression what needs the field to be lazy.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 14 of test_resources/Rule/HsStrictFields/bad.hs, and say why: -- [allow:HsStrictFields] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsStrictFields][0m: Field 1 of ExprLit is lazy.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsStrictFields/bad.hs@18:14-18:17[0m
+     [0;90;1m│[0m
+[0;90;1m  18 │[0m [0;97m [0m[0;97m [0m[0;97mE[0m[0;97mx[0m[0;97mp[0m[0;97mr[0m[0;97mL[0m[0;97mi[0m[0;97mt[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m[0;97m [0m[0;97m-[0m[0;97m>[0m[0;97m [0m[0;97mE[0m[0;97mx[0m[0;97mp[0m[0;97mr[0m
+     [0;90;1m•[0m              [0;91m┬[0m[0;91m─[0m[0;91m─[0m 
+     [0;90;1m•[0m              [0;91m╰╸[0m [0;91mMake every field of a data type strict.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Write `!` before the field's type, as in `pointX :: !Int` or `Point !Int !Int`.
+     [0;90;1m│[0;96m       If the module has StrictData on, the field is lazy because of its `~`: delete the `~` instead.
+     [0;90;1m│[0;96m       Keep the field lazy only if something needs it to be, such as a value defined in terms of itself, or one that is expensive and often never read.
+     [0;90;1m│[0;96m       In that case, suppress the finding and say in the suppression what needs the field to be lazy.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 18 of test_resources/Rule/HsStrictFields/bad.hs, and say why: -- [allow:HsStrictFields] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsStrictFields][0m: Field 1 of KeyedInt is lazy.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsStrictFields/bad.hs@22:36-22:39[0m
+     [0;90;1m│[0m
+[0;90;1m  22 │[0m [0;97md[0m[0;97ma[0m[0;97mt[0m[0;97ma[0m[0;97m [0m[0;97mi[0m[0;97mn[0m[0;97ms[0m[0;97mt[0m[0;97ma[0m[0;97mn[0m[0;97mc[0m[0;97me[0m[0;97m [0m[0;97mK[0m[0;97me[0m[0;97my[0m[0;97me[0m[0;97md[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mK[0m[0;97me[0m[0;97my[0m[0;97me[0m[0;97md[0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m
+     [0;90;1m•[0m                                    [0;91m┬[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m                                    [0;91m╰╸[0m [0;91mMake every field of a data type strict.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Write `!` before the field's type, as in `pointX :: !Int` or `Point !Int !Int`.
+     [0;90;1m│[0;96m       If the module has StrictData on, the field is lazy because of its `~`: delete the `~` instead.
+     [0;90;1m│[0;96m       Keep the field lazy only if something needs it to be, such as a value defined in terms of itself, or one that is expensive and often never read.
+     [0;90;1m│[0;96m       In that case, suppress the finding and say in the suppression what needs the field to be lazy.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 22 of test_resources/Rule/HsStrictFields/bad.hs, and say why: -- [allow:HsStrictFields] <reason>[0m
+[0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain HsStrictFields

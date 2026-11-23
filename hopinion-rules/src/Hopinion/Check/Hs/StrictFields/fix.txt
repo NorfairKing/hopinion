@@ -1,0 +1,4 @@
+Write `!` before the field's type, as in `pointX :: !Int` or `Point !Int !Int`.
+If the module has StrictData on, the field is lazy because of its `~`: delete the `~` instead.
+Keep the field lazy only if something needs it to be, such as a value defined in terms of itself, or one that is expensive and often never read.
+In that case, suppress the finding and say in the suppression what needs the field to be lazy.

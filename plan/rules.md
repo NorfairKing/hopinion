@@ -3,13 +3,14 @@
 Every rule this tool could enforce that it does not enforce yet, sorted by how
 it can be enforced. A rule that ships leaves this file: what is here is work.
 
-The twenty-one that ship are `CommentBareTodo`, `CommentCouplingConnection`,
+The twenty-two that ship are `CommentBareTodo`, `CommentCouplingConnection`,
 `HsLambdaCase`, `HsNewtypeNotSynonym`, `HsNoCustomEq`, `HsNoCustomOrd`,
 `HsNoCustomShowRead`, `HsNoFilePath`, `HsNoSemigroupOnText`,
 `HsNoStringError`, `HsOneLetPerBinding`, `HsPrefixNaming`,
-`HsRecordFieldPerLine`, `HsTestOneSpecPerFile`, `HsAppOnlyMain`, `HsGenValidInGenPackage`,
-`HsNoRestatedValidityDefaults`, `TestGenValidSpecPerGenValid`,
-`TestJsonSpecPerJsonType`, `TestNoTestHelpers` and `TestSydtestOnly`.
+`HsRecordFieldPerLine`, `HsStrictFields`, `HsTestOneSpecPerFile`,
+`HsAppOnlyMain`, `HsGenValidInGenPackage`, `HsNoRestatedValidityDefaults`,
+`TestGenValidSpecPerGenValid`, `TestJsonSpecPerJsonType`, `TestNoTestHelpers`
+and `TestSydtestOnly`.
 
 ## How to read this
 
@@ -104,7 +105,6 @@ Rule ids are stable. They are what a check module cites and what an
 | `HsFewExtensions` | Use few language extensions | B | config | error | Extension outside the project allowlist. The allowlist is a config parameter; a one-off extension is annotated at its pragma |
 | `HsPreferText` | Prefer `Text`; `String` for errors and interop only | C | types | ratchet | Per-occurrence, annotated at the `String` it concerns. High volume at adoption |
 | `HsTextViaPack` | Build `Text` with `unwords` on `String`s, then pack | B | syntax | warn | Flag `Data.Text.unwords` / `Data.Text.unlines` uses |
-| `HsStrictFields` | Strict fields by default; document any lazy one | B | comment | error | Lazy field with no attached comment. Nice interplay with the comment tier |
 | `HsExplicitImports` | Explicit import lists or qualified imports | A | | | GHC `-Wmissing-import-lists`, hlint |
 | `HsMonomorphicOverConstraints` | Monomorphic functions over type-class constraints | B | types | warn | Constraint instantiated at exactly one type across all call sites |
 | `HsPolymorphicWithoutConstraints` | Polymorphic functions if you do not need constraints | A | | | GHC `-Wredundant-constraints` covers the unused case |
@@ -205,9 +205,8 @@ combinator.
 `CommentDuplicatesSignature`, `CommentHaddockRestatesConstant`,
 `CommentRestatesCode`, `CommentTestNarration`
 
-**F4 CommentPlacement** (3). A predicate on attachment rather than on text.
-`CommentSectionLabelInFunction`, `HsNoSectionHeadersInCode`,
-`HsStrictFields`
+**F4 CommentPlacement** (2). A predicate on attachment rather than on text.
+`CommentSectionLabelInFunction`, `HsNoSectionHeadersInCode`
 
 **F5 DeclPredicate** (9). A predicate on one declaration. The largest family, so
 its combinator matters most.

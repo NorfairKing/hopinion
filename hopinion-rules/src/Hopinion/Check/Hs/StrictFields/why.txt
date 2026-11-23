@@ -1,0 +1,2 @@
+A lazy field holds whatever thunk it was given, so a value updated over and over keeps every step alive until something reads it, and nothing where it is used shows that.
+Strict by default makes laziness a decision, and the suppression says it was one, so the next reader keeps it rather than adding the missing `!`.

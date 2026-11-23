@@ -146,12 +146,12 @@ data RuleImpl
 -- further argument; nothing does yet. Package and project rules are
 -- unaffected, since those already run in IO.
 data ModuleCheck where
-  ModuleCheckFromSource :: (ModuleContext -> ParsedModule -> CheckResult) -> ModuleCheck
+  ModuleCheckFromSource :: !(ModuleContext -> ParsedModule -> CheckResult) -> ModuleCheck
   -- | A rule that looks for every node of one type, wherever it is in the
   -- module, is handed them rather than walking the tree for itself.
   -- One walk finds the nodes of every such rule at once; see
   -- "Hopinion.Nodes" for why that matters.
-  ModuleCheckOverNodes :: (Data node) => (ModuleContext -> ParsedModule -> [node] -> CheckResult) -> ModuleCheck
+  ModuleCheckOverNodes :: (Data node) => !(ModuleContext -> ParsedModule -> [node] -> CheckResult) -> ModuleCheck
 
 -- | The type of node a check asks to be handed, if it asks for any.
 moduleCheckNodeType :: ModuleCheck -> Maybe SomeTypeRep
@@ -168,15 +168,15 @@ moduleCheckFindings c ctx parsed nodes = case c of
   ModuleCheckOverNodes f -> f ctx parsed (nodesOf nodes)
 
 data PackageCheck = PackageCheck
-  { packageCheckMigration :: Migration,
-    packageCheckCarry :: PackageName -> ModuleContext -> Carry,
-    packageCheckFindings :: PackageName -> CompiledModules -> Query CheckResult
+  { packageCheckMigration :: !Migration,
+    packageCheckCarry :: !(PackageName -> ModuleContext -> Carry),
+    packageCheckFindings :: !(PackageName -> CompiledModules -> Query CheckResult)
   }
 
 data ProjectCheck = ProjectCheck
-  { projectCheckMigration :: Migration,
-    projectCheckCarry :: PackageName -> ModuleContext -> Carry,
-    projectCheckFindings :: CompiledModules -> Query CheckResult
+  { projectCheckMigration :: !Migration,
+    projectCheckCarry :: !(PackageName -> ModuleContext -> Carry),
+    projectCheckFindings :: !(CompiledModules -> Query CheckResult)
   }
 
 ruleLevel :: Rule -> Level
