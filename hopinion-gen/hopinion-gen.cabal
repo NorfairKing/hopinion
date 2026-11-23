@@ -197,6 +197,14 @@ extra-source-files:
     test_resources/Rule/HsLambdaCase/bad.hs.golden
     test_resources/Rule/HsLambdaCase/good.hs
     test_resources/Rule/HsLambdaCase/good.hs.golden
+    test_resources/Rule/HsNewtypeNotSynonym/bad.hs
+    test_resources/Rule/HsNewtypeNotSynonym/bad.hs.golden
+    test_resources/Rule/HsNewtypeNotSynonym/good-local-scalar-name.hs
+    test_resources/Rule/HsNewtypeNotSynonym/good-local-scalar-name.hs.golden
+    test_resources/Rule/HsNewtypeNotSynonym/good-scalar-alias.hs
+    test_resources/Rule/HsNewtypeNotSynonym/good-scalar-alias.hs.golden
+    test_resources/Rule/HsNewtypeNotSynonym/good.hs
+    test_resources/Rule/HsNewtypeNotSynonym/good.hs.golden
     test_resources/Rule/HsNoCustomEq/bad-empty.hs
     test_resources/Rule/HsNoCustomEq/bad-empty.hs.golden
     test_resources/Rule/HsNoCustomEq/bad-ignoring-arguments.hs

@@ -1,0 +1,4 @@
+A synonym is the type it names, so a UserId passed where an OrderId was meant compiles, and so does an argument list in the wrong order.
+A parameter does not help: a synonym's parameter is gone once the synonym is expanded, so Key User and Key Order are both the scalar underneath.
+A newtype is a type of its own, so the compiler refuses the swap and costs nothing at runtime.
+A synonym for a compound type is shorthand for a shape rather than a name for a value, and is left alone.

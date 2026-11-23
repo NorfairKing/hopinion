@@ -14,6 +14,8 @@ extra-source-files:
     src/Hopinion/Check/Comment/CouplingConnection/why.txt
     src/Hopinion/Check/Hs/LambdaCase/fix.txt
     src/Hopinion/Check/Hs/LambdaCase/why.txt
+    src/Hopinion/Check/Hs/NewtypeNotSynonym/fix.txt
+    src/Hopinion/Check/Hs/NewtypeNotSynonym/why.txt
     src/Hopinion/Check/Hs/NoCustomEq/fix.txt
     src/Hopinion/Check/Hs/NoCustomEq/why.txt
     src/Hopinion/Check/Hs/NoCustomOrd/fix.txt
@@ -56,6 +58,9 @@ library
       Hopinion.Check.Hs.LambdaCase.Extract
       Hopinion.Check.Hs.LambdaCase.Fact
       Hopinion.Check.Hs.LambdaCase.Rule
+      Hopinion.Check.Hs.NewtypeNotSynonym.Extract
+      Hopinion.Check.Hs.NewtypeNotSynonym.Fact
+      Hopinion.Check.Hs.NewtypeNotSynonym.Rule
       Hopinion.Check.Hs.NoCustomEq.Rule
       Hopinion.Check.Hs.NoCustomOrd.Rule
       Hopinion.Check.Hs.NoCustomShowRead.Rule

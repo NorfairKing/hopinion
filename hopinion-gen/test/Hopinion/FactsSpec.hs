@@ -13,6 +13,7 @@ import Hopinion.Check.Hs.NoStringError.Fact
 import Hopinion.Check.Hs.TestOneSpecPerFile.Fact
 import Hopinion.Check.Obligation.Fact
 import Hopinion.Check.Package.AppOnlyMain.Fact
+import Hopinion.Check.ProseError.Fact
 import Hopinion.Comment
 import Hopinion.Facts.Component
 import Hopinion.Facts.Decl

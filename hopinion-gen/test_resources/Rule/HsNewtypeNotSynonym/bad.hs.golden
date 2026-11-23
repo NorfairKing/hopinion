@@ -1,0 +1,675 @@
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type UserId is a synonym for Text.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@22:1-22:19[0m
+     [0;90;1m│[0m
+[0;90;1m  22 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mU[0m[0;91;1ms[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mI[0m[0;91;1md[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 22 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type UserName is a synonym for String.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@24:1-24:23[0m
+     [0;90;1m│[0m
+[0;90;1m  24 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mU[0m[0;91;1ms[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mN[0m[0;91;1ma[0m[0;91;1mm[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 24 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type RetryCount is a synonym for Int.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@26:1-26:22[0m
+     [0;90;1m│[0m
+[0;90;1m  26 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mR[0m[0;91;1me[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1my[0m[0;91;1mC[0m[0;91;1mo[0m[0;91;1mu[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 26 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Body is a synonym for ByteString.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@29:1-29:26[0m
+     [0;90;1m│[0m
+[0;90;1m  29 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mB[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1my[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mL[0m[0;91;1mB[0m[0;91;1m.[0m[0;91;1mB[0m[0;91;1my[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 29 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Comment is a synonym for Text.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@31:1-31:23[0m
+     [0;90;1m│[0m
+[0;90;1m  31 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mC[0m[0;91;1mo[0m[0;91;1mm[0m[0;91;1mm[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1mL[0m[0;91;1m.[0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 31 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Path is a synonym for String.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@34:1-34:19[0m
+     [0;90;1m│[0m
+[0;90;1m  34 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mP[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1m[[0m[0;91;1mC[0m[0;91;1mh[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1m][0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 34 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Price is a synonym for Double.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@37:1-37:22[0m
+     [0;90;1m│[0m
+[0;90;1m  37 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mP[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mD[0m[0;91;1mo[0m[0;91;1mu[0m[0;91;1mb[0m[0;91;1ml[0m[0;91;1me[0m[0;91;1m)[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 37 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Weight is a synonym for Double.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@40:1-40:31[0m
+     [0;90;1m│[0m
+[0;90;1m  40 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mW[0m[0;91;1me[0m[0;91;1mi[0m[0;91;1mg[0m[0;91;1mh[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mD[0m[0;91;1mo[0m[0;91;1mu[0m[0;91;1mb[0m[0;91;1ml[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m:[0m[0;91;1m:[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m)[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 40 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Label is a synonym for Text.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@43:1-43:18[0m
+     [0;90;1m│[0m
+[0;90;1m  43 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mL[0m[0;91;1ma[0m[0;91;1mb[0m[0;91;1me[0m[0;91;1ml[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 43 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Key is a synonym for Int64.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@47:1-47:24[0m
+     [0;90;1m│[0m
+[0;90;1m  47 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mK[0m[0;91;1me[0m[0;91;1my[0m[0;91;1m [0m[0;91;1mr[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1mr[0m[0;91;1md[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1m6[0m[0;91;1m4[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 47 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Tagged is a synonym for Int.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@49:1-49:22[0m
+     [0;90;1m│[0m
+[0;90;1m  49 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1ma[0m[0;91;1mg[0m[0;91;1mg[0m[0;91;1me[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 49 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type OrderId is a synonym for UUID.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@52:1-52:20[0m
+     [0;90;1m│[0m
+[0;90;1m  52 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mO[0m[0;91;1mr[0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mI[0m[0;91;1md[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mU[0m[0;91;1mU[0m[0;91;1mI[0m[0;91;1mD[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 52 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Handle is a synonym for ShortText.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@54:1-54:24[0m
+     [0;90;1m│[0m
+[0;90;1m  54 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mH[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1md[0m[0;91;1ml[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mh[0m[0;91;1mo[0m[0;91;1mr[0m[0;91;1mt[0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 54 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Amount is a synonym for Centi.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@57:1-57:20[0m
+     [0;90;1m│[0m
+[0;90;1m  57 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mA[0m[0;91;1mm[0m[0;91;1mo[0m[0;91;1mu[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mC[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1mi[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 57 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Discount is a synonym for Deci.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@59:1-59:21[0m
+     [0;90;1m│[0m
+[0;90;1m  59 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mD[0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1mu[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mD[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1mi[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 59 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Count is a synonym for Uni.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@61:1-61:17[0m
+     [0;90;1m│[0m
+[0;90;1m  61 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mC[0m[0;91;1mo[0m[0;91;1mu[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mU[0m[0;91;1mn[0m[0;91;1mi[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 61 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Dose is a synonym for Milli.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@63:1-63:18[0m
+     [0;90;1m│[0m
+[0;90;1m  63 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mD[0m[0;91;1mo[0m[0;91;1ms[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mM[0m[0;91;1mi[0m[0;91;1ml[0m[0;91;1ml[0m[0;91;1mi[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 63 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Delay is a synonym for Micro.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@65:1-65:19[0m
+     [0;90;1m│[0m
+[0;90;1m  65 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mD[0m[0;91;1me[0m[0;91;1ml[0m[0;91;1ma[0m[0;91;1my[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mM[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1mr[0m[0;91;1mo[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 65 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Duration is a synonym for Nano.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@67:1-67:21[0m
+     [0;90;1m│[0m
+[0;90;1m  67 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mD[0m[0;91;1mu[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1mi[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mN[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mo[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 67 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Distance is a synonym for Pico.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@69:1-69:21[0m
+     [0;90;1m│[0m
+[0;90;1m  69 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mD[0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mP[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1mo[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 69 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Initial is a synonym for Char.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@72:1-72:20[0m
+     [0;90;1m│[0m
+[0;90;1m  72 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1mi[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mC[0m[0;91;1mh[0m[0;91;1ma[0m[0;91;1mr[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 72 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Digest is a synonym for ByteString.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@74:1-74:28[0m
+     [0;90;1m│[0m
+[0;90;1m  74 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mD[0m[0;91;1mi[0m[0;91;1mg[0m[0;91;1me[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mB[0m[0;91;1m.[0m[0;91;1mB[0m[0;91;1my[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 74 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Frame is a synonym for ByteString.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@76:1-76:27[0m
+     [0;90;1m│[0m
+[0;90;1m  76 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mF[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mm[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mL[0m[0;91;1mB[0m[0;91;1m.[0m[0;91;1mB[0m[0;91;1my[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 76 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Fingerprint is a synonym for StrictByteString.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@78:1-78:36[0m
+     [0;90;1m│[0m
+[0;90;1m  78 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mF[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mp[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1mt[0m[0;91;1mB[0m[0;91;1my[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 78 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Payload is a synonym for LazyByteString.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@80:1-80:30[0m
+     [0;90;1m│[0m
+[0;90;1m  80 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mP[0m[0;91;1ma[0m[0;91;1my[0m[0;91;1ml[0m[0;91;1mo[0m[0;91;1ma[0m[0;91;1md[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mL[0m[0;91;1ma[0m[0;91;1mz[0m[0;91;1my[0m[0;91;1mB[0m[0;91;1my[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 80 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Token is a synonym for ShortByteString.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@82:1-82:29[0m
+     [0;90;1m│[0m
+[0;90;1m  82 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1mo[0m[0;91;1mk[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mh[0m[0;91;1mo[0m[0;91;1mr[0m[0;91;1mt[0m[0;91;1mB[0m[0;91;1my[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 82 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Summary is a synonym for LText.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@84:1-84:21[0m
+     [0;90;1m│[0m
+[0;90;1m  84 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mu[0m[0;91;1mm[0m[0;91;1mm[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1my[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mL[0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 84 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Note is a synonym for LazyText.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@86:1-86:21[0m
+     [0;90;1m│[0m
+[0;90;1m  86 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mN[0m[0;91;1mo[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mL[0m[0;91;1ma[0m[0;91;1mz[0m[0;91;1my[0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 86 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Title is a synonym for StrictText.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@88:1-88:24[0m
+     [0;90;1m│[0m
+[0;90;1m  88 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1ml[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1mt[0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 88 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Rank is a synonym for Int8.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@90:1-90:17[0m
+     [0;90;1m│[0m
+[0;90;1m  90 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mR[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mk[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1m8[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 90 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Port is a synonym for Int16.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@92:1-92:18[0m
+     [0;90;1m│[0m
+[0;90;1m  92 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mP[0m[0;91;1mo[0m[0;91;1mr[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1m1[0m[0;91;1m6[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 92 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Quantity is a synonym for Int32.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@94:1-94:22[0m
+     [0;90;1m│[0m
+[0;90;1m  94 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mQ[0m[0;91;1mu[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1m3[0m[0;91;1m2[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 94 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Offset is a synonym for Int64.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@96:1-96:20[0m
+     [0;90;1m│[0m
+[0;90;1m  96 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mO[0m[0;91;1mf[0m[0;91;1mf[0m[0;91;1ms[0m[0;91;1me[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1m6[0m[0;91;1m4[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 96 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Total is a synonym for Integer.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@98:1-98:21[0m
+     [0;90;1m│[0m
+[0;90;1m  98 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1mo[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1mg[0m[0;91;1me[0m[0;91;1mr[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 98 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Size is a synonym for Natural.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@100:1-100:20[0m
+     [0;90;1m│[0m
+[0;90;1m 100 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mi[0m[0;91;1mz[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mN[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1mu[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1ml[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 100 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Byte is a synonym for Word.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@102:1-102:17[0m
+     [0;90;1m│[0m
+[0;90;1m 102 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mB[0m[0;91;1my[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mW[0m[0;91;1mo[0m[0;91;1mr[0m[0;91;1md[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 102 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Octet is a synonym for Word8.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@104:1-104:19[0m
+     [0;90;1m│[0m
+[0;90;1m 104 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mO[0m[0;91;1mc[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mW[0m[0;91;1mo[0m[0;91;1mr[0m[0;91;1md[0m[0;91;1m8[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 104 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Code is a synonym for Word16.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@106:1-106:19[0m
+     [0;90;1m│[0m
+[0;90;1m 106 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mC[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mW[0m[0;91;1mo[0m[0;91;1mr[0m[0;91;1md[0m[0;91;1m1[0m[0;91;1m6[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 106 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Checksum is a synonym for Word32.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@108:1-108:23[0m
+     [0;90;1m│[0m
+[0;90;1m 108 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mC[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1mk[0m[0;91;1ms[0m[0;91;1mu[0m[0;91;1mm[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mW[0m[0;91;1mo[0m[0;91;1mr[0m[0;91;1md[0m[0;91;1m3[0m[0;91;1m2[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 108 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Nonce is a synonym for Word64.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@110:1-110:20[0m
+     [0;90;1m│[0m
+[0;90;1m 110 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mN[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mW[0m[0;91;1mo[0m[0;91;1mr[0m[0;91;1md[0m[0;91;1m6[0m[0;91;1m4[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 110 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Temperature is a synonym for Float.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@112:1-112:25[0m
+     [0;90;1m│[0m
+[0;90;1m 112 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mm[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1mu[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mF[0m[0;91;1ml[0m[0;91;1mo[0m[0;91;1ma[0m[0;91;1mt[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 112 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Share is a synonym for Rational.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@114:1-114:22[0m
+     [0;90;1m│[0m
+[0;90;1m 114 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mh[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mR[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1mi[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1ma[0m[0;91;1ml[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 114 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Measurement is a synonym for Scientific.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@116:1-116:30[0m
+     [0;90;1m│[0m
+[0;90;1m 116 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mM[0m[0;91;1me[0m[0;91;1ma[0m[0;91;1ms[0m[0;91;1mu[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1mm[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mc[0m[0;91;1mi[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1mi[0m[0;91;1mf[0m[0;91;1mi[0m[0;91;1mc[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 116 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type ExitError is a synonym for Int.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@119:1-119:21[0m
+     [0;90;1m│[0m
+[0;90;1m 119 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mE[0m[0;91;1mx[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1mE[0m[0;91;1mr[0m[0;91;1mr[0m[0;91;1mo[0m[0;91;1mr[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mI[0m[0;91;1mn[0m[0;91;1mt[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 119 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNewtypeNotSynonym][0m: The type Slug is a synonym for Text.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNewtypeNotSynonym/bad.hs@122:1-122:19[0m
+     [0;90;1m│[0m
+[0;90;1m 122 │[0m [0;91;1mt[0m[0;91;1my[0m[0;91;1mp[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1ml[0m[0;91;1mu[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1m.[0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mA domain scalar is a newtype, not a type synonym.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+     [0;90;1m│[0;96m       Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+     [0;90;1m│[0;96m       Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+     [0;90;1m│[0;96m       Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+     [0;90;1m│[0;96m       Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 122 of test_resources/Rule/HsNewtypeNotSynonym/bad.hs, and say why: -- [allow:HsNewtypeNotSynonym] <reason>[0m
+[0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain HsNewtypeNotSynonym

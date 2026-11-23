@@ -5,6 +5,7 @@ import qualified Control.Monad.Except as Except
 import Data.List.NonEmpty (NonEmpty)
 import Data.Text (Text)
 import qualified Data.Text as T
+import Data.Text.Lazy (LazyText)
 import Data.Validation (Validation)
 
 -- The failure of an Either is its first argument, and here it is prose.
@@ -75,3 +76,9 @@ type ValidationErrors = NonEmpty Text
 
 -- A field name does not change what the constructor holds.
 newtype StoreError = StoreError {unStoreError :: Text}
+
+-- Lazy Text is prose as much as strict Text is, whatever name it is imported
+-- under.
+type DecodeError = LazyText
+
+type RenderErrors = [LText]

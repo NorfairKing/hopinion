@@ -18,6 +18,7 @@ import Hopinion.Check.Hs.NoStringError.Fact
 import Hopinion.Check.Hs.TestOneSpecPerFile.Fact
 import Hopinion.Check.Obligation.Fact
 import Hopinion.Check.Package.AppOnlyMain.Fact
+import Hopinion.Check.ProseError.Fact
 import Hopinion.Choices (Choices)
 import Hopinion.Comment (Attachment, CommentFact, CommentStyle, RawComment)
 import Hopinion.Facts.Component

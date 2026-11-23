@@ -1,31 +1,13 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingStrategies #-}
 
-module Hopinion.Check.Hs.NoStringError.Fact
-  ( ErrorType (..),
-    ErrorSlot (..),
-    ErrorDeclShape (..),
-    ErrorDecl (..),
-  )
-where
+module Hopinion.Check.Hs.NoStringError.Fact (ErrorSlot (..)) where
 
 import Data.Text (Text)
 import Data.Validity
 import GHC.Generics (Generic)
+import Hopinion.Check.ProseError.Fact (ErrorType)
 import Hopinion.Facts.Place
-
--- | What the source says the error of a slot is.
---
--- Two ways to be prose rather than one, because @String@ and @Text@ are
--- different types that a reader fixes the same way and that a rule has no
--- reason to tell apart beyond naming what it found.
-data ErrorType
-  = ErrorTypeString
-  | ErrorTypeText
-  | ErrorTypeSomethingElse
-  deriving stock (Show, Generic)
-
-instance Validity ErrorType
 
 -- | One place a type says what a failure is: the error argument of an
 -- @Either@, an @ExceptT@ or whatever else is written to carry one.
@@ -43,29 +25,3 @@ data ErrorSlot = ErrorSlot
   deriving stock (Show, Generic)
 
 instance Validity ErrorSlot
-
--- | How a declaration that calls itself an error is written.
---
--- Two shapes because the fix differs: a synonym is deleted and replaced by a
--- type, where a wrapper already is one and needs constructors instead.
-data ErrorDeclShape
-  = ErrorDeclShapeSynonym
-  | ErrorDeclShapeWrapper
-  deriving stock (Show, Generic)
-
-instance Validity ErrorDeclShape
-
--- | A declaration that names itself an error and is prose underneath.
---
--- The span is the prose rather than the declaration, so that what is underlined
--- is what has to change, the same as for a slot.
-data ErrorDecl = ErrorDecl
-  { errorDeclName :: !Text,
-    errorDeclShape :: !ErrorDeclShape,
-    errorDeclError :: !ErrorType,
-    errorDeclSpan :: !Span,
-    errorDeclScope :: !ScopeKey
-  }
-  deriving stock (Show, Generic)
-
-instance Validity ErrorDecl

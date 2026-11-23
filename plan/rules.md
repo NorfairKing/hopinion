@@ -3,11 +3,11 @@
 Every rule this tool could enforce that it does not enforce yet, sorted by how
 it can be enforced. A rule that ships leaves this file: what is here is work.
 
-The twenty that ship are `CommentBareTodo`, `CommentCouplingConnection`,
-`HsLambdaCase`, `HsNoCustomEq`, `HsNoCustomOrd`, `HsNoCustomShowRead`,
-`HsNoFilePath`, `HsNoSemigroupOnText`, `HsNoStringError`,
-`HsOneLetPerBinding`, `HsPrefixNaming`, `HsRecordFieldPerLine`,
-`HsTestOneSpecPerFile`, `HsAppOnlyMain`, `HsGenValidInGenPackage`,
+The twenty-one that ship are `CommentBareTodo`, `CommentCouplingConnection`,
+`HsLambdaCase`, `HsNewtypeNotSynonym`, `HsNoCustomEq`, `HsNoCustomOrd`,
+`HsNoCustomShowRead`, `HsNoFilePath`, `HsNoSemigroupOnText`,
+`HsNoStringError`, `HsOneLetPerBinding`, `HsPrefixNaming`,
+`HsRecordFieldPerLine`, `HsTestOneSpecPerFile`, `HsAppOnlyMain`, `HsGenValidInGenPackage`,
 `HsNoRestatedValidityDefaults`, `TestGenValidSpecPerGenValid`,
 `TestJsonSpecPerJsonType`, `TestNoTestHelpers` and `TestSydtestOnly`.
 
@@ -120,7 +120,6 @@ Rule ids are stable. They are what a check module cites and what an
 | `HsTestDescribeOrder` | `describe` groups follow definition-module order | B | project | warn | Resolve `describe` string literals against the source module's decl order |
 | `HsLocalTypeSignatures` | Type signatures on let- and where-bound functions | B | syntax | warn | Only where the types are nameable |
 | `HsIllegalStatesUnrepresentable` | Make illegal states unrepresentable | D | | | The parent principle |
-| `HsNewtypeNotSynonym` | `newtype`s, not `type` synonyms, for domain scalars | B | syntax | error | `type X = Text / Int / String / Double` |
 | `HsNoDomainBool` | Named two-constructor type over `Bool` for domain flags | C | syntax | ratchet | Scope to record fields and non-final argument positions. A predicate returning `Bool` is fine |
 | `HsNoCatchAllOwnSum` | No catch-all `_ ->` on your own sum types | B | types | error | Needs to know the scrutinee type is project-defined |
 | `HsNonempty` | `NonEmpty` for collections that must not be empty | D | | | |
@@ -210,9 +209,9 @@ combinator.
 `CommentSectionLabelInFunction`, `HsNoSectionHeadersInCode`,
 `HsStrictFields`
 
-**F5 DeclPredicate** (10). A predicate on one declaration. The largest family, so
+**F5 DeclPredicate** (9). A predicate on one declaration. The largest family, so
 its combinator matters most.
-`HsNewtypeNotSynonym`, `HsMultilineRecord`, `HsLetOverWhere`,
+`HsMultilineRecord`, `HsLetOverWhere`,
 `HsLocalTypeSignatures`, `HsWhereHoldingLogic`,
 `HsNoDomainBool`, `HsTextViaPack`, `TestExactAssertions`,
 `TestAssertWholeValues`, `TestTestableTopLevel`

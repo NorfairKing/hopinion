@@ -1,7 +1,7 @@
 [0;91;1m[error HsNoStringError][0m: The error type of Either is String.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@11:30-11:36[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@12:30-12:36[0m
      [0;90;1m│[0m
-[0;90;1m  11 │[0m [0;97mp[0m[0;97ma[0m[0;97mr[0m[0;97ms[0m[0;97me[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mS[0m[0;97mt[0m[0;97mr[0m[0;97mi[0m[0;97mn[0m[0;97mg[0m[0;97m [0m[0;97m-[0m[0;97m>[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+[0;90;1m  12 │[0m [0;97mp[0m[0;97ma[0m[0;97mr[0m[0;97ms[0m[0;97me[0m[0;97mA[0m[0;97mg[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mS[0m[0;97mt[0m[0;97mr[0m[0;97mi[0m[0;97mn[0m[0;97mg[0m[0;97m [0m[0;97m-[0m[0;97m>[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
      [0;90;1m•[0m                              [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                              [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -11,13 +11,13 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 11 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 12 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error HsNoStringError][0m: The error type of ExceptT is Text.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@17:32-17:36[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@18:32-18:36[0m
      [0;90;1m│[0m
-[0;90;1m  17 │[0m [0;97ml[0m[0;97mo[0m[0;97ma[0m[0;97md[0m[0;97mS[0m[0;97me[0m[0;97mt[0m[0;97mt[0m[0;97mi[0m[0;97mn[0m[0;97mg[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m [0m[0;97m-[0m[0;97m>[0m[0;97m [0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97mT[0m[0;97m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;97m [0m[0;97mI[0m[0;97mO[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+[0;90;1m  18 │[0m [0;97ml[0m[0;97mo[0m[0;97ma[0m[0;97md[0m[0;97mS[0m[0;97me[0m[0;97mt[0m[0;97mt[0m[0;97mi[0m[0;97mn[0m[0;97mg[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m [0m[0;97m-[0m[0;97m>[0m[0;97m [0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97mT[0m[0;97m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;97m [0m[0;97mI[0m[0;97mO[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
      [0;90;1m•[0m                                [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                                [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -27,13 +27,13 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 17 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 18 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error HsNoStringError][0m: The error type of Either is String.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@22:32-22:40[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@23:32-23:40[0m
      [0;90;1m│[0m
-[0;90;1m  22 │[0m [0;97mv[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97md[0m[0;97ma[0m[0;97mt[0m[0;97me[0m[0;97mA[0m[0;97ml[0m[0;97ml[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97m[[0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m][0m[0;97m [0m[0;97m-[0m[0;97m>[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1m[[0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m][0m[0;97m [0m[0;97m[[0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m][0m
+[0;90;1m  23 │[0m [0;97mv[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97md[0m[0;97ma[0m[0;97mt[0m[0;97me[0m[0;97mA[0m[0;97ml[0m[0;97ml[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97m[[0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m][0m[0;97m [0m[0;97m-[0m[0;97m>[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1m[[0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m][0m[0;97m [0m[0;97m[[0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m][0m
      [0;90;1m•[0m                                [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                                [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -43,13 +43,13 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 22 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 23 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error HsNoStringError][0m: The error type of Either is Text.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@25:24-25:39[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@26:24-26:39[0m
      [0;90;1m│[0m
-[0;90;1m  25 │[0m [0;97mf[0m[0;97mi[0m[0;97mr[0m[0;97ms[0m[0;97mt[0m[0;97mF[0m[0;97ma[0m[0;97mi[0m[0;97ml[0m[0;97mu[0m[0;97mr[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1m([0m[0;91;1mN[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1mE[0m[0;91;1mm[0m[0;91;1mp[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;91;1m)[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+[0;90;1m  26 │[0m [0;97mf[0m[0;97mi[0m[0;97mr[0m[0;97ms[0m[0;97mt[0m[0;97mF[0m[0;97ma[0m[0;97mi[0m[0;97ml[0m[0;97mu[0m[0;97mr[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1m([0m[0;91;1mN[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1mE[0m[0;91;1mm[0m[0;91;1mp[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;91;1m)[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
      [0;90;1m•[0m                        [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                        [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -59,13 +59,13 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 25 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 26 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error HsNoStringError][0m: The error type of Either is String.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@31:32-31:38[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@32:32-32:38[0m
      [0;90;1m│[0m
-[0;90;1m  31 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97ma[0m[0;97mt[0m[0;97mt[0m[0;97me[0m[0;97mm[0m[0;97mp[0m[0;97mt[0m[0;97mO[0m[0;97mu[0m[0;97mt[0m[0;97mc[0m[0;97mo[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97m![0m[0;97m([0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m)[0m
+[0;90;1m  32 │[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97ma[0m[0;97mt[0m[0;97mt[0m[0;97me[0m[0;97mm[0m[0;97mp[0m[0;97mt[0m[0;97mO[0m[0;97mu[0m[0;97mt[0m[0;97mc[0m[0;97mo[0m[0;97mm[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97m![0m[0;97m([0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m)[0m
      [0;90;1m•[0m                                [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                                [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -75,13 +75,13 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 31 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 32 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error HsNoStringError][0m: The error type of MonadError is String.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@35:23-35:29[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@36:23-36:29[0m
      [0;90;1m│[0m
-[0;90;1m  35 │[0m [0;97mr[0m[0;97me[0m[0;97mf[0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97m([0m[0;97mM[0m[0;97mo[0m[0;97mn[0m[0;97ma[0m[0;97md[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;97m [0m[0;97mm[0m[0;97m)[0m[0;97m [0m[0;97m=[0m[0;97m>[0m[0;97m [0m[0;97mm[0m[0;97m [0m[0;97ma[0m
+[0;90;1m  36 │[0m [0;97mr[0m[0;97me[0m[0;97mf[0m[0;97mu[0m[0;97ms[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97m([0m[0;97mM[0m[0;97mo[0m[0;97mn[0m[0;97ma[0m[0;97md[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;97m [0m[0;97mm[0m[0;97m)[0m[0;97m [0m[0;97m=[0m[0;97m>[0m[0;97m [0m[0;97mm[0m[0;97m [0m[0;97ma[0m
      [0;90;1m•[0m                       [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                       [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -91,13 +91,13 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 35 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 36 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error HsNoStringError][0m: The error type of Either is String.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@39:22-39:28[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@40:22-40:28[0m
      [0;90;1m│[0m
-[0;90;1m  39 │[0m [0;97ms[0m[0;97mp[0m[0;97me[0m[0;97ml[0m[0;97ml[0m[0;97me[0m[0;97md[0m[0;97mO[0m[0;97mu[0m[0;97mt[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1m[[0m[0;91;1mC[0m[0;91;1mh[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1m][0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+[0;90;1m  40 │[0m [0;97ms[0m[0;97mp[0m[0;97me[0m[0;97ml[0m[0;97ml[0m[0;97me[0m[0;97md[0m[0;97mO[0m[0;97mu[0m[0;97mt[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1m[[0m[0;91;1mC[0m[0;91;1mh[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1m][0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
      [0;90;1m•[0m                      [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                      [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -107,13 +107,13 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 39 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 40 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error HsNoStringError][0m: The error type of ExceptT is String.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@44:26-44:32[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@45:26-45:32[0m
      [0;90;1m│[0m
-[0;90;1m  44 │[0m [0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mA[0m[0;97mt[0m[0;97mt[0m[0;97me[0m[0;97mm[0m[0;97mp[0m[0;97mt[0m[0;97me[0m[0;97md[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97mT[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;97m [0m[0;97mI[0m[0;97mO[0m
+[0;90;1m  45 │[0m [0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mA[0m[0;97mt[0m[0;97mt[0m[0;97me[0m[0;97mm[0m[0;97mp[0m[0;97mt[0m[0;97me[0m[0;97md[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97mT[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;97m [0m[0;97mI[0m[0;97mO[0m
      [0;90;1m•[0m                          [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                          [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -123,13 +123,13 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 44 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 45 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error HsNoStringError][0m: The error type of Either is String.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@48:20-48:26[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@49:20-49:26[0m
      [0;90;1m│[0m
-[0;90;1m  48 │[0m [0;97mb[0m[0;97mo[0m[0;97mt[0m[0;97mh[0m[0;97mW[0m[0;97ma[0m[0;97my[0m[0;97ms[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;97m [0m[0;97m([0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97m [0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m)[0m
+[0;90;1m  49 │[0m [0;97mb[0m[0;97mo[0m[0;97mt[0m[0;97mh[0m[0;97mW[0m[0;97ma[0m[0;97my[0m[0;97ms[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;97m [0m[0;97m([0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97m [0m[0;97mT[0m[0;97me[0m[0;97mx[0m[0;97mt[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m)[0m
      [0;90;1m•[0m                    [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                    [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -139,13 +139,13 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 48 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 49 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error HsNoStringError][0m: The error type of Except is Text.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@48:35-48:39[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@49:35-49:39[0m
      [0;90;1m│[0m
-[0;90;1m  48 │[0m [0;97mb[0m[0;97mo[0m[0;97mt[0m[0;97mh[0m[0;97mW[0m[0;97ma[0m[0;97my[0m[0;97ms[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97mS[0m[0;97mt[0m[0;97mr[0m[0;97mi[0m[0;97mn[0m[0;97mg[0m[0;97m [0m[0;97m([0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m)[0m
+[0;90;1m  49 │[0m [0;97mb[0m[0;97mo[0m[0;97mt[0m[0;97mh[0m[0;97mW[0m[0;97ma[0m[0;97my[0m[0;97ms[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mE[0m[0;97mi[0m[0;97mt[0m[0;97mh[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97mS[0m[0;97mt[0m[0;97mr[0m[0;97mi[0m[0;97mn[0m[0;97mg[0m[0;97m [0m[0;97m([0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m[0;97m)[0m
      [0;90;1m•[0m                                   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                                   [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -155,13 +155,13 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 48 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 49 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error HsNoStringError][0m: The error type of ExceptT is Text.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@53:36-53:42[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@54:36-54:42[0m
      [0;90;1m│[0m
-[0;90;1m  53 │[0m [0;97mq[0m[0;97mu[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97mf[0m[0;97mi[0m[0;97me[0m[0;97md[0m[0;97mC[0m[0;97ma[0m[0;97mr[0m[0;97mr[0m[0;97mi[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97m.[0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97mT[0m[0;97m [0m[0;91;1mT[0m[0;91;1m.[0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;97m [0m[0;97mI[0m[0;97mO[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+[0;90;1m  54 │[0m [0;97mq[0m[0;97mu[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97mf[0m[0;97mi[0m[0;97me[0m[0;97md[0m[0;97mC[0m[0;97ma[0m[0;97mr[0m[0;97mr[0m[0;97mi[0m[0;97me[0m[0;97mr[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97m.[0m[0;97mE[0m[0;97mx[0m[0;97mc[0m[0;97me[0m[0;97mp[0m[0;97mt[0m[0;97mT[0m[0;97m [0m[0;91;1mT[0m[0;91;1m.[0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;97m [0m[0;97mI[0m[0;97mO[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
      [0;90;1m•[0m                                    [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                                    [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -171,13 +171,13 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 53 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 54 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error HsNoStringError][0m: The error type of Validation is Text.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@57:25-57:31[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@58:25-58:31[0m
      [0;90;1m│[0m
-[0;90;1m  57 │[0m [0;97mc[0m[0;97mo[0m[0;97ml[0m[0;97ml[0m[0;97me[0m[0;97mc[0m[0;97mt[0m[0;97me[0m[0;97md[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mV[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97md[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97mo[0m[0;97mn[0m[0;97m [0m[0;91;1m[[0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;91;1m][0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+[0;90;1m  58 │[0m [0;97mc[0m[0;97mo[0m[0;97ml[0m[0;97ml[0m[0;97me[0m[0;97mc[0m[0;97mt[0m[0;97me[0m[0;97md[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mV[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97md[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97mo[0m[0;97mn[0m[0;97m [0m[0;91;1m[[0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;91;1m][0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
      [0;90;1m•[0m                         [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                         [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -187,13 +187,13 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 57 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 58 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error HsNoStringError][0m: The error type of Validation is String.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@61:35-61:52[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@62:35-62:52[0m
      [0;90;1m│[0m
-[0;90;1m  61 │[0m [0;97mc[0m[0;97mo[0m[0;97ml[0m[0;97ml[0m[0;97me[0m[0;97mc[0m[0;97mt[0m[0;97me[0m[0;97md[0m[0;97mA[0m[0;97mt[0m[0;97mL[0m[0;97me[0m[0;97ma[0m[0;97ms[0m[0;97mt[0m[0;97mO[0m[0;97mn[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mV[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97md[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97mo[0m[0;97mn[0m[0;97m [0m[0;91;1m([0m[0;91;1mN[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1mE[0m[0;91;1mm[0m[0;91;1mp[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m)[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
+[0;90;1m  62 │[0m [0;97mc[0m[0;97mo[0m[0;97ml[0m[0;97ml[0m[0;97me[0m[0;97mc[0m[0;97mt[0m[0;97me[0m[0;97md[0m[0;97mA[0m[0;97mt[0m[0;97mL[0m[0;97me[0m[0;97ma[0m[0;97ms[0m[0;97mt[0m[0;97mO[0m[0;97mn[0m[0;97me[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;97mV[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97md[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97mo[0m[0;97mn[0m[0;97m [0m[0;91;1m([0m[0;91;1mN[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1mE[0m[0;91;1mm[0m[0;91;1mp[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m)[0m[0;97m [0m[0;97mI[0m[0;97mn[0m[0;97mt[0m
      [0;90;1m•[0m                                   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                                   [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -203,13 +203,13 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 61 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 62 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error HsNoStringError][0m: The error type ParseError is Text.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@65:19-65:23[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@66:19-66:23[0m
      [0;90;1m│[0m
-[0;90;1m  65 │[0m [0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mP[0m[0;97ma[0m[0;97mr[0m[0;97ms[0m[0;97me[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
+[0;90;1m  66 │[0m [0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mP[0m[0;97ma[0m[0;97mr[0m[0;97ms[0m[0;97me[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
      [0;90;1m•[0m                   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m                   [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -219,13 +219,13 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 65 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 66 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error HsNoStringError][0m: The error type LookupError wraps nothing but String.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@68:35-68:41[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@69:35-69:41[0m
      [0;90;1m│[0m
-[0;90;1m  68 │[0m [0;97mn[0m[0;97me[0m[0;97mw[0m[0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mL[0m[0;97mo[0m[0;97mo[0m[0;97mk[0m[0;97mu[0m[0;97mp[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mL[0m[0;97mo[0m[0;97mo[0m[0;97mk[0m[0;97mu[0m[0;97mp[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m
+[0;90;1m  69 │[0m [0;97mn[0m[0;97me[0m[0;97mw[0m[0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mL[0m[0;97mo[0m[0;97mo[0m[0;97mk[0m[0;97mu[0m[0;97mp[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mL[0m[0;97mo[0m[0;97mo[0m[0;97mk[0m[0;97mu[0m[0;97mp[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;91;1mS[0m[0;91;1mt[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m
      [0;90;1m•[0m                                   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m                                   [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -235,13 +235,13 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 68 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 69 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error HsNoStringError][0m: The error type RenderError wraps nothing but Text.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@71:32-71:36[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@72:32-72:36[0m
      [0;90;1m│[0m
-[0;90;1m  71 │[0m [0;97md[0m[0;97ma[0m[0;97mt[0m[0;97ma[0m[0;97m [0m[0;97mR[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mR[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
+[0;90;1m  72 │[0m [0;97md[0m[0;97ma[0m[0;97mt[0m[0;97ma[0m[0;97m [0m[0;97mR[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mR[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
      [0;90;1m•[0m                                [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m                                [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -251,13 +251,13 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 71 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 72 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error HsNoStringError][0m: The error type ValidationErrors is Text.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@74:25-74:38[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@75:25-75:38[0m
      [0;90;1m│[0m
-[0;90;1m  74 │[0m [0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mV[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97md[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97mo[0m[0;97mn[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97ms[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1mN[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1mE[0m[0;91;1mm[0m[0;91;1mp[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
+[0;90;1m  75 │[0m [0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mV[0m[0;97ma[0m[0;97ml[0m[0;97mi[0m[0;97md[0m[0;97ma[0m[0;97mt[0m[0;97mi[0m[0;97mo[0m[0;97mn[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97ms[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1mN[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1mE[0m[0;91;1mm[0m[0;91;1mp[0m[0;91;1mt[0m[0;91;1my[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
      [0;90;1m•[0m                         [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
      [0;90;1m•[0m                         [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -267,13 +267,13 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 74 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 75 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 
 [0;91;1m[error HsNoStringError][0m: The error type StoreError wraps nothing but Text.
-     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@77:50-77:54[0m
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@78:50-78:54[0m
      [0;90;1m│[0m
-[0;90;1m  77 │[0m [0;97mn[0m[0;97me[0m[0;97mw[0m[0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mS[0m[0;97mt[0m[0;97mo[0m[0;97mr[0m[0;97me[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mS[0m[0;97mt[0m[0;97mo[0m[0;97mr[0m[0;97me[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m{[0m[0;97mu[0m[0;97mn[0m[0;97mS[0m[0;97mt[0m[0;97mo[0m[0;97mr[0m[0;97me[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;97m}[0m
+[0;90;1m  78 │[0m [0;97mn[0m[0;97me[0m[0;97mw[0m[0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mS[0m[0;97mt[0m[0;97mo[0m[0;97mr[0m[0;97me[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;97mS[0m[0;97mt[0m[0;97mo[0m[0;97mr[0m[0;97me[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m{[0m[0;97mu[0m[0;97mn[0m[0;97mS[0m[0;97mt[0m[0;97mo[0m[0;97mr[0m[0;97me[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m:[0m[0;97m:[0m[0;97m [0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;97m}[0m
      [0;90;1m•[0m                                                  [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m 
      [0;90;1m•[0m                                                  [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
      [0;90;1m•[0m
@@ -283,6 +283,38 @@
      [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
      [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
      [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
-     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 77 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 78 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type DecodeError is Text.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@82:20-82:28[0m
+     [0;90;1m│[0m
+[0;90;1m  82 │[0m [0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mD[0m[0;97me[0m[0;97mc[0m[0;97mo[0m[0;97md[0m[0;97me[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1mL[0m[0;91;1ma[0m[0;91;1mz[0m[0;91;1my[0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m
+     [0;90;1m•[0m                    [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m                    [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 82 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsNoStringError][0m: The error type RenderErrors is Text.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsNoStringError/bad.hs@84:21-84:28[0m
+     [0;90;1m│[0m
+[0;90;1m  84 │[0m [0;97mt[0m[0;97my[0m[0;97mp[0m[0;97me[0m[0;97m [0m[0;97mR[0m[0;97me[0m[0;97mn[0m[0;97md[0m[0;97me[0m[0;97mr[0m[0;97mE[0m[0;97mr[0m[0;97mr[0m[0;97mo[0m[0;97mr[0m[0;97ms[0m[0;97m [0m[0;97m=[0m[0;97m [0m[0;91;1m[[0m[0;91;1mL[0m[0;91;1mT[0m[0;91;1me[0m[0;91;1mx[0m[0;91;1mt[0m[0;91;1m][0m
+     [0;90;1m•[0m                     [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m                     [0;91m╰╸[0m [0;91mAn error is a type of its own, not a String.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the String or Text failure with a sum type that has one constructor per way to fail, prefixed with the type's name and holding values rather than a message: `data LoadError = LoadErrorMissingKey Key | LoadErrorOutOfRange Int Int`.
+     [0;90;1m│[0;96m       Find the ways to fail at each `Left "..."` or `throwError "..."`.
+     [0;90;1m│[0;96m       If the finding is on a declaration like `type LoadError = Text` or `newtype LoadError = LoadError Text`, replace that declaration with the sum type.
+     [0;90;1m│[0;96m       A single way to fail can be one constructor named for it, such as `LoadErrorUnparseable Text`.
+     [0;90;1m│[0;96m       Wrap a library's String failure at the call in a constructor named for what failed.
+     [0;90;1m│[0;96m       Render the sum type to text with `renderLoadError :: LoadError -> Text`, only where it is shown to a person.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 84 of test_resources/Rule/HsNoStringError/bad.hs, and say why: -- [allow:HsNoStringError] <reason>[0m
 [0;90;1m─────╯[0m
 Run explain with a rule's id to see why the rule exists, for example: explain HsNoStringError

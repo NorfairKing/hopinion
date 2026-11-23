@@ -1,0 +1,5 @@
+Replace the synonym with a newtype whose constructor is the type's name and whose field is `un` and the type's name: `type UserId = Text` becomes `newtype UserId = UserId {unUserId :: Text}`.
+Keep the synonym's parameters on the newtype: `type Key record = Int64` becomes `newtype Key record = Key {unKey :: Int64}`.
+Derive the instances the code compares and shows it with: `deriving stock (Show, Eq, Ord)`.
+Derive `Num`, `Semigroup` or `IsString` with `deriving newtype` only where the code already relies on them.
+Wrap a value in the constructor where it enters the program, and unwrap it with the field only where a library needs the scalar itself.
