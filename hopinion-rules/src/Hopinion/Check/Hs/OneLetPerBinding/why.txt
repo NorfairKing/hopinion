@@ -1,0 +1,2 @@
+The bindings of one let statement are one recursive group, so each of them can refer to every other, and a typo or a shadowed name can make one refer to another by accident.
+A let statement per binding means each one sees only the bindings above it, the same as every other statement in a do-block.

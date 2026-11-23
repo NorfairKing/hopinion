@@ -26,6 +26,8 @@ extra-source-files:
     src/Hopinion/Check/Hs/NoSemigroupOnText/why.txt
     src/Hopinion/Check/Hs/NoStringError/fix.txt
     src/Hopinion/Check/Hs/NoStringError/why.txt
+    src/Hopinion/Check/Hs/OneLetPerBinding/fix.txt
+    src/Hopinion/Check/Hs/OneLetPerBinding/why.txt
     src/Hopinion/Check/Hs/PrefixNaming/fix.txt
     src/Hopinion/Check/Hs/PrefixNaming/why.txt
     src/Hopinion/Check/Hs/RecordFieldPerLine/fix.txt
@@ -66,6 +68,9 @@ library
       Hopinion.Check.Hs.NoStringError.Extract
       Hopinion.Check.Hs.NoStringError.Fact
       Hopinion.Check.Hs.NoStringError.Rule
+      Hopinion.Check.Hs.OneLetPerBinding.Extract
+      Hopinion.Check.Hs.OneLetPerBinding.Fact
+      Hopinion.Check.Hs.OneLetPerBinding.Rule
       Hopinion.Check.Hs.PrefixNaming.Extract
       Hopinion.Check.Hs.PrefixNaming.Fact
       Hopinion.Check.Hs.PrefixNaming.Rule

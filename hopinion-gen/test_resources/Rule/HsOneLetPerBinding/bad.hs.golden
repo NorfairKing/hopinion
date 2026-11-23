@@ -1,0 +1,37 @@
+[0;91;1m[error HsOneLetPerBinding][0m: A let statement of 2 bindings.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsOneLetPerBinding/bad.hs@5:3-6:16[0m
+     [0;90;1m│[0m
+[0;90;1m   5 │[0m [0;91m╭[0m[0;91m┤[0m [0;97m [0m[0;97m [0m[0;91;1ml[0m[0;91;1me[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1mx[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1m5[0m
+[0;90;1m   6 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1my[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mx[0m[0;91;1m [0m[0;91;1m+[0m[0;91;1m [0m[0;91;1m1[0m
+     [0;90;1m•[0m [0;91m│ [0m
+     [0;90;1m•[0m [0;91m╰╸ Write one let statement per binding in a do-block.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Split the let statement into one let statement per binding, in an order where each binding comes after every binding it uses:
+     [0;90;1m│[0;96m       
+     [0;90;1m│[0;96m         let x = 5
+     [0;90;1m│[0;96m         let y = x + 1
+     [0;90;1m│[0;96m       
+     [0;90;1m│[0;96m       Keep each binding's type signature in the let statement of the binding it is for.
+     [0;90;1m│[0;96m       If two of the bindings use each other, bind them in a let expression instead, or suppress the finding and say why.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 5 of test_resources/Rule/HsOneLetPerBinding/bad.hs, and say why: -- [allow:HsOneLetPerBinding] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsOneLetPerBinding][0m: A let statement of 3 bindings.
+     [0;90;1m╭──▶[0m [0;32;1mtest_resources/Rule/HsOneLetPerBinding/bad.hs@13:9-15:18[0m
+     [0;90;1m│[0m
+[0;90;1m  13 │[0m [0;91m╭[0m[0;91m┤[0m [0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;97m [0m[0;91;1ml[0m[0;91;1me[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mn[0m
+[0;90;1m  14 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1mb[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mn[0m
+[0;90;1m  15 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1mc[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mn[0m
+     [0;90;1m•[0m [0;91m│ [0m
+     [0;90;1m•[0m [0;91m╰╸ Write one let statement per binding in a do-block.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Split the let statement into one let statement per binding, in an order where each binding comes after every binding it uses:
+     [0;90;1m│[0;96m       
+     [0;90;1m│[0;96m         let x = 5
+     [0;90;1m│[0;96m         let y = x + 1
+     [0;90;1m│[0;96m       
+     [0;90;1m│[0;96m       Keep each binding's type signature in the let statement of the binding it is for.
+     [0;90;1m│[0;96m       If two of the bindings use each other, bind them in a let expression instead, or suppress the finding and say why.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 13 of test_resources/Rule/HsOneLetPerBinding/bad.hs, and say why: -- [allow:HsOneLetPerBinding] <reason>[0m
+[0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain HsOneLetPerBinding

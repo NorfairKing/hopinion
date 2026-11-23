@@ -3,12 +3,13 @@
 Every rule this tool could enforce that it does not enforce yet, sorted by how
 it can be enforced. A rule that ships leaves this file: what is here is work.
 
-The seventeen that ship are `CommentBareTodo`, `CommentCouplingConnection`,
+The twenty that ship are `CommentBareTodo`, `CommentCouplingConnection`,
 `HsLambdaCase`, `HsNoCustomEq`, `HsNoCustomOrd`, `HsNoCustomShowRead`,
-`HsNoFilePath`, `HsNoSemigroupOnText`, `HsNoStringError`, `HsPrefixNaming`,
-`HsRecordFieldPerLine`, `HsTestOneSpecPerFile`, `HsAppOnlyMain`,
-`HsGenValidInGenPackage`, `TestGenValidSpecPerGenValid`,
-`TestJsonSpecPerJsonType` and `TestNoTestHelpers`.
+`HsNoFilePath`, `HsNoSemigroupOnText`, `HsNoStringError`,
+`HsOneLetPerBinding`, `HsPrefixNaming`, `HsRecordFieldPerLine`,
+`HsTestOneSpecPerFile`, `HsAppOnlyMain`, `HsGenValidInGenPackage`,
+`HsNoRestatedValidityDefaults`, `TestGenValidSpecPerGenValid`,
+`TestJsonSpecPerJsonType`, `TestNoTestHelpers` and `TestSydtestOnly`.
 
 ## How to read this
 
@@ -110,7 +111,6 @@ Rule ids are stable. They are what a check module cites and what an
 | `HsMultilineRecord` | Multi-line record values with multiple fields | B | syntax | error | ormolu preserves the author's choice, so this is unenforced today |
 | `HsLetOverWhere` | Prefer let-bindings over where bindings | B | syntax | warn | Exceptions for guards and multi-equation functions |
 | `HsWhereHoldingLogic` | A where-bound helper with real logic becomes top-level | B | syntax | warn | Size and control-flow heuristic |
-| `HsOneLetPerBinding` | One let-binding per variable bound, in do-blocks | B | syntax | error | Stated reason (accidental mutual recursion) is a correctness argument |
 | `HsOrderEntrypointFirst` | Order entrypoint to implementation detail | B | syntax | warn | Module-local call graph. Flag a callee defined above its first caller |
 | `HsTypesAboveUses` | Define types above the functions that use them | B | syntax | error | |
 | `HsInstanceAdjacentToType` | Instances immediately after the type they are for | B | syntax | error | Subsumes the Validity-close-to-the-type rule |
@@ -210,10 +210,10 @@ combinator.
 `CommentSectionLabelInFunction`, `HsNoSectionHeadersInCode`,
 `HsStrictFields`
 
-**F5 DeclPredicate** (11). A predicate on one declaration. The largest family, so
+**F5 DeclPredicate** (10). A predicate on one declaration. The largest family, so
 its combinator matters most.
 `HsNewtypeNotSynonym`, `HsMultilineRecord`, `HsLetOverWhere`,
-`HsOneLetPerBinding`, `HsLocalTypeSignatures`, `HsWhereHoldingLogic`,
+`HsLocalTypeSignatures`, `HsWhereHoldingLogic`,
 `HsNoDomainBool`, `HsTextViaPack`, `TestExactAssertions`,
 `TestAssertWholeValues`, `TestTestableTopLevel`
 

@@ -1,0 +1,7 @@
+Split the let statement into one let statement per binding, in an order where each binding comes after every binding it uses:
+
+  let x = 5
+  let y = x + 1
+
+Keep each binding's type signature in the let statement of the binding it is for.
+If two of the bindings use each other, bind them in a let expression instead, or suppress the finding and say why.
