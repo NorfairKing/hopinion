@@ -66,14 +66,14 @@ rule =
         RuleImplPackage
           PackageCheck
             { packageCheckMigration = restatedDefaultMigration,
-              packageCheckCarry = carry,
+              packageCheckCarry = ModuleCarryFromContext carry,
               packageCheckFindings = findings
             }
     }
 
 carry :: PackageName -> ModuleContext -> Carry
 carry pkg ctx = case moduleContextSyntax ctx of
-  ModuleSyntaxParsed parsed ->
+  ModuleSyntaxParsed parsed _ ->
     mapM_
       (insert_ . rowFor)
       (restatedMethodsOf ctx parsed)

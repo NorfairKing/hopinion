@@ -205,6 +205,26 @@ extra-source-files:
     test_resources/Rule/HsNewtypeNotSynonym/good-scalar-alias.hs.golden
     test_resources/Rule/HsNewtypeNotSynonym/good.hs
     test_resources/Rule/HsNewtypeNotSynonym/good.hs.golden
+    test_resources/Rule/HsNoCatchAllOwnSum/bad-data-instance.golden
+    test_resources/Rule/HsNoCatchAllOwnSum/bad-data-instance/thing/src/Thing.hs
+    test_resources/Rule/HsNoCatchAllOwnSum/bad-data-instance/thing/thing.cabal
+    test_resources/Rule/HsNoCatchAllOwnSum/bad-equations.golden
+    test_resources/Rule/HsNoCatchAllOwnSum/bad-equations/thing/src/Thing.hs
+    test_resources/Rule/HsNoCatchAllOwnSum/bad-equations/thing/thing.cabal
+    test_resources/Rule/HsNoCatchAllOwnSum/bad-other-package.golden
+    test_resources/Rule/HsNoCatchAllOwnSum/bad-other-package/shapes/shapes.cabal
+    test_resources/Rule/HsNoCatchAllOwnSum/bad-other-package/shapes/src/Shapes.hs
+    test_resources/Rule/HsNoCatchAllOwnSum/bad-other-package/thing/src/Thing.hs
+    test_resources/Rule/HsNoCatchAllOwnSum/bad-other-package/thing/thing.cabal
+    test_resources/Rule/HsNoCatchAllOwnSum/bad-seen-through.golden
+    test_resources/Rule/HsNoCatchAllOwnSum/bad-seen-through/thing/src/Thing.hs
+    test_resources/Rule/HsNoCatchAllOwnSum/bad-seen-through/thing/thing.cabal
+    test_resources/Rule/HsNoCatchAllOwnSum/bad.golden
+    test_resources/Rule/HsNoCatchAllOwnSum/bad/thing/src/Thing.hs
+    test_resources/Rule/HsNoCatchAllOwnSum/bad/thing/thing.cabal
+    test_resources/Rule/HsNoCatchAllOwnSum/good.golden
+    test_resources/Rule/HsNoCatchAllOwnSum/good/thing/src/Thing.hs
+    test_resources/Rule/HsNoCatchAllOwnSum/good/thing/thing.cabal
     test_resources/Rule/HsNoCustomEq/bad-empty.hs
     test_resources/Rule/HsNoCustomEq/bad-empty.hs.golden
     test_resources/Rule/HsNoCustomEq/bad-ignoring-arguments.hs

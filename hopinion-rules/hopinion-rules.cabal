@@ -48,6 +48,8 @@ extra-source-files:
     src/Hopinion/Check/Project/GenValidSpecPerGenValid/why.txt
     src/Hopinion/Check/Project/JsonSpecPerJsonType/fix.txt
     src/Hopinion/Check/Project/JsonSpecPerJsonType/why.txt
+    src/Hopinion/Check/Project/NoCatchAllOwnSum/fix.txt
+    src/Hopinion/Check/Project/NoCatchAllOwnSum/why.txt
     src/Hopinion/Check/Project/SydtestOnly/fix.txt
     src/Hopinion/Check/Project/SydtestOnly/why.txt
     src/Hopinion/Check/Test/NoTestHelpers/fix.txt
@@ -99,6 +101,9 @@ library
       Hopinion.Check.Package.NoRestatedValidityDefaults.Rule
       Hopinion.Check.Project.GenValidSpecPerGenValid.Rule
       Hopinion.Check.Project.JsonSpecPerJsonType.Rule
+      Hopinion.Check.Project.NoCatchAllOwnSum.Extract
+      Hopinion.Check.Project.NoCatchAllOwnSum.Fact
+      Hopinion.Check.Project.NoCatchAllOwnSum.Rule
       Hopinion.Check.Project.SydtestOnly.Extract
       Hopinion.Check.Project.SydtestOnly.Fact
       Hopinion.Check.Project.SydtestOnly.Rule

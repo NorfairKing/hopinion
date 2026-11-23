@@ -70,7 +70,21 @@ spec = do
             "$(spliceInstance)",
             "",
             "called :: ()",
-            "called = $(spliceCall)"
+            "called = $(spliceCall)",
+            "",
+            "data Choice = ChoiceYes | ChoiceNo",
+            "",
+            "chosen :: Choice -> Bool",
+            "chosen ChoiceYes = True",
+            "chosen _ = False",
+            "",
+            "type Picked = Choice",
+            "",
+            "data Box a = Box a",
+            "",
+            "boxed :: Box Choice -> Bool",
+            "boxed (Box ChoiceYes) = True",
+            "boxed _ = False"
           ]
 
   -- Compiled by the @ghc@ on the path, which is the one that built this suite,
@@ -131,6 +145,88 @@ spec = do
         -- compared by trailing components rather than as text. See
         -- 'Hopinion.Compiled.sameSourceFile'.
         compiledModuleFile compiled `shouldBe` Just [relfile|Fixture.hs|]
+
+    -- A wildcard's type is written nowhere in the source, which is what the
+    -- catch-all rule needs it for.
+    it "says what type the compiler gave a wildcard" $
+      withCompiled $ \tmp -> do
+        compiled <- readingCompiled (tmp </> [relfile|Fixture.hie|])
+        compiledModuleTypeAt
+          compiled
+          SourceRange
+            { sourceRangeStartLine = 21,
+              sourceRangeStartColumn = 8,
+              sourceRangeEndLine = 21,
+              sourceRangeEndColumn = 9
+            }
+          `shouldBe` Just
+            AppliedType
+              { appliedTypeConstructor =
+                  TypeConstructor
+                    { typeConstructorModule = "Fixture",
+                      typeConstructorName = "Choice"
+                    },
+                appliedTypeArguments = []
+              }
+
+    it "says what a wildcard's type is applied to" $
+      withCompiled $ \tmp -> do
+        compiled <- readingCompiled (tmp </> [relfile|Fixture.hie|])
+        compiledModuleTypeAt
+          compiled
+          SourceRange
+            { sourceRangeStartLine = 29,
+              sourceRangeStartColumn = 7,
+              sourceRangeEndLine = 29,
+              sourceRangeEndColumn = 8
+            }
+          `shouldBe` Just
+            AppliedType
+              { appliedTypeConstructor =
+                  TypeConstructor
+                    { typeConstructorModule = "Fixture",
+                      typeConstructorName = "Box"
+                    },
+                appliedTypeArguments =
+                  [ Just
+                      TypeConstructor
+                        { typeConstructorModule = "Fixture",
+                          typeConstructorName = "Choice"
+                        }
+                  ]
+              }
+
+    -- A synonym's type is the synonym, so what it stands for has to be read
+    -- off its declaration.
+    it "says which type constructor a type names" $
+      withCompiled $ \tmp -> do
+        compiled <- readingCompiled (tmp </> [relfile|Fixture.hie|])
+        compiledModuleConstructorNamedAt
+          compiled
+          SourceRange
+            { sourceRangeStartLine = 23,
+              sourceRangeStartColumn = 15,
+              sourceRangeEndLine = 23,
+              sourceRangeEndColumn = 21
+            }
+          `shouldBe` Just
+            TypeConstructor
+              { typeConstructorModule = "Fixture",
+                typeConstructorName = "Choice"
+              }
+
+    it "says nothing about a range that is no one piece of code" $
+      withCompiled $ \tmp -> do
+        compiled <- readingCompiled (tmp </> [relfile|Fixture.hie|])
+        compiledModuleTypeAt
+          compiled
+          SourceRange
+            { sourceRangeStartLine = 21,
+              sourceRangeStartColumn = 6,
+              sourceRangeEndLine = 21,
+              sourceRangeEndColumn = 9
+            }
+          `shouldBe` Nothing
 
     it "reports a file that is not a .hie file rather than throwing" $
       withSystemTempDir "hopinion-hie" $ \tmp -> do

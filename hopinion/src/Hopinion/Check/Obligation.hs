@@ -130,7 +130,7 @@ obligationRule o =
         RuleImplProject
           ProjectCheck
             { projectCheckMigration = obligationMigration,
-              projectCheckCarry = carry o,
+              projectCheckCarry = ModuleCarryFromContext (carry o),
               projectCheckFindings = findings o
             }
     }
@@ -146,12 +146,12 @@ carry o pkg ctx = do
   mapM_
     met
     [ typeAppFactHead ta
-    | ModuleSyntaxParsed parsed <- [moduleContextSyntax ctx],
+    | ModuleSyntaxParsed parsed _ <- [moduleContextSyntax ctx],
       ta <- typeAppsOf parsed,
       typeAppFactFunction ta == obligationCombinator o
     ]
   case moduleContextSyntax ctx of
-    ModuleSyntaxParsed parsed -> case templateHaskellOf parsed of
+    ModuleSyntaxParsed parsed _ -> case templateHaskellOf parsed of
       TemplateHaskellUseNone -> pure ()
       TemplateHaskellUseQuasiQuotes -> generates TemplateHaskellUseQuasiQuotes
       TemplateHaskellUseSplices -> generates TemplateHaskellUseSplices

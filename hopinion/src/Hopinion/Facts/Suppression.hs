@@ -93,7 +93,8 @@ instance HasCodec AnnotationPrecision where
       fromEither = either id AnnotationPrecisionStatement
       toEither = \case
         AnnotationPrecisionStatement s -> Right s
-        other -> Left other
+        AnnotationPrecisionFile -> Left AnnotationPrecisionFile
+        AnnotationPrecisionDecl -> Left AnnotationPrecisionDecl
 
 -- | Two constructors rather than a magic string, so the adoption-debt
 -- meta-check is a pattern match.

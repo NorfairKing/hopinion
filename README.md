@@ -56,3 +56,5 @@ contents. Each of those is read once, however many rules ask.
 A module rule that wants every node of one type, such as every expression, is a
 `ModuleCheckOverNodes` and is handed them from one walk of the module shared by
 every rule, rather than walking the tree itself.
+A package or project rule that wants them for what it writes out of each module
+asks the same way, with a `ModuleCarryOverNodes`.

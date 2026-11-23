@@ -14,8 +14,8 @@ module Hopinion.Rule
   ( Finding (..),
     CheckResult (..),
     ModuleCheck (..),
-    moduleCheckNodeType,
     moduleCheckFindings,
+    ModuleCarry (..),
     PackageCheck (..),
     ProjectCheck (..),
     Carry,
@@ -35,6 +35,7 @@ module Hopinion.Rule
     emptyRuleSet,
     ruleSetRules,
     ruleSetTurnedOff,
+    ruleSetNodeTypes,
     useOf,
     ruleFor,
     ruleNamed,
@@ -50,7 +51,10 @@ import Data.Data (Data)
 import Data.List (sort)
 import Data.List.NonEmpty (NonEmpty)
 import qualified Data.List.NonEmpty as NE
+import Data.Maybe (mapMaybe)
 import Data.Proxy (Proxy (..))
+import Data.Set (Set)
+import qualified Data.Set as S
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Validity
@@ -153,29 +157,32 @@ data ModuleCheck where
   -- "Hopinion.Nodes" for why that matters.
   ModuleCheckOverNodes :: (Data node) => !(ModuleContext -> ParsedModule -> [node] -> CheckResult) -> ModuleCheck
 
--- | The type of node a check asks to be handed, if it asks for any.
-moduleCheckNodeType :: ModuleCheck -> Maybe SomeTypeRep
-moduleCheckNodeType = \case
-  ModuleCheckFromSource _ -> Nothing
-  ModuleCheckOverNodes (_ :: ModuleContext -> ParsedModule -> [node] -> CheckResult) ->
-    Just (someTypeRep (Proxy :: Proxy node))
-
 -- | What a check finds in one module, given the nodes one walk found for every
--- check that asked.
+-- rule that asked.
 moduleCheckFindings :: ModuleCheck -> ModuleContext -> ParsedModule -> Nodes -> CheckResult
 moduleCheckFindings c ctx parsed nodes = case c of
   ModuleCheckFromSource f -> f ctx parsed
   ModuleCheckOverNodes f -> f ctx parsed (nodesOf nodes)
 
+-- | What a rule above the module level writes out of one module.
+--
+-- The same two shapes as a 'ModuleCheck', for the same reason: a carry that
+-- wants every node of one type is handed them from the walk every rule shares.
+data ModuleCarry where
+  ModuleCarryFromContext :: !(PackageName -> ModuleContext -> Carry) -> ModuleCarry
+  -- | Only ever run over a module that parsed, since that is the only kind
+  -- with nodes, and it writes nothing about any other.
+  ModuleCarryOverNodes :: (Data node) => !(PackageName -> ModuleContext -> ParsedModule -> [node] -> Carry) -> ModuleCarry
+
 data PackageCheck = PackageCheck
   { packageCheckMigration :: !Migration,
-    packageCheckCarry :: !(PackageName -> ModuleContext -> Carry),
+    packageCheckCarry :: !ModuleCarry,
     packageCheckFindings :: !(PackageName -> CompiledModules -> Query CheckResult)
   }
 
 data ProjectCheck = ProjectCheck
   { projectCheckMigration :: !Migration,
-    projectCheckCarry :: !(PackageName -> ModuleContext -> Carry),
+    projectCheckCarry :: !ModuleCarry,
     projectCheckFindings :: !(CompiledModules -> Query CheckResult)
   }
 
@@ -199,10 +206,35 @@ ruleMigrations rules =
 
 -- | What this rule writes out of one module, or nothing when it writes nothing.
 carryOf :: Rule -> PackageName -> ModuleContext -> Carry
-carryOf r pkg ctx = case ruleImpl r of
-  RuleImplModule _ -> pure ()
-  RuleImplPackage c -> packageCheckCarry c pkg ctx
-  RuleImplProject c -> projectCheckCarry c pkg ctx
+carryOf r pkg ctx =
+  let moduleCarryOf :: ModuleCarry -> Carry
+      moduleCarryOf = \case
+        ModuleCarryFromContext f -> f pkg ctx
+        ModuleCarryOverNodes f -> case moduleContextSyntax ctx of
+          ModuleSyntaxParsed parsed nodes -> f pkg ctx parsed (nodesOf nodes)
+          ModuleSyntaxFailed _ _ -> pure ()
+          ModuleSyntaxNotHaskellSource -> pure ()
+   in case ruleImpl r of
+        RuleImplModule _ -> pure ()
+        RuleImplPackage c -> moduleCarryOf (packageCheckCarry c)
+        RuleImplProject c -> moduleCarryOf (projectCheckCarry c)
+
+-- | The type of node a rule asks to be handed, if it asks for any, whatever
+-- level it is at.
+ruleNodeType :: Rule -> Maybe SomeTypeRep
+ruleNodeType r =
+  let moduleCarryNodeType :: ModuleCarry -> Maybe SomeTypeRep
+      moduleCarryNodeType = \case
+        ModuleCarryFromContext _ -> Nothing
+        ModuleCarryOverNodes (_ :: PackageName -> ModuleContext -> ParsedModule -> [node] -> Carry) ->
+          Just (someTypeRep (Proxy :: Proxy node))
+   in case ruleImpl r of
+        RuleImplModule c -> case c of
+          ModuleCheckFromSource _ -> Nothing
+          ModuleCheckOverNodes (_ :: ModuleContext -> ParsedModule -> [node] -> CheckResult) ->
+            Just (someTypeRep (Proxy :: Proxy node))
+        RuleImplPackage c -> moduleCarryNodeType (packageCheckCarry c)
+        RuleImplProject c -> moduleCarryNodeType (projectCheckCarry c)
 
 -- | Every rule owns its own metadata, so there is no central table of levels,
 -- classes or guide references to edit when a rule is added.
@@ -347,6 +379,11 @@ ruleSetRules rs = [ruleEntryRule e | e <- unRuleSet rs, ruleEntryUse e == RuleUs
 -- suppression naming one is wrong differently from one naming nothing.
 ruleSetTurnedOff :: RuleSet -> [Rule]
 ruleSetTurnedOff rs = [ruleEntryRule e | e <- unRuleSet rs, ruleEntryUse e == RuleUseTurnedOff]
+
+-- | Every type of node the rules that run ask to be handed, at every level,
+-- which is what the one walk of a module looks for.
+ruleSetNodeTypes :: RuleSet -> Set SomeTypeRep
+ruleSetNodeTypes rs = S.fromList (mapMaybe ruleNodeType (ruleSetRules rs))
 
 -- | What this run makes of a name somebody wrote down. 'Nothing' is a name
 -- nothing here answers to, which is a typo, and means the rule they meant is

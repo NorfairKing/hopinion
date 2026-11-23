@@ -1,0 +1,5 @@
+Replace the catch-all with one alternative per constructor it matched, each with the catch-all's body.
+Give each of those alternatives the guards the catch-all had.
+Write each constructor with a wildcard per field, such as `ShapeCircle _ ->`, or as `ShapeCircle {} ->`.
+If the body uses the variable the catch-all bound, bind it in each alternative with an as-pattern, such as `s@(ShapeCircle _) ->`.
+Keep any wildcard inside a constructor pattern: only the top-level pattern of each alternative is checked.

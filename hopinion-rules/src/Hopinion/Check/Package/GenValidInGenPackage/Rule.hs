@@ -61,7 +61,7 @@ rule =
         RuleImplPackage
           PackageCheck
             { packageCheckMigration = generatorMigration,
-              packageCheckCarry = carry,
+              packageCheckCarry = ModuleCarryFromContext carry,
               packageCheckFindings = findings
             }
     }

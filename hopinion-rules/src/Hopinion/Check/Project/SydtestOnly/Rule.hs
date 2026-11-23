@@ -79,7 +79,7 @@ rule =
         RuleImplProject
           ProjectCheck
             { projectCheckMigration = sydtestOnlyMigration,
-              projectCheckCarry = carry,
+              projectCheckCarry = ModuleCarryFromContext carry,
               projectCheckFindings = findings
             }
     }
@@ -104,7 +104,7 @@ carry pkg ctx = do
           moduleImportSpan = importFactSpan i,
           moduleImportImported = importFactModule i
         }
-    | ModuleSyntaxParsed parsed <- [moduleContextSyntax ctx],
+    | ModuleSyntaxParsed parsed _ <- [moduleContextSyntax ctx],
       i <- importsOf ctx parsed
     ]
   case kind of

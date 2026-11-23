@@ -21,6 +21,11 @@ module Hopinion.Hie
     compiledModuleName,
     compiledModuleFile,
     compiledModuleGenerated,
+    SourceRange (..),
+    TypeConstructor (..),
+    AppliedType (..),
+    compiledModuleTypeAt,
+    compiledModuleConstructorNamedAt,
     ArtifactUnreadable (..),
     renderArtifactUnreadable,
     readCompiledModule,
@@ -32,8 +37,10 @@ module Hopinion.Hie
 where
 
 import Control.Exception (SomeException, displayException, evaluate, fromException, tryJust)
+import Data.Array (Array, bounds, (!))
+import Data.Ix (inRange)
 import qualified Data.Map as M
-import Data.Maybe (mapMaybe)
+import Data.Maybe (listToMaybe, mapMaybe)
 import Data.Set (Set)
 import qualified Data.Set as S
 import Data.Text (Text)
@@ -42,8 +49,12 @@ import GHC.Iface.Binary (CheckHiWay (..), TraceBinIFace (..), readBinIface)
 import GHC.Iface.Ext.Binary (hie_file_result, readHieFile)
 import GHC.Iface.Ext.Types
   ( HieAST (..),
+    HieArgs (..),
     HieFile (..),
+    HieType (..),
+    HieTypeFlat,
     NodeInfo (..),
+    TypeIndex,
     getAsts,
     getSourcedNodeInfo,
     hie_asts,
@@ -52,9 +63,10 @@ import GHC.Iface.Syntax (IfaceClsInst (..))
 import GHC.Iface.Type (IfaceTyCon (..))
 import GHC.Platform (genericPlatform)
 import GHC.Platform.Profile (Profile (..))
-import GHC.Types.Name (nameModule_maybe, nameOccName)
+import GHC.Types.Name (Name, nameModule_maybe, nameOccName)
 import GHC.Types.Name.Cache (initNameCache)
 import GHC.Types.Name.Occurrence (occNameString)
+import GHC.Types.SrcLoc (RealSrcSpan, srcSpanEndCol, srcSpanEndLine, srcSpanStartCol, srcSpanStartLine)
 import GHC.Unit.Module (moduleName, moduleNameString)
 import GHC.Unit.Module.ModIface (ModIface, mi_insts)
 import Path (Abs, File, Path, Rel, parseRelFile, toFilePath)
@@ -97,6 +109,139 @@ compiledModuleFile = parseRelFile . hie_hs_file . compiledModuleHieFile
 
 generatedIn :: HieFile -> [Set Text]
 generatedIn = concatMap generatedOf . M.elems . getAsts . hie_asts
+
+-- | A range of the source a module was compiled from, counted the way GHC
+-- counts: lines and columns from one, and the end column one past the last
+-- character.
+--
+-- Its own type rather than a span from the parser, because this package sees
+-- neither the parser nor hopinion.
+-- A parse and a @.hie@ file of one module count the same way, so a range read
+-- off one names the same code in the other.
+data SourceRange = SourceRange
+  { sourceRangeStartLine :: !Int,
+    sourceRangeStartColumn :: !Int,
+    sourceRangeEndLine :: !Int,
+    sourceRangeEndColumn :: !Int
+  }
+  deriving (Eq)
+
+-- | A type constructor, told apart from another of the same name by the module
+-- that defines it.
+data TypeConstructor = TypeConstructor
+  { typeConstructorModule :: !Text,
+    typeConstructorName :: !Text
+  }
+  deriving (Show, Eq)
+
+-- | The constructor at the head of a type, with the constructor at the head of
+-- each argument it is applied to.
+--
+-- The arguments are what tell one instance of a data family from another, since
+-- every instance has the family at its head.
+-- An argument whose head is not a constructor, such as a type variable, is
+-- 'Nothing'.
+data AppliedType = AppliedType
+  { appliedTypeConstructor :: !TypeConstructor,
+    appliedTypeArguments :: ![Maybe TypeConstructor]
+  }
+  deriving (Show, Eq)
+
+-- | The head of the type the compiler gave the code written at exactly this
+-- range, such as a pattern.
+--
+-- Nothing when the compiler gave that code no type, or gave it one whose head
+-- is not a constructor, such as a type variable or a function type.
+-- A synonym is not seen through.
+-- A @.hie@ file keeps one copy of each type, written the way some code in the
+-- module first wrote it, so a type can come back written as one of its synonyms
+-- even where the code at this range never names that synonym.
+-- 'compiledModuleConstructorNamedAt' is what resolves a synonym.
+compiledModuleTypeAt :: CompiledModule -> SourceRange -> Maybe AppliedType
+compiledModuleTypeAt compiled range =
+  let file = compiledModuleHieFile compiled
+   in listToMaybe
+        [ th
+        | info <- nodeInfosAt range file,
+          ty <- nodeType info,
+          Just th <- [appliedTypeOf (hie_types file) ty]
+        ]
+
+-- | The type constructor that the code written at exactly this range names,
+-- such as the head of the right-hand side of a type synonym.
+--
+-- Nothing when that code names no type constructor, such as a type variable.
+compiledModuleConstructorNamedAt :: CompiledModule -> SourceRange -> Maybe TypeConstructor
+compiledModuleConstructorNamedAt compiled range =
+  listToMaybe
+    [ tc
+    | info <- nodeInfosAt range (compiledModuleHieFile compiled),
+      Right name <- M.keys (nodeIdentifiers info),
+      Just tc <- [typeConstructorOfName name]
+    ]
+
+nodeInfosAt :: SourceRange -> HieFile -> [NodeInfo TypeIndex]
+nodeInfosAt range file =
+  [ info
+  | ast <- M.elems (getAsts (hie_asts file)),
+    node <- nodesAt range ast,
+    info <- M.elems (getSourcedNodeInfo (sourcedNodeInfo node))
+  ]
+
+-- | Every node at exactly this range, descending only into the nodes that
+-- contain it, since a node's children lie within it.
+nodesAt :: SourceRange -> HieAST a -> [HieAST a]
+nodesAt range ast =
+  let contains :: SourceRange -> Bool
+      contains outer =
+        (sourceRangeStartLine outer, sourceRangeStartColumn outer) <= (sourceRangeStartLine range, sourceRangeStartColumn range)
+          && (sourceRangeEndLine range, sourceRangeEndColumn range) <= (sourceRangeEndLine outer, sourceRangeEndColumn outer)
+   in [ast | rangeOf (nodeSpan ast) == range]
+        ++ concatMap (nodesAt range) [c | c <- nodeChildren ast, contains (rangeOf (nodeSpan c))]
+
+rangeOf :: RealSrcSpan -> SourceRange
+rangeOf sp =
+  SourceRange
+    { sourceRangeStartLine = srcSpanStartLine sp,
+      sourceRangeStartColumn = srcSpanStartCol sp,
+      sourceRangeEndLine = srcSpanEndLine sp,
+      sourceRangeEndColumn = srcSpanEndCol sp
+    }
+
+-- | The head of one of the file's types, with the heads of the arguments a
+-- reader of the code would write, which leaves out the invisible ones such as
+-- kinds.
+--
+-- An index out of the file's own table is not one the compiler writes, and is
+-- read as a type with no constructor rather than trusted.
+appliedTypeOf :: Array TypeIndex HieTypeFlat -> TypeIndex -> Maybe AppliedType
+appliedTypeOf types i
+  | not (inRange (bounds types) i) = Nothing
+  | otherwise = case types ! i of
+      HTyConApp tc (HieArgs args) -> do
+        constructor <- typeConstructorOfName (ifaceTyConName tc)
+        pure
+          AppliedType
+            { appliedTypeConstructor = constructor,
+              appliedTypeArguments = [appliedTypeConstructor <$> appliedTypeOf types a | (True, a) <- args]
+            }
+      HTyVarTy _ -> Nothing
+      HAppTy _ _ -> Nothing
+      HForAllTy _ _ -> Nothing
+      HFunTy {} -> Nothing
+      HQualTy _ _ -> Nothing
+      HLitTy _ -> Nothing
+      HCastTy _ -> Nothing
+      HCoercionTy -> Nothing
+
+typeConstructorOfName :: Name -> Maybe TypeConstructor
+typeConstructorOfName name = do
+  defining <- nameModule_maybe name
+  pure
+    TypeConstructor
+      { typeConstructorModule = T.pack (moduleNameString (moduleName defining)),
+        typeConstructorName = T.pack (occNameString (nameOccName name))
+      }
 
 -- | Why a file the compiler was supposed to have written could not be read.
 --

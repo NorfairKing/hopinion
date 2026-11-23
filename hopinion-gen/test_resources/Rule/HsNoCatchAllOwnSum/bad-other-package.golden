@@ -1,0 +1,15 @@
+[0;91;1m[error HsNoCatchAllOwnSum][0m: A catch-all over Shape, which this project defines.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@8:3-8:4[0m
+     [0;90;1m│[0m
+[0;90;1m   8 │[0m [0;97m [0m[0;97m [0m[0;91;1m_[0m[0;97m [0m[0;97m-[0m[0;97m>[0m[0;97m [0m[0;97mF[0m[0;97ma[0m[0;97ml[0m[0;97ms[0m[0;97me[0m
+     [0;90;1m•[0m   [0;91m┬[0m 
+     [0;90;1m•[0m   [0;91m╰╸[0m [0;91mMatch on the project's own sum types by constructor, not with a catch-all.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Replace the catch-all with one alternative per constructor it matched, each with the catch-all's body.
+     [0;90;1m│[0;96m       Give each of those alternatives the guards the catch-all had.
+     [0;90;1m│[0;96m       Write each constructor with a wildcard per field, such as `ShapeCircle _ ->`, or as `ShapeCircle {} ->`.
+     [0;90;1m│[0;96m       If the body uses the variable the catch-all bound, bind it in each alternative with an as-pattern, such as `s@(ShapeCircle _) ->`.
+     [0;90;1m│[0;96m       Keep any wildcard inside a constructor pattern: only the top-level pattern of each alternative is checked.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 8 of thing/src/Thing.hs, and say why: -- [allow:HsNoCatchAllOwnSum] <reason>[0m
+[0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain HsNoCatchAllOwnSum

@@ -70,7 +70,7 @@ rule =
         RuleImplPackage
           PackageCheck
             { packageCheckMigration = strayAppDeclMigration,
-              packageCheckCarry = carry,
+              packageCheckCarry = ModuleCarryFromContext carry,
               packageCheckFindings = findings
             }
     }
@@ -92,7 +92,7 @@ carry pkg ctx =
         if moduleContextModule ctx == ModuleKey "Main"
           then
             [ row (strayAppDeclSpan d) (Just (strayAppDeclName d))
-            | ModuleSyntaxParsed parsed <- [moduleContextSyntax ctx],
+            | ModuleSyntaxParsed parsed _ <- [moduleContextSyntax ctx],
               d <- strayAppDeclsOf ctx parsed
             ]
           else [row (wholeFileSpan (moduleContextPath ctx)) Nothing]

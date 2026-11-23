@@ -21,6 +21,7 @@ dependencies:
 library:
   source-dirs: src
   dependencies:
+  - array
   - containers
   - ghc
   - path

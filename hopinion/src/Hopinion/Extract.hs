@@ -30,8 +30,9 @@ import Hopinion.Facts.Instance
 import Hopinion.Facts.Module
 import Hopinion.Facts.Name
 import Hopinion.Facts.Place
+import Hopinion.Nodes (nodesIn)
 import Hopinion.Parse
-import Hopinion.Rule (RuleSet)
+import Hopinion.Rule (RuleSet, ruleSetNodeTypes)
 import Path (File, Path, Rel)
 
 data ExtractInput = ExtractInput
@@ -74,7 +75,7 @@ extractModuleContext input parsed =
           moduleContextComments = attached,
           moduleContextAnnotations = annotations,
           moduleContextAnnotationProblems = annotationProblems,
-          moduleContextSyntax = ModuleSyntaxParsed parsed
+          moduleContextSyntax = ModuleSyntaxParsed parsed (nodesIn (ruleSetNodeTypes (extractInputRules input)) (parsedModuleDecls parsed))
         }
 
 -- | A module that did not parse still produces facts, because the project

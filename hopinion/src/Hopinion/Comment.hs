@@ -112,7 +112,9 @@ instance HasCodec Attachment where
       toEither = \case
         AttachmentToDecl d -> Right (d, Nothing)
         AttachmentToStatement d s -> Right (d, Just s)
-        other -> Left other
+        AttachmentToFile -> Left AttachmentToFile
+        AttachmentToExportList -> Left AttachmentToExportList
+        AttachmentToNothing -> Left AttachmentToNothing
 
 data CommentFact = CommentFact
   { commentFactSpan :: !Span,

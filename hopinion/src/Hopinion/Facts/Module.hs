@@ -20,6 +20,7 @@ import Hopinion.Facts.Name
 import Hopinion.Facts.Outcome
 import Hopinion.Facts.Place
 import Hopinion.Facts.Suppression
+import Hopinion.Nodes (Nodes)
 import Hopinion.Parse (ParsedModule)
 import Path (File, Path, Rel, filename)
 
@@ -54,8 +55,10 @@ data ModuleContext = ModuleContext
 --
 -- The parse travels with the facts so that the module is parsed once however
 -- many rules read it.
+-- So do the nodes the rules of the run asked for, so that it is walked once
+-- too, whichever level the rules that asked are at.
 data ModuleSyntax
-  = ModuleSyntaxParsed !ParsedModule
+  = ModuleSyntaxParsed !ParsedModule !Nodes
   | ModuleSyntaxFailed !Position !Text
   | -- | The module is real and its source is not Haskell: a preprocessor
     -- generates it at build time.
@@ -65,7 +68,7 @@ data ModuleSyntax
 -- never see the parse.
 moduleContextOutcome :: ModuleContext -> ParseOutcome
 moduleContextOutcome ctx = case moduleContextSyntax ctx of
-  ModuleSyntaxParsed _ -> ParseOutcomeOk
+  ModuleSyntaxParsed _ _ -> ParseOutcomeOk
   ModuleSyntaxFailed pos msg -> ParseOutcomeFailed pos msg
   ModuleSyntaxNotHaskellSource -> ParseOutcomeNotHaskellSource
 

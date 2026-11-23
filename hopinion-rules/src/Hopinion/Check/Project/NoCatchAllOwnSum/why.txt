@@ -1,0 +1,3 @@
+A catch-all also matches every constructor added to the type later, so the compiler never points at it when one is.
+Enumerated, the same match is incomplete the moment a constructor is added, and the build names every place that has to decide what the new one means.
+Only the project's own types, because a dependency's constructors are not the project's to add, and matching all of them is often not what the code means.

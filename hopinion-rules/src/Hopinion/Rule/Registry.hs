@@ -27,6 +27,7 @@ import qualified Hopinion.Check.Package.GenValidInGenPackage.Rule as GenValidInG
 import qualified Hopinion.Check.Package.NoRestatedValidityDefaults.Rule as NoRestatedValidityDefaults
 import qualified Hopinion.Check.Project.GenValidSpecPerGenValid.Rule as GenValidSpecPerGenValid
 import qualified Hopinion.Check.Project.JsonSpecPerJsonType.Rule as JsonSpecPerJsonType
+import qualified Hopinion.Check.Project.NoCatchAllOwnSum.Rule as NoCatchAllOwnSum
 import qualified Hopinion.Check.Project.SydtestOnly.Rule as SydtestOnly
 import qualified Hopinion.Check.Test.NoTestHelpers.Rule as NoTestHelpers
 import Hopinion.Rule (Rule)
@@ -45,6 +46,7 @@ builtinRules =
     JsonSpecPerJsonType.rule,
     LambdaCase.rule,
     NewtypeNotSynonym.rule,
+    NoCatchAllOwnSum.rule,
     NoCustomEq.rule,
     NoCustomOrd.rule,
     NoCustomShowRead.rule,

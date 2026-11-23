@@ -3,9 +3,9 @@
 Every rule this tool could enforce that it does not enforce yet, sorted by how
 it can be enforced. A rule that ships leaves this file: what is here is work.
 
-The twenty-two that ship are `CommentBareTodo`, `CommentCouplingConnection`,
-`HsLambdaCase`, `HsNewtypeNotSynonym`, `HsNoCustomEq`, `HsNoCustomOrd`,
-`HsNoCustomShowRead`, `HsNoFilePath`, `HsNoSemigroupOnText`,
+The twenty-three that ship are `CommentBareTodo`, `CommentCouplingConnection`,
+`HsLambdaCase`, `HsNewtypeNotSynonym`, `HsNoCatchAllOwnSum`, `HsNoCustomEq`,
+`HsNoCustomOrd`, `HsNoCustomShowRead`, `HsNoFilePath`, `HsNoSemigroupOnText`,
 `HsNoStringError`, `HsOneLetPerBinding`, `HsPrefixNaming`,
 `HsRecordFieldPerLine`, `HsStrictFields`, `HsTestOneSpecPerFile`,
 `HsAppOnlyMain`, `HsGenValidInGenPackage`, `HsNoRestatedValidityDefaults`,
@@ -121,7 +121,6 @@ Rule ids are stable. They are what a check module cites and what an
 | `HsLocalTypeSignatures` | Type signatures on let- and where-bound functions | B | syntax | warn | Only where the types are nameable |
 | `HsIllegalStatesUnrepresentable` | Make illegal states unrepresentable | D | | | The parent principle |
 | `HsNoDomainBool` | Named two-constructor type over `Bool` for domain flags | C | syntax | ratchet | Scope to record fields and non-final argument positions. A predicate returning `Bool` is fine |
-| `HsNoCatchAllOwnSum` | No catch-all `_ ->` on your own sum types | B | types | error | Needs to know the scrutinee type is project-defined |
 | `HsNonempty` | `NonEmpty` for collections that must not be empty | D | | | |
 | `HsUndefinedTrick` | Use the undefined trick when every field must be considered | D | | | Cannot tell where it is warranted |
 | `HsPreferredLibraries` | sydtest, genvalidity, opt-env-conf, autodocodec, servant, yesod, persistent, monad-logger | B | layout | warn | Denylist the alternatives in build-depends |
@@ -241,8 +240,8 @@ each.
 `HsTestDescribeOrder`, `HsClassesOnlyForPolymorphism`,
 `HsRecordSyntaxForProducts`
 
-**F11 Types** (3). Needs `.hie` enrichment.
-`HsNoCatchAllOwnSum`, `HsMonomorphicOverConstraints`, `HsPreferText`
+**F11 Types** (2). Needs `.hie` enrichment.
+`HsMonomorphicOverConstraints`, `HsPreferText`
 
 **F0 Parent** (1). No implementation; satisfied by its subchecks.
 `CommentRefactorSafe`

@@ -19,13 +19,12 @@ module Hopinion.Run
   )
 where
 
-import Control.Exception (try)
+import Control.Exception (evaluate, try)
 import Control.Monad.IO.Class (liftIO)
 import Data.List (nub, sort)
 import Data.List.NonEmpty (NonEmpty (..))
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Map.Strict as M
-import Data.Maybe (mapMaybe)
 import qualified Data.Set as S
 import Data.Text (Text)
 import qualified Data.Text as T
@@ -40,7 +39,6 @@ import Hopinion.Facts.Outcome
 import Hopinion.Facts.Place
 import Hopinion.Facts.Suppression
 import Hopinion.Facts.Version
-import Hopinion.Nodes (nodesIn)
 import Hopinion.Parse
 import Hopinion.Project
 import Hopinion.Report
@@ -350,7 +348,11 @@ moduleContextFor rs cm mm = do
               }
       parseHaskellModule input >>= \case
         Left (errLoc, msg) -> pure (failedModuleContext extractInput errLoc msg)
-        Right parsed -> pure (extractModuleContext extractInput parsed)
+        -- Evaluated here, in the pool, because the context's fields are strict
+        -- and one of them is the walk over the module, which costs about what
+        -- the parse did.
+        -- Returned unevaluated, it would be walked by whoever first looks.
+        Right parsed -> evaluate (extractModuleContext extractInput parsed)
 
 -- | One level's verdict: what its rules found, with its own suppressions given
 -- the chance to answer for it.
@@ -382,10 +384,8 @@ runModuleLayer rs mf =
       )
   where
     resultFor = \case
-      ModuleSyntaxParsed parsed ->
-        let checks = moduleChecks rs
-            nodes = nodesIn (S.fromList (mapMaybe moduleCheckNodeType checks)) (parsedModuleDecls parsed)
-         in foldMap (\c -> moduleCheckFindings c mf parsed nodes) checks
+      ModuleSyntaxParsed parsed nodes ->
+        foldMap (\c -> moduleCheckFindings c mf parsed nodes) (moduleChecks rs)
       ModuleSyntaxFailed _ _ -> noResult
       ModuleSyntaxNotHaskellSource -> noResult
 
