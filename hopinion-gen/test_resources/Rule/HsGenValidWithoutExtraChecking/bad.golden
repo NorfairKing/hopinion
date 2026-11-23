@@ -1,0 +1,14 @@
+[0;91;1m[error HsGenValidWithoutExtraChecking][0m: GenValid User checks validity again in the default genValid and shrinkValid, but Validity User checks only the fields. Define genValid = genValidStructurallyWithoutExtraChecking and shrinkValid = shrinkValidStructurallyWithoutExtraFiltering.
+     [0;90;1m╭──▶[0m [0;32;1mthing-gen/src/Thing/Gen.hs@8:1-8:23[0m
+     [0;90;1m│[0m
+[0;90;1m   8 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mU[0m[0;91;1ms[0m[0;91;1me[0m[0;91;1mr[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mGenValid skips the validity check when Validity checks nothing but the fields.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: In the GenValid instance this points at, define each method the message names as the message says: `genValid = genValidStructurallyWithoutExtraChecking`, `shrinkValid = shrinkValidStructurallyWithoutExtraFiltering`, or both.
+     [0;90;1m│[0;96m       Keep every method the instance already defines.
+     [0;90;1m│[0;96m       If the instance is derived, remove GenValid from the deriving clause and write `instance GenValid Foo where` with both methods instead.
+     [0;90;1m│[0;96m       If the Validity instance is meant to check more than the fields, write that check in its `validate` instead of changing the GenValid instance.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 8 of thing-gen/src/Thing/Gen.hs, and say why: -- [allow:HsGenValidWithoutExtraChecking] <reason>[0m
+[0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain HsGenValidWithoutExtraChecking

@@ -1,0 +1,14 @@
+cabal-version: 1.12
+name: thing-gen
+version: 0.0.0
+build-type: Simple
+
+library
+  exposed-modules:
+      Thing.Gen
+  hs-source-dirs:
+      src
+  build-depends:
+      base
+    , thing
+  default-language: Haskell2010

@@ -23,6 +23,20 @@
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 17 of lonely/src/Lonely.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
 [0;90;1m─────╯[0m
 
+[0;91;1m[error HsGenValidWithoutExtraChecking][0m: GenValid Orphan checks validity again in the default genValid and shrinkValid, but Validity Orphan checks only the fields. Define genValid = genValidStructurallyWithoutExtraChecking and shrinkValid = shrinkValidStructurallyWithoutExtraFiltering.
+     [0;90;1m╭──▶[0m [0;32;1mlonely/src/Lonely.hs@17:1-17:25[0m
+     [0;90;1m│[0m
+[0;90;1m  17 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mO[0m[0;91;1mr[0m[0;91;1mp[0m[0;91;1mh[0m[0;91;1ma[0m[0;91;1mn[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mGenValid skips the validity check when Validity checks nothing but the fields.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: In the GenValid instance this points at, define each method the message names as the message says: `genValid = genValidStructurallyWithoutExtraChecking`, `shrinkValid = shrinkValidStructurallyWithoutExtraFiltering`, or both.
+     [0;90;1m│[0;96m       Keep every method the instance already defines.
+     [0;90;1m│[0;96m       If the instance is derived, remove GenValid from the deriving clause and write `instance GenValid Foo where` with both methods instead.
+     [0;90;1m│[0;96m       If the Validity instance is meant to check more than the fields, write that check in its `validate` instead of changing the GenValid instance.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 17 of lonely/src/Lonely.hs, and say why: -- [allow:HsGenValidWithoutExtraChecking] <reason>[0m
+[0;90;1m─────╯[0m
+
 [0;91;1m[error TestSydtestOnly][0m: A test suite that never reaches Test.Syd: thing-test.
      [0;90;1m╭──▶[0m [0;32;1mthing-gen/test/Main.hs@1:1-1:25[0m
      [0;90;1m│[0m
@@ -74,5 +88,19 @@
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mHint: Add `genValidSpec @T` from `Test.Syd.Validity` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 18 of thing/src/Thing.hs, and say why: -- [allow:TestGenValidSpecPerGenValid] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsGenValidWithoutExtraChecking][0m: GenValid Widget checks validity again in the default genValid and shrinkValid, but Validity Widget checks only the fields. Define genValid = genValidStructurallyWithoutExtraChecking and shrinkValid = shrinkValidStructurallyWithoutExtraFiltering.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@18:1-18:25[0m
+     [0;90;1m│[0m
+[0;90;1m  18 │[0m [0;91;1mi[0m[0;91;1mn[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mW[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1mg[0m[0;91;1me[0m[0;91;1mt[0m
+     [0;90;1m•[0m [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m [0;91m╰╸[0m [0;91mGenValid skips the validity check when Validity checks nothing but the fields.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: In the GenValid instance this points at, define each method the message names as the message says: `genValid = genValidStructurallyWithoutExtraChecking`, `shrinkValid = shrinkValidStructurallyWithoutExtraFiltering`, or both.
+     [0;90;1m│[0;96m       Keep every method the instance already defines.
+     [0;90;1m│[0;96m       If the instance is derived, remove GenValid from the deriving clause and write `instance GenValid Foo where` with both methods instead.
+     [0;90;1m│[0;96m       If the Validity instance is meant to check more than the fields, write that check in its `validate` instead of changing the GenValid instance.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 18 of thing/src/Thing.hs, and say why: -- [allow:HsGenValidWithoutExtraChecking] <reason>[0m
 [0;90;1m─────╯[0m
 Run explain with a rule's id to see why the rule exists, for example: explain HsGenValidInGenPackage

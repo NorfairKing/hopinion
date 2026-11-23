@@ -35,7 +35,9 @@ import Hopinion.Rule (Finding)
 import Hopinion.Rule.Id
 import Test.QuickCheck (elements)
 
-instance GenValid RawComment
+instance GenValid RawComment where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
 -- | Built rather than filtered. An id is PascalCase and alphanumeric, which is
 -- narrow enough that rejection sampling over arbitrary text finds one about
@@ -50,15 +52,25 @@ instance GenValid RuleId where
     pure (RuleId (T.pack (initial : rest)))
   shrinkValid (RuleId t) = [RuleId (T.take n t) | n <- [1 .. T.length t - 1]]
 
-instance GenValid Level
+instance GenValid Level where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid ModuleKey
+instance GenValid ModuleKey where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid DeclName
+instance GenValid DeclName where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid PackageName
+instance GenValid PackageName where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid TypeHead
+instance GenValid TypeHead where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
 instance GenValid NonEmptyText where
   genValid = do
@@ -73,88 +85,172 @@ instance GenValid NonEmptyText where
 
 instance GenValid Position
 
-instance GenValid Span
+instance GenValid Span where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
 instance GenValid ComponentName
 
-instance GenValid ModuleRef
+instance GenValid ModuleRef where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid ScopeKey
+instance GenValid ScopeKey where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid ComponentKind
+instance GenValid ComponentKind where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid ParseOutcome
+instance GenValid ParseOutcome where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid DeclKind
+instance GenValid DeclKind where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid DeclFact
+instance GenValid DeclFact where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid ExportList
+instance GenValid ExportList where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid InstanceMethods
+instance GenValid InstanceMethods where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid InstanceOrigin
+instance GenValid InstanceOrigin where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid InstanceFact
+instance GenValid InstanceFact where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid Finding
+instance GenValid Finding where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid ParseFailure
+instance GenValid ParseFailure where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid StoreProblem
+instance GenValid StoreProblem where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid Failure
+instance GenValid Failure where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid Complaint
+instance GenValid Complaint where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid Complaints
+instance GenValid Complaints where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid CommentStyle
+instance GenValid CommentStyle where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid Attachment
+instance GenValid Attachment where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid CommentFact
+instance GenValid CommentFact where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid AnnotationPrecision
+instance GenValid AnnotationPrecision where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid Reason
+instance GenValid Reason where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid AnnotationFact
+instance GenValid AnnotationFact where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid AnnotationProblem
+instance GenValid AnnotationProblem where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid TypeAppFact
+instance GenValid TypeAppFact where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid ArgumentShape
+instance GenValid ArgumentShape where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid CasedArgument
+instance GenValid CasedArgument where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid StrayAppDecl
+instance GenValid StrayAppDecl where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid NameFact
+instance GenValid NameFact where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid ConcatOperand
+instance GenValid ConcatOperand where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid ConcatChain
+instance GenValid ConcatChain where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid ErrorType
+instance GenValid ErrorType where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid ErrorSlot
+instance GenValid ErrorSlot where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid ErrorDeclShape
+instance GenValid ErrorDeclShape where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid ErrorDecl
+instance GenValid ErrorDecl where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid TemplateHaskellUse
+instance GenValid TemplateHaskellUse where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid PackageRole
+instance GenValid PackageRole where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid FormatVersion
+instance GenValid FormatVersion where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid GenPackage
+instance GenValid GenPackage where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid Unused
+instance GenValid Unused where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid OverBroad
+instance GenValid OverBroad where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
 
-instance GenValid Choices
+instance GenValid Choices where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering

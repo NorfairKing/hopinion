@@ -1,0 +1,4 @@
+In the GenValid instance this points at, define each method the message names as the message says: `genValid = genValidStructurallyWithoutExtraChecking`, `shrinkValid = shrinkValidStructurallyWithoutExtraFiltering`, or both.
+Keep every method the instance already defines.
+If the instance is derived, remove GenValid from the deriving clause and write `instance GenValid Foo where` with both methods instead.
+If the Validity instance is meant to check more than the fields, write that check in its `validate` instead of changing the GenValid instance.

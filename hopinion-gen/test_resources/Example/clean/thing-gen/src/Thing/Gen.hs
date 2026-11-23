@@ -2,7 +2,9 @@
 
 module Thing.Gen () where
 
-import Data.GenValidity (GenValid)
+import Data.GenValidity (GenValid (..), genValidStructurallyWithoutExtraChecking, shrinkValidStructurallyWithoutExtraFiltering)
 import Thing
 
-instance GenValid Widget
+instance GenValid Widget where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering

@@ -1,6 +1,6 @@
 module Thing where
 
-import Data.GenValidity (GenValid)
+import Data.GenValidity (GenValid (..), genValidStructurallyWithoutExtraChecking, shrinkValidStructurallyWithoutExtraFiltering)
 import Data.Validity (Validity)
 import GHC.Generics (Generic)
 
@@ -20,4 +20,6 @@ instance Validity Internal
 --
 -- [allow:HsGenValidInGenPackage] Two rules at one site means two suppressions,
 -- because the reasons differ.
-instance GenValid Internal
+instance GenValid Internal where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering

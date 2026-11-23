@@ -1,0 +1,4 @@
+The default genValid is genValidStructurally, which generates each field with the field's own generator and then throws away every value that is not valid, and the default shrinkValid filters its shrinks the same way.
+When the Validity instance checks nothing but the fields, a value built from valid fields is always valid, so that check can never throw anything away and is only work done on every generated value and every shrink.
+genValidStructurallyWithoutExtraChecking and shrinkValidStructurallyWithoutExtraFiltering build the same values without it.
+Should a field's generator make an invalid value anyway, the genValidSpec of that field's type is where that shows, rather than as a generator that silently retries.

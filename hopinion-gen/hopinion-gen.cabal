@@ -187,6 +187,33 @@ extra-source-files:
     test_resources/Rule/HsGenValidInGenPackage/good/thing-gen/thing-gen.cabal
     test_resources/Rule/HsGenValidInGenPackage/good/thing/src/Thing.hs
     test_resources/Rule/HsGenValidInGenPackage/good/thing/thing.cabal
+    test_resources/Rule/HsGenValidWithoutExtraChecking/bad-anyclass.golden
+    test_resources/Rule/HsGenValidWithoutExtraChecking/bad-anyclass/thing/src/Thing.hs
+    test_resources/Rule/HsGenValidWithoutExtraChecking/bad-anyclass/thing/thing.cabal
+    test_resources/Rule/HsGenValidWithoutExtraChecking/bad-one-method.golden
+    test_resources/Rule/HsGenValidWithoutExtraChecking/bad-one-method/thing/src/Thing.hs
+    test_resources/Rule/HsGenValidWithoutExtraChecking/bad-one-method/thing/thing.cabal
+    test_resources/Rule/HsGenValidWithoutExtraChecking/bad.golden
+    test_resources/Rule/HsGenValidWithoutExtraChecking/bad/thing-gen/src/Thing/Gen.hs
+    test_resources/Rule/HsGenValidWithoutExtraChecking/bad/thing-gen/thing-gen.cabal
+    test_resources/Rule/HsGenValidWithoutExtraChecking/bad/thing/src/Thing.hs
+    test_resources/Rule/HsGenValidWithoutExtraChecking/bad/thing/thing.cabal
+    test_resources/Rule/HsGenValidWithoutExtraChecking/good-not-anyclass.golden
+    test_resources/Rule/HsGenValidWithoutExtraChecking/good-not-anyclass/thing/src/Thing.hs
+    test_resources/Rule/HsGenValidWithoutExtraChecking/good-not-anyclass/thing/thing.cabal
+    test_resources/Rule/HsGenValidWithoutExtraChecking/good-other-class.golden
+    test_resources/Rule/HsGenValidWithoutExtraChecking/good-other-class/thing/src/Own.hs
+    test_resources/Rule/HsGenValidWithoutExtraChecking/good-other-class/thing/src/Thing.hs
+    test_resources/Rule/HsGenValidWithoutExtraChecking/good-other-class/thing/thing.cabal
+    test_resources/Rule/HsGenValidWithoutExtraChecking/good-same-name-qualified.golden
+    test_resources/Rule/HsGenValidWithoutExtraChecking/good-same-name-qualified/thing/src/A.hs
+    test_resources/Rule/HsGenValidWithoutExtraChecking/good-same-name-qualified/thing/src/B.hs
+    test_resources/Rule/HsGenValidWithoutExtraChecking/good-same-name-qualified/thing/src/Gen.hs
+    test_resources/Rule/HsGenValidWithoutExtraChecking/good-same-name-qualified/thing/thing.cabal
+    test_resources/Rule/HsGenValidWithoutExtraChecking/good.golden
+    test_resources/Rule/HsGenValidWithoutExtraChecking/good/thing/src/Other.hs
+    test_resources/Rule/HsGenValidWithoutExtraChecking/good/thing/src/Thing.hs
+    test_resources/Rule/HsGenValidWithoutExtraChecking/good/thing/thing.cabal
     test_resources/Rule/HsLambdaCase/bad-equations.hs
     test_resources/Rule/HsLambdaCase/bad-equations.hs.golden
     test_resources/Rule/HsLambdaCase/bad-in-a-where-clause.hs

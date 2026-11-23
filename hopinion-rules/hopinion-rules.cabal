@@ -46,6 +46,8 @@ extra-source-files:
     src/Hopinion/Check/Package/NoRestatedValidityDefaults/why.txt
     src/Hopinion/Check/Project/GenValidSpecPerGenValid/fix.txt
     src/Hopinion/Check/Project/GenValidSpecPerGenValid/why.txt
+    src/Hopinion/Check/Project/GenValidWithoutExtraChecking/fix.txt
+    src/Hopinion/Check/Project/GenValidWithoutExtraChecking/why.txt
     src/Hopinion/Check/Project/JsonSpecPerJsonType/fix.txt
     src/Hopinion/Check/Project/JsonSpecPerJsonType/why.txt
     src/Hopinion/Check/Project/NoCatchAllOwnSum/fix.txt
@@ -100,6 +102,9 @@ library
       Hopinion.Check.Package.NoRestatedValidityDefaults.Fact
       Hopinion.Check.Package.NoRestatedValidityDefaults.Rule
       Hopinion.Check.Project.GenValidSpecPerGenValid.Rule
+      Hopinion.Check.Project.GenValidWithoutExtraChecking.Extract
+      Hopinion.Check.Project.GenValidWithoutExtraChecking.Fact
+      Hopinion.Check.Project.GenValidWithoutExtraChecking.Rule
       Hopinion.Check.Project.JsonSpecPerJsonType.Rule
       Hopinion.Check.Project.NoCatchAllOwnSum.Extract
       Hopinion.Check.Project.NoCatchAllOwnSum.Fact
