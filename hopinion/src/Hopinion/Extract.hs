@@ -275,15 +275,10 @@ derivedClasses defn =
   [ (cls, origin)
   | L _ clause <- dd_derivs defn,
     let origin = clauseOrigin (deriv_clause_strategy clause),
-    cls <- mapMaybe className (clauseTypes (deriv_clause_tys clause))
+    cls <- mapMaybe className (derivClauseTypes (deriv_clause_tys clause))
   ]
   where
     className sigTy = fmap fst (sigTypeHeadOrClassOnly sigTy)
-
-clauseTypes :: LDerivClauseTys GhcPs -> [LHsSigType GhcPs]
-clauseTypes (L _ dct) = case dct of
-  DctSingle _ t -> [t]
-  DctMulti _ ts -> ts
 
 clauseOrigin :: Maybe (LDerivStrategy GhcPs) -> InstanceOrigin
 clauseOrigin = \case

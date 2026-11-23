@@ -146,11 +146,3 @@ constructorCount :: ConDecl GhcPs -> Int
 constructorCount = \case
   ConDeclH98 {} -> 1
   ConDeclGADT {con_names = names} -> length names
-
--- | The name at the head of a type, applied to anything or nothing.
-namedHead :: LHsType GhcPs -> Maybe (LIdP GhcPs)
-namedHead lt = case unLoc (peelType lt) of
-  HsTyVar _ _ n -> Just n
-  HsAppTy _ f _ -> namedHead f
-  HsAppKindTy _ f _ -> namedHead f
-  _ -> Nothing

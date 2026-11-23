@@ -27,11 +27,11 @@ import Database.Persist.TH
 import GHC.Hs (GhcPs, LHsExpr, MatchGroup)
 import Hopinion.Check.Project.NoCatchAllOwnSum.Extract
 import Hopinion.Check.Project.NoCatchAllOwnSum.Fact
-import Hopinion.Compiled (CompiledModules, compiledModuleOf)
+import Hopinion.Compiled (CompiledModules, compiledModuleOf, sourceRangeOfSpan)
 import Hopinion.Facts.Module
 import Hopinion.Facts.Name
 import Hopinion.Facts.Place
-import Hopinion.Hie (AppliedType (..), SourceRange (..), TypeConstructor (..), compiledModuleConstructorNamedAt, compiledModuleTypeAt)
+import Hopinion.Hie (AppliedType (..), TypeConstructor (..), compiledModuleConstructorNamedAt, compiledModuleTypeAt)
 import Hopinion.Parse (ParsedModule)
 import Hopinion.Rule
 import Hopinion.Rule.Id
@@ -172,7 +172,7 @@ findings compiled = do
       let namedAt :: StoredPath -> Span -> IO (Maybe TypeConstructor)
           namedAt file sp = do
             c <- compiledModuleOf (unStoredPath file) compiled
-            pure (compiledModuleConstructorNamedAt c (rangeOf sp))
+            pure (compiledModuleConstructorNamedAt c (sourceRangeOfSpan sp))
       synonymHeads <-
         liftIO
           ( traverse
@@ -211,7 +211,7 @@ findings compiled = do
           ( traverse
               ( \s -> do
                   c <- compiledModuleOf (unStoredPath (catchAllSiteFile s)) compiled
-                  pure (s, compiledModuleTypeAt c (rangeOf (catchAllSiteSpan s)))
+                  pure (s, compiledModuleTypeAt c (sourceRangeOfSpan (catchAllSiteSpan s)))
               )
               sites
           )
@@ -255,15 +255,6 @@ instanceOf th (family, args) =
   appliedTypeConstructor th == family
     && length args == length (appliedTypeArguments th)
     && and (zipWith (\written actual -> maybe True (\w -> actual == Just w) written) args (appliedTypeArguments th))
-
-rangeOf :: Span -> SourceRange
-rangeOf sp =
-  SourceRange
-    { sourceRangeStartLine = fromIntegral (positionLine (spanStart sp)),
-      sourceRangeStartColumn = fromIntegral (positionCol (spanStart sp)),
-      sourceRangeEndLine = fromIntegral (positionLine (spanEnd sp)),
-      sourceRangeEndColumn = fromIntegral (positionCol (spanEnd sp))
-    }
 
 findingFor :: CatchAllSite -> Text -> Finding
 findingFor s typeName =

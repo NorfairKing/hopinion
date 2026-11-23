@@ -18,6 +18,7 @@ module Hopinion.Compiled
     declaredInstancesOf,
     couldGenerateUseOf,
     sameSourceFile,
+    sourceRangeOfSpan,
   )
 where
 
@@ -32,10 +33,12 @@ import qualified Data.Set as S
 import Data.Text (Text)
 import qualified Data.Text as T
 import Hopinion.Facts.Name
+import Hopinion.Facts.Place (Position (..), Span (..))
 import Hopinion.Hie
   ( CompiledInterface,
     CompiledModule,
     DeclaredInstance,
+    SourceRange (..),
     compiledInterfaceInstances,
     compiledModuleFile,
     compiledModuleGenerated,
@@ -375,3 +378,13 @@ lookUpInterface (HieDirectories dirs) mk rp = go []
 unreadable :: Path Abs File -> Text -> Text
 unreadable file err =
   T.pack (unwords [toFilePath file, "is there and this build of hopinion cannot read it:", T.unpack err])
+
+-- | Where a span of the source is, the way a compiled module is asked about it.
+sourceRangeOfSpan :: Span -> SourceRange
+sourceRangeOfSpan sp =
+  SourceRange
+    { sourceRangeStartLine = fromIntegral (positionLine (spanStart sp)),
+      sourceRangeStartColumn = fromIntegral (positionCol (spanStart sp)),
+      sourceRangeEndLine = fromIntegral (positionLine (spanEnd sp)),
+      sourceRangeEndColumn = fromIntegral (positionCol (spanEnd sp))
+    }

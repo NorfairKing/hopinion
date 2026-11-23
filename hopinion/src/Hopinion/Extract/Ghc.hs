@@ -14,6 +14,8 @@ module Hopinion.Extract.Ghc
     peelExpr,
     peelType,
     peelApp,
+    namedHead,
+    derivClauseTypes,
     infixOperands,
     spineOf,
   )
@@ -95,6 +97,20 @@ peelApp lt = go lt []
       HsTupleTy {} -> Just ("(,)", acc)
       HsFunTy {} -> Just ("->", acc)
       _ -> Nothing
+
+-- | The name at the head of a type, applied to anything or nothing.
+namedHead :: LHsType GhcPs -> Maybe (LIdP GhcPs)
+namedHead lt = case unLoc (peelType lt) of
+  HsTyVar _ _ n -> Just n
+  HsAppTy _ f _ -> namedHead f
+  HsAppKindTy _ f _ -> namedHead f
+  _ -> Nothing
+
+-- | The classes one deriving clause names, however many it names.
+derivClauseTypes :: LDerivClauseTys GhcPs -> [LHsSigType GhcPs]
+derivClauseTypes ldct = case unLoc ldct of
+  DctSingle _ t -> [t]
+  DctMulti _ ts -> ts
 
 -- | Neither parentheses nor a type signature change what an expression is.
 peelExpr :: LHsExpr GhcPs -> LHsExpr GhcPs
