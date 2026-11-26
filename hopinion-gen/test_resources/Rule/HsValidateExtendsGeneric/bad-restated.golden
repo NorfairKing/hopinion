@@ -6,6 +6,8 @@
      [0;90;1m•[0m   [0;91m╰╸[0m [0;91mA written-out validate is mconcat [genericValidate x, ...] with more checks.[0m
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mHint: If the finding says the method restates its default, delete the method, and if that leaves no methods, keep the instance with no `where`: `instance Validity Foo`.
+     [0;90;1m│[0;96m       If the finding says the method names a binding that is not next to the instance, move that binding, with its signature and pragmas, to directly above or directly below the instance.
+     [0;90;1m│[0;96m       If the finding is about a top-level binding that the method names, rewrite that binding as the method is described below, and leave the method as it is.
      [0;90;1m│[0;96m       Otherwise, write the method as one equation with no guards, no `where` and no `let`, of this shape: `validate x = mconcat [genericValidate x, declare "..." (...), ...]`.
      [0;90;1m│[0;96m       Name the argument with a variable, or with an as-pattern such as `x@(Foo a b)` when the checks need its fields.
      [0;90;1m│[0;96m       Make `genericValidate` of that same argument the first element of the list.
@@ -21,6 +23,8 @@
      [0;90;1m•[0m   [0;91m╰╸[0m [0;91mA written-out validate is mconcat [genericValidate x, ...] with more checks.[0m
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mHint: If the finding says the method restates its default, delete the method, and if that leaves no methods, keep the instance with no `where`: `instance Validity Foo`.
+     [0;90;1m│[0;96m       If the finding says the method names a binding that is not next to the instance, move that binding, with its signature and pragmas, to directly above or directly below the instance.
+     [0;90;1m│[0;96m       If the finding is about a top-level binding that the method names, rewrite that binding as the method is described below, and leave the method as it is.
      [0;90;1m│[0;96m       Otherwise, write the method as one equation with no guards, no `where` and no `let`, of this shape: `validate x = mconcat [genericValidate x, declare "..." (...), ...]`.
      [0;90;1m│[0;96m       Name the argument with a variable, or with an as-pattern such as `x@(Foo a b)` when the checks need its fields.
      [0;90;1m│[0;96m       Make `genericValidate` of that same argument the first element of the list.
@@ -36,6 +40,8 @@
      [0;90;1m•[0m   [0;91m╰╸[0m [0;91mA written-out validate is mconcat [genericValidate x, ...] with more checks.[0m
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mHint: If the finding says the method restates its default, delete the method, and if that leaves no methods, keep the instance with no `where`: `instance Validity Foo`.
+     [0;90;1m│[0;96m       If the finding says the method names a binding that is not next to the instance, move that binding, with its signature and pragmas, to directly above or directly below the instance.
+     [0;90;1m│[0;96m       If the finding is about a top-level binding that the method names, rewrite that binding as the method is described below, and leave the method as it is.
      [0;90;1m│[0;96m       Otherwise, write the method as one equation with no guards, no `where` and no `let`, of this shape: `validate x = mconcat [genericValidate x, declare "..." (...), ...]`.
      [0;90;1m│[0;96m       Name the argument with a variable, or with an as-pattern such as `x@(Foo a b)` when the checks need its fields.
      [0;90;1m│[0;96m       Make `genericValidate` of that same argument the first element of the list.

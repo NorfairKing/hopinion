@@ -6,27 +6,42 @@ module Hopinion.Check.Package.ValidateExtendsGeneric.Extract (unshapedValidatesO
 
 import Data.Text (Text)
 import GHC.Hs
+import qualified GHC.Types.Name.Reader as Rdr
 import GHC.Types.SrcLoc (unLoc)
 import Hopinion.Check.Package.ValidateExtendsGeneric.Fact
 import Hopinion.Extract.Ghc
 import Hopinion.Facts.Instance
 import Hopinion.Facts.Module
+import Hopinion.Facts.Place (Span)
 import Hopinion.Parse (ParsedModule, parsedModuleDecls)
 
 -- | Every @validate@ of an instance of a class named Validity that does not
--- extend the structural check.
+-- extend the structural check, itself or through the top-level binding it
+-- names.
 --
 -- The instance is found among the module's instance facts by its span, so that
 -- what its class and type are has the one answer the shared extraction gives.
 unshapedValidatesOf :: ModuleContext -> ParsedModule -> [UnshapedValidate]
 unshapedValidatesOf ctx parsed =
   let rp = moduleContextPath ctx
+      decls = parsedModuleDecls parsed
+      writtenAt :: [LHsDecl GhcPs] -> LHsBind GhcPs -> MatchGroup GhcPs (LHsExpr GhcPs) -> (ValidateSite, Span, Maybe ValidateShape)
+      writtenAt neighbours lbind mg =
+        let method :: Maybe ValidateShape -> (ValidateSite, Span, Maybe ValidateShape)
+            method shape = (ValidateSiteMethod, spanOfSrcSpan rp (getLocA lbind), shape)
+         in case delegateOf mg of
+              Just binding
+                | ((ldecl, bindingMg) : _) <- bindingsNamed binding neighbours ->
+                    (ValidateSiteBinding binding, spanOfLocated rp ldecl, unshapedValidateShapeOf bindingMg)
+                | (_ : _) <- bindingsNamed binding decls -> method (Just ValidateShapeBindingApart)
+              _ -> method (unshapedValidateShapeOf mg)
    in [ UnshapedValidate
           { unshapedValidateInstance = inst,
+            unshapedValidateSite = site,
             unshapedValidateShape = shape,
-            unshapedValidateSpan = spanOfSrcSpan rp (getLocA lbind)
+            unshapedValidateSpan = sp
           }
-      | ldecl <- parsedModuleDecls parsed,
+      | (index, ldecl) <- zip [0 :: Int ..] decls,
         InstD _ (ClsInstD _ ci) <- [unLoc ldecl],
         inst <- moduleContextInstances ctx,
         instanceFactSpan inst == spanOfLocated rp ldecl,
@@ -34,8 +49,56 @@ unshapedValidatesOf ctx parsed =
         lbind <- cid_binds ci,
         FunBind {fun_id = name, fun_matches = mg} <- [unLoc lbind],
         rdrText (unLoc name) == "validate",
-        Just shape <- [unshapedValidateShapeOf mg]
+        let neighbours = neighbouringBindings (reverse (take index decls)) ++ neighbouringBindings (drop (index + 1) decls),
+        (site, sp, Just shape) <- [writtenAt neighbours lbind mg]
       ]
+
+-- | The binding a declaration is next to on one side, given the declarations
+-- on that side nearest first.
+--
+-- Next to it with nothing but signatures, pragmas and documentation between,
+-- because those belong to the binding: an annotation on which mutations to
+-- leave out is what a method names a binding for.
+neighbouringBindings :: [LHsDecl GhcPs] -> [LHsDecl GhcPs]
+neighbouringBindings sideways = case dropWhile isAside sideways of
+  (ldecl : _)
+    | ValD {} <- unLoc ldecl -> [ldecl]
+  _ -> []
+
+isAside :: LHsDecl GhcPs -> Bool
+isAside ldecl = case unLoc ldecl of
+  SigD {} -> True
+  AnnD {} -> True
+  DocD {} -> True
+  _ -> False
+
+-- | The name a @validate@ is nothing but, applied to its one argument or not.
+--
+-- Unqualified only, because a qualified name is not a binding of this module,
+-- even when this module has a binding of the same name.
+delegateOf :: MatchGroup GhcPs (LHsExpr GhcPs) -> Maybe Text
+delegateOf mg = case plainEquation mg of
+  Just ([], body) -> unqualifiedVariable body
+  Just ([lpat], body) -> case (argumentName lpat, unLoc (peelExpr body)) of
+    (Just argument, HsApp _ f x)
+      | isVariable argument x -> unqualifiedVariable f
+    _ -> Nothing
+  Just _ -> Nothing
+  Nothing -> Nothing
+
+unqualifiedVariable :: LHsExpr GhcPs -> Maybe Text
+unqualifiedVariable le = case unLoc (peelExpr le) of
+  HsVar _ n
+    | Rdr.isUnqual (unLoc n) -> Just (rdrText (unLoc n))
+  _ -> Nothing
+
+bindingsNamed :: Text -> [LHsDecl GhcPs] -> [(LHsDecl GhcPs, MatchGroup GhcPs (LHsExpr GhcPs))]
+bindingsNamed wanted decls =
+  [ (ldecl, mg)
+  | ldecl <- decls,
+    ValD _ FunBind {fun_id = name, fun_matches = mg} <- [unLoc ldecl],
+    rdrText (unLoc name) == wanted
+  ]
 
 -- | What a @validate@ is instead, or nothing when it is one equation that
 -- names its one argument and is @mconcat@ of a literal list whose first

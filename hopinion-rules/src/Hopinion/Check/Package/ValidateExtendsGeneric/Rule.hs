@@ -54,6 +54,7 @@ UnshapedValidateRow
     span Span
     className Text
     typeHead TypeHead
+    binding Text Maybe
     complaint Text
     deriving Show Eq
 |]
@@ -86,6 +87,9 @@ carry pkg ctx = case moduleContextSyntax ctx of
               unshapedValidateRowSpan = unshapedValidateSpan uv,
               unshapedValidateRowClassName = instanceFactClass (unshapedValidateInstance uv),
               unshapedValidateRowTypeHead = instanceFactType (unshapedValidateInstance uv),
+              unshapedValidateRowBinding = case unshapedValidateSite uv of
+                ValidateSiteMethod -> Nothing
+                ValidateSiteBinding binding -> Just binding,
               unshapedValidateRowComplaint = complaintOf (unshapedValidateShape uv)
             }
      in mapM_ (insert_ . rowFor) (unshapedValidatesOf ctx parsed)
@@ -123,15 +127,23 @@ findingFor r =
       findingScope =
         ScopeKeyOfDecl
           (unshapedValidateRowModuleRef r)
-          (instanceDeclName (unshapedValidateRowClassName r) (unshapedValidateRowTypeHead r)),
+          ( maybe
+              (instanceDeclName (unshapedValidateRowClassName r) (unshapedValidateRowTypeHead r))
+              DeclName
+              (unshapedValidateRowBinding r)
+          ),
       findingSpan = unshapedValidateRowSpan r,
       findingMessage =
         T.concat
-          [ "validate in ",
+          [ case unshapedValidateRowBinding r of
+              Nothing -> "validate in "
+              Just binding -> T.concat [binding, ", which validate in "],
             unshapedValidateRowClassName r,
             " ",
             unTypeHead (unshapedValidateRowTypeHead r),
-            " ",
+            case unshapedValidateRowBinding r of
+              Nothing -> " "
+              Just _ -> " is, ",
             unshapedValidateRowComplaint r
           ]
     }
@@ -139,4 +151,5 @@ findingFor r =
 complaintOf :: ValidateShape -> Text
 complaintOf = \case
   ValidateShapeRestatesDefault -> "restates its default."
+  ValidateShapeBindingApart -> "names a binding that is not next to the instance."
   ValidateShapeOther -> "is not mconcat of genericValidate of its argument followed by more checks."

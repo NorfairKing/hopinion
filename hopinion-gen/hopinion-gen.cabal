@@ -364,6 +364,9 @@ extra-source-files:
     test_resources/Rule/HsTestOneSpecPerFile/goodNotATestFile.hs.golden
     test_resources/Rule/HsTestOneSpecPerFile/goodSpec.hs
     test_resources/Rule/HsTestOneSpecPerFile/goodSpec.hs.golden
+    test_resources/Rule/HsValidateExtendsGeneric/bad-delegated.golden
+    test_resources/Rule/HsValidateExtendsGeneric/bad-delegated/thing/src/Thing.hs
+    test_resources/Rule/HsValidateExtendsGeneric/bad-delegated/thing/thing.cabal
     test_resources/Rule/HsValidateExtendsGeneric/bad-one-suppressed.golden
     test_resources/Rule/HsValidateExtendsGeneric/bad-one-suppressed/thing/src/Thing.hs
     test_resources/Rule/HsValidateExtendsGeneric/bad-one-suppressed/thing/thing.cabal
@@ -379,6 +382,9 @@ extra-source-files:
     test_resources/Rule/HsValidateExtendsGeneric/good-another-validity.golden
     test_resources/Rule/HsValidateExtendsGeneric/good-another-validity/thing/src/Thing.hs
     test_resources/Rule/HsValidateExtendsGeneric/good-another-validity/thing/thing.cabal
+    test_resources/Rule/HsValidateExtendsGeneric/good-delegated.golden
+    test_resources/Rule/HsValidateExtendsGeneric/good-delegated/thing/src/Thing.hs
+    test_resources/Rule/HsValidateExtendsGeneric/good-delegated/thing/thing.cabal
     test_resources/Rule/HsValidateExtendsGeneric/good.golden
     test_resources/Rule/HsValidateExtendsGeneric/good/thing/src/Thing.hs
     test_resources/Rule/HsValidateExtendsGeneric/good/thing/thing.cabal
