@@ -43,6 +43,9 @@ data ValidateShape
   = -- | @genericValidate@ of the argument and nothing else, which is what the
     -- method does when it is left out.
     ValidateShapeRestatesDefault
+  | -- | @valid@ whatever the argument is, which claims a check while making
+    -- none.
+    ValidateShapeAlwaysValid
   | -- | Nothing but the name of a binding of this module that is not next to
     -- the instance, where a reader of the instance would not see it.
     ValidateShapeBindingApart

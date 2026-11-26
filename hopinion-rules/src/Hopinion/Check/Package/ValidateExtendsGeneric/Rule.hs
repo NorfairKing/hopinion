@@ -151,5 +151,6 @@ findingFor r =
 complaintOf :: ValidateShape -> Text
 complaintOf = \case
   ValidateShapeRestatesDefault -> "restates its default."
+  ValidateShapeAlwaysValid -> "calls every value valid without looking at it."
   ValidateShapeBindingApart -> "names a binding that is not next to the instance."
   ValidateShapeOther -> "is not mconcat of genericValidate of its argument followed by more checks."

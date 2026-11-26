@@ -107,13 +107,21 @@ bindingsNamed wanted decls =
 --
 -- At least one more, because a list of nothing but the structural check is the
 -- default, written out.
+--
+-- Nothing as well when it is @trivialValidation@, which says in its name that
+-- it checks nothing, for a type that cannot start from the structural check.
 unshapedValidateShapeOf :: MatchGroup GhcPs (LHsExpr GhcPs) -> Maybe ValidateShape
 unshapedValidateShapeOf mg = case plainEquation mg of
   Just ([], body)
+    | isFunction "trivialValidation" body -> Nothing
     | isFunction "genericValidate" body -> Just ValidateShapeRestatesDefault
+    | isConstValid body -> Just ValidateShapeAlwaysValid
     | otherwise -> Just ValidateShapeOther
+  Just ([_], body)
+    | isFunction "valid" body -> Just ValidateShapeAlwaysValid
   Just ([lpat], body) -> case argumentName lpat of
     Just argument
+      | isTrivialValidationOf argument body -> Nothing
       | isGenericValidateOf argument body -> Just ValidateShapeRestatesDefault
       | otherwise -> case mconcatListOf body of
           Just [only]
@@ -158,6 +166,17 @@ mconcatListOf le = case unLoc (peelExpr le) of
   _ -> Nothing
 
 isGenericValidateOf :: Text -> LHsExpr GhcPs -> Bool
-isGenericValidateOf argument le = case unLoc (peelExpr le) of
-  HsApp _ f x -> isFunction "genericValidate" f && isVariable argument x
+isGenericValidateOf = isApplicationOf "genericValidate"
+
+isTrivialValidationOf :: Text -> LHsExpr GhcPs -> Bool
+isTrivialValidationOf = isApplicationOf "trivialValidation"
+
+isApplicationOf :: Text -> Text -> LHsExpr GhcPs -> Bool
+isApplicationOf function argument le = case unLoc (peelExpr le) of
+  HsApp _ f x -> isFunction function f && isVariable argument x
+  _ -> False
+
+isConstValid :: LHsExpr GhcPs -> Bool
+isConstValid le = case unLoc (peelExpr le) of
+  HsApp _ f x -> isFunction "const" f && isFunction "valid" x
   _ -> False
