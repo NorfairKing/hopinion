@@ -1,0 +1,126 @@
+[0;91;1m[error HsValidateExtendsGeneric][0m: validate in Validity Percentage is not mconcat of genericValidate of its argument followed by more checks.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@13:3-13:64[0m
+     [0;90;1m│[0m
+[0;90;1m  13 │[0m [0;97m [0m[0;97m [0m[0;91;1mv[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mP[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mc[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1mg[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1m)[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1ml[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m"[0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1m [0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1mm[0m[0;91;1mo[0m[0;91;1ms[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m1[0m[0;91;1m0[0m[0;91;1m0[0m[0;91;1m"[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mi[0m[0;91;1m [0m[0;91;1m<[0m[0;91;1m=[0m[0;91;1m [0m[0;91;1m1[0m[0;91;1m0[0m[0;91;1m0[0m[0;91;1m)[0m
+     [0;90;1m•[0m   [0;91m┬[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m[0;91m─[0m
+     [0;90;1m•[0m   [0;91m╰╸[0m [0;91mA written-out validate is mconcat [genericValidate x, ...] with more checks.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: If the finding says the method restates its default, delete the method, and if that leaves no methods, keep the instance with no `where`: `instance Validity Foo`.
+     [0;90;1m│[0;96m       Otherwise, write the method as one equation with no guards, no `where` and no `let`, of this shape: `validate x = mconcat [genericValidate x, declare "..." (...), ...]`.
+     [0;90;1m│[0;96m       Name the argument with a variable, or with an as-pattern such as `x@(Foo a b)` when the checks need its fields.
+     [0;90;1m│[0;96m       Make `genericValidate` of that same argument the first element of the list.
+     [0;90;1m│[0;96m       Put every check the method made before after it in the list, one element each, using `declare`, `decorate` or another `Validation`; a check that cases on the argument becomes one element that is a `case` expression.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 13 of thing/src/Thing.hs, and say why: -- [allow:HsValidateExtendsGeneric] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsValidateExtendsGeneric][0m: validate in Validity Score is not mconcat of genericValidate of its argument followed by more checks.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@20:3-24:8[0m
+     [0;90;1m│[0m
+[0;90;1m  20 │[0m [0;91m╭[0m[0;91m┤[0m [0;97m [0m[0;97m [0m[0;91;1mv[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m [0m[0;91;1ms[0m[0;91;1m@[0m[0;91;1m([0m[0;91;1mS[0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1m)[0m[0;91;1m [0m[0;91;1m=[0m
+[0;90;1m  21 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1mm[0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1ma[0m[0;91;1mt[0m
+[0;90;1m  22 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m[[0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1ml[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m"[0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1m [0m[0;91;1mn[0m[0;91;1mo[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mg[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1me[0m[0;91;1m"[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mi[0m[0;91;1m [0m[0;91;1m>[0m[0;91;1m=[0m[0;91;1m [0m[0;91;1m0[0m[0;91;1m)[0m[0;91;1m,[0m
+[0;90;1m  23 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1mg[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m [0m[0;91;1ms[0m
+[0;90;1m  24 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m][0m
+     [0;90;1m•[0m [0;91m│ [0m
+     [0;90;1m•[0m [0;91m╰╸ A written-out validate is mconcat [genericValidate x, ...] with more checks.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: If the finding says the method restates its default, delete the method, and if that leaves no methods, keep the instance with no `where`: `instance Validity Foo`.
+     [0;90;1m│[0;96m       Otherwise, write the method as one equation with no guards, no `where` and no `let`, of this shape: `validate x = mconcat [genericValidate x, declare "..." (...), ...]`.
+     [0;90;1m│[0;96m       Name the argument with a variable, or with an as-pattern such as `x@(Foo a b)` when the checks need its fields.
+     [0;90;1m│[0;96m       Make `genericValidate` of that same argument the first element of the list.
+     [0;90;1m│[0;96m       Put every check the method made before after it in the list, one element each, using `declare`, `decorate` or another `Validation`; a check that cases on the argument becomes one element that is a `case` expression.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 20 of thing/src/Thing.hs, and say why: -- [allow:HsValidateExtendsGeneric] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsValidateExtendsGeneric][0m: validate in Validity Shape is not mconcat of genericValidate of its argument followed by more checks.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@31:3-32:64[0m
+     [0;90;1m│[0m
+[0;90;1m  31 │[0m [0;91m╭[0m[0;91m┤[0m [0;97m [0m[0;97m [0m[0;91;1mv[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mC[0m[0;91;1mi[0m[0;91;1mr[0m[0;91;1mc[0m[0;91;1ml[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mr[0m[0;91;1m)[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1ml[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m"[0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mr[0m[0;91;1ma[0m[0;91;1md[0m[0;91;1mi[0m[0;91;1mu[0m[0;91;1ms[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1m [0m[0;91;1mp[0m[0;91;1mo[0m[0;91;1ms[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1me[0m[0;91;1m"[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mr[0m[0;91;1m [0m[0;91;1m>[0m[0;91;1m [0m[0;91;1m0[0m[0;91;1m)[0m
+[0;90;1m  32 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1mv[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mS[0m[0;91;1mq[0m[0;91;1mu[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mw[0m[0;91;1m)[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1ml[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m"[0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mw[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1m [0m[0;91;1mp[0m[0;91;1mo[0m[0;91;1ms[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1me[0m[0;91;1m"[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mw[0m[0;91;1m [0m[0;91;1m>[0m[0;91;1m [0m[0;91;1m0[0m[0;91;1m)[0m
+     [0;90;1m•[0m [0;91m│ [0m
+     [0;90;1m•[0m [0;91m╰╸ A written-out validate is mconcat [genericValidate x, ...] with more checks.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: If the finding says the method restates its default, delete the method, and if that leaves no methods, keep the instance with no `where`: `instance Validity Foo`.
+     [0;90;1m│[0;96m       Otherwise, write the method as one equation with no guards, no `where` and no `let`, of this shape: `validate x = mconcat [genericValidate x, declare "..." (...), ...]`.
+     [0;90;1m│[0;96m       Name the argument with a variable, or with an as-pattern such as `x@(Foo a b)` when the checks need its fields.
+     [0;90;1m│[0;96m       Make `genericValidate` of that same argument the first element of the list.
+     [0;90;1m│[0;96m       Put every check the method made before after it in the list, one element each, using `declare`, `decorate` or another `Validation`; a check that cases on the argument becomes one element that is a `case` expression.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 31 of thing/src/Thing.hs, and say why: -- [allow:HsValidateExtendsGeneric] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsValidateExtendsGeneric][0m: validate in Validity Weight is not mconcat of genericValidate of its argument followed by more checks.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@39:3-43:8[0m
+     [0;90;1m│[0m
+[0;90;1m  39 │[0m [0;91m╭[0m[0;91m┤[0m [0;97m [0m[0;97m [0m[0;91;1mv[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mw[0m[0;91;1m@[0m[0;91;1m([0m[0;91;1mW[0m[0;91;1me[0m[0;91;1mi[0m[0;91;1mg[0m[0;91;1mh[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1mp[0m[0;91;1m)[0m[0;91;1m [0m[0;91;1m=[0m
+[0;90;1m  40 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1mm[0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1ma[0m[0;91;1mt[0m
+[0;90;1m  41 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m[[0m[0;91;1m [0m[0;91;1mg[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mp[0m[0;91;1m,[0m
+[0;90;1m  42 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1ml[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m"[0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1m [0m[0;91;1mn[0m[0;91;1mo[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mw[0m[0;91;1me[0m[0;91;1mi[0m[0;91;1mg[0m[0;91;1mh[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1ms[0m[0;91;1me[0m[0;91;1ml[0m[0;91;1mf[0m[0;91;1m"[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1mw[0m[0;91;1m)[0m
+[0;90;1m  43 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m][0m
+     [0;90;1m•[0m [0;91m│ [0m
+     [0;90;1m•[0m [0;91m╰╸ A written-out validate is mconcat [genericValidate x, ...] with more checks.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: If the finding says the method restates its default, delete the method, and if that leaves no methods, keep the instance with no `where`: `instance Validity Foo`.
+     [0;90;1m│[0;96m       Otherwise, write the method as one equation with no guards, no `where` and no `let`, of this shape: `validate x = mconcat [genericValidate x, declare "..." (...), ...]`.
+     [0;90;1m│[0;96m       Name the argument with a variable, or with an as-pattern such as `x@(Foo a b)` when the checks need its fields.
+     [0;90;1m│[0;96m       Make `genericValidate` of that same argument the first element of the list.
+     [0;90;1m│[0;96m       Put every check the method made before after it in the list, one element each, using `declare`, `decorate` or another `Validation`; a check that cases on the argument becomes one element that is a `case` expression.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 39 of thing/src/Thing.hs, and say why: -- [allow:HsValidateExtendsGeneric] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsValidateExtendsGeneric][0m: validate in Validity Height is not mconcat of genericValidate of its argument followed by more checks.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@50:3-56:47[0m
+     [0;90;1m│[0m
+[0;90;1m  50 │[0m [0;91m╭[0m[0;91m┤[0m [0;97m [0m[0;97m [0m[0;91;1mv[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mh[0m[0;91;1m@[0m[0;91;1m([0m[0;91;1mH[0m[0;91;1me[0m[0;91;1mi[0m[0;91;1mg[0m[0;91;1mh[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1m)[0m[0;91;1m [0m[0;91;1m=[0m
+[0;90;1m  51 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1mm[0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1ma[0m[0;91;1mt[0m
+[0;90;1m  52 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m[[0m[0;91;1m [0m[0;91;1mg[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mh[0m[0;91;1m,[0m
+[0;90;1m  53 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1mp[0m[0;91;1mo[0m[0;91;1ms[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1me[0m
+[0;90;1m  54 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m][0m
+[0;90;1m  55 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1mw[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1me[0m
+[0;90;1m  56 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1mp[0m[0;91;1mo[0m[0;91;1ms[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1ml[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m"[0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1m [0m[0;91;1mp[0m[0;91;1mo[0m[0;91;1ms[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1me[0m[0;91;1m"[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mi[0m[0;91;1m [0m[0;91;1m>[0m[0;91;1m [0m[0;91;1m0[0m[0;91;1m)[0m
+     [0;90;1m•[0m [0;91m│ [0m
+     [0;90;1m•[0m [0;91m╰╸ A written-out validate is mconcat [genericValidate x, ...] with more checks.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: If the finding says the method restates its default, delete the method, and if that leaves no methods, keep the instance with no `where`: `instance Validity Foo`.
+     [0;90;1m│[0;96m       Otherwise, write the method as one equation with no guards, no `where` and no `let`, of this shape: `validate x = mconcat [genericValidate x, declare "..." (...), ...]`.
+     [0;90;1m│[0;96m       Name the argument with a variable, or with an as-pattern such as `x@(Foo a b)` when the checks need its fields.
+     [0;90;1m│[0;96m       Make `genericValidate` of that same argument the first element of the list.
+     [0;90;1m│[0;96m       Put every check the method made before after it in the list, one element each, using `declare`, `decorate` or another `Validation`; a check that cases on the argument becomes one element that is a `case` expression.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 50 of thing/src/Thing.hs, and say why: -- [allow:HsValidateExtendsGeneric] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsValidateExtendsGeneric][0m: validate in Validity Depth is not mconcat of genericValidate of its argument followed by more checks.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@63:3-67:8[0m
+     [0;90;1m│[0m
+[0;90;1m  63 │[0m [0;91m╭[0m[0;91m┤[0m [0;97m [0m[0;97m [0m[0;91;1mv[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m [0m[0;91;1md[0m[0;91;1m@[0m[0;91;1m([0m[0;91;1mD[0m[0;91;1me[0m[0;91;1mp[0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1m)[0m[0;91;1m [0m[0;91;1m=[0m
+[0;90;1m  64 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1mm[0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m$[0m
+[0;90;1m  65 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m[[0m[0;91;1m [0m[0;91;1mg[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m [0m[0;91;1md[0m[0;91;1m,[0m
+[0;90;1m  66 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1ml[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m"[0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1m [0m[0;91;1mp[0m[0;91;1mo[0m[0;91;1ms[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1me[0m[0;91;1m"[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mi[0m[0;91;1m [0m[0;91;1m>[0m[0;91;1m [0m[0;91;1m0[0m[0;91;1m)[0m
+[0;90;1m  67 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m][0m
+     [0;90;1m•[0m [0;91m│ [0m
+     [0;90;1m•[0m [0;91m╰╸ A written-out validate is mconcat [genericValidate x, ...] with more checks.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: If the finding says the method restates its default, delete the method, and if that leaves no methods, keep the instance with no `where`: `instance Validity Foo`.
+     [0;90;1m│[0;96m       Otherwise, write the method as one equation with no guards, no `where` and no `let`, of this shape: `validate x = mconcat [genericValidate x, declare "..." (...), ...]`.
+     [0;90;1m│[0;96m       Name the argument with a variable, or with an as-pattern such as `x@(Foo a b)` when the checks need its fields.
+     [0;90;1m│[0;96m       Make `genericValidate` of that same argument the first element of the list.
+     [0;90;1m│[0;96m       Put every check the method made before after it in the list, one element each, using `declare`, `decorate` or another `Validation`; a check that cases on the argument becomes one element that is a `case` expression.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 63 of thing/src/Thing.hs, and say why: -- [allow:HsValidateExtendsGeneric] <reason>[0m
+[0;90;1m─────╯[0m
+
+[0;91;1m[error HsValidateExtendsGeneric][0m: validate in Validity Width is not mconcat of genericValidate of its argument followed by more checks.
+     [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@74:3-76:44[0m
+     [0;90;1m│[0m
+[0;90;1m  74 │[0m [0;91m╭[0m[0;91m┤[0m [0;97m [0m[0;97m [0m[0;91;1mv[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mw[0m[0;91;1m@[0m[0;91;1m([0m[0;91;1mW[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1m)[0m
+[0;90;1m  75 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m|[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1m [0m[0;91;1m>[0m[0;91;1m [0m[0;91;1m0[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mm[0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1mc[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1m[[0m[0;91;1mg[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1mV[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1me[0m[0;91;1m [0m[0;91;1mw[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1ml[0m[0;91;1ma[0m[0;91;1mr[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m"[0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1m [0m[0;91;1ms[0m[0;91;1mm[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1ml[0m[0;91;1m"[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mi[0m[0;91;1m [0m[0;91;1m<[0m[0;91;1m [0m[0;91;1m1[0m[0;91;1m0[0m[0;91;1m0[0m[0;91;1m)[0m[0;91;1m][0m
+[0;90;1m  76 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m [0m[0;91;1m|[0m[0;91;1m [0m[0;91;1mo[0m[0;91;1mt[0m[0;91;1mh[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mw[0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mv[0m[0;91;1ma[0m[0;91;1ml[0m[0;91;1mi[0m[0;91;1md[0m[0;91;1m [0m[0;91;1m"[0m[0;91;1mi[0m[0;91;1ms[0m[0;91;1m [0m[0;91;1mn[0m[0;91;1mo[0m[0;91;1mt[0m[0;91;1m [0m[0;91;1mp[0m[0;91;1mo[0m[0;91;1ms[0m[0;91;1mi[0m[0;91;1mt[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1me[0m[0;91;1m"[0m
+     [0;90;1m•[0m [0;91m│ [0m
+     [0;90;1m•[0m [0;91m╰╸ A written-out validate is mconcat [genericValidate x, ...] with more checks.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: If the finding says the method restates its default, delete the method, and if that leaves no methods, keep the instance with no `where`: `instance Validity Foo`.
+     [0;90;1m│[0;96m       Otherwise, write the method as one equation with no guards, no `where` and no `let`, of this shape: `validate x = mconcat [genericValidate x, declare "..." (...), ...]`.
+     [0;90;1m│[0;96m       Name the argument with a variable, or with an as-pattern such as `x@(Foo a b)` when the checks need its fields.
+     [0;90;1m│[0;96m       Make `genericValidate` of that same argument the first element of the list.
+     [0;90;1m│[0;96m       Put every check the method made before after it in the list, one element each, using `declare`, `decorate` or another `Validation`; a check that cases on the argument becomes one element that is a `case` expression.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 74 of thing/src/Thing.hs, and say why: -- [allow:HsValidateExtendsGeneric] <reason>[0m
+[0;90;1m─────╯[0m
+Run explain with a rule's id to see why the rule exists, for example: explain HsValidateExtendsGeneric

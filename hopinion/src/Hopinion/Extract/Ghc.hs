@@ -12,6 +12,8 @@ module Hopinion.Extract.Ghc
     declScopeOf,
     rdrText,
     peelExpr,
+    isFunction,
+    isVariable,
     peelType,
     peelApp,
     namedHead,
@@ -118,6 +120,22 @@ peelExpr le = case unLoc le of
   HsPar _ e -> peelExpr e
   ExprWithTySig _ e _ -> peelExpr e
   _ -> le
+
+-- | Whether this expression is the function of this name, with any
+-- parentheses, type signature or type application around it: none of those
+-- change which function it is.
+--
+-- By name, because which function a name refers to takes the compiler.
+isFunction :: Text -> LHsExpr GhcPs -> Bool
+isFunction function le = case unLoc (peelExpr le) of
+  HsAppType _ f _ -> isFunction function f
+  _ -> isVariable function le
+
+-- | Whether this expression is the variable of this name, qualified or not.
+isVariable :: Text -> LHsExpr GhcPs -> Bool
+isVariable name le = case unLoc (peelExpr le) of
+  HsVar _ n -> rdrText (unLoc n) == name
+  _ -> False
 
 -- | The operands of one infix application, whatever its operator.
 infixOperands :: LHsExpr GhcPs -> Maybe (LHsExpr GhcPs, LHsExpr GhcPs)

@@ -1,0 +1,5 @@
+If the finding says the method restates its default, delete the method, and if that leaves no methods, keep the instance with no `where`: `instance Validity Foo`.
+Otherwise, write the method as one equation with no guards, no `where` and no `let`, of this shape: `validate x = mconcat [genericValidate x, declare "..." (...), ...]`.
+Name the argument with a variable, or with an as-pattern such as `x@(Foo a b)` when the checks need its fields.
+Make `genericValidate` of that same argument the first element of the list.
+Put every check the method made before after it in the list, one element each, using `declare`, `decorate` or another `Validation`; a check that cases on the argument becomes one element that is a `case` expression.

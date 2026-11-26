@@ -1,2 +1,0 @@
-Delete each method this points at, and keep every other method of the instance.
-If that leaves no methods, keep the instance with no `where`: `instance Validity Foo` or `instance GenValid Foo`.

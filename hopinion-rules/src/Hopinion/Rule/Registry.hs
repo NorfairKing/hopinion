@@ -24,7 +24,8 @@ import qualified Hopinion.Check.Hs.StrictFields.Rule as StrictFields
 import qualified Hopinion.Check.Hs.TestOneSpecPerFile.Rule as TestOneSpecPerFile
 import qualified Hopinion.Check.Package.AppOnlyMain.Rule as AppOnlyMain
 import qualified Hopinion.Check.Package.GenValidInGenPackage.Rule as GenValidInGenPackage
-import qualified Hopinion.Check.Package.NoRestatedValidityDefaults.Rule as NoRestatedValidityDefaults
+import qualified Hopinion.Check.Package.NoRestatedGenValidDefaults.Rule as NoRestatedGenValidDefaults
+import qualified Hopinion.Check.Package.ValidateExtendsGeneric.Rule as ValidateExtendsGeneric
 import qualified Hopinion.Check.Project.GenValidSpecPerGenValid.Rule as GenValidSpecPerGenValid
 import qualified Hopinion.Check.Project.GenValidWithoutExtraChecking.Rule as GenValidWithoutExtraChecking
 import qualified Hopinion.Check.Project.JsonSpecPerJsonType.Rule as JsonSpecPerJsonType
@@ -53,7 +54,7 @@ builtinRules =
     NoCustomOrd.rule,
     NoCustomShowRead.rule,
     NoFilePath.rule,
-    NoRestatedValidityDefaults.rule,
+    NoRestatedGenValidDefaults.rule,
     NoSemigroupOnText.rule,
     NoStringError.rule,
     NoTestHelpers.rule,
@@ -62,5 +63,6 @@ builtinRules =
     RecordFieldPerLine.rule,
     StrictFields.rule,
     SydtestOnly.rule,
-    TestOneSpecPerFile.rule
+    TestOneSpecPerFile.rule,
+    ValidateExtendsGeneric.rule
   ]

@@ -1,0 +1,3 @@
+A Validity instance that writes out validate and does not start from genericValidate checks less than it looks like it does: the fields' own invariants go unchecked unless every one of them is remembered by hand, and a field added later is forgotten silently.
+Starting from genericValidate keeps every field checked however the type changes, so what is written after it is only what is special about this type.
+One shape for every instance also means a reader sees at a glance where the structural check ends and the type's own checks begin.
