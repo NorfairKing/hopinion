@@ -272,7 +272,18 @@ suppresses a f =
     && case annotationFactPrecision a of
       AnnotationPrecisionFile -> True
       AnnotationPrecisionDecl -> annotationFactScope a == findingScope f
-      AnnotationPrecisionStatement sp -> spanContains sp (findingSpan f)
+      AnnotationPrecisionStatement sp -> startsIn sp (findingSpan f)
+  where
+    -- Where the finding starts rather than all of it, because a statement is a
+    -- layout line and a finding can run over several: a binding written as
+    -- several equations is one finding and one statement per equation.
+    -- The start is also the line the report tells a reader to write the
+    -- suppression above.
+    startsIn :: Span -> Span -> Bool
+    startsIn statement finding =
+      spanFile statement == spanFile finding
+        && spanStart statement <= spanStart finding
+        && spanStart finding < spanEnd statement
 
 -- | A suppression that answers for nothing: the rule it names, and where it is
 -- written.

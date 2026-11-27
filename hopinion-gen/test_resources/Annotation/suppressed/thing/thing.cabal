@@ -6,6 +6,7 @@ build-type: Simple
 library
   exposed-modules:
       Annotated
+      Equations
       Header
       Thing
       Trailing

@@ -25,6 +25,7 @@ extra-source-files:
     test_resources/Annotation/suppressed/thing-gen/test/ThingChecks.hs
     test_resources/Annotation/suppressed/thing-gen/thing-gen.cabal
     test_resources/Annotation/suppressed/thing/src/Annotated.hs
+    test_resources/Annotation/suppressed/thing/src/Equations.hs
     test_resources/Annotation/suppressed/thing/src/Header.hs
     test_resources/Annotation/suppressed/thing/src/Thing.hs
     test_resources/Annotation/suppressed/thing/src/Trailing.hs
