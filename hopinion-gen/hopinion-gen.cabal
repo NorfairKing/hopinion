@@ -421,6 +421,8 @@ extra-source-files:
     test_resources/Rule/TestGenValidSpecPerGenValid/good.golden
     test_resources/Rule/TestGenValidSpecPerGenValid/good/lonely/lonely.cabal
     test_resources/Rule/TestGenValidSpecPerGenValid/good/lonely/src/Lonely.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/good/lonely/test/LonelyChecks.hs
+    test_resources/Rule/TestGenValidSpecPerGenValid/good/lonely/test/Main.hs
     test_resources/Rule/TestGenValidSpecPerGenValid/good/thing-gen/src/Thing/Gen.hs
     test_resources/Rule/TestGenValidSpecPerGenValid/good/thing-gen/test/Main.hs
     test_resources/Rule/TestGenValidSpecPerGenValid/good/thing-gen/test/ThingChecks.hs
@@ -443,6 +445,10 @@ extra-source-files:
     test_resources/Rule/TestGenValidSpecPerGenValid/goodTwoTestSuites/thing/src/Thing.hs
     test_resources/Rule/TestGenValidSpecPerGenValid/goodTwoTestSuites/thing/thing.cabal
     test_resources/Rule/TestJsonSpecPerJsonType/bad.golden
+    test_resources/Rule/TestJsonSpecPerJsonType/bad/alone/alone.cabal
+    test_resources/Rule/TestJsonSpecPerJsonType/bad/alone/src/Alone.hs
+    test_resources/Rule/TestJsonSpecPerJsonType/bad/alone/test/AloneChecks.hs
+    test_resources/Rule/TestJsonSpecPerJsonType/bad/alone/test/Main.hs
     test_resources/Rule/TestJsonSpecPerJsonType/bad/thing-gen/src/Thing/Gen.hs
     test_resources/Rule/TestJsonSpecPerJsonType/bad/thing-gen/test/Main.hs
     test_resources/Rule/TestJsonSpecPerJsonType/bad/thing-gen/test/ThingChecks.hs
@@ -450,6 +456,10 @@ extra-source-files:
     test_resources/Rule/TestJsonSpecPerJsonType/bad/thing/src/Thing.hs
     test_resources/Rule/TestJsonSpecPerJsonType/bad/thing/thing.cabal
     test_resources/Rule/TestJsonSpecPerJsonType/good.golden
+    test_resources/Rule/TestJsonSpecPerJsonType/good/alone/alone.cabal
+    test_resources/Rule/TestJsonSpecPerJsonType/good/alone/src/Alone.hs
+    test_resources/Rule/TestJsonSpecPerJsonType/good/alone/test/AloneChecks.hs
+    test_resources/Rule/TestJsonSpecPerJsonType/good/alone/test/Main.hs
     test_resources/Rule/TestJsonSpecPerJsonType/good/thing-gen/src/Thing/Gen.hs
     test_resources/Rule/TestJsonSpecPerJsonType/good/thing-gen/test/Main.hs
     test_resources/Rule/TestJsonSpecPerJsonType/good/thing-gen/test/ThingChecks.hs

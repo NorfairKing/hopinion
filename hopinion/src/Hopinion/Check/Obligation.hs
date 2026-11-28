@@ -16,7 +16,7 @@
 
 -- | The rules that say required code must exist: a set of instances in a
 -- package's library obliges a call in the test suite of that package's gen
--- package.
+-- package, or in its own test suite when it has no gen package.
 --
 -- One engine and one set of tables for the whole family rather than one of each
 -- per rule, which is the one place a rule does not own its own table. What
@@ -216,30 +216,29 @@ findings o compiled = do
 -- 'recordGeneratedObligations'.
 --
 -- Absence is the fragile half: the rule concludes once that no call is anywhere
--- in the gen package's test suite, and generated code there can make the call.
+-- in the test suite that meets them, and generated code there can make the call.
 -- So each unmet obligation is put to the compiler first.
 --
--- A package with no gen package has nowhere for its tests to live, so every
--- obligation it makes is unmet and each is reported where it was made.
--- Reporting the missing package once would have nowhere to write a
--- suppression, since a cabal file carries no annotations.
+-- A package with no gen package keeps its generators and its tests in its own
+-- test suite, so that is where its obligations are met.
+-- Asking for the gen package anyway would report every obligation of such a
+-- package, however well it is tested, until the package is split in two.
 perPackage :: Obligation -> CompiledModules -> PackageName -> Query CheckResult
 perPackage o compiled pkg = do
   generating <- libraryModulesUsingTemplateHaskell o pkg
   mapM_ (recordGeneratedObligations o compiled pkg) generating
   home <- genPackageFor pkg
-  unmet <- obligationsUnmetIn o pkg (genPackageName home)
-  reportable <- case home of
-    GenPackageNone _ -> pure unmet
-    GenPackage gen -> do
-      splicing <- splicingTestModulesOf o gen
-      filterM (notGeneratedIn o compiled splicing) unmet
+  let tests = testedIn pkg home
+  unmet <- obligationsUnmetIn o pkg tests
+  splicing <- splicingTestModulesOf o tests
+  reportable <- filterM (notGeneratedIn o compiled splicing) unmet
   pure (findingsResult (map (findingFor o home) reportable))
 
-genPackageName :: GenPackage -> PackageName
-genPackageName = \case
-  GenPackageNone n -> n
-  GenPackage n -> n
+-- | Whose test suite meets a package's obligations.
+testedIn :: PackageName -> GenPackage -> PackageName
+testedIn pkg = \case
+  GenPackage gen -> gen
+  GenPackageNone _ -> pkg
 
 -- | The obligations a module makes by generating an instance, which the source
 -- cannot see and the compiler wrote down.
@@ -293,8 +292,8 @@ classesAndTypesMadeIn o pkg ref =
       )
 
 -- | The rule itself: a type in this package's library with every class the
--- obligation names and no call to the combinator anywhere in the gen package's
--- test suite.
+-- obligation names and no call to the combinator anywhere in the test suite
+-- that meets its obligations.
 --
 -- One finding per type rather than per instance, because one call meets the
 -- obligation of all of them: a second finding about the same type would be one
@@ -436,9 +435,11 @@ findingFor o home m =
                   ++ case home of
                     GenPackage gen -> ["in", concat [T.unpack (unPackageName gen), "'s test suite."]]
                     GenPackageNone gen ->
-                      [ "anywhere, and no",
+                      [ "in",
+                        concat [T.unpack (unPackageName (obligationMadePackage m)), "'s test suite,"],
+                        "and there is no",
                         T.unpack (unPackageName gen),
-                        "package to write it in."
+                        "package."
                       ]
               )
           )

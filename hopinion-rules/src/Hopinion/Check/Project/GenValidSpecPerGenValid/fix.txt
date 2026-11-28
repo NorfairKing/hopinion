@@ -1,1 +1,2 @@
 Add `genValidSpec @T` from `Test.Syd.Validity` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.
+If the package has no -gen package, add it to the spec for that module in the package's own test suite instead.

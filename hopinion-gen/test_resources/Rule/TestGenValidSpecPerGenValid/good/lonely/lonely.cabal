@@ -11,3 +11,14 @@ library
   build-depends:
       base
   default-language: Haskell2010
+
+test-suite lonely-test
+  type: exitcode-stdio-1.0
+  main-is: Main.hs
+  other-modules:
+      LonelyChecks
+  hs-source-dirs:
+      test
+  build-depends:
+      base
+  default-language: Haskell2010

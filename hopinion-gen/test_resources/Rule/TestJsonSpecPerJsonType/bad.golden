@@ -1,3 +1,18 @@
+[0;91;1m[error TestJsonSpecPerJsonType][0m: No jsonSpec @Alone in alone's test suite, and there is no alone-gen package.
+     [0;90;1m╭──▶[0m [0;32;1malone/src/Alone.hs@10:1-12:54[0m
+     [0;90;1m│[0m
+[0;90;1m  10 │[0m [0;91m╭[0m[0;91m┤[0m [0;91;1md[0m[0;91;1ma[0m[0;91;1mt[0m[0;91;1ma[0m[0;91;1m [0m[0;91;1mA[0m[0;91;1ml[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1me[0m[0;91;1m [0m[0;91;1m=[0m[0;91;1m [0m[0;91;1mA[0m[0;91;1ml[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1me[0m
+[0;90;1m  11 │[0m [0;91m│  [0m[0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mS[0m[0;91;1mh[0m[0;91;1mo[0m[0;91;1mw[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mE[0m[0;91;1mq[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mG[0m[0;91;1me[0m[0;91;1mn[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mc[0m[0;91;1m)[0m
+[0;90;1m  12 │[0m [0;91m├[0m[0;91m┤[0m [0;91;1m [0m[0;91;1m [0m[0;91;1md[0m[0;91;1me[0m[0;91;1mr[0m[0;91;1mi[0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1mn[0m[0;91;1mg[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mF[0m[0;91;1mr[0m[0;91;1mo[0m[0;91;1mm[0m[0;91;1mJ[0m[0;91;1mS[0m[0;91;1mO[0m[0;91;1mN[0m[0;91;1m,[0m[0;91;1m [0m[0;91;1mT[0m[0;91;1mo[0m[0;91;1mJ[0m[0;91;1mS[0m[0;91;1mO[0m[0;91;1mN[0m[0;91;1m)[0m[0;91;1m [0m[0;91;1mv[0m[0;91;1mi[0m[0;91;1ma[0m[0;91;1m [0m[0;91;1m([0m[0;91;1mA[0m[0;91;1mu[0m[0;91;1mt[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1mo[0m[0;91;1mc[0m[0;91;1mo[0m[0;91;1md[0m[0;91;1me[0m[0;91;1mc[0m[0;91;1m [0m[0;91;1mA[0m[0;91;1ml[0m[0;91;1mo[0m[0;91;1mn[0m[0;91;1me[0m[0;91;1m)[0m
+     [0;90;1m•[0m [0;91m│ [0m
+     [0;90;1m•[0m [0;91m╰╸ ToJSON and FromJSON oblige jsonSpec @T in the gen package's test suite.[0m
+     [0;90;1m•[0m
+     [0;90;1m│[0m [0;96mHint: Add `jsonSpec @T` from `Test.Syd.Validity.Aeson` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.
+     [0;90;1m│[0;96m       If the package has no -gen package, add it to the spec for that module in the package's own test suite instead.
+     [0;90;1m│[0;96m       If `T` has no GenValid instance, write one in a `.Gen` module of the -gen library, or of the package's own test suite when it has no -gen package.[0m
+     [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 10 of alone/src/Alone.hs, and say why: -- [allow:TestJsonSpecPerJsonType] <reason>[0m
+[0;90;1m─────╯[0m
+
 [0;91;1m[error TestJsonSpecPerJsonType][0m: No jsonSpec @Both in thing-gen's test suite.
      [0;90;1m╭──▶[0m [0;32;1mthing/src/Thing.hs@8:1-9:53[0m
      [0;90;1m│[0m
@@ -7,7 +22,8 @@
      [0;90;1m•[0m [0;91m╰╸ ToJSON and FromJSON oblige jsonSpec @T in the gen package's test suite.[0m
      [0;90;1m•[0m
      [0;90;1m│[0m [0;96mHint: Add `jsonSpec @T` from `Test.Syd.Validity.Aeson` to the spec for the module defining `T`: `test/Foo/BarSpec.hs` in the -gen package for `Foo.Bar`.
-     [0;90;1m│[0;96m       If `T` has no GenValid instance, write one in a `.Gen` module of the -gen library.[0m
+     [0;90;1m│[0;96m       If the package has no -gen package, add it to the spec for that module in the package's own test suite instead.
+     [0;90;1m│[0;96m       If `T` has no GenValid instance, write one in a `.Gen` module of the -gen library, or of the package's own test suite when it has no -gen package.[0m
      [0;90;1m│[0m [0;96mHint: To suppress, write this directly above line 8 of thing/src/Thing.hs, and say why: -- [allow:TestJsonSpecPerJsonType] <reason>[0m
 [0;90;1m─────╯[0m
 Run explain with a rule's id to see why the rule exists, for example: explain TestJsonSpecPerJsonType
